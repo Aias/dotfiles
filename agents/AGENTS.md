@@ -90,6 +90,18 @@ Avoid `useEffect`. You probably don't need it. Before writing code that uses `us
 
 React inline styles may use `as React.CSSProperties` when unavoidable (e.g., view-transition names or CSS custom properties), but this should be rare and inline styles should only very rarely be preferred over classnames. Avoid casting in all other cases.
 
+## Debugging
+
+When debugging complex issues that span multiple components:
+
+1. Add comprehensive logging at key lifecycle points (mounting, state changes, focus events)
+2. Use emojis or prefixes to make log categories visually scannable (e.g., `[ComponentName] 🚀 action`, `[ComponentName] 📍 checkpoint`)
+3. Log compact string representations rather than full objects for easier copy-pasting: `console.log(\`active=${tag} focused=${bool}\`)`not`console.log({ active, focused })`
+4. Include both "before" and "after" snapshots for state changes
+5. Remove debug logging after the issue is resolved
+
+When encountering unexpected behavior in third-party libraries or framework-generated code, read the actual source code (including generated files like styled-system, build output, etc.) rather than relying on documentation alone.
+
 ## Library Rules
 
 - When importing Lucide icons, always use the `Icon` suffix (e.g., `ArrowRightIcon`, not `ArrowRight`).
