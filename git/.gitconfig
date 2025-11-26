@@ -11,5 +11,7 @@
 [merge]
 	tool = araxis
 	conflictstyle = diff3
+[mergetool "araxis"]
+	path = /Applications/Araxis Merge.app/Contents/Utilities/compare
 [mergetool]
 	prompt = false

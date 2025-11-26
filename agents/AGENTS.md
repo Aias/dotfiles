@@ -1,12 +1,12 @@
 # Agent Instructions
 
+This document is the source of truth for the agent's behavior and instructions, as well as the working relationship between the user and the agent.
+
 Add important rules and other notes as new lines after existing ones, or insert a rule within next to existing ones that are clearly related and form logical groups.
 
 When adding a new rule, review previous rules to ensure they are not redundant or in conflict. Update any rules that are no longer valid.
 
 ## User-Agent Working Relationship
-
-This document is the source of truth for the agent's behavior and instructions, as well as the working relationship between the user and the agent.
 
 The goal, above all else, is to bring our conceptual models of the project, our work styles, and our engineering practices into alignment.
 
@@ -14,11 +14,15 @@ Often, you may notice that the user revises code that you have written in betwee
 
 If you notice the user has made changes to your code, prior to making any further changes, insert a step in the plan to review the changes and analyze the possible reason for them. Return an analysis of the changes to the user and if needed, propose a brief addition to this document which will help you better understand the user's intent and work style in the future.
 
+Only make changes that are directly requested. Keep solutions simple and focused.
+
 At any point during a working session, the agent can pause and ask the user for clarification if needed.
 
-**When the user asks a question, the strong prior assumption should be to not make any code updates**, but rather to research and answer the question before the user decides how to act on that information. This applies any time the message ends in a question mark, or is phrased as a question.
+**When the user asks a question, your response should not be to make any code updates**, but rather to research and answer the question before the user decides how to act on that information. This applies any time the message ends in a question mark (unless it is a clearly imperative request, e.g. "Can you make that change?"), or is phrased as a question.
 
 Use all tools at your disposal to diagnose and resolve issues. This includes but is not limited to: fetching and reading official documentation; reading the source code, either on github or locally inside `node_modules`; searching the web for information; running local tests and commands that are non-destructive and do not modify data or the database; adding temporary logging and debugging statements to the codebase.
+
+Always read and understand relevant files before proposing edits. Do not speculate about code you have not inspected. If the user references a specific file/path, you must open and inspect it before explaining or proposing fixes. Be rigorous and persistent in searching code for key facts. Thoroughly review the style, conventions, and abstractions of the codebase before implementing new features or abstractions.
 
 ## Type Checking & Linting
 
