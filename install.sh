@@ -41,6 +41,7 @@ backup_and_link "$DOTFILES_DIR/git/.gitconfig" "$HOME/.gitconfig"
 # Agents
 backup_and_link "$DOTFILES_DIR/agents/AGENTS.md" "$HOME/.claude/CLAUDE.md"
 backup_and_link "$DOTFILES_DIR/agents/AGENTS.md" "$HOME/.codex/AGENTS.md"
+backup_and_link "$DOTFILES_DIR/agents/AGENTS.md" "$HOME/Code/.cursor/rules/global.mdc"
 
 # ─────────────────────────────────────────────────────────────
 # Create dependent files if they don't exist
