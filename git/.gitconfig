@@ -1,0 +1,15 @@
+[gpg]
+	format = ssh
+[gpg "ssh"]
+	program = /Applications/1Password.app/Contents/MacOS/op-ssh-sign
+[commit]
+	gpgsign = true
+[user]
+	name = Nick Trombley
+	email = trombley.nick@gmail.com
+	signingkey = ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFp4f8Dr581sbnlCM7k0QsP/iv+q5IfIXUDgGeNQ2hqL
+[merge]
+	tool = araxis
+	conflictstyle = diff3
+[mergetool]
+	prompt = false
