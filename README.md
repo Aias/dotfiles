@@ -11,6 +11,10 @@ dotfiles/
 │   └── .zprofile    # Login shell config (PATH, env vars)
 ├── git/
 │   └── .gitconfig   # Git configuration
+├── starship/
+│   └── starship.toml # Starship prompt configuration
+├── ghostty/
+│   └── config       # Ghostty terminal configuration
 ├── agents/
 │   └── AGENTS.md    # Shared AI assistant guidelines
 ├── install.sh       # Symlink installation script

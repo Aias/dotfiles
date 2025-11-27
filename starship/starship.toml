@@ -1,0 +1,117 @@
+format = """
+$username\
+$hostname\
+$directory\
+$git_branch\
+$git_state\
+$git_status\
+$nodejs\
+$python\
+$rust\
+$package\
+$cmd_duration\
+$battery\
+$time\
+$line_break\
+$sudo\
+$character"""
+
+[username]
+format = "[$user]($style) "
+style_user = "bright-black"
+style_root = "red"
+show_always = false  # Only show when SSH or root
+
+[hostname]
+format = "[@$hostname]($style) "
+style = "bright-black"
+ssh_only = true
+
+[directory]
+read_only = " "
+truncation_length = 3
+truncate_to_repo = true
+truncation_symbol = "…/"
+
+[character]
+success_symbol = "[›](bright-black)"
+error_symbol = "[›](red)"
+
+[git_branch]
+format = "[$branch]($style) "
+style = "bright-black"
+
+[git_status]
+format = "[[(*$conflicted$untracked$modified$staged$renamed$deleted)](bright-black) ($ahead_behind$stashed)]($style)"
+style = "cyan"
+conflicted = "​"
+untracked = "​"
+modified = "​"
+staged = "​"
+renamed = "​"
+deleted = "​"
+stashed = "≡"
+ahead = "⇡${count}"
+behind = "⇣${count}"
+diverged = "⇡${ahead_count}⇣${behind_count}"
+
+[git_state]
+format = '\([$state( $progress_current/$progress_total)]($style)\) '
+style = "bright-black"
+
+[nodejs]
+format = "[$symbol$version]($style) "
+symbol = "⬢ "
+style = "bright-black"
+detect_files = ["package.json", ".node-version", ".nvmrc"]
+
+[python]
+format = "[$symbol$version]($style) "
+symbol = "py "
+style = "bright-black"
+detect_extensions = []  # Only show with pyproject.toml, etc
+
+[rust]
+format = "[$symbol$version]($style) "
+symbol = "rs "
+style = "bright-black"
+
+[package]
+format = "[$symbol$version]($style) "
+symbol = "pkg "
+style = "bright-black"
+disabled = false
+
+[cmd_duration]
+min_time = 2_000  # Only show if command took >2s
+format = "[$duration]($style) "
+style = "yellow"
+
+[battery]
+full_symbol = ""  # Don't show when full
+charging_symbol = "⇡"
+discharging_symbol = "⇣"
+disabled = false
+
+[[battery.display]]
+threshold = 15
+style = "red"
+
+[[battery.display]]
+threshold = 50
+style = "yellow"
+
+[[battery.display]]
+threshold = 100
+style = "bright-black"
+
+[time]
+disabled = false
+format = "[$time]($style) "
+style = "bright-black"
+time_format = "%H:%M"
+
+[sudo]
+format = "[sudo]($style) "
+style = "red"
+disabled = false

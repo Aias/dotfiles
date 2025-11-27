@@ -38,6 +38,12 @@ backup_and_link "$DOTFILES_DIR/zsh/.zprofile" "$HOME/.zprofile"
 # Git
 backup_and_link "$DOTFILES_DIR/git/.gitconfig" "$HOME/.gitconfig"
 
+# Starship
+backup_and_link "$DOTFILES_DIR/starship/starship.toml" "$HOME/.config/starship.toml"
+
+# Ghostty
+backup_and_link "$DOTFILES_DIR/ghostty/config" "$HOME/.config/ghostty/config"
+
 # Agents
 backup_and_link "$DOTFILES_DIR/agents/AGENTS.md" "$HOME/.claude/CLAUDE.md"
 backup_and_link "$DOTFILES_DIR/agents/AGENTS.md" "$HOME/.codex/AGENTS.md"
