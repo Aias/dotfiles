@@ -85,6 +85,7 @@ alias ptsc="pnpm tsc --noEmit"
 # Zoxide (smart cd) - install with: brew install zoxide
 # ─────────────────────────────────────────────────────────────
 if command -v zoxide &> /dev/null; then
+  eval "$(zoxide init zsh)"
   alias cd="zd"
   zd() {
     if [ $# -eq 0 ]; then
@@ -92,7 +93,7 @@ if command -v zoxide &> /dev/null; then
     elif [ -d "$1" ]; then
       builtin cd "$1"
     else
-      z "$@" && printf "\U0000F17A9 " && pwd || echo "Error: Directory not found"
+      z "$@" && printf "📁 " && pwd || echo "Error: Directory not found"
     fi
   }
 fi
