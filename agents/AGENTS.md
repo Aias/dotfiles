@@ -54,6 +54,8 @@ Do not create variables that simply track the exact value of another variable; u
 
 When adding or updating imports for a file, ensure they're sorted in alphabetical order within the following categories: React, environment/runtime, external libraries, internal libraries (monorepo packages), aliased project imports, relative imports, and local imports.
 
+When adding new dependencies to the `package.json` ensure they are added in alphabetical order even if the default install command doesn't automatically do so.
+
 When importing types, add the `type` keyword to the import statement even if it's not required by linting rules.
 
 ## TypeScript
@@ -74,7 +76,7 @@ Prefer screen reader-only text content with proper semantic organization over ar
 
 When writing CSS, use flexbox and grid for layout that reflects the natural flow of the content. Prefer gap properties for spacing between elements, and padding on container elements. Avoid margin unless there's a specific reason to use it, as it makes components less composable/portable.
 
-When writing CSS always use logical properties `block`/`inline`, `start`/`end` instead of `left`, `right`, `top`, and `bottom`.
+When writing CSS always use logical properties `block`/`inline`, `start`/`end` instead of `left`, `right`, `top`, and `bottom`. If I say "left", "right", "top", or "bottom", you should use translate those into their corresponding logical properties.
 
 When writing transforms, use `translate`, `rotate`, `scale`, and other transform sub-properties directly rather than putting them all in a `transform` property.
 
@@ -89,6 +91,8 @@ We use React 19, which automatically forwards refs. Do not use `forwardRef` – 
 Avoid `useEffect`. You probably don't need it. Before writing code that uses `useEffect`, always use a web request to read the following article: https://react.dev/learn/you-might-not-need-an-effect
 
 React inline styles may use `as React.CSSProperties` when unavoidable (e.g., view-transition names or CSS custom properties), but this should be rare and inline styles should only very rarely be preferred over classnames. Avoid casting in all other cases.
+
+When rendering multiple similar JSX elements that differ only in data or minor variations (like animation delays), **always use iteration** (`map`, `forEach`, etc.) instead of manually duplicating JSX. This reduces repetition, makes the code more maintainable, and allows easy configuration through constants or arrays. For example, use `[0, 1, 2].map((index) => <Element key={index} delay={index * 0.2} />)` instead of three separate `<Element>` declarations.
 
 ## Debugging
 
