@@ -1,0 +1,55 @@
+{
+  "window.commandCenter": true,
+  "editor.tabSize": 2,
+  "editor.formatOnSave": true,
+  "workbench.iconTheme": "vscode-icons",
+  "projectManager.git.baseFolders": ["~/Code"],
+  "vsicons.dontShowNewVersionMessage": true,
+  "files.associations": {
+    "rush.json": "jsonc",
+    "**/config/rush/*.json": "jsonc"
+  },
+  "explorer.confirmDelete": false,
+  "colorize.languages": [
+    "typescript",
+    "ts",
+    "css",
+    "sass",
+    "scss",
+    "less",
+    "postcss",
+    "sss",
+    "stylus",
+    "xml",
+    "svg"
+  ],
+  "git.autofetch": true,
+  "git.confirmSync": false,
+  "explorer.confirmDragAndDrop": false,
+  "search.exclude": {
+    "**/.next": true
+  },
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "git.enableSmartCommit": true,
+  "cursor.cpp.disabledLanguages": ["plaintext"],
+  "typescript.updateImportsOnFileMove.enabled": "always",
+  "explorer.confirmPasteNative": false,
+  "terminal.integrated.env.osx": {
+    "FNM_DIR": "/Users/nicktrombley/.fnm"
+  },
+  "git.path": "/usr/bin/git",
+  "terminal.integrated.inheritEnv": true,
+  "terminal.integrated.shell.osx": "/bin/zsh",
+  "terminal.integrated.defaultProfile.osx": "zsh",
+  "workbench.activityBar.orientation": "vertical",
+  "editor.wordWrap": "on",
+  "diffEditor.experimental.showMoves": true,
+  "git.mergeEditor": true,
+  "git.path": "/usr/bin/git",
+  "workbench.editor.enablePreview": false,
+  "git.allowForcePush": true,
+  "workbench.editorAssociations": {
+    "*.svg": "default"
+  },
+  "claudeCode.preferredLocation": "sidebar"
+}

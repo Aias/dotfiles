@@ -10,7 +10,6 @@ $python\
 $rust\
 $package\
 $cmd_duration\
-$battery\
 $time\
 $line_break\
 $sudo\
@@ -86,24 +85,6 @@ disabled = false
 min_time = 2_000  # Only show if command took >2s
 format = "[$duration]($style) "
 style = "yellow"
-
-[battery]
-full_symbol = ""  # Don't show when full
-charging_symbol = "⇡"
-discharging_symbol = "⇣"
-disabled = false
-
-[[battery.display]]
-threshold = 15
-style = "red"
-
-[[battery.display]]
-threshold = 50
-style = "yellow"
-
-[[battery.display]]
-threshold = 100
-style = "bright-black"
 
 [time]
 disabled = false

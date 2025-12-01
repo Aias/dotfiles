@@ -48,6 +48,11 @@ backup_and_link "$DOTFILES_DIR/ghostty/config" "$HOME/.config/ghostty/config"
 backup_and_link "$DOTFILES_DIR/agents/AGENTS.md" "$HOME/.claude/CLAUDE.md"
 backup_and_link "$DOTFILES_DIR/agents/AGENTS.md" "$HOME/.codex/AGENTS.md"
 backup_and_link "$DOTFILES_DIR/agents/AGENTS.md" "$HOME/Code/.cursor/rules/global.mdc"
+backup_and_link "$DOTFILES_DIR/agents/claude-statusline.sh" "$HOME/.claude/statusline-command.sh"
+
+# Cursor
+backup_and_link "$DOTFILES_DIR/cursor/settings.json" "$HOME/Library/Application Support/Cursor/User/settings.json"
+backup_and_link "$DOTFILES_DIR/cursor/keybindings.json" "$HOME/Library/Application Support/Cursor/User/keybindings.json"
 
 # ─────────────────────────────────────────────────────────────
 # Create dependent files if they don't exist
