@@ -8,9 +8,7 @@ $git_status\
 $nodejs\
 $python\
 $rust\
-$package\
 $cmd_duration\
-$time\
 $line_break\
 $sudo\
 $character"""
@@ -76,10 +74,7 @@ symbol = "rs "
 style = "bright-black"
 
 [package]
-format = "[$symbol$version]($style) "
-symbol = "pkg "
-style = "bright-black"
-disabled = false
+disabled = true
 
 [cmd_duration]
 min_time = 2_000  # Only show if command took >2s
@@ -87,10 +82,7 @@ format = "[$duration]($style) "
 style = "yellow"
 
 [time]
-disabled = false
-format = "[$time]($style) "
-style = "bright-black"
-time_format = "%H:%M"
+disabled = true
 
 [sudo]
 format = "[sudo]($style) "
