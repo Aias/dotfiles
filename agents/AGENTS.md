@@ -2,29 +2,44 @@
 
 This document is the source of truth for the agent's behavior and instructions, as well as the working relationship between the user and the agent.
 
+This file should be living documentation that evolves as you discover new preferences and workflows.Treat this file as part of the codebase, not a note: changes should be intentional, incremental, and committed with meaningful messages.
+
 Add important rules and other notes as new lines after existing ones, or insert a rule within next to existing ones that are clearly related and form logical groups.
 
-When adding a new rule, review previous rules to ensure they are not redundant or in conflict. Update any rules that are no longer valid.
+When adding a new rule, review previous rules to ensure they are not redundant or in conflict. Search this file for overlapping instructions. Update any rules that are no longer valid. Prefer editing or merging existing rules over adding near-duplicates.
 
 ## User-Agent Working Relationship
 
-The goal, above all else, is to bring our conceptual models of the project, our work styles, and our engineering practices into alignment.
+The goal, above all else, is to bring our conceptual models of the project, our work styles, and our engineering practices into alignment. This maintenance of this document will create a flywheel for recursive self-improvement of the user-agent paired programming relationship.
 
 Often, you may notice that the user revises code that you have written in between editing rounds. This is expected, and you should always assume that the changes were deliberate.
 
 If you notice the user has made changes to your code, prior to making any further changes, insert a step in the plan to review the changes and analyze the possible reason for them. Return an analysis of the changes to the user and if needed, propose a brief addition to this document which will help you better understand the user's intent and work style in the future.
 
-Only make changes that are directly requested. Keep solutions simple and focused.
+When working on given task, only make changes that are directly requested. Keep solutions simple and focused. Conversely, updates to this document should be continually considered and may be proposed at any time. Extract both explicit and implicit development patterns with a particular focus on those which are broadly applicable to future sessions.
 
 At any point during a working session, the agent can pause and ask the user for clarification if needed.
 
 **When the user asks a question, your response should not be to make any code updates**, but rather to research and answer the question before the user decides how to act on that information. This applies any time the message ends in a question mark (unless it is a clearly imperative request, e.g. "Can you make that change?"), or is phrased as a question.
 
-Use all tools at your disposal to diagnose and resolve issues. This includes but is not limited to: fetching and reading official documentation; reading the source code, either on github or locally inside `node_modules`; searching the web for information; running local tests and commands that are non-destructive and do not modify data or the database; adding temporary logging and debugging statements to the codebase.
+When the user gives explicit behavioral feedback (“don’t do X”, “always do Y”, “we prefer Z”), check whether that preference is already encoded here:
+
+- If yes, quote the relevant rule back to the user and explain how you will apply it in this context.
+- If not, draft a concise candidate rule under the most relevant section and present it inline in your reply for approval or editing.
+
+When you observe the same kind of correction or edit pattern three or more times in a session (e.g., the user repeatedly simplifies your abstractions, changes variable naming conventions, or restructures tests), treat this as evidence of a latent preference. Explicitly state the inferred preference as a short hypothesis, and propose a corresponding `AGENTS.md` rule that encodes the inferred preference.
 
 Always read and understand relevant files before proposing edits. Do not speculate about code you have not inspected. If the user references a specific file/path, you must open and inspect it before explaining or proposing fixes. Be rigorous and persistent in searching code for key facts. Thoroughly review the style, conventions, and abstractions of the codebase before implementing new features or abstractions.
 
+## Self-Review & Memory
+
+Maintain a lightweight Agent pitfalls list in this file (or a referenced document), capturing recurring error patterns (e.g., “tends to forget null checks on GraphQL responses,” “over-eagerly deletes comments”).
+• When a new pitfall is discovered, add a short entry and, when relevant, update or add rules that mitigate it.
+• If a rule in this file appears to contribute to a failure (e.g., encourages over-broad refactors, or discourages a necessary tool), propose a concrete revision or deletion, referencing the observed failure as rationale.
+
 ## Tools
+
+Use all tools at your disposal to diagnose and resolve issues. This includes but is not limited to: fetching and reading official documentation; reading the source code, either on github or locally inside `node_modules`; searching the web for information; running local tests and commands that are non-destructive and do not modify data or the database; adding temporary logging and debugging statements to the codebase.
 
 Favor the following tools over system defaults:
 
@@ -41,13 +56,37 @@ Favor the following tools over system defaults:
 
 These tools are available from the command line and can be used to perform many basic tasks more efficiently and effectively compared to standard system tools.
 
-## Type Checking & Linting
+## Code Style & Conventions
 
-Check for type errors regularly during development, not just prior to committing.
+Do not introduce new architectural or stylistic patterns that contradict the majority of the codebase unless the user explicitly requests it. If you believe a new pattern is substantially better, outline the tradeoffs and propose a phased migration plan, including updates to this file.
 
-Do not suggest that the user runs type checking; run it yourself and act on the results.
+When you’re uncertain about a convention (error handling patterns, hook structure, logging style, component folder layout, etc.): Use `rg`, `fd`, and git history to find existing patterns. Prefer the majority or canonical pattern over inventing a new one.
 
-In addition to type checking and linting, prior to committing, re-read this document to ensure all instructions are followed and to refresh your memory of the project's guidelines and conventions.
+When naming variables, functions, components, etc., favor readability and clarity over brevity or cleverness.
+
+Add comments only when necessary to explain complex code or logic, don't add comments which simply state what the code is doing.
+
+Do not create variables that simply track the exact value of another variable; use the original variable directly instead.
+
+When adding or updating imports for a file, ensure they're sorted in alphabetical order within the following categories: React, environment/runtime, external libraries, internal libraries (monorepo packages), aliased project imports, relative imports, and local imports.
+
+When adding new dependencies to the `package.json` ensure they are added in alphabetical order even if the default install command doesn't automatically do so.
+
+When importing types, add the `type` keyword to the import statement even if it's not required by linting rules.
+
+## Common Workflows
+
+When you find yourself running the same sequence of commands (e.g., github PR diff and merge commit) for similar tasks, propose adding a named workflow here. Each workflow should include:
+
+- When to use it.
+- Exact commands.
+- Expected success criteria (e.g., “no type errors; tests green”).
+- Keep workflows small and composable: e.g., prefer “Quick sanity check for a changed React component” or “Minimal smoke test for the API layer” over “run every tool in the repo.”
+- When the user introduces new tools (e.g., a different package manager, new test runner, security scanner):
+- Propose adding or updating entries under Tools / Workflows with concise usage notes and example invocations.
+- If a workflow is replaced (e.g., a new script or CI task supersedes a manual sequence), mark it as deprecated and, when appropriate, propose deleting it in a future cleanup.
+
+[workflow-name]: [description]
 
 ## Version Control & Git
 
@@ -61,19 +100,13 @@ While resolving merge or rebase conflicts, avoid introducing functional changes;
 
 Never push new branches or new commits to the remote repository unless explicitly instructed to do so by the user.
 
-## Code Style & Conventions
+## Type Checking & Linting
 
-When naming variables, functions, components, etc., favor readability and clarity over brevity or cleverness.
+Check for type errors regularly during development, not just prior to committing.
 
-Add comments only when necessary to explain complex code or logic, don't add comments which simply state what the code is doing.
+Do not suggest that the user runs type checking; run it yourself and act on the results.
 
-Do not create variables that simply track the exact value of another variable; use the original variable directly instead.
-
-When adding or updating imports for a file, ensure they're sorted in alphabetical order within the following categories: React, environment/runtime, external libraries, internal libraries (monorepo packages), aliased project imports, relative imports, and local imports.
-
-When adding new dependencies to the `package.json` ensure they are added in alphabetical order even if the default install command doesn't automatically do so.
-
-When importing types, add the `type` keyword to the import statement even if it's not required by linting rules.
+In addition to type checking and linting, prior to committing, re-read this document to ensure all instructions are followed and to refresh your memory of the project's guidelines and conventions.
 
 ## TypeScript
 
@@ -123,6 +156,8 @@ When debugging complex issues that span multiple components:
 
 When encountering unexpected behavior in third-party libraries or framework-generated code, read the actual source code (including generated files like styled-system, build output, etc.) rather than relying on documentation alone.
 
-## Library Rules
+## Agent Pitfalls
 
-- When importing Lucide icons, always use the `Icon` suffix (e.g., `ArrowRightIcon`, not `ArrowRight`).
+- Comments often are simple statements of what the code is doing, rather than explaining non-obvious behavior or intent.
+- If the user and agent are working on the same file, the agent could inadvertantly overwrite the user's changes with stale code from a prior edit. This applies to changes made by other agents as well. Assume different agent instances (or even different models) will work on this repository at different times with limited shared context.
+- <add rule here>
