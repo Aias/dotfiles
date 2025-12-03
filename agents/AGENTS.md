@@ -33,6 +33,11 @@ Favor the following tools over system defaults:
 - `jq` for safe JSON reads/edits (e.g., `jq '.scripts' package.json`)
 - `bat` for `cat` with line numbers/git gutter (e.g., `bat --plain src/index.ts`)
 - `sd` for simple search/replace instead of `sed` (e.g., `sd 'old' 'new' src/app.ts`)
+- `eza` for clearer directory listings with JSON (`eza --long --tree --json src`)
+- `yq` for YAML read/modify (e.g., `yq '.jobs' .github/workflows/ci.yml`)
+- `delta` for readable git diffs with line numbers (`git diff | delta --line-numbers`)
+- `fzf --filter` for deterministic fuzzy filtering (e.g., `rg --json foo | fzf --filter src/api`)
+- `gh` for GitHub API/PRs with JSON output (e.g., `gh pr list --json number,title`)
 
 These tools are available from the command line and can be used to perform many basic tasks more efficiently and effectively compared to standard system tools.
 

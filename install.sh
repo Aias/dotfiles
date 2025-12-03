@@ -33,17 +33,21 @@ install_dependencies() {
     ensure_homebrew
 
     local formulas=(
-        ripgrep
-        fd
-        jq
         bat
+        bun
+        delta
+        eza
+        fd
+        fnm
+        gh
+        jq
+        ripgrep
         sd
         starship
+        yq
         zoxide
-        fnm
-        bun
-        zsh-syntax-highlighting
         zsh-autosuggestions
+        zsh-syntax-highlighting
     )
 
     for formula in "${formulas[@]}"; do
