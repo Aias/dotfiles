@@ -15,5 +15,19 @@
   {
     "key": "f13",
     "command": "chatgpt.openSidebar"
+  },
+  {
+    "key": "cmd+1",
+    "command": "-workbench.action.focusFirstEditorGroup"
+  },
+  {
+    "key": "cmd+1",
+    "command": "workbench.action.quickOpenPreviousRecentlyUsedEditorInGroup",
+    "when": "editorFocus && !activeEditorGroupEmpty && !terminalFocus || !activeEditorGroupEmpty && !terminalFocus && activeEditor == 'workbench.editor.reviewchanges'"
+  },
+  {
+    "key": "ctrl+tab",
+    "command": "-workbench.action.quickOpenPreviousRecentlyUsedEditorInGroup",
+    "when": "editorFocus && !activeEditorGroupEmpty && !terminalFocus || !activeEditorGroupEmpty && !terminalFocus && activeEditor == 'workbench.editor.reviewchanges'"
   }
 ]

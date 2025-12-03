@@ -70,7 +70,7 @@ alias grep="grep --color=auto"
 # ─────────────────────────────────────────────────────────────
 # Aliases - Tools & Utilities
 # ─────────────────────────────────────────────────────────────
-alias claude="$HOME/.local/bin/claude"
+alias claude="DEBUG=false $HOME/.local/bin/claude"
 alias tailscale="/Applications/Tailscale.app/Contents/MacOS/Tailscale"
 alias resource="source ~/.zshrc"
 alias yolo="claude --dangerously-skip-permissions"

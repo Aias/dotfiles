@@ -53,3 +53,4 @@ font-variation = wdth=90
 adjust-cell-height = 10%
 keybind = shift+enter=text:\n
 link-url = true
+auto-update-channel = tip
