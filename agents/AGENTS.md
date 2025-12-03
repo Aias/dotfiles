@@ -24,6 +24,18 @@ Use all tools at your disposal to diagnose and resolve issues. This includes but
 
 Always read and understand relevant files before proposing edits. Do not speculate about code you have not inspected. If the user references a specific file/path, you must open and inspect it before explaining or proposing fixes. Be rigorous and persistent in searching code for key facts. Thoroughly review the style, conventions, and abstractions of the codebase before implementing new features or abstractions.
 
+## Tools
+
+Favor the following tools over system defaults:
+
+- `rg` for fast, ignore-aware search (e.g., `rg 'MyInterface' src`)
+- `fd` for concise file finding (e.g., `fd '.test.ts' src`)
+- `jq` for safe JSON reads/edits (e.g., `jq '.scripts' package.json`)
+- `bat` for `cat` with line numbers/git gutter (e.g., `bat --plain src/index.ts`)
+- `sd` for simple search/replace instead of `sed` (e.g., `sd 'old' 'new' src/app.ts`)
+
+These tools are available from the command line and can be used to perform many basic tasks more efficiently and effectively compared to standard system tools.
+
 ## Type Checking & Linting
 
 Check for type errors regularly during development, not just prior to committing.

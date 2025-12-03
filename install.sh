@@ -7,6 +7,56 @@ set -e
 
 DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
+# ─────────────────────────────────────────────────────────────
+# Ensure required tools are installed (system-wide)
+# ─────────────────────────────────────────────────────────────
+
+ensure_homebrew() {
+    if ! command -v brew >/dev/null 2>&1; then
+        echo "Homebrew is required to install dependencies. Install from https://brew.sh and rerun."
+        exit 1
+    fi
+}
+
+install_formula() {
+    local formula="$1"
+    if brew list --versions "$formula" >/dev/null 2>&1; then
+        echo "$formula already installed"
+    else
+        echo "Installing $formula"
+        brew install "$formula"
+    fi
+}
+
+install_dependencies() {
+    echo "Ensuring required CLI tools are installed..."
+    ensure_homebrew
+
+    local formulas=(
+        ripgrep
+        fd
+        jq
+        bat
+        sd
+        starship
+        zoxide
+        fnm
+        bun
+        zsh-syntax-highlighting
+        zsh-autosuggestions
+    )
+
+    for formula in "${formulas[@]}"; do
+        install_formula "$formula"
+    done
+
+    echo "Dependency installation complete."
+}
+
+if [[ "${SKIP_DEPENDENCY_INSTALL:-0}" != "1" ]]; then
+    install_dependencies
+fi
+
 echo "Installing dotfiles from $DOTFILES_DIR"
 
 # Create backup directory
