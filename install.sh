@@ -18,42 +18,10 @@ ensure_homebrew() {
     fi
 }
 
-install_formula() {
-    local formula="$1"
-    if brew list --versions "$formula" >/dev/null 2>&1; then
-        echo "$formula already installed"
-    else
-        echo "Installing $formula"
-        brew install "$formula"
-    fi
-}
-
 install_dependencies() {
     echo "Ensuring required CLI tools are installed..."
     ensure_homebrew
-
-    local formulas=(
-        bat
-        bun
-        delta
-        eza
-        fd
-        fnm
-        gh
-        jq
-        ripgrep
-        sd
-        starship
-        yq
-        zoxide
-        zsh-autosuggestions
-        zsh-syntax-highlighting
-    )
-
-    for formula in "${formulas[@]}"; do
-        install_formula "$formula"
-    done
-
+    brew bundle install --file="$DOTFILES_DIR/Brewfile"
     echo "Dependency installation complete."
 }
 
@@ -112,27 +80,22 @@ backup_and_link "$DOTFILES_DIR/cursor/keybindings.json" "$HOME/Library/Applicati
 # Create dependent files if they don't exist
 # ─────────────────────────────────────────────────────────────
 
-create_if_missing() {
+create_from_template() {
     local target="$1"
-    local content="$2"
+    local template="$2"
 
     if [[ ! -e "$target" ]]; then
-        echo "Creating $target"
+        echo "Creating $target from template"
         mkdir -p "$(dirname "$target")"
-        echo "$content" > "$target"
+        cp "$template" "$target"
     fi
 }
 
 # Secrets file (sourced by .zprofile for API keys)
-create_if_missing "$HOME/.secrets" "# ~/.secrets - API keys and tokens (not tracked in git)
-# Example:
-# export OPENAI_API_KEY=\"your-key-here\"
-# export ANTHROPIC_API_KEY=\"your-key-here\""
+create_from_template "$HOME/.secrets" "$DOTFILES_DIR/local/secrets.template"
 
 # Local environment file (sourced by .zprofile)
-create_if_missing "$HOME/.local/bin/env" "# ~/.local/bin/env - Machine-specific environment variables
-# Example:
-# export PATH=\"/custom/path:\$PATH\""
+create_from_template "$HOME/.local/bin/env" "$DOTFILES_DIR/local/env.template"
 
 # Ensure ~/.local/bin directory exists for local scripts
 mkdir -p "$HOME/.local/bin"

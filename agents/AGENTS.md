@@ -1,33 +1,40 @@
 # Agent Instructions
 
-This document is the source of truth for the agent's behavior and instructions, as well as the working relationship between the user and the agent.
+This document is the source of truth for the agent's behavior and instructions, as well as the working relationship between the user and the agent. It lives at `~/Code/dotfiles/agents/AGENTS.md`.
 
-This file should be living documentation that evolves as you discover new preferences and workflows.Treat this file as part of the codebase, not a note: changes should be intentional, incremental, and committed with meaningful messages.
+## Quick Rules
 
-Add important rules and other notes as new lines after existing ones, or insert a rule within next to existing ones that are clearly related and form logical groups.
+- Answer questions with research and analysis only; do not write code when the prompt ends with a question mark.
+- Clarify assumptions before coding and restate the plan and assumptions back to the user.
+- Read any referenced file or path before proposing changes.
+- Run safe checks yourself (type/lint/tests) when relevant; don’t ask the user to run them for you.
+- Protect data and the environment: get explicit permission before any destructive, high-risk, or data-modifying action.
 
-When adding a new rule, review previous rules to ensure they are not redundant or in conflict. Search this file for overlapping instructions. Update any rules that are no longer valid. Prefer editing or merging existing rules over adding near-duplicates.
+This file should be living documentation that evolves as you discover new preferences and workflows. Treat this file as part of the codebase, not a note: changes should be intentional, incremental, and committed with meaningful messages.
+
+Visibility & cadence: keep the agreements short and visible; revisit them briefly at the start of a session; link to this path from project READMEs where helpful.
+
+Working agreements scope: prefer editing or merging existing rules over adding near-duplicates; limit new rules to high-value items; aim to keep this document about one printed page.
+When adding new rules, place them next to related items to keep logical grouping and avoid redundancy.
 
 ## User-Agent Working Relationship
 
 The goal, above all else, is to bring our conceptual models of the project, our work styles, and our engineering practices into alignment. This maintenance of this document will create a flywheel for recursive self-improvement of the user-agent paired programming relationship.
 
-Often, you may notice that the user revises code that you have written in between editing rounds. This is expected, and you should always assume that the changes were deliberate.
+The agent can pause and ask the user for clarification at any point.
 
-If you notice the user has made changes to your code, prior to making any further changes, insert a step in the plan to review the changes and analyze the possible reason for them. Return an analysis of the changes to the user and if needed, propose a brief addition to this document which will help you better understand the user's intent and work style in the future.
-
-When working on given task, only make changes that are directly requested. Keep solutions simple and focused. Conversely, updates to this document should be continually considered and may be proposed at any time. Extract both explicit and implicit development patterns with a particular focus on those which are broadly applicable to future sessions.
-
-At any point during a working session, the agent can pause and ask the user for clarification if needed.
-
-**When the user asks a question, your response should not be to make any code updates**, but rather to research and answer the question before the user decides how to act on that information. This applies any time the message ends in a question mark (unless it is a clearly imperative request, e.g. "Can you make that change?"), or is phrased as a question.
+When working on a task, only make changes that are directly requested. Keep solutions simple and focused. Updates to this document may be proposed at any time; extract both explicit and implicit development patterns that apply broadly to future sessions.
 
 When the user gives explicit behavioral feedback (“don’t do X”, “always do Y”, “we prefer Z”), check whether that preference is already encoded here:
 
-- If yes, quote the relevant rule back to the user and explain how you will apply it in this context.
-- If not, draft a concise candidate rule under the most relevant section and present it inline in your reply for approval or editing.
+- If yes, quote the relevant rule back and explain how you will apply it now.
+- If not, draft a concise candidate rule under the most relevant section and present it inline for approval or editing.
 
-When you observe the same kind of correction or edit pattern three or more times in a session (e.g., the user repeatedly simplifies your abstractions, changes variable naming conventions, or restructures tests), treat this as evidence of a latent preference. Explicitly state the inferred preference as a short hypothesis, and propose a corresponding `AGENTS.md` rule that encodes the inferred preference.
+Ambiguity protocol: (1) ask clarifying questions before editing when intent is uncertain; (2) restate assumptions and planned scope in your reply.
+
+When work diverges (user changed your prior code): review the delta first, explain the likely rationale, and propose any needed AGENTS.md update before proceeding.
+
+If you observe the same correction pattern three or more times in a session, treat it as a latent preference: state the hypothesis and propose an AGENTS.md rule for approval.
 
 Always read and understand relevant files before proposing edits. Do not speculate about code you have not inspected. If the user references a specific file/path, you must open and inspect it before explaining or proposing fixes. Be rigorous and persistent in searching code for key facts. Thoroughly review the style, conventions, and abstractions of the codebase before implementing new features or abstractions.
 
@@ -36,6 +43,13 @@ Always read and understand relevant files before proposing edits. Do not specula
 Maintain a lightweight Agent pitfalls list in this file (or a referenced document), capturing recurring error patterns (e.g., “tends to forget null checks on GraphQL responses,” “over-eagerly deletes comments”).
 • When a new pitfall is discovered, add a short entry and, when relevant, update or add rules that mitigate it.
 • If a rule in this file appears to contribute to a failure (e.g., encourages over-broad refactors, or discourages a necessary tool), propose a concrete revision or deletion, referencing the observed failure as rationale.
+
+## Permission & Risk Guardrails
+
+- Never run destructive or data-modifying commands (migrations, resets, backfills, deletes) without explicit user permission.
+- Do not start servers or long-running services unless the user asks.
+- Do not run `git commit`, `git push`, `git reset`, or similar without explicit permission; prefer proposing diffs.
+- If a command needs elevated access or writes outside the workspace, pause and ask.
 
 ## Tools
 
@@ -56,23 +70,15 @@ Favor the following tools over system defaults:
 
 These tools are available from the command line and can be used to perform many basic tasks more efficiently and effectively compared to standard system tools.
 
-## Code Style & Conventions
+## Type Safety & Style
 
-Do not introduce new architectural or stylistic patterns that contradict the majority of the codebase unless the user explicitly requests it. If you believe a new pattern is substantially better, outline the tradeoffs and propose a phased migration plan, including updates to this file.
-
-When you’re uncertain about a convention (error handling patterns, hook structure, logging style, component folder layout, etc.): Use `rg`, `fd`, and git history to find existing patterns. Prefer the majority or canonical pattern over inventing a new one.
-
-When naming variables, functions, components, etc., favor readability and clarity over brevity or cleverness.
-
-Add comments only when necessary to explain complex code or logic, don't add comments which simply state what the code is doing.
-
-Do not create variables that simply track the exact value of another variable; use the original variable directly instead.
-
-When adding or updating imports for a file, ensure they're sorted in alphabetical order within the following categories: React, environment/runtime, external libraries, internal libraries (monorepo packages), aliased project imports, relative imports, and local imports.
-
-When adding new dependencies to the `package.json` ensure they are added in alphabetical order even if the default install command doesn't automatically do so.
-
-When importing types, add the `type` keyword to the import statement even if it's not required by linting rules.
+- Type safety is absolute: no `any`, no `as` casts, no `ts-ignore`/`eslint-disable`. Avoid `unknown` unless it is narrowed immediately.
+- Order prop intersections with specific props before generic ones (e.g., `{ specific } & RootProps`).
+- Favor readability and clarity over brevity; avoid variables that mirror another variable’s value.
+- Add comments only when they clarify non-obvious logic; do not narrate the obvious.
+- Follow existing conventions—use `rg`, `fd`, and git history to find patterns before adding new ones.
+- Imports: sort by React, environment/runtime, external libs, internal libs, aliased project imports, relative, then local. Use the `type` keyword for type imports. Dependencies in `package.json` are alphabetical.
+- Check for type errors regularly; run type/lint checks yourself when relevant. Re-read this document before finalizing work.
 
 ## Common Workflows
 
@@ -88,61 +94,20 @@ When you find yourself running the same sequence of commands (e.g., github PR di
 
 [workflow-name]: [description]
 
-## Version Control & Git
+## Frontend Semantics & Styling
 
-Make smart use of git during development to review changes and understand the history of the codebase.
-
-Never directly make changes to either `dev` or `main` branches without explicit permission.
-
-When handling merges or rebases that involve conflicts, resolve the conflicts but do not finalize the merge commit or rebase; report the resolutions and strategy so the user can complete the finalization.
-
-While resolving merge or rebase conflicts, avoid introducing functional changes; keep merges mechanically faithful so it's clear what came from the merge, and defer any improvements to a separate follow-up.
-
-Never push new branches or new commits to the remote repository unless explicitly instructed to do so by the user.
-
-## Type Checking & Linting
-
-Check for type errors regularly during development, not just prior to committing.
-
-Do not suggest that the user runs type checking; run it yourself and act on the results.
-
-In addition to type checking and linting, prior to committing, re-read this document to ensure all instructions are followed and to refresh your memory of the project's guidelines and conventions.
-
-## TypeScript
-
-Type safety is absolutely critical in all cases. Any new code that uses `any` as a type without a specific exception from the user will be rejected. Any code which uses `as` for type casting will be rejected. Never use `ts-ignore` comments to bypass type checking or `eslint-disable` comments to bypass linting rules.
-
-When defining component prop types that combine specific props with generic passthrough props (like `ComponentProps<typeof X>` or `RootProps`), place the specific props first in the intersection. This ensures component-specific props appear before generic styled props in IntelliSense autocomplete: `{ specific } & RootProps`, not `RootProps & { specific }`.
-
-## HTML & Accessibility
-
-Across all code, prefer semantic HTML first, then a CSS-only implementation for behavior HTML cannot express, then TypeScript/React for behavior CSS cannot express, and only add or rely on external dependencies when absolutely necessary or when they are already in the project.
-
-When choosing HTML tag names, prefer semantic HTML over non-semantic tags (like `<div>` or `<span>`, which should be avoided unless necessary). Prefer built-in semantic HTML elements over using only ARIA attributes for accessibility. Common semantic elements to consider include: `<article>`, `<aside>`, `<details>`, `<figure>`, `<figcaption>`, `<footer>`, `<header>`, `<main>`, `<nav>`, `<menu>`, `<section>`, `<summary>`, `<time>`, `<ul>`, `<ol>`, `<li>`, `<a>`, `<button>`, `<input>`, `<textarea>`, `<select>`, `<option>`, `<label>`, `<form>`, `<fieldset>`, `<legend>`, `<table>`, `<tr>`, `<td>`, `<th>`, `<caption>`, `<colgroup>`, `<tbody>`, `<thead>`, `<tfoot>`, `<dl>`, `<dt>`, `<dd>`, `<h1>`, `<h2>`, `<h3>`, `<h4>`, `<h5>`, `<h6>`, `<p>`, `<blockquote>`, `<code>`, `<pre>`, `<hr>`, `<img>`, `<video>`, `<audio>`.
-
-Prefer screen reader-only text content with proper semantic organization over aria attributes.
-
-## CSS
-
-When writing CSS, use flexbox and grid for layout that reflects the natural flow of the content. Prefer gap properties for spacing between elements, and padding on container elements. Avoid margin unless there's a specific reason to use it, as it makes components less composable/portable.
-
-When writing CSS always use logical properties `block`/`inline`, `start`/`end` instead of `left`, `right`, `top`, and `bottom`. If I say "left", "right", "top", or "bottom", you should use translate those into their corresponding logical properties.
-
-When writing transforms, use `translate`, `rotate`, `scale`, and other transform sub-properties directly rather than putting them all in a `transform` property.
-
-If using a color that is not a direct token value or CSS custom property, use the `oklch` color space or define it as a hex value, not rgb.
-
-I may refer to CSS custom properties as "tokens", and may call them CSS variables. These are typically interchangeable.
+- Use semantic HTML first; prefer built-in elements (e.g., `article`, `header`, `main`, `nav`, `section`, `ul/li`, `button`, `form`, `label`, `table`, `time`) and avoid `div`/`span` unless necessary. Prefer screen-reader text with proper structure over ARIA-only solutions.
+- Prefer CSS over JS for behavior; use flexbox/grid with `gap`, padding on containers, minimal margins, logical properties (`block`/`inline`, `start`/`end`), and transform sub-properties (`translate`, `rotate`, `scale`).
+- Colors: use tokens/custom properties when available; otherwise use `oklch` or hex (not rgb).
+- “Tokens” and CSS custom properties are interchangeable terms in this document.
 
 ## React
 
-We use React 19, which automatically forwards refs. Do not use `forwardRef` – it is not needed and should not be used.
-
-Avoid `useEffect`. You probably don't need it. Before writing code that uses `useEffect`, always use a web request to read the following article: https://react.dev/learn/you-might-not-need-an-effect
-
-React inline styles may use `as React.CSSProperties` when unavoidable (e.g., view-transition names or CSS custom properties), but this should be rare and inline styles should only very rarely be preferred over classnames. Avoid casting in all other cases.
-
-When rendering multiple similar JSX elements that differ only in data or minor variations (like animation delays), **always use iteration** (`map`, `forEach`, etc.) instead of manually duplicating JSX. This reduces repetition, makes the code more maintainable, and allows easy configuration through constants or arrays. For example, use `[0, 1, 2].map((index) => <Element key={index} delay={index * 0.2} />)` instead of three separate `<Element>` declarations.
+- React 19 auto-forwards refs—do not use `forwardRef`.
+- Avoid `useEffect`; read https://react.dev/learn/you-might-not-need-an-effect before adding one.
+- Prefer `requestAnimationFrame` (single or double) or `useLayoutEffect` over `setTimeout` for timing.
+- Render repeated elements via iteration (`map`, etc.) instead of manual duplication.
+- Keep inline styles rare; `as React.CSSProperties` only when unavoidable (e.g., view-transition names or CSS variables); avoid other casting.
 
 ## Debugging
 
@@ -159,5 +124,5 @@ When encountering unexpected behavior in third-party libraries or framework-gene
 ## Agent Pitfalls
 
 - Comments often are simple statements of what the code is doing, rather than explaining non-obvious behavior or intent.
-- If the user and agent are working on the same file, the agent could inadvertantly overwrite the user's changes with stale code from a prior edit. This applies to changes made by other agents as well. Assume different agent instances (or even different models) will work on this repository at different times with limited shared context.
+- If the user and agent are working on the same file, the agent could inadvertently overwrite the user's changes with stale code from a prior edit. This applies to changes made by other agents as well. Assume different agent instances (or even different models) will work on this repository at different times with limited shared context.
 - <add rule here>
