@@ -18,10 +18,18 @@ ensure_homebrew() {
     fi
 }
 
+install_bun() {
+    if ! command -v bun >/dev/null 2>&1; then
+        echo "Installing bun..."
+        curl -fsSL https://bun.sh/install | bash
+    fi
+}
+
 install_dependencies() {
     echo "Ensuring required CLI tools are installed..."
     ensure_homebrew
     brew bundle install --file="$DOTFILES_DIR/Brewfile"
+    install_bun
     echo "Dependency installation complete."
 }
 

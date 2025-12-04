@@ -63,6 +63,7 @@ alias tailscale="/Applications/Tailscale.app/Contents/MacOS/Tailscale"
 alias resource="source ~/.zshrc && source ~/.secrets"
 alias yolo="claude --dangerously-skip-permissions"
 alias code="cursor"
+alias dotup="make -C ~/Code/dotfiles update"
 
 # ─────────────────────────────────────────────────────────────
 # Zoxide (smart cd) - install with: brew install zoxide
