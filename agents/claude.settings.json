@@ -1,0 +1,13 @@
+{
+  "apiKeyHelper": "~/.claude/key.sh",
+  "model": "opus",
+  "statusLine": {
+    "type": "command",
+    "command": "bash ~/.claude/statusline-command.sh"
+  },
+  "enabledPlugins": {},
+  "alwaysThinkingEnabled": true,
+  "feedbackSurveyState": {
+    "lastShownTime": 1753980901020
+  }
+}

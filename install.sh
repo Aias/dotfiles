@@ -78,7 +78,10 @@ backup_and_link "$DOTFILES_DIR/ghostty/config" "$HOME/.config/ghostty/config"
 backup_and_link "$DOTFILES_DIR/agents/AGENTS.md" "$HOME/.claude/CLAUDE.md"
 backup_and_link "$DOTFILES_DIR/agents/AGENTS.md" "$HOME/.codex/AGENTS.md"
 backup_and_link "$DOTFILES_DIR/agents/AGENTS.md" "$HOME/Code/.cursor/rules/global.mdc"
-backup_and_link "$DOTFILES_DIR/agents/claude-statusline.sh" "$HOME/.claude/statusline-command.sh"
+backup_and_link "$DOTFILES_DIR/agents/claude.statusline-command.sh" "$HOME/.claude/statusline-command.sh"
+backup_and_link "$DOTFILES_DIR/agents/claude.settings.json" "$HOME/.claude/settings.json"
+backup_and_link "$DOTFILES_DIR/agents/claude.key.sh" "$HOME/.claude/key.sh"
+backup_and_link "$DOTFILES_DIR/agents/codex.config.toml" "$HOME/.codex/config.toml"
 
 # Cursor
 backup_and_link "$DOTFILES_DIR/cursor/settings.json" "$HOME/Library/Application Support/Cursor/User/settings.json"

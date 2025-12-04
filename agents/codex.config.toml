@@ -1,0 +1,35 @@
+file_opener = "cursor"
+model = "gpt-5.1-codex-max"
+model_reasoning_effort = "high"
+
+[features]
+web_search_request = true
+rmcp_client = true
+
+[projects."/Users/nicktrombley/Code/acorn"]
+trust_level = "trusted"
+
+[projects."/Users/nicktrombley/Downloads"]
+trust_level = "trusted"
+
+[projects."/Users/nicktrombley/Code/chestnut"]
+trust_level = "trusted"
+
+[projects."/Users/nicktrombley/Code/personal/red-cliff-record"]
+trust_level = "trusted"
+
+[projects."/Users/nicktrombley/Code/dotfiles"]
+trust_level = "trusted"
+
+[mcp_servers.context7]
+url = "https://mcp.context7.com/mcp"
+
+[mcp_servers.figma-dev-mode-mcp-server]
+url = "http://127.0.0.1:3845/mcp"
+
+[mcp_servers.linear-server]
+url = "https://mcp.linear.app/mcp"
+
+[notice]
+hide_gpt5_1_migration_prompt = true
+"hide_gpt-5.1-codex-max_migration_prompt" = true
