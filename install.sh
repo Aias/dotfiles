@@ -108,5 +108,13 @@ create_from_template "$HOME/.local/bin/env" "$DOTFILES_DIR/local/env.template"
 # Ensure ~/.local/bin directory exists for local scripts
 mkdir -p "$HOME/.local/bin"
 
+# Vault (cross-session memory for agents)
+if [[ ! -d "$HOME/Code/vault" ]]; then
+    echo "Creating vault directory at ~/Code/vault"
+    mkdir -p "$HOME/Code/vault/sessions"
+    cp "$DOTFILES_DIR/agents/vault-template/CLAUDE.md" "$HOME/Code/vault/"
+    cp "$DOTFILES_DIR/agents/vault-template/scratch.md" "$HOME/Code/vault/"
+fi
+
 echo ""
 echo "Done! Original files backed up to: $BACKUP_DIR"
