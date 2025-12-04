@@ -4,15 +4,15 @@ This document is the source of truth for the agent's behavior and instructions, 
 
 ## Quick Rules
 
-- Answer questions with research and analysis only; do not write code when the prompt ends with a question mark.
+- Answer questions with research and analysis only; do not write code when the prompt ends with a question mark unless the question is obviously an implicit request for changes.
 - Clarify assumptions before coding and restate the plan and assumptions back to the user.
 - Read any referenced file or path before proposing changes.
 - Run safe checks yourself (type/lint/tests) when relevant; don’t ask the user to run them for you.
-- Protect data and the environment: get explicit permission before any destructive, high-risk, or data-modifying action.
+- Protect data and the environment: get explicit permission before any destructive, high-risk, or database-modifying action.
 
 This file should be living documentation that evolves as you discover new preferences and workflows. Treat this file as part of the codebase, not a note: changes should be intentional, incremental, and committed with meaningful messages.
 
-Visibility & cadence: keep the agreements short and visible; revisit them briefly at the start of a session; link to this path from project READMEs where helpful.
+Visibility & cadence: keep the agreements short and visible; revisit them briefly at the start of a session.
 
 Working agreements scope: prefer editing or merging existing rules over adding near-duplicates; limit new rules to high-value items; aim to keep this document about one printed page.
 When adding new rules, place them next to related items to keep logical grouping and avoid redundancy.
@@ -23,7 +23,7 @@ The goal, above all else, is to bring our conceptual models of the project, our 
 
 The agent can pause and ask the user for clarification at any point.
 
-When working on a task, only make changes that are directly requested. Keep solutions simple and focused. Updates to this document may be proposed at any time; extract both explicit and implicit development patterns that apply broadly to future sessions.
+When working on a task, only make changes that are directly requested. Keep solutions simple and focused. Updates to this document may be proposed at any time (and are encouraged); extract both explicit and implicit development patterns that apply broadly to future sessions.
 
 When the user gives explicit behavioral feedback (“don’t do X”, “always do Y”, “we prefer Z”), check whether that preference is already encoded here:
 
@@ -53,7 +53,13 @@ Maintain a lightweight Agent pitfalls list in this file (or a referenced documen
 
 ## Tools
 
-Use all tools at your disposal to diagnose and resolve issues. This includes but is not limited to: fetching and reading official documentation; reading the source code, either on github or locally inside `node_modules`; searching the web for information; running local tests and commands that are non-destructive and do not modify data or the database; adding temporary logging and debugging statements to the codebase.
+Use all tools at your disposal to diagnose and resolve issues. This includes but is not limited to:
+
+- fetching and reading official documentation;
+- reading the source code, either on github or locally inside `node_modules`;
+- searching the web for information;
+- running local tests and commands that are non-destructive and do not modify data or the database;
+- adding temporary logging and debugging statements to the codebase.
 
 Favor the following tools over system defaults:
 
@@ -75,10 +81,11 @@ These tools are available from the command line and can be used to perform many 
 - Type safety is absolute: no `any`, no `as` casts, no `ts-ignore`/`eslint-disable`. Avoid `unknown` unless it is narrowed immediately.
 - Order prop intersections with specific props before generic ones (e.g., `{ specific } & RootProps`).
 - Favor readability and clarity over brevity; avoid variables that mirror another variable’s value.
-- Add comments only when they clarify non-obvious logic; do not narrate the obvious.
+- Add comments only when they clarify non-obvious logic; do not narrate the obvious, don't add comments a human wouldn't add or which are inconsistent with the rest of the codebase.
 - Follow existing conventions—use `rg`, `fd`, and git history to find patterns before adding new ones.
 - Imports: sort by React, environment/runtime, external libs, internal libs, aliased project imports, relative, then local. Use the `type` keyword for type imports. Dependencies in `package.json` are alphabetical.
 - Check for type errors regularly; run type/lint checks yourself when relevant. Re-read this document before finalizing work.
+- Don't add variables that are only used a single time right after declaration, these should be inlined.
 
 ## Common Workflows
 
@@ -103,8 +110,8 @@ When you find yourself running the same sequence of commands (e.g., github PR di
 
 ## React
 
-- React 19 auto-forwards refs—do not use `forwardRef`.
-- Avoid `useEffect`; read https://react.dev/learn/you-might-not-need-an-effect before adding one.
+- React auto-forwards refs as of version 19—do not use `forwardRef`.
+- Avoid `useEffect`; read (via `curl`) [You Might Not Need an Effect](https://raw.githubusercontent.com/reactjs/react.dev/main/src/content/learn/you-might-not-need-an-effect.md) before adding one. Attempt to remove existing `useEffect`s where possible.
 - Prefer `requestAnimationFrame` (single or double) or `useLayoutEffect` over `setTimeout` for timing.
 - Render repeated elements via iteration (`map`, etc.) instead of manual duplication.
 - Keep inline styles rare; `as React.CSSProperties` only when unavoidable (e.g., view-transition names or CSS variables); avoid other casting.
