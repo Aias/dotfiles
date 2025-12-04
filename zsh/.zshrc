@@ -45,18 +45,6 @@ zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'  # Case-insensitive
 eval "$(fnm env --use-on-cd --version-file-strategy=recursive --resolve-engines --shell zsh)"
 
 # ─────────────────────────────────────────────────────────────
-# Aliases - Git
-# ─────────────────────────────────────────────────────────────
-alias g="git"
-alias gs="git status"
-alias gd="git diff"
-alias gc="git commit"
-alias gp="git push"
-alias gl="git log --oneline -15"
-alias ga="git add"
-alias gco="git checkout"
-
-# ─────────────────────────────────────────────────────────────
 # Aliases - Navigation & Files
 # ─────────────────────────────────────────────────────────────
 alias ll="ls -lAh"
@@ -72,14 +60,9 @@ alias grep="grep --color=auto"
 # ─────────────────────────────────────────────────────────────
 alias claude="DEBUG=false $HOME/.local/bin/claude"
 alias tailscale="/Applications/Tailscale.app/Contents/MacOS/Tailscale"
-alias resource="source ~/.zshrc"
+alias resource="source ~/.zshrc && source ~/.secrets"
 alias yolo="claude --dangerously-skip-permissions"
-
-# Package managers
-alias rx="rushx"
-alias p="pnpm"
-alias pup="pnpm update --interactive"
-alias ptsc="pnpm tsc --noEmit"
+alias code="cursor"
 
 # ─────────────────────────────────────────────────────────────
 # Zoxide (smart cd) - install with: brew install zoxide
