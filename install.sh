@@ -80,7 +80,6 @@ backup_and_link "$DOTFILES_DIR/agents/AGENTS.md" "$HOME/.codex/AGENTS.md"
 backup_and_link "$DOTFILES_DIR/agents/AGENTS.md" "$HOME/Code/.cursor/rules/global.mdc"
 backup_and_link "$DOTFILES_DIR/agents/claude.statusline-command.sh" "$HOME/.claude/statusline-command.sh"
 backup_and_link "$DOTFILES_DIR/agents/claude.settings.json" "$HOME/.claude/settings.json"
-backup_and_link "$DOTFILES_DIR/agents/claude.key.sh" "$HOME/.claude/key.sh"
 backup_and_link "$DOTFILES_DIR/agents/codex.config.toml" "$HOME/.codex/config.toml"
 
 # Cursor
@@ -95,10 +94,20 @@ create_from_template() {
     local target="$1"
     local template="$2"
 
+    # Remove broken symlinks
+    if [[ -L "$target" ]]; then
+        rm "$target"
+    fi
+
     if [[ ! -e "$target" ]]; then
         echo "Creating $target from template"
         mkdir -p "$(dirname "$target")"
-        cp "$template" "$target"
+        if [[ -f "$template" ]]; then
+            cat "$template" > "$target"
+        else
+            echo "Warning: Template $template not found, skipping $target"
+            return 1
+        fi
     fi
 }
 
@@ -107,6 +116,10 @@ create_from_template "$HOME/.secrets" "$DOTFILES_DIR/local/secrets.template"
 
 # Local environment file (sourced by .zprofile)
 create_from_template "$HOME/.local/bin/env" "$DOTFILES_DIR/local/env.template"
+
+# Claude API key file (NOT tracked in git)
+create_from_template "$HOME/.claude/key.sh" "$DOTFILES_DIR/local/claude-key.template"
+chmod +x "$HOME/.claude/key.sh" 2>/dev/null || true
 
 # Ensure ~/.local/bin directory exists for local scripts
 mkdir -p "$HOME/.local/bin"

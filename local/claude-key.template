@@ -1,0 +1,5 @@
+#!/bin/bash
+# Anthropic API key for Claude Code
+# This file is NOT tracked in git - add your actual key here
+
+echo "your-key-here"
