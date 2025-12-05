@@ -85,6 +85,9 @@ backup_and_link "$DOTFILES_DIR/agents/codex.config.toml" "$HOME/.codex/config.to
 # Cursor
 backup_and_link "$DOTFILES_DIR/cursor/settings.json" "$HOME/Library/Application Support/Cursor/User/settings.json"
 backup_and_link "$DOTFILES_DIR/cursor/keybindings.json" "$HOME/Library/Application Support/Cursor/User/keybindings.json"
+backup_and_link "$DOTFILES_DIR/cursor/cli-config.json" "$HOME/.cursor/cli-config.json"
+backup_and_link "$DOTFILES_DIR/cursor/mcp.json" "$HOME/.cursor/mcp.json"
+backup_and_link "$DOTFILES_DIR/cursor/commands" "$HOME/.cursor/commands"
 
 # ─────────────────────────────────────────────────────────────
 # Create dependent files if they don't exist
