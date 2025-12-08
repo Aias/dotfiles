@@ -74,6 +74,7 @@ Favor the following tools over system defaults:
 - `delta` for readable git diffs with line numbers (`git diff | delta --line-numbers`)
 - `fzf --filter` for deterministic fuzzy filtering (e.g., `rg --json foo | fzf --filter src/api`)
 - `gh` for GitHub API/PRs with JSON output (e.g., `gh pr list --json number,title`)
+- `cursor-agent -p --force --model composer-1` for fast, high-volume code changes. composer-1 is fast but less intelligent—ideal when changes are clearly specifiable without complex reasoning: bulk find/replace across many lines, scaffolding boilerplate, mechanical refactors (renames, signature changes), adding repetitive patterns (imports, exports, test cases), or generating stub implementations from interfaces.
 
 These tools are available from the command line and can be used to perform many basic tasks more efficiently and effectively compared to standard system tools.
 

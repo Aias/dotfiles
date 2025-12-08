@@ -25,11 +25,19 @@ install_bun() {
     fi
 }
 
+install_cursor_agent() {
+    if ! command -v cursor-agent >/dev/null 2>&1; then
+        echo "Installing cursor-agent..."
+        curl -fsSL https://cursor.com/install | bash
+    fi
+}
+
 install_dependencies() {
     echo "Ensuring required CLI tools are installed..."
     ensure_homebrew
     brew bundle install --file="$DOTFILES_DIR/Brewfile"
     install_bun
+    install_cursor_agent
     echo "Dependency installation complete."
 }
 
