@@ -78,6 +78,8 @@ Favor the following tools over system defaults:
 
 These tools are available from the command line and can be used to perform many basic tasks more efficiently and effectively compared to standard system tools.
 
+Use existing infrastructure over adding new dependencies when both work equally well.
+
 ## Type Safety & Style
 
 - Type safety is absolute: no `any`, no `as` casts, no `ts-ignore`/`eslint-disable`. Avoid `unknown` unless it is narrowed immediately.
