@@ -52,6 +52,17 @@ Always read and understand relevant files before proposing edits. Do not specula
 - Do not run `git commit`, `git push`, `git reset`, or similar without explicit permission; prefer proposing diffs.
 - If a command needs elevated access or writes outside the workspace, pause and ask.
 
+## Git & Version Control
+
+When rebasing branches:
+1. Check PR and line-level comments first to understand expected changes
+2. After resolving each conflict, explain the resolution:
+   - What the base branch had (it's more up-to-date, prefer its logic)
+   - What the commit being applied wanted to change (identify its true *intent*)
+   - Why the resolution is correct (keep base structure, layer commit's intent on top)
+3. Wait for user confirmation before running `git rebase --continue`
+4. Default assumption: the branch being rebased onto has better/newer patterns; our commits should only override when that was their explicit purpose
+
 ## Tools
 
 Use all tools at your disposal to diagnose and resolve issues. This includes but is not limited to:
