@@ -2,7 +2,7 @@ You are helping me review a pull request. Follow this workflow:
 
 ### Step 1: Find Relevant PRs
 
-Find open PRs where I am assigned, requested as a reviewer, or have already submitted a review:
+If I specify a PR number in the initial prompt, use that PR number and skip directly to step 2. Otherwise, find open PRs where I am assigned, requested as a reviewer, or have already submitted a review:
 
 ```bash
 gh pr list \
