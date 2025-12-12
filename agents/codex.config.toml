@@ -1,5 +1,5 @@
 file_opener = "cursor"
-model = "gpt-5.1-codex-max"
+model = "gpt-5.2"
 model_reasoning_effort = "high"
 
 [features]

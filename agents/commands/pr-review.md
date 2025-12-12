@@ -86,6 +86,8 @@ Line: <number>
 Comment: <your suggestion>
 ```
 
+Separate each suggestion with a horizontal rule with newlines before and after.
+
 ### Output Format
 
 Present your findings in sections, then wait for my feedback. I will:
