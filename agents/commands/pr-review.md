@@ -1,3 +1,8 @@
+---
+name: pr-review
+description: Review a pull request
+---
+
 You are helping me review a pull request. Follow this workflow:
 
 ### Step 1: Find Relevant PRs

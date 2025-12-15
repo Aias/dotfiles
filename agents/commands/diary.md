@@ -1,4 +1,5 @@
 ---
+name: diary
 description: Create a structured diary entry from the current session transcript
 ---
 

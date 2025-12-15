@@ -1,4 +1,5 @@
 ---
+name: reflect
 description: Analyze diary entries to identify patterns and propose AGENTS.md updates
 ---
 

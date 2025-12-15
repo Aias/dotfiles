@@ -27,6 +27,9 @@ export PATH="$HOME/.local/share/fnm:$PATH"
 # Local binaries
 export PATH="$HOME/.local/bin:$PATH"
 
+# Go
+export PATH="$HOME/go/bin:$PATH"
+
 # ─────────────────────────────────────────────────────────────
 # Environment variables
 # ─────────────────────────────────────────────────────────────

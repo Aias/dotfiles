@@ -5,6 +5,7 @@ model_reasoning_effort = "high"
 [features]
 web_search_request = true
 rmcp_client = true
+skills = true
 
 [projects."/Users/nicktrombley/Code/acorn"]
 trust_level = "trusted"
