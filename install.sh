@@ -32,12 +32,27 @@ install_cursor_agent() {
     fi
 }
 
+install_cursor_cli() {
+    # Official method: Cursor > Cmd+Shift+P > "Shell Command: Install 'cursor' command in PATH"
+    # This creates /usr/local/bin/cursor. As fallback, symlink to ~/.local/bin
+    local cursor_bin="/Applications/Cursor.app/Contents/Resources/app/bin/cursor"
+    if ! command -v cursor >/dev/null 2>&1; then
+        if [[ -x "$cursor_bin" ]]; then
+            echo "Linking cursor CLI to ~/.local/bin/cursor"
+            ln -sf "$cursor_bin" "$HOME/.local/bin/cursor"
+        else
+            echo "Note: Cursor.app not found. Install from https://cursor.com then run 'cursor' from Command Palette."
+        fi
+    fi
+}
+
 install_dependencies() {
     echo "Ensuring required CLI tools are installed..."
     ensure_homebrew
     brew bundle install --file="$DOTFILES_DIR/Brewfile"
     install_bun
     install_cursor_agent
+    install_cursor_cli
     echo "Dependency installation complete."
 }
 
@@ -145,6 +160,22 @@ if [[ ! -d "$HOME/Code/vault" ]]; then
     cp "$DOTFILES_DIR/agents/vault-template/CLAUDE.md" "$HOME/Code/vault/"
     cp "$DOTFILES_DIR/agents/vault-template/scratch.md" "$HOME/Code/vault/"
 fi
+
+# ─────────────────────────────────────────────────────────────
+# Cleanup old backups (keep last 10)
+# ─────────────────────────────────────────────────────────────
+cleanup_old_backups() {
+    local backup_root="$HOME/.dotfiles-backup"
+    local keep=10
+    local count=$(ls -1d "$backup_root"/*/ 2>/dev/null | wc -l | tr -d ' ')
+    if [[ "$count" -gt "$keep" ]]; then
+        local to_delete=$((count - keep))
+        echo "Cleaning up $to_delete old backup(s)..."
+        ls -1d "$backup_root"/*/ | head -n "$to_delete" | xargs rm -rf
+    fi
+}
+
+cleanup_old_backups
 
 echo ""
 echo "Done! Original files backed up to: $BACKUP_DIR"

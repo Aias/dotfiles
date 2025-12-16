@@ -26,6 +26,10 @@ The agent can pause and ask the user for clarification at any point.
 
 When working on a task, only make changes that are directly requested. Keep solutions simple and focused. Updates to this document may be proposed at any time (and are encouraged); extract both explicit and implicit development patterns that apply broadly to future sessions.
 
+## Communication
+
+Brevity and conciseness are fundamental goals in all communication—both code and conversation—but never at the cost of clarity. After returning comprehensive analysis or large output, always end with a brief summary (≤10–15 lines, fitting one terminal window). Frame summaries as yes/no confirmations or actionable questions when appropriate.
+
 When the user gives explicit behavioral feedback (“don’t do X”, “always do Y”, “we prefer Z”), check whether that preference is already encoded here:
 
 - If yes, quote the relevant rule back and explain how you will apply it now.
@@ -65,13 +69,7 @@ When rebasing branches:
 
 ## Tools
 
-Use all tools at your disposal to diagnose and resolve issues. This includes but is not limited to:
-
-- fetching and reading official documentation;
-- reading the source code, either on github or locally inside `node_modules`;
-- searching the web for information;
-- running local tests and commands that are non-destructive and do not modify data or the database;
-- adding temporary logging and debugging statements to the codebase.
+Prefer reading source code (locally in `node_modules` or on GitHub) over fetching documentation—it's guaranteed to match the installed version and often provides deeper insight. Use all tools at your disposal: source code, official docs, web search, non-destructive local commands, and temporary logging.
 
 Favor the following tools over system defaults:
 
@@ -85,7 +83,7 @@ Favor the following tools over system defaults:
 - `delta` for readable git diffs with line numbers (`git diff | delta --line-numbers`)
 - `fzf --filter` for deterministic fuzzy filtering (e.g., `rg --json foo | fzf --filter src/api`)
 - `gh` for GitHub API/PRs with JSON output (e.g., `gh pr list --json number,title`)
-- `cursor-agent -p --force --model composer-1` for fast, high-volume code changes. composer-1 is fast but less intelligent—ideal when changes are clearly specifiable without complex reasoning: bulk find/replace across many lines, scaffolding boilerplate, mechanical refactors (renames, signature changes), adding repetitive patterns (imports, exports, test cases), or generating stub implementations from interfaces.
+**Delegate mechanical edits to Cursor**: Use `cursor-agent -p --force --model composer-1` for high-volume, clearly-specifiable changes: bulk find/replace, scaffolding, mechanical refactors (renames, signature changes), repetitive patterns (imports, exports, test stubs). composer-1 is fast but less intelligent—ideal when the change is tedious but unambiguous.
 
 These tools are available from the command line and can be used to perform many basic tasks more efficiently and effectively compared to standard system tools.
 

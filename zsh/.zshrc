@@ -64,6 +64,7 @@ alias resource="source ~/.zshrc && source ~/.secrets"
 alias yolo="claude --dangerously-skip-permissions"
 alias code="cursor"
 alias dotup="make -C ~/Code/dotfiles update"
+alias dotcheck="make -C ~/Code/dotfiles check"
 
 # ─────────────────────────────────────────────────────────────
 # Zoxide (smart cd) - install with: brew install zoxide
