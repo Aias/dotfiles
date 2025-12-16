@@ -32,6 +32,14 @@ install_cursor_agent() {
     fi
 }
 
+install_beads() {
+    if ! command -v bd >/dev/null 2>&1; then
+        echo "Installing beads (bd)..."
+        brew tap steveyegge/beads 2>/dev/null || true
+        brew install bd
+    fi
+}
+
 install_cursor_cli() {
     # Official method: Cursor > Cmd+Shift+P > "Shell Command: Install 'cursor' command in PATH"
     # This creates /usr/local/bin/cursor. As fallback, symlink to ~/.local/bin
@@ -53,6 +61,7 @@ install_dependencies() {
     install_bun
     install_cursor_agent
     install_cursor_cli
+    install_beads
     echo "Dependency installation complete."
 }
 
