@@ -23,6 +23,8 @@ else
 fi
 ```
 
+**Rush monorepos:** If you detect a `rush.json` at the repo root, use `rush-pnpm outdated` instead. This command must be run from within a specific project directory (where `package.json` exists), not from the repo root.
+
 ### Step 2: Filter to Minor and Major Updates
 
 From the outdated output, identify packages with:

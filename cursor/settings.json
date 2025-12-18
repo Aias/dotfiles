@@ -35,7 +35,9 @@
   "git.path": "/usr/bin/git",
   "projectManager.git.baseFolders": ["~/Code"],
   "search.exclude": {
-    "**/.next": true
+    "**/.next": true,
+    "**/dist": true,
+    "**/styled-system": true
   },
   "terminal.integrated.defaultProfile.osx": "zsh",
   "terminal.integrated.env.osx": {

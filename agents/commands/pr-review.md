@@ -85,13 +85,12 @@ Prepare a list of suggested review comments. For each comment:
 
 Format each suggestion as:
 
-```
-File: <path>
-Line: <number>
-Comment: <your suggestion>
+```md
+**Location:** `<path>:<line_number>`
+**Comment:** <your suggestion>
 ```
 
-Separate each suggestion with a horizontal rule with newlines before and after.
+The code block above is just for formatting within these rules. Do not wrap the suggestions in code blocks. Separate each suggestion with a horizontal rule with newlines before and after.
 
 ### Output Format
 
