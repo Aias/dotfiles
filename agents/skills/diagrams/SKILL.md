@@ -1,3 +1,8 @@
+---
+name: diagrams
+description: Generate Mermaid diagrams from code or architecture
+---
+
 # Generate Mermaid Diagram
 
 ## Overview
