@@ -1,6 +1,7 @@
 ---
 name: pr-review
 description: Review a pull request
+compatibility: Requires GitHub CLI (gh) and GitHub API access.
 ---
 
 You are helping me review a pull request. Follow this workflow:
@@ -10,11 +11,7 @@ You are helping me review a pull request. Follow this workflow:
 If I specify a PR number in the initial prompt, use that PR number and skip directly to step 2. Otherwise, find open PRs where I am assigned, requested as a reviewer, or have already submitted a review:
 
 ```bash
-gh pr list \
-  --search "is:open (review-requested:@me OR reviewed-by:@me OR assignee:@me)" \
-  --limit 10 \
-  --json number,title,author,reviewRequests,assignees,createdAt \
-  --jq '.[] | {number, title, author: .author.login, reviewers: [.reviewRequests[]?.login], assignees: [.assignees[]?.login], created: .createdAt}'
+scripts/list-open-prs.sh
 ```
 
 If there are multiple PRs, ask which one I want to review. Present the results to me as a numbered list for me to choose from. If there's only one, confirm before proceeding.

@@ -62,16 +62,7 @@ fi
 Only run this if you need precise statistics:
 
 ```bash
-SESSION_FILE="[path-from-step-2]" && \
-echo "=== SESSION METADATA ===" && \
-echo "File: $SESSION_FILE" && \
-echo "Size: $(ls -lh "$SESSION_FILE" | awk '{print $5}')" && \
-echo "" && \
-echo "=== TOOL COUNTS ===" && \
-jq -r 'select(.message.content[]?.name) | .message.content[].name' "$SESSION_FILE" | sort | uniq -c && \
-echo "" && \
-echo "=== FILES MODIFIED ===" && \
-grep -o '"filePath":"[^"]*"' "$SESSION_FILE" | sort -u
+scripts/extract-session-metadata.sh "[path-from-step-2]"
 ```
 
 This is a simplified extraction - only metadata, tool counts, and files. Much faster than the old approach.
@@ -82,104 +73,14 @@ Based on the conversation context (and optional metadata from Step 3), create a 
 
 **Important**: There is only one diary file per day. If the file already exists, append the new entry with a divider (`---`) and two newlines before it. If the file doesn't exist, create it with the entry.
 
-```markdown
-## Session Diary Entry: HH:MM:SS
-
-**Session ID**: [uuid from filename]
-**Project**: [project path]
-**Git Branch**: [branch name if available]
-
-### Task Summary
-
-[2-3 sentences: What was the user trying to accomplish based on the user messages?]
-
-### Work Summary
-
-[Bullet list of what was accomplished:]
-
-- Features implemented
-- Bugs fixed
-- Documentation added
-- Tests written
-
-### Design Decisions Made
-
-[IMPORTANT: Document key technical decisions and WHY they were made:]
-
-- Architectural choices (e.g., "Used React Context instead of Redux because...")
-- Technology selections
-- API design decisions
-- Pattern selections
-
-### Actions Taken
-
-[Based on tool usage and file operations:]
-
-- Files edited: [list paths from "FILES MODIFIED"]
-- Commands executed: [from git operations]
-- Tools used: [from tool usage counts]
-
-### Code Review & PR Feedback
-
-[CRITICAL: Capture any feedback about code quality or style:]
-
-- PR comments mentioned
-- Code quality feedback
-- Linting issues
-- Style preferences
-
-### Challenges Encountered
-
-[Based on errors and user corrections:]
-
-- Errors encountered [from "ERRORS" section]
-- Failed approaches
-- Debugging steps
-
-### Solutions Applied
-
-[How problems were resolved]
-
-### User Preferences Observed
-
-[CRITICAL: Document preferences for commits, testing, code style, etc.]
-
-### Commit & PR Preferences:
-
-- [Any patterns around commit messages, PR descriptions]
-
-### Code Quality Preferences:
-
-- [Testing requirements, linting preferences]
-
-### Technical Preferences:
-
-- [Libraries, patterns, frameworks preferred]
-
-### Code Patterns and Decisions
-
-[Technical patterns used]
-
-### Context and Technologies
-
-[Project type, languages, frameworks]
-
-### Notes
-
-[Any other observations]
-```
+See the template in `references/entry-template.md`.
 
 ### 4. Save the Diary Entry
 
 Run this command to determine the diary file path for today:
 
 ```bash
-# Create directory if needed
-mkdir -p ~/Code/vault/diary && \
-# Determine filename (one file per day: YYYY-MM-DD.md)
-TODAY=$(date +%Y-%m-%d) && \
-DIARY_FILE=~/Code/vault/diary/${TODAY}.md && \
-echo "Diary file: $DIARY_FILE"
+scripts/diary-file-path.sh
 ```
 
 Use the Write tool to write the diary content:
