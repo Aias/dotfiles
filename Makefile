@@ -56,8 +56,8 @@ check:
 	check_link ~/Code/.cursor/rules/global.mdc; \
 	check_link ~/.cursor/cli-config.json; \
 	check_link ~/.cursor/mcp.json; \
-	check_link ~/.cursor/commands; \
-	check_link ~/.claude/commands; \
+	check_link ~/.cursor/skills; \
+	check_link ~/.claude/skills; \
 	check_link ~/Library/Application\ Support/Cursor/User/settings.json; \
 	check_link ~/Library/Application\ Support/Cursor/User/keybindings.json; \
 	if [ "$$failed" = "1" ]; then \

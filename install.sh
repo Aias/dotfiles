@@ -120,9 +120,9 @@ backup_and_link "$DOTFILES_DIR/cursor/keybindings.json" "$HOME/Library/Applicati
 backup_and_link "$DOTFILES_DIR/cursor/cli-config.json" "$HOME/.cursor/cli-config.json"
 backup_and_link "$DOTFILES_DIR/cursor/mcp.json" "$HOME/.cursor/mcp.json"
 
-# Agent commands (shared between Cursor and Claude)
-backup_and_link "$DOTFILES_DIR/agents/commands" "$HOME/.cursor/commands"
-backup_and_link "$DOTFILES_DIR/agents/commands" "$HOME/.claude/commands"
+# Agent skills (shared between Cursor and Claude)
+backup_and_link "$DOTFILES_DIR/agents/skills" "$HOME/.cursor/skills"
+backup_and_link "$DOTFILES_DIR/agents/skills" "$HOME/.claude/skills"
 
 # ─────────────────────────────────────────────────────────────
 # Create dependent files if they don't exist
