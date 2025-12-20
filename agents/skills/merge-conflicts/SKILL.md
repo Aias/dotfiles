@@ -1,6 +1,7 @@
 ---
 name: merge-conflicts
 description: Resolve merge or rebase conflicts interactively
+compatibility: Requires git and a working repository.
 ---
 
 # Resolve Merge/Rebase Conflicts

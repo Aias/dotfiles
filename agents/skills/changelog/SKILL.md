@@ -1,26 +1,18 @@
 ---
 name: changelog
 description: Analyze outdated dependencies and summarize changelogs
+compatibility: Requires npm, pnpm, yarn, or bun, plus network access.
 ---
 
 You are helping me review outdated dependencies and understand what has changed. Follow this workflow:
 
 ### Step 1: Detect Package Manager and Check Outdated Dependencies
 
-Detect the package manager by checking for lock files in order of preference:
+Run the helper script to detect the package manager and list outdated
+dependencies:
 
 ```bash
-if [ -f "bun.lock" ] || [ -f "bun.lockb" ]; then
-  bun outdated
-elif [ -f "pnpm-lock.yaml" ]; then
-  pnpm outdated
-elif [ -f "yarn.lock" ]; then
-  yarn outdated
-elif [ -f "package-lock.json" ]; then
-  npm outdated
-else
-  echo "No recognized lock file found"
-fi
+scripts/detect-outdated.sh
 ```
 
 **Rush monorepos:** If you detect a `rush.json` at the repo root, use `rush-pnpm outdated` instead. This command must be run from within a specific project directory (where `package.json` exists), not from the repo root.
