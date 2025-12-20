@@ -56,5 +56,6 @@
   "workbench.iconTheme": "vscode-icons",
   "githubPullRequests.fileListLayout": "tree",
   "comments.thread.confirmOnCollapse": "never",
-  "claudeCode.useCtrlEnterToSend": true
+  "claudeCode.useCtrlEnterToSend": true,
+  "githubPullRequests.pullBranch": "never"
 }

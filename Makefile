@@ -56,8 +56,10 @@ check:
 	check_link ~/Code/.cursor/rules/global.mdc; \
 	check_link ~/.cursor/cli-config.json; \
 	check_link ~/.cursor/mcp.json; \
-	check_link ~/.cursor/skills; \
-	check_link ~/.claude/skills; \
+	for skill in $$(ls -1d agents/skills/*/ 2>/dev/null | xargs -I{} basename {}); do \
+		check_link ~/.claude/skills/$$skill; \
+		check_link ~/.codex/skills/$$skill; \
+	done; \
 	check_link ~/Library/Application\ Support/Cursor/User/settings.json; \
 	check_link ~/Library/Application\ Support/Cursor/User/keybindings.json; \
 	if [ "$$failed" = "1" ]; then \

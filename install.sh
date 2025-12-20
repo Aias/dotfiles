@@ -120,9 +120,48 @@ backup_and_link "$DOTFILES_DIR/cursor/keybindings.json" "$HOME/Library/Applicati
 backup_and_link "$DOTFILES_DIR/cursor/cli-config.json" "$HOME/.cursor/cli-config.json"
 backup_and_link "$DOTFILES_DIR/cursor/mcp.json" "$HOME/.cursor/mcp.json"
 
-# Agent skills (shared between Cursor and Claude)
-backup_and_link "$DOTFILES_DIR/agents/skills" "$HOME/.cursor/skills"
-backup_and_link "$DOTFILES_DIR/agents/skills" "$HOME/.claude/skills"
+# Agent skills (symlink each skill individually to preserve system skills)
+# Note: Cursor uses workspace-level .cursor/rules, not global skills
+install_skills() {
+    local skills_source="$DOTFILES_DIR/agents/skills"
+    local targets=(
+        "$HOME/.claude/skills"
+        "$HOME/.codex/skills"
+    )
+
+    for target_dir in "${targets[@]}"; do
+        # Remove whole-directory symlink if it exists (migration from old approach)
+        if [[ -L "$target_dir" ]]; then
+            echo "Removing old skills symlink: $target_dir"
+            rm "$target_dir"
+        fi
+
+        # Create skills directory if it doesn't exist
+        mkdir -p "$target_dir"
+
+        # Symlink each skill folder individually
+        for skill in "$skills_source"/*/; do
+            skill_name=$(basename "$skill")
+            skill_target="$target_dir/$skill_name"
+
+            # Skip if target exists and is not a symlink (preserve system skills)
+            if [[ -e "$skill_target" && ! -L "$skill_target" ]]; then
+                echo "Skipping $skill_target (exists, not a symlink)"
+                continue
+            fi
+
+            # Remove existing symlink and recreate
+            if [[ -L "$skill_target" ]]; then
+                rm "$skill_target"
+            fi
+
+            echo "Linking skill: $skill_name -> $target_dir/"
+            ln -s "$skill" "$skill_target"
+        done
+    done
+}
+
+install_skills
 
 # ─────────────────────────────────────────────────────────────
 # Create dependent files if they don't exist
