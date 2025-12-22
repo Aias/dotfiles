@@ -8,6 +8,27 @@ set -e
 DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # ─────────────────────────────────────────────────────────────
+# Output helpers
+# ─────────────────────────────────────────────────────────────
+
+section() {
+    echo ""
+    echo "$1"
+}
+
+success() {
+    printf "  ✓ %s\n" "$1"
+}
+
+info() {
+    printf "  → %s\n" "$1"
+}
+
+warn() {
+    printf "  ! %s\n" "$1"
+}
+
+# ─────────────────────────────────────────────────────────────
 # Ensure required tools are installed (system-wide)
 # ─────────────────────────────────────────────────────────────
 
@@ -20,21 +41,21 @@ ensure_homebrew() {
 
 install_bun() {
     if ! command -v bun >/dev/null 2>&1; then
-        echo "Installing bun..."
+        info "Installing bun..."
         curl -fsSL https://bun.sh/install | bash
     fi
 }
 
 install_cursor_agent() {
     if ! command -v cursor-agent >/dev/null 2>&1; then
-        echo "Installing cursor-agent..."
+        info "Installing cursor-agent..."
         curl -fsSL https://cursor.com/install | bash
     fi
 }
 
 install_beads() {
     if ! command -v bd >/dev/null 2>&1; then
-        echo "Installing beads (bd)..."
+        info "Installing beads (bd)..."
         brew tap steveyegge/beads 2>/dev/null || true
         brew install bd
     fi
@@ -46,69 +67,96 @@ install_cursor_cli() {
     local cursor_bin="/Applications/Cursor.app/Contents/Resources/app/bin/cursor"
     if ! command -v cursor >/dev/null 2>&1; then
         if [[ -x "$cursor_bin" ]]; then
-            echo "Linking cursor CLI to ~/.local/bin/cursor"
+            info "Linking cursor CLI to ~/.local/bin/cursor"
             ln -sf "$cursor_bin" "$HOME/.local/bin/cursor"
         else
-            echo "Note: Cursor.app not found. Install from https://cursor.com then run 'cursor' from Command Palette."
+            warn "Cursor.app not found. Install from https://cursor.com"
         fi
     fi
 }
 
 install_dependencies() {
-    echo "Ensuring required CLI tools are installed..."
+    section "Dependencies"
     ensure_homebrew
-    brew bundle install --file="$DOTFILES_DIR/Brewfile"
+    brew bundle install --file="$DOTFILES_DIR/Brewfile" 2>&1 | grep -E "^(Using|Installing|Upgrading)" | sed 's/^/  /'
     install_bun
     install_cursor_agent
     install_cursor_cli
     install_beads
-    echo "Dependency installation complete."
+    success "Dependencies installed"
 }
 
 if [[ "${SKIP_DEPENDENCY_INSTALL:-0}" != "1" ]]; then
     install_dependencies
 fi
 
-echo "Installing dotfiles from $DOTFILES_DIR"
-
 # Create backup directory
 BACKUP_DIR="$HOME/.dotfiles-backup/$(date +%Y%m%d-%H%M%S)"
+BACKUP_CREATED=false
 
 backup_and_link() {
     local source="$1"
     local target="$2"
+    local label="$3"
 
     if [[ -e "$target" && ! -L "$target" ]]; then
-        echo "Backing up existing $target"
-        mkdir -p "$BACKUP_DIR"
+        if [[ "$BACKUP_CREATED" == "false" ]]; then
+            mkdir -p "$BACKUP_DIR"
+            BACKUP_CREATED=true
+        fi
         mv "$target" "$BACKUP_DIR/"
+        info "Backed up existing $label"
     fi
 
     if [[ -L "$target" ]]; then
         rm "$target"
     fi
 
-    echo "Linking $source -> $target"
     mkdir -p "$(dirname "$target")"
     ln -s "$source" "$target"
+    success "$label"
 }
 
-# Zsh
-backup_and_link "$DOTFILES_DIR/zsh/.zshrc" "$HOME/.zshrc"
-backup_and_link "$DOTFILES_DIR/zsh/.zprofile" "$HOME/.zprofile"
+# ─────────────────────────────────────────────────────────────
+# Shell
+# ─────────────────────────────────────────────────────────────
 
+section "Shell"
+backup_and_link "$DOTFILES_DIR/zsh/.zshrc" "$HOME/.zshrc" ".zshrc"
+backup_and_link "$DOTFILES_DIR/zsh/.zprofile" "$HOME/.zprofile" ".zprofile"
+backup_and_link "$DOTFILES_DIR/starship/starship.toml" "$HOME/.config/starship.toml" ".config/starship.toml"
+backup_and_link "$DOTFILES_DIR/ghostty/config" "$HOME/.config/ghostty/config" ".config/ghostty/config"
+
+# ─────────────────────────────────────────────────────────────
 # Git
-backup_and_link "$DOTFILES_DIR/git/.gitconfig" "$HOME/.gitconfig"
+# ─────────────────────────────────────────────────────────────
 
-# Starship
-backup_and_link "$DOTFILES_DIR/starship/starship.toml" "$HOME/.config/starship.toml"
+section "Git"
+backup_and_link "$DOTFILES_DIR/git/.gitconfig" "$HOME/.gitconfig" ".gitconfig"
 
-# Ghostty
-backup_and_link "$DOTFILES_DIR/ghostty/config" "$HOME/.config/ghostty/config"
+# ─────────────────────────────────────────────────────────────
+# Claude
+# ─────────────────────────────────────────────────────────────
 
-# Agents
-backup_and_link "$DOTFILES_DIR/agents/AGENTS.md" "$HOME/.claude/CLAUDE.md"
-backup_and_link "$DOTFILES_DIR/agents/AGENTS.md" "$HOME/.codex/AGENTS.md"
+section "Claude"
+backup_and_link "$DOTFILES_DIR/agents/AGENTS.md" "$HOME/.claude/CLAUDE.md" ".claude/CLAUDE.md"
+backup_and_link "$DOTFILES_DIR/agents/claude.settings.json" "$HOME/.claude/settings.json" ".claude/settings.json"
+backup_and_link "$DOTFILES_DIR/agents/claude.statusline-command.sh" "$HOME/.claude/statusline-command.sh" ".claude/statusline-command.sh"
+
+# ─────────────────────────────────────────────────────────────
+# Codex
+# ─────────────────────────────────────────────────────────────
+
+section "Codex"
+backup_and_link "$DOTFILES_DIR/agents/AGENTS.md" "$HOME/.codex/AGENTS.md" ".codex/AGENTS.md"
+backup_and_link "$DOTFILES_DIR/agents/codex.config.toml" "$HOME/.codex/config.toml" ".codex/config.toml"
+
+# ─────────────────────────────────────────────────────────────
+# Cursor
+# ─────────────────────────────────────────────────────────────
+
+section "Cursor"
+
 # Cursor global rules (copy with frontmatter, not symlink)
 install_cursor_global_rules() {
     local source="$DOTFILES_DIR/agents/AGENTS.md"
@@ -121,20 +169,21 @@ install_cursor_global_rules() {
         echo ""
         cat "$source"
     } > "$target"
-    echo "Created $target (from AGENTS.md with frontmatter)"
+    success ".cursor/rules/global.mdc"
 }
 install_cursor_global_rules
-backup_and_link "$DOTFILES_DIR/agents/claude.statusline-command.sh" "$HOME/.claude/statusline-command.sh"
-backup_and_link "$DOTFILES_DIR/agents/claude.settings.json" "$HOME/.claude/settings.json"
-backup_and_link "$DOTFILES_DIR/agents/codex.config.toml" "$HOME/.codex/config.toml"
 
-# Cursor
-backup_and_link "$DOTFILES_DIR/cursor/settings.json" "$HOME/Library/Application Support/Cursor/User/settings.json"
-backup_and_link "$DOTFILES_DIR/cursor/keybindings.json" "$HOME/Library/Application Support/Cursor/User/keybindings.json"
-backup_and_link "$DOTFILES_DIR/cursor/cli-config.json" "$HOME/.cursor/cli-config.json"
-backup_and_link "$DOTFILES_DIR/cursor/mcp.json" "$HOME/.cursor/mcp.json"
+backup_and_link "$DOTFILES_DIR/cursor/cli-config.json" "$HOME/.cursor/cli-config.json" ".cursor/cli-config.json"
+backup_and_link "$DOTFILES_DIR/cursor/mcp.json" "$HOME/.cursor/mcp.json" ".cursor/mcp.json"
+backup_and_link "$DOTFILES_DIR/cursor/settings.json" "$HOME/Library/Application Support/Cursor/User/settings.json" "Cursor/User/settings.json"
+backup_and_link "$DOTFILES_DIR/cursor/keybindings.json" "$HOME/Library/Application Support/Cursor/User/keybindings.json" "Cursor/User/keybindings.json"
 
-# Agent skills (copy to each location - symlinks not supported by Codex/Cursor)
+# ─────────────────────────────────────────────────────────────
+# Skills
+# ─────────────────────────────────────────────────────────────
+
+section "Skills"
+
 install_skills() {
     local skills_source="$DOTFILES_DIR/agents/skills"
     local targets=(
@@ -143,18 +192,21 @@ install_skills() {
         "$HOME/.codex/skills"
     )
 
+    # Collect skill names first
+    local skills=()
+    for skill in "$skills_source"/*/; do
+        skills+=("$(basename "$skill")")
+    done
+
     for target_dir in "${targets[@]}"; do
         # Remove whole-directory symlink if it exists (migration from old approach)
         if [[ -L "$target_dir" ]]; then
-            echo "Removing old skills symlink: $target_dir"
             rm "$target_dir"
         fi
-
         mkdir -p "$target_dir"
 
-        for skill in "$skills_source"/*/; do
-            skill_name=$(basename "$skill")
-            skill_target="$target_dir/$skill_name"
+        for skill_name in "${skills[@]}"; do
+            local skill_target="$target_dir/$skill_name"
 
             # Remove old symlinks (migration)
             if [[ -L "$skill_target" ]]; then
@@ -162,28 +214,35 @@ install_skills() {
             fi
 
             # Copy skill directory (overwrite existing)
-            echo "Copying skill: $skill_name -> $target_dir/"
             rm -rf "$skill_target"
-            cp -R "$skill" "$skill_target"
+            cp -R "$skills_source/$skill_name" "$skill_target"
         done
     done
 
     # Clean up old .user subfolder (migration from previous approach)
     if [[ -d "$HOME/.codex/skills/.user" ]]; then
-        echo "Removing old .codex/skills/.user directory"
         rm -rf "$HOME/.codex/skills/.user"
     fi
+
+    # Print skill status table
+    printf "  %-20s %s  %s  %s\n" "" "claude" "codex" "cursor"
+    for skill_name in "${skills[@]}"; do
+        printf "  %-20s ✓       ✓      ✓\n" "$skill_name"
+    done
 }
 
 install_skills
 
 # ─────────────────────────────────────────────────────────────
-# Create dependent files if they don't exist
+# Local files (create from template if missing)
 # ─────────────────────────────────────────────────────────────
+
+section "Local"
 
 create_from_template() {
     local target="$1"
     local template="$2"
+    local label="$3"
 
     # Remove broken symlinks
     if [[ -L "$target" ]]; then
@@ -191,49 +250,62 @@ create_from_template() {
     fi
 
     if [[ ! -e "$target" ]]; then
-        echo "Creating $target from template"
         mkdir -p "$(dirname "$target")"
         if [[ -f "$template" ]]; then
             cat "$template" > "$target"
+            success "$label (created from template)"
         else
-            echo "Warning: Template $template not found, skipping $target"
+            warn "$label template not found"
             return 1
         fi
+    else
+        success "$label (exists)"
     fi
 }
 
 # Secrets file (sourced by .zprofile for API keys)
-create_from_template "$HOME/.secrets" "$DOTFILES_DIR/local/secrets.template"
+create_from_template "$HOME/.secrets" "$DOTFILES_DIR/local/secrets.template" ".secrets"
 
 # Local environment file (sourced by .zprofile)
-create_from_template "$HOME/.local/bin/env" "$DOTFILES_DIR/local/env.template"
+create_from_template "$HOME/.local/bin/env" "$DOTFILES_DIR/local/env.template" ".local/bin/env"
 
 # Ensure ~/.local/bin directory exists for local scripts
 mkdir -p "$HOME/.local/bin"
 
 # Vault (cross-session memory for agents)
 if [[ ! -d "$HOME/Code/vault" ]]; then
-    echo "Creating vault directory at ~/Code/vault"
+    info "Creating vault directory at ~/Code/vault"
     mkdir -p "$HOME/Code/vault/sessions"
     cp "$DOTFILES_DIR/agents/vault-template/CLAUDE.md" "$HOME/Code/vault/"
     cp "$DOTFILES_DIR/agents/vault-template/scratch.md" "$HOME/Code/vault/"
+    success "~/Code/vault"
+else
+    success "~/Code/vault (exists)"
 fi
 
 # ─────────────────────────────────────────────────────────────
 # Cleanup old backups (keep last 10)
 # ─────────────────────────────────────────────────────────────
+
 cleanup_old_backups() {
     local backup_root="$HOME/.dotfiles-backup"
     local keep=10
     local count=$(ls -1d "$backup_root"/*/ 2>/dev/null | wc -l | tr -d ' ')
     if [[ "$count" -gt "$keep" ]]; then
         local to_delete=$((count - keep))
-        echo "Cleaning up $to_delete old backup(s)..."
         ls -1d "$backup_root"/*/ | head -n "$to_delete" | xargs rm -rf
     fi
 }
 
 cleanup_old_backups
 
+# ─────────────────────────────────────────────────────────────
+# Done
+# ─────────────────────────────────────────────────────────────
+
 echo ""
-echo "Done! Original files backed up to: $BACKUP_DIR"
+if [[ "$BACKUP_CREATED" == "true" ]]; then
+    echo "Done! Backups saved to: $BACKUP_DIR"
+else
+    echo "Done!"
+fi
