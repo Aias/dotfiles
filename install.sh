@@ -109,7 +109,21 @@ backup_and_link "$DOTFILES_DIR/ghostty/config" "$HOME/.config/ghostty/config"
 # Agents
 backup_and_link "$DOTFILES_DIR/agents/AGENTS.md" "$HOME/.claude/CLAUDE.md"
 backup_and_link "$DOTFILES_DIR/agents/AGENTS.md" "$HOME/.codex/AGENTS.md"
-backup_and_link "$DOTFILES_DIR/agents/AGENTS.md" "$HOME/Code/.cursor/rules/global.mdc"
+# Cursor global rules (copy with frontmatter, not symlink)
+install_cursor_global_rules() {
+    local source="$DOTFILES_DIR/agents/AGENTS.md"
+    local target="$HOME/.cursor/rules/global.mdc"
+    mkdir -p "$(dirname "$target")"
+    {
+        echo "---"
+        echo "alwaysApply: true"
+        echo "---"
+        echo ""
+        cat "$source"
+    } > "$target"
+    echo "Created $target (from AGENTS.md with frontmatter)"
+}
+install_cursor_global_rules
 backup_and_link "$DOTFILES_DIR/agents/claude.statusline-command.sh" "$HOME/.claude/statusline-command.sh"
 backup_and_link "$DOTFILES_DIR/agents/claude.settings.json" "$HOME/.claude/settings.json"
 backup_and_link "$DOTFILES_DIR/agents/codex.config.toml" "$HOME/.codex/config.toml"
@@ -120,12 +134,12 @@ backup_and_link "$DOTFILES_DIR/cursor/keybindings.json" "$HOME/Library/Applicati
 backup_and_link "$DOTFILES_DIR/cursor/cli-config.json" "$HOME/.cursor/cli-config.json"
 backup_and_link "$DOTFILES_DIR/cursor/mcp.json" "$HOME/.cursor/mcp.json"
 
-# Agent skills (symlink each skill individually to preserve system skills)
-# Note: Cursor uses workspace-level .cursor/rules, not global skills
+# Agent skills (copy to each location - symlinks not supported by Codex/Cursor)
 install_skills() {
     local skills_source="$DOTFILES_DIR/agents/skills"
     local targets=(
         "$HOME/.claude/skills"
+        "$HOME/.cursor/skills"
         "$HOME/.codex/skills"
     )
 
@@ -136,29 +150,29 @@ install_skills() {
             rm "$target_dir"
         fi
 
-        # Create skills directory if it doesn't exist
         mkdir -p "$target_dir"
 
-        # Symlink each skill folder individually
         for skill in "$skills_source"/*/; do
             skill_name=$(basename "$skill")
             skill_target="$target_dir/$skill_name"
 
-            # Skip if target exists and is not a symlink (preserve system skills)
-            if [[ -e "$skill_target" && ! -L "$skill_target" ]]; then
-                echo "Skipping $skill_target (exists, not a symlink)"
-                continue
-            fi
-
-            # Remove existing symlink and recreate
+            # Remove old symlinks (migration)
             if [[ -L "$skill_target" ]]; then
                 rm "$skill_target"
             fi
 
-            echo "Linking skill: $skill_name -> $target_dir/"
-            ln -s "$skill" "$skill_target"
+            # Copy skill directory (overwrite existing)
+            echo "Copying skill: $skill_name -> $target_dir/"
+            rm -rf "$skill_target"
+            cp -R "$skill" "$skill_target"
         done
     done
+
+    # Clean up old .user subfolder (migration from previous approach)
+    if [[ -d "$HOME/.codex/skills/.user" ]]; then
+        echo "Removing old .codex/skills/.user directory"
+        rm -rf "$HOME/.codex/skills/.user"
+    fi
 }
 
 install_skills
@@ -193,10 +207,6 @@ create_from_template "$HOME/.secrets" "$DOTFILES_DIR/local/secrets.template"
 
 # Local environment file (sourced by .zprofile)
 create_from_template "$HOME/.local/bin/env" "$DOTFILES_DIR/local/env.template"
-
-# Claude API key file (NOT tracked in git)
-create_from_template "$HOME/.claude/key.sh" "$DOTFILES_DIR/local/claude-key.template"
-chmod +x "$HOME/.claude/key.sh" 2>/dev/null || true
 
 # Ensure ~/.local/bin directory exists for local scripts
 mkdir -p "$HOME/.local/bin"
