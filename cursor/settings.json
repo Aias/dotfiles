@@ -57,5 +57,7 @@
   "githubPullRequests.fileListLayout": "tree",
   "comments.thread.confirmOnCollapse": "never",
   "claudeCode.useCtrlEnterToSend": true,
-  "githubPullRequests.pullBranch": "never"
+  "githubPullRequests.pullBranch": "never",
+  "update.releaseTrack": "dev",
+  "update.mode": "silentlyApplyOnQuit"
 }

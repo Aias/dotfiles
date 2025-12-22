@@ -1,12 +1,5 @@
 {
   "mcpServers": {
-    "context7": {
-      "url": "https://mcp.context7.com/mcp"
-    },
-    "ark-ui": {
-      "command": "npx",
-      "args": ["-y", "@ark-ui/mcp"]
-    },
     "Linear": {
       "url": "https://mcp.linear.app/sse",
       "headers": {}
