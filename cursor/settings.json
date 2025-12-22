@@ -59,5 +59,6 @@
   "claudeCode.useCtrlEnterToSend": true,
   "githubPullRequests.pullBranch": "never",
   "update.releaseTrack": "dev",
-  "update.mode": "silentlyApplyOnQuit"
+  "update.mode": "silentlyApplyOnQuit",
+  "extensions.ignoreRecommendations": true
 }
