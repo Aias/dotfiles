@@ -31,37 +31,63 @@ diff:
 
 # Check symlink health
 check:
-	@echo "Checking symlink status..."
 	@failed=0; \
 	check_link() { \
+		local label="$$2"; \
 		if [ -L "$$1" ]; then \
-			echo "✓ $$1"; \
-		elif [ -f "$$1" ]; then \
-			echo "✗ $$1 (regular file, not symlink)"; \
+			printf "  ✓ %s\n" "$$label"; \
+		elif [ -e "$$1" ]; then \
+			printf "  ✗ %s (not a symlink)\n" "$$label"; \
 			failed=1; \
-		elif [ ! -e "$$1" ]; then \
-			echo "- $$1 (missing)"; \
+		else \
+			printf "  - %s (missing)\n" "$$label"; \
 		fi; \
 	}; \
-	check_link ~/.zshrc; \
-	check_link ~/.zprofile; \
-	check_link ~/.gitconfig; \
-	check_link ~/.config/starship.toml; \
-	check_link ~/.config/ghostty/config; \
-	check_link ~/.claude/CLAUDE.md; \
-	check_link ~/.claude/settings.json; \
-	check_link ~/.claude/statusline-command.sh; \
-	check_link ~/.codex/AGENTS.md; \
-	check_link ~/.codex/config.toml; \
-	check_link ~/Code/.cursor/rules/global.mdc; \
-	check_link ~/.cursor/cli-config.json; \
-	check_link ~/.cursor/mcp.json; \
+	echo "Shell"; \
+	check_link ~/.zshrc ".zshrc"; \
+	check_link ~/.zprofile ".zprofile"; \
+	check_link ~/.config/starship.toml ".config/starship.toml"; \
+	check_link ~/.config/ghostty/config ".config/ghostty/config"; \
+	echo ""; \
+	echo "Git"; \
+	check_link ~/.gitconfig ".gitconfig"; \
+	echo ""; \
+	echo "Claude"; \
+	check_link ~/.claude/CLAUDE.md ".claude/CLAUDE.md"; \
+	check_link ~/.claude/settings.json ".claude/settings.json"; \
+	check_link ~/.claude/statusline-command.sh ".claude/statusline-command.sh"; \
+	echo ""; \
+	echo "Codex"; \
+	check_link ~/.codex/AGENTS.md ".codex/AGENTS.md"; \
+	check_link ~/.codex/config.toml ".codex/config.toml"; \
+	echo ""; \
+	echo "Cursor"; \
+	if [ -f ~/.cursor/rules/global.mdc ]; then \
+		printf "  ✓ %s\n" ".cursor/rules/global.mdc"; \
+	else \
+		printf "  - %s (missing)\n" ".cursor/rules/global.mdc"; \
+	fi; \
+	check_link ~/.cursor/cli-config.json ".cursor/cli-config.json"; \
+	check_link ~/.cursor/mcp.json ".cursor/mcp.json"; \
+	check_link ~/Library/Application\ Support/Cursor/User/settings.json "Cursor/User/settings.json"; \
+	check_link ~/Library/Application\ Support/Cursor/User/keybindings.json "Cursor/User/keybindings.json"; \
+	echo ""; \
+	echo "Skills (✓=synced, ✗=out of sync, -=missing)"; \
+	printf "  %-20s %s  %s  %s\n" "" "claude" "codex" "cursor"; \
 	for skill in $$(ls -1d agents/skills/*/ 2>/dev/null | xargs -I{} basename {}); do \
-		check_link ~/.claude/skills/$$skill; \
-		check_link ~/.codex/skills/$$skill; \
+		claude="-"; codex="-"; cursor="-"; \
+		src="agents/skills/$$skill/SKILL.md"; \
+		if [ -f ~/.claude/skills/$$skill/SKILL.md ]; then \
+			diff -q "$$src" ~/.claude/skills/$$skill/SKILL.md >/dev/null 2>&1 && claude="✓" || claude="✗"; \
+		fi; \
+		if [ -f ~/.codex/skills/$$skill/SKILL.md ]; then \
+			diff -q "$$src" ~/.codex/skills/$$skill/SKILL.md >/dev/null 2>&1 && codex="✓" || codex="✗"; \
+		fi; \
+		if [ -f ~/.cursor/skills/$$skill/SKILL.md ]; then \
+			diff -q "$$src" ~/.cursor/skills/$$skill/SKILL.md >/dev/null 2>&1 && cursor="✓" || cursor="✗"; \
+		fi; \
+		printf "  %-20s %s       %s      %s\n" "$$skill" "$$claude" "$$codex" "$$cursor"; \
 	done; \
-	check_link ~/Library/Application\ Support/Cursor/User/settings.json; \
-	check_link ~/Library/Application\ Support/Cursor/User/keybindings.json; \
 	if [ "$$failed" = "1" ]; then \
 		echo ""; \
 		echo "Run 'make link' to fix broken symlinks"; \

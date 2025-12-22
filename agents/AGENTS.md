@@ -69,6 +69,8 @@ When rebasing branches:
 
 ## Tools
 
+Agent skills live in `~/Code/dotfiles/agents/skills/` and are copied to `~/.claude/skills/`, `~/.cursor/skills/`, and `~/.codex/skills/` by the install script. Always edit skills in the dotfiles source directory, never in client-specific directories.
+
 Prefer reading source code (locally in `node_modules` or on GitHub) over fetching documentation—it's guaranteed to match the installed version and often provides deeper insight. Use all tools at your disposal: source code, official docs, web search, non-destructive local commands, and temporary logging.
 
 Favor the following tools over system defaults:
