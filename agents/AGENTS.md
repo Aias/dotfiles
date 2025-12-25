@@ -58,11 +58,14 @@ Always read and understand relevant files before proposing edits. Do not specula
 
 ## Git & Version Control
 
+Never use `git commit --amend` unless the user specifically requests it; prefer creating new commits over rewriting history.
+
 When rebasing branches:
+
 1. Check PR and line-level comments first to understand expected changes
 2. After resolving each conflict, explain the resolution:
    - What the base branch had (it's more up-to-date, prefer its logic)
-   - What the commit being applied wanted to change (identify its true *intent*)
+   - What the commit being applied wanted to change (identify its true _intent_)
    - Why the resolution is correct (keep base structure, layer commit's intent on top)
 3. Wait for user confirmation before running `git rebase --continue`
 4. Default assumption: the branch being rebased onto has better/newer patterns; our commits should only override when that was their explicit purpose
@@ -85,7 +88,7 @@ Favor the following tools over system defaults:
 - `delta` for readable git diffs with line numbers (`git diff | delta --line-numbers`)
 - `fzf --filter` for deterministic fuzzy filtering (e.g., `rg --json foo | fzf --filter src/api`)
 - `gh` for GitHub API/PRs with JSON output (e.g., `gh pr list --json number,title`)
-**Delegate mechanical edits to Cursor**: Use `cursor-agent -p --force --model composer-1` for high-volume, clearly-specifiable changes: bulk find/replace, scaffolding, mechanical refactors (renames, signature changes), repetitive patterns (imports, exports, test stubs). composer-1 is fast but less intelligent—ideal when the change is tedious but unambiguous.
+  **Delegate mechanical edits to Cursor**: Use `cursor-agent -p --force --model composer-1` for high-volume, clearly-specifiable changes: bulk find/replace, scaffolding, mechanical refactors (renames, signature changes), repetitive patterns (imports, exports, test stubs). composer-1 is fast but less intelligent—ideal when the change is tedious but unambiguous.
 
 These tools are available from the command line and can be used to perform many basic tasks more efficiently and effectively compared to standard system tools.
 
