@@ -30,9 +30,14 @@ setopt NO_BEEP                # Disable terminal beep
 setopt INTERACTIVE_COMMENTS   # Allow comments in interactive shell
 
 # ─────────────────────────────────────────────────────────────
-# Completion system
+# Completion system (cached - only rebuilds once per day)
 # ─────────────────────────────────────────────────────────────
-autoload -Uz compinit && compinit
+autoload -Uz compinit
+if [[ -n ${ZDOTDIR:-$HOME}/.zcompdump(#qN.mh+24) ]]; then
+  compinit
+else
+  compinit -C
+fi
 zstyle ':completion:*' menu select
 zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'  # Case-insensitive
 
@@ -88,13 +93,17 @@ fi
 # Install with: brew install zsh-syntax-highlighting zsh-autosuggestions
 # ─────────────────────────────────────────────────────────────
 if [[ -x /opt/homebrew/bin/brew ]]; then
+  _brew_prefix="$(brew --prefix)"
+
   # Autosuggestions (load before syntax highlighting)
-  [[ -r "$(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh" ]] && \
-    source "$(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh"
-  
+  [[ -r "$_brew_prefix/share/zsh-autosuggestions/zsh-autosuggestions.zsh" ]] && \
+    source "$_brew_prefix/share/zsh-autosuggestions/zsh-autosuggestions.zsh"
+
   # Syntax highlighting (must be last)
-  [[ -r "$(brew --prefix)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" ]] && \
-    source "$(brew --prefix)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
+  [[ -r "$_brew_prefix/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" ]] && \
+    source "$_brew_prefix/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
+
+  unset _brew_prefix
 fi
 
 # ─────────────────────────────────────────────────────────────
