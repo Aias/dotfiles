@@ -60,6 +60,8 @@ Always read and understand relevant files before proposing edits. Do not specula
 
 Never use `git commit --amend` unless the user specifically requests it; prefer creating new commits over rewriting history.
 
+Commit messages and PR descriptions should have a single point of view—write as the author, not as an AI assistant. No "Generated with Claude" footers, no co-authored-by AI attribution, no "I helped implement" phrasing.
+
 When rebasing branches:
 
 1. Check PR and line-level comments first to understand expected changes
