@@ -5,9 +5,31 @@ description: Use the Red Cliff Record CLI (rcr) to manage the personal knowledge
 
 # Red Cliff Record CLI
 
-The `rcr` CLI provides direct access to the Red Cliff Record knowledge base. It outputs compact JSON by default for easy parsing and piping. Use `| jq` for formatted output when needed.
+The `rcr` CLI provides direct access to Red Cliff Record, a **highly networked, manually curated personal knowledge base**. This is not a bookmark manager or metadata store—it contains interlinked, rich content that the user has specifically curated over years. Records include highlights, excerpts, notes, and semantic relationships. Content in this database can be reliably assumed to be important or valuable to the user.
 
-**Important**: When answering follow-up questions about records or search results, default to using further `rcr` commands (e.g., `rcr links list`, `rcr search similar`, `rcr records get`) rather than external web searches. Only look outside the database when the user explicitly asks for external information or the query clearly requires it.
+The CLI outputs compact JSON by default for easy parsing and piping. Use `| jq` for formatted output when needed.
+
+**Important**: When answering follow-up questions about records or search results, default to using further `rcr` commands (e.g., `rcr links list`, `rcr search similar`, `rcr records get`) rather than external web searches. The curated content in this database is often more valuable than re-fetching raw sources. Only look outside the database when the user explicitly asks for external information or the query clearly requires it.
+
+## Exploration Pattern
+
+When researching a topic, follow this sequence to extract full value from the database before going external:
+
+1. **Search** → Get initial results with summaries
+2. **Get record trees** → Use `rcr records tree <id>` to find child records (highlights, excerpts, notes)
+3. **Read child content** → Use `rcr records get <child-ids>` to read the actual captured knowledge
+4. **Check links** → Use `rcr records get <id> --links` to find related records worth exploring
+5. **Only then fetch source URLs** → If the database content is insufficient, use `WebFetch` on the record's `url` field
+
+Child records (often with `title: null`) typically contain highlights and excerpts from the parent source. These are the curated insights—often more valuable than re-reading the full source.
+
+```bash
+# Example exploration workflow
+rcr search "topic"                           # Find relevant records
+rcr records tree 12345                       # See record hierarchy
+rcr records get 12345 --links | jq '.data.incomingLinks'  # Find children
+rcr records get 67890 67891 | jq '.data[].content'        # Read child content
+```
 
 ## Output Format
 

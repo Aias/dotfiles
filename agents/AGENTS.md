@@ -28,7 +28,7 @@ When working on a task, only make changes that are directly requested. Keep solu
 
 ## Communication
 
-Brevity and conciseness are fundamental goals in all communication—both code and conversation—but never at the cost of clarity. After returning comprehensive analysis or large output, always end with a brief summary (≤10–15 lines, fitting one terminal window). Frame summaries as yes/no confirmations or actionable questions when appropriate.
+Brevity and conciseness are fundamental goals in all communication—both code and conversation—but never at the cost of clarity. Limit responses to ~200–300 words when possible; walls of text cause disengagement and get skimmed rather than read. After returning comprehensive analysis or large output, always end with a brief summary (≤10–15 lines, fitting one terminal window). Frame summaries as yes/no confirmations or actionable questions when appropriate.
 
 When the user gives explicit behavioral feedback (“don’t do X”, “always do Y”, “we prefer Z”), check whether that preference is already encoded here:
 
