@@ -61,6 +61,17 @@ install_beads() {
     fi
 }
 
+install_ck() {
+    if command -v cargo >/dev/null 2>&1; then
+        if ! command -v ck >/dev/null 2>&1; then
+            info "Installing ck (semantic code search)..."
+            cargo install ck-search
+        fi
+    else
+        warn "Cargo not found. Install Rust to get ck: https://rustup.rs"
+    fi
+}
+
 install_cursor_cli() {
     # Official method: Cursor > Cmd+Shift+P > "Shell Command: Install 'cursor' command in PATH"
     # This creates /usr/local/bin/cursor. As fallback, symlink to ~/.local/bin
@@ -83,6 +94,7 @@ install_dependencies() {
     install_cursor_agent
     install_cursor_cli
     install_beads
+    install_ck
     success "Dependencies installed"
 }
 

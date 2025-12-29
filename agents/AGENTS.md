@@ -80,6 +80,7 @@ Prefer reading source code (locally in `node_modules` or on GitHub) over fetchin
 
 Favor the following tools over system defaults:
 
+- `ck` for semantic code search (e.g., `ck --sem "error handling" src/`). Always run `ck --help` first to understand available options. Prefer `ck --regex` for exact text, `ck --sem` or `ck --hybrid` for conceptual matches, and `--jsonl` for tooling. The first search in a new folder builds the index automatically.
 - `rg` for fast, ignore-aware search (e.g., `rg 'MyInterface' src`)
 - `fd` for concise file finding (e.g., `fd '.test.ts' src`)
 - `jq` for safe JSON reads/edits (e.g., `jq '.scripts' package.json`)

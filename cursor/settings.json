@@ -60,5 +60,6 @@
   "githubPullRequests.pullBranch": "never",
   "update.releaseTrack": "dev",
   "update.mode": "silentlyApplyOnQuit",
-  "extensions.ignoreRecommendations": true
+  "extensions.ignoreRecommendations": true,
+  "svelte.enable-ts-plugin": true
 }

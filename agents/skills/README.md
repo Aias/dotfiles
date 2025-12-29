@@ -113,6 +113,7 @@ See `skill-creator/SKILL.md` for comprehensive authoring guidance.
 | `deslop` | Remove AI code slop |
 | `diagrams` | Generate Mermaid diagrams from code or architecture |
 | `fresh-pr` | Create a PR from a fresh branch off the base branch |
+| `interview` | Interview about a plan, feature, or code change |
 | `merge-conflicts` | Resolve merge or rebase conflicts interactively |
 | `pr-review` | Review a pull request |
 | `remove-effects` | Remove React useEffect hooks |
