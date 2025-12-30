@@ -35,6 +35,7 @@
   "git.path": "/usr/bin/git",
   "projectManager.git.baseFolders": ["~/Code"],
   "search.exclude": {
+    "**/.ck": true,
     "**/.next": true,
     "**/dist": true,
     "**/styled-system": true
@@ -61,5 +62,8 @@
   "update.releaseTrack": "dev",
   "update.mode": "silentlyApplyOnQuit",
   "extensions.ignoreRecommendations": true,
-  "svelte.enable-ts-plugin": true
+  "svelte.enable-ts-plugin": true,
+  "files.exclude": {
+    "**/.ck": true
+  }
 }

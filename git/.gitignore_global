@@ -1,0 +1,10 @@
+# ck semantic code search index
+.ck/
+
+# Claude Code local settings
+**/.claude/settings.local.json
+
+# OS files
+.DS_Store
+.Spotlight-V100
+.Trashes

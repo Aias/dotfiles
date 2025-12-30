@@ -145,6 +145,7 @@ backup_and_link "$DOTFILES_DIR/ghostty/config" "$HOME/.config/ghostty/config" ".
 
 section "Git"
 backup_and_link "$DOTFILES_DIR/git/.gitconfig" "$HOME/.gitconfig" ".gitconfig"
+backup_and_link "$DOTFILES_DIR/git/.gitignore_global" "$HOME/.gitignore_global" ".gitignore_global"
 
 # ─────────────────────────────────────────────────────────────
 # Claude
