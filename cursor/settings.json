@@ -66,5 +66,6 @@
   "svelte.enable-ts-plugin": true,
   "files.exclude": {
     "**/.ck": true
-  }
+  },
+  "git.openRepositoryInParentFolders": "never"
 }
