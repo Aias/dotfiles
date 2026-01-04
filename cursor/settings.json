@@ -33,6 +33,7 @@
   "git.enableSmartCommit": true,
   "git.mergeEditor": true,
   "git.path": "/usr/bin/git",
+  "github.gitProtocol": "ssh",
   "projectManager.git.baseFolders": ["~/Code"],
   "search.exclude": {
     "**/.ck": true,
