@@ -53,14 +53,6 @@ install_cursor_agent() {
     fi
 }
 
-install_beads() {
-    if ! command -v bd >/dev/null 2>&1; then
-        info "Installing beads (bd)..."
-        brew tap steveyegge/beads 2>/dev/null || true
-        brew install bd
-    fi
-}
-
 install_ck() {
     if command -v cargo >/dev/null 2>&1; then
         if ! command -v ck >/dev/null 2>&1; then
@@ -93,7 +85,6 @@ install_dependencies() {
     install_bun
     install_cursor_agent
     install_cursor_cli
-    install_beads
     install_ck
     success "Dependencies installed"
 }

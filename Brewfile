@@ -1,11 +1,7 @@
 # Brewfile - Declarative Homebrew dependencies
 # Install with: brew bundle install
 
-# Taps
-tap "steveyegge/beads"
-
 # CLI Tools
-brew "bd"
 brew "bat"
 brew "delta"
 brew "eza"
