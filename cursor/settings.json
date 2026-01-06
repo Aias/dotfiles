@@ -53,7 +53,8 @@
   "workbench.activityBar.orientation": "vertical",
   "workbench.editor.enablePreview": false,
   "workbench.editorAssociations": {
-    "*.svg": "default"
+    "*.svg": "default",
+    "*.md": "default"
   },
   "workbench.iconTheme": "vscode-icons",
   "githubPullRequests.fileListLayout": "tree",
