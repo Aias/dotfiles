@@ -175,6 +175,42 @@ rcr links predicates
 ```
 Returns available relationship types for linking records.
 
+## Browsing History
+
+### Get daily browsing summary
+```bash
+rcr browsing daily <date>    # Date format: YYYY-MM-DD
+```
+Returns a structured summary for journaling: overview stats, top domains by time spent, browsing sessions (30-min gap threshold), search queries, and notable pages (≥1 min view time). Filters out localhost and omit-listed URLs automatically.
+
+### Manage omit list
+The omit list filters out URLs from browsing summaries. Patterns use SQL LIKE syntax (`%` for wildcard, `_` for single character).
+
+```bash
+rcr browsing omit                      # List all omit patterns
+rcr browsing omit-add <pattern>        # Add pattern to omit list
+rcr browsing omit-delete <pattern...>  # Delete pattern(s)
+
+# Examples:
+rcr browsing omit-add "%ads.%"         # Omit any URL containing "ads."
+rcr browsing omit-add "%example.com%"  # Omit example.com URLs
+rcr browsing omit-delete "%test.%"     # Remove a pattern
+```
+
+## GitHub History
+
+### Get daily commit summary
+```bash
+rcr github daily <date>    # Date format: YYYY-MM-DD
+```
+Returns commits for the day with: time, repo, commit type, message, AI-generated summary, technologies, and line changes.
+
+### Get commit details
+```bash
+rcr github get <id>        # Commit ID (SHA or internal)
+```
+Returns full commit details including repository info and file changes (filename, status, additions, deletions, patch).
+
 ## Sync Integrations
 
 ### Run a single sync
@@ -191,6 +227,8 @@ rcr sync <integration>
 #   browsing    - Browser history (Arc, Dia)
 #   twitter     - Twitter/X bookmarks and likes
 #   agents      - Claude/Cursor/Codex conversation history
+#   avatars     - Generate avatars for records
+#   embeddings  - Generate embeddings for records
 ```
 
 ### Run all daily syncs
@@ -198,6 +236,42 @@ rcr sync <integration>
 rcr sync daily
 ```
 Runs: browsing, feedbin, raindrop, readwise, github, airtable
+
+## Database Management
+
+### Backup database
+```bash
+rcr db backup <local|remote> [options]
+
+# Options:
+#   --data-only    Backup data only (no schema)
+#   --dry-run, -n  Print commands without executing
+```
+
+### Restore database
+```bash
+rcr db restore <local|remote> [options]
+
+# Options:
+#   --clean        Drop and recreate database before restore
+#   --data-only    Restore data only (no schema)
+#   --dry-run, -n  Print commands without executing
+```
+
+### Reset local database
+```bash
+rcr db reset    # Drops and recreates local database with extensions
+```
+
+### Seed database
+```bash
+rcr db seed     # Seeds predicates and core records (local only)
+```
+
+### Check database status
+```bash
+rcr db status [local|remote]    # Shows connection info and record counts
+```
 
 ## Global Options
 
@@ -228,6 +302,24 @@ rcr records create '{"title": "Reinforcement Learning", "type": "concept", "note
 # Find records similar to an existing one
 rcr search similar 456 --limit=10
 
+# Get daily browsing summary for journaling
+rcr browsing daily 2026-01-03
+
+# Get daily commit summary
+rcr github daily 2026-01-03
+
+# Get commit details with file changes
+rcr github get abc123def456
+
 # Sync GitHub stars
 rcr sync github
+
+# Check database status
+rcr db status
+
+# Backup local database (data only)
+rcr db backup local --data-only
+
+# Preview restore commands without executing
+rcr db restore remote -n
 ```

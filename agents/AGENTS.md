@@ -2,22 +2,30 @@
 
 This document is the source of truth for the agent's behavior and instructions, as well as the working relationship between the user and the agent. It lives at `~/Code/dotfiles/agents/AGENTS.md`.
 
-## Quick Rules
-
-- Be extremely concise. Sacrifice grammar for the sake of concision.
-- Answer questions with research and analysis only; do not write code when the prompt ends with a question mark unless the question is obviously an implicit request for changes.
-- Clarify assumptions before coding and restate the plan and assumptions back to the user.
-- Read any referenced file or path before proposing changes.
-- Run safe checks yourself (type/lint/tests) when relevant; don't ask the user to run them for you.
-- Protect data and the environment: get explicit permission before any destructive, high-risk, or database-modifying action.
-- At session start, check `git status`, recent commits, and open TODOs; match orientation effort to task scope.
-
 This file should be living documentation that evolves as you discover new preferences and workflows. Treat this file as part of the codebase, not a note: changes should be intentional, incremental, and highly token-/information-dense. All changes should be committed with meaningful messages.
 
 Visibility & cadence: keep the agreements short and visible; revisit them briefly at the start of a session.
 
 Working agreements scope: prefer editing or merging existing rules over adding near-duplicates; limit new rules to high-value items; aim to keep this document about one printed page.
 When adding new rules, place them next to related items to keep logical grouping and avoid redundancy.
+
+## Quick Rules
+
+- **When responding, be extremely concise.** Sacrifice grammar for the sake of concision.
+- **When writing code, make minimal, surgical changes.**
+- When creating abstractions, keep them consciously constrained, pragmatically parameterized, and doggedly documented.
+- Answer questions with research and analysis only; **do not write code when the prompt ends with a question mark** unless the question is obviously an implicit request for changes.
+- **Clarify assumptions** before coding and restate the plan and assumptions back to the user. You can use the AskUseQuestion tool or equivalent to ask the user questions.
+- **Read any referenced file or path before proposing changes.** Prefer extensive research over guesswork, this will lead to fewer rewrites and save time in the long run.
+- Run safe checks yourself (type/lint/tests) when relevant; don't ask the user to run them for you.
+- Protect data and the environment: get explicit permission before any destructive, high-risk, or database-modifying action.
+- At session start, check `git status`, recent commits, and open TODOs; match orientation effort to task scope.
+- Instead of applying a bandaid, **fix things from first principles.** find the source and fix it versus applying a cheap bandaid on top.
+- **Write idiomatic, simple, maintainable code.** Always ask yourself if this is the most simple intuitive solution to the problem.
+- **Leave each repo better than how you found it.** If something is giving a code smell, fix it for the next person.
+- **Removing code is better than adding code.** It's easy to write code but hard to write clean code. We always prefer the harder path even if it means more work. Wherever possible, aim to leave code shorter and simpler than you found it.
+- **Clean up unused code ruthlessly.** If a function no longer needs a parameter or a helper is dead, delete it and update the callers instead of letting the junk linger.
+- **Search before pivoting.** If you are stuck or uncertain, do a quick web search for official docs or specs, then continue with the current approach. Do not change direction unless asked.
 
 ## User-Agent Working Relationship
 
@@ -59,19 +67,22 @@ Always read and understand relevant files before proposing edits. Do not specula
 
 ## Git & Version Control
 
-Never use `git commit --amend` unless the user specifically requests it; prefer creating new commits over rewriting history.
-
-Commit messages and PR descriptions should have a single point of view—write as the author, not as an AI assistant. No "Generated with Claude" footers, no co-authored-by AI attribution, no "I helped implement" phrasing.
+- When inspecting `git status` or `git diff`, treat them as read-only context; never revert or assume missing changes were yours. Other agents or the user may have already committed updates.
+- Always use SSH URLs for cloning git repos (e.g., `git@github.com:user/repo.git`), never HTTPS.
+- Never use `git commit --amend` unless the user specifically requests it; prefer creating new commits over rewriting history.
+- Commit messages and PR descriptions should have a single point of view—write as the author, not as an AI assistant. No "Generated with Claude" footers, no co-authored-by AI attribution, no "I helped implement" phrasing.
 
 When rebasing branches:
 
 1. Check PR and line-level comments first to understand expected changes
 2. After resolving each conflict, explain the resolution:
-   - What the base branch had (it's more up-to-date, prefer its logic)
-   - What the commit being applied wanted to change (identify its true _intent_)
-   - Why the resolution is correct (keep base structure, layer commit's intent on top)
-3. Wait for user confirmation before running `git rebase --continue`
-4. Default assumption: the branch being rebased onto has better/newer patterns; our commits should only override when that was their explicit purpose
+
+- What the base branch had (it's more up-to-date, prefer its logic)
+- What the commit being applied wanted to change (identify its true *intent*)
+- Why the resolution is correct (keep base structure, layer commit's intent on top)
+
+1. Wait for user confirmation before running `git rebase --continue`
+2. Default assumption: the branch being rebased onto has better/newer patterns; our commits should only override when that was their explicit purpose
 
 ## Tools
 
@@ -92,15 +103,16 @@ Favor the following tools over system defaults:
 - `delta` for readable git diffs with line numbers (`git diff | delta --line-numbers`)
 - `fzf --filter` for deterministic fuzzy filtering (e.g., `rg --json foo | fzf --filter src/api`)
 - `gh` for GitHub API/PRs with JSON output (e.g., `gh pr list --json number,title`)
-  **Delegate mechanical edits to Cursor**: Use `cursor-agent -p --force --model composer-1` for high-volume, clearly-specifiable changes: bulk find/replace, scaffolding, mechanical refactors (renames, signature changes), repetitive patterns (imports, exports, test stubs). composer-1 is fast but less intelligent—ideal when the change is tedious but unambiguous.
 
 These tools are available from the command line and can be used to perform many basic tasks more efficiently and effectively compared to standard system tools.
 
 Use existing infrastructure over adding new dependencies when both work equally well.
 
-## Type Safety & Style
+## Language-Specific Guidelines
 
-- Type safety is absolute: no `any`, no `as` casts, no `ts-ignore`/`eslint-disable`. Avoid `unknown` unless it is narrowed immediately.
+### Typescript
+
+- **Never compromise type safety**: Type safety is absolute. This means no `any`, no type assertions (`as Type`) or casts, no non-null assertions (`!`), no `ts-ignore`/`eslint-disable`. Avoid `unknown` unless it is narrowed immediately.
 - Order prop intersections with specific props before generic ones (e.g., `{ specific } & RootProps`).
 - Favor readability and clarity over brevity; avoid variables that mirror another variable’s value.
 - Add comments only when they clarify non-obvious logic; do not narrate the obvious or restate what the code does. Don't add comments a human wouldn't add or which are inconsistent with the rest of the codebase.
@@ -109,20 +121,24 @@ Use existing infrastructure over adding new dependencies when both work equally 
 - Check for type errors regularly; run type/lint checks yourself when relevant. Re-read this document before finalizing work.
 - Don't add variables that are only used a single time right after declaration, these should be inlined.
 
-## Frontend Semantics & Styling
+### Frontend HTML / CSS
 
 - Use semantic HTML first; prefer built-in elements (e.g., `article`, `header`, `main`, `nav`, `section`, `ul/li`, `button`, `form`, `label`, `table`, `time`) and avoid `div`/`span` unless necessary. Prefer screen-reader text with proper structure over ARIA-only solutions.
 - Prefer CSS over JS for behavior; use flexbox/grid with `gap`, padding on containers, minimal margins, logical properties (`block`/`inline`, `start`/`end`), and transform sub-properties (`translate`, `rotate`, `scale`).
 - Colors: use tokens/custom properties when available; otherwise use `oklch` or hex (not rgb).
 - “Tokens” and CSS custom properties are interchangeable terms in this document.
 
-## React
+### React
 
 - React auto-forwards refs as of version 19—do not use `forwardRef`.
-- Avoid `useEffect`; read (via `curl`) [You Might Not Need an Effect](https://raw.githubusercontent.com/reactjs/react.dev/main/src/content/learn/you-might-not-need-an-effect.md) before adding one. Attempt to remove existing `useEffect`s where possible.
+- Avoid `useEffect`; read (via `curl`) [You Might Not Need an Effect](https://raw.githubusercontent.com/reactjs/react.dev/main/src/content/learn/you-might-not-need-an-effect.md) before adding one or use the `remove-effects` skill. Attempt to remove existing `useEffect`s where possible.
 - Prefer `requestAnimationFrame` (single or double) or `useLayoutEffect` over `setTimeout` for timing.
 - Render repeated elements via iteration (`map`, etc.) instead of manual duplication.
 - Keep inline styles rare; `as React.CSSProperties` only when unavoidable (e.g., view-transition names or CSS variables); avoid other casting.
+
+### Swift / Xcode
+
+If `project.yml` exists (XcodeGen), treat `.xcodeproj` as generated: edit `project.yml`, run `xcodegen`, never hand-edit `project.pbxproj`.
 
 ## Debugging
 
@@ -130,7 +146,7 @@ When debugging complex issues that span multiple components:
 
 1. Add comprehensive logging at key lifecycle points (mounting, state changes, focus events)
 2. Use emojis or prefixes to make log categories visually scannable (e.g., `[ComponentName] 🚀 action`, `[ComponentName] 📍 checkpoint`)
-3. Log compact string representations rather than full objects for easier copy-pasting: `console.log(\`active=${tag} focused=${bool}\`)`not`console.log({ active, focused })`
+3. Log compact string representations rather than full objects for easier copy-pasting: `console.log(\`active=${tag} focused=${bool})`not`console.log({ active, focused })`
 4. Include both "before" and "after" snapshots for state changes
 5. Remove debug logging after the issue is resolved
 
