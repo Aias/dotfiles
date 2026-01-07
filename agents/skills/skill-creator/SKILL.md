@@ -132,6 +132,45 @@ After installation, restart the agent to pick up new skills.
 - Include concrete examples over verbose explanations
 - Reference other files clearly: "See [api_docs.md](references/api_docs.md) for details"
 
+### Portable Script References
+
+Skills must be **agent-agnostic**—never hardcode paths like `~/.claude/skills/` or `~/.cursor/skills/`. Different agents install skills in different locations.
+
+**For simple commands**: Inline the command directly in SKILL.md. This avoids path resolution issues entirely:
+
+```markdown
+## Usage
+Run this command:
+\`\`\`bash
+docker exec -i my-container some-command "YOUR ARGS"
+\`\`\`
+```
+
+**For complex scripts**: Use relative paths and note they're relative to the skill directory:
+
+```markdown
+## Usage
+Run the script (resolve path relative to this skill's directory):
+\`\`\`bash
+scripts/my-script.sh "args"
+\`\`\`
+```
+
+**Combining both**: For maximum compatibility, show the inline command first (works everywhere) and mention the script as an alternative:
+
+```markdown
+## Usage
+Run directly:
+\`\`\`bash
+docker exec -i container cmd "YOUR SQL"
+\`\`\`
+
+Or use the bundled script (relative to skill directory):
+\`\`\`bash
+scripts/wrapper.sh "YOUR SQL"
+\`\`\`
+```
+
 ### What NOT to Include
 
 - README.md, CHANGELOG.md, INSTALLATION_GUIDE.md — only SKILL.md matters

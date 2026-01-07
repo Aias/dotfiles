@@ -29,9 +29,13 @@ description: [TODO: What the skill does AND when to use it. Include trigger scen
 
 [TODO: 1-2 sentences explaining what this skill enables]
 
-## [First Section]
+## Usage
 
 [TODO: Add step-by-step instructions, examples, or guidance]
+
+[TODO: If using scripts, inline simple commands directly for portability.
+For complex scripts, use relative paths like `scripts/my-script.sh`.
+Never hardcode agent-specific paths like ~/.claude/skills/ or ~/.cursor/skills/]
 
 ## Resources
 
