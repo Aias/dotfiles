@@ -50,6 +50,7 @@ rcr search "query" | jq '.data[].title'
 ## Records
 
 ### Get record(s)
+
 ```bash
 rcr records get <id>
 rcr records get <id1> <id2> <id3>   # Multiple IDs (parallel)
@@ -57,6 +58,7 @@ rcr records get <id> --links        # Include all incoming/outgoing links
 ```
 
 ### List records with filters
+
 ```bash
 rcr records list [options]
 
@@ -78,6 +80,7 @@ rcr records list [options]
 ```
 
 ### Create a record
+
 ```bash
 rcr records create '{"title": "...", "type": "entity", ...}'
 
@@ -88,39 +91,48 @@ echo '{"title": "...", "type": "entity"}' | rcr records create
 Required: `title`. Optional: `type` (entity|concept|artifact, defaults to artifact)
 
 ### Update a record
+
 ```bash
 rcr records update <id> '{"title": "New Title", ...}'
 ```
 
 ### Delete records
+
 ```bash
 rcr records delete <id>
 rcr records delete <id1> <id2> <id3>   # Multiple IDs
 ```
 
 ### Merge records
+
 ```bash
 rcr records merge <source-id> <target-id>
 ```
+
 Merges source record into target, transferring links and metadata.
 
 ### Generate embedding(s)
+
 ```bash
 rcr records embed <id>
 rcr records embed <id1> <id2> <id3>   # Multiple IDs (parallel)
 ```
+
 Creates or updates the vector embedding for semantic search.
 
 ### Get record tree(s)
+
 ```bash
 rcr records tree <id>
 rcr records tree <id1> <id2> <id3>   # Multiple IDs (parallel)
 ```
+
 Returns hierarchical family tree (ancestors and descendants).
 
 ## Search
 
 ### Semantic search (default)
+
 ```bash
 rcr search "your query"
 rcr search semantic "your query"
@@ -131,6 +143,7 @@ rcr search semantic "your query"
 ```
 
 ### Full-text search
+
 ```bash
 rcr search text "your query"
 
@@ -140,6 +153,7 @@ rcr search text "your query"
 ```
 
 ### Find similar records
+
 ```bash
 rcr search similar <id>
 rcr search similar <id1> <id2> <id3>   # Multiple IDs (parallel)
@@ -151,12 +165,14 @@ rcr search similar <id1> <id2> <id3>   # Multiple IDs (parallel)
 ## Links
 
 ### List links for record(s)
+
 ```bash
 rcr links list <record-id>
 rcr links list <id1> <id2> <id3>   # Multiple IDs (uses efficient batch query)
 ```
 
 ### Create a link
+
 ```bash
 rcr links create '{"sourceId": 1, "targetId": 2, "predicateId": 3}'
 
@@ -164,26 +180,32 @@ rcr links create '{"sourceId": 1, "targetId": 2, "predicateId": 3}'
 ```
 
 ### Delete links
+
 ```bash
 rcr links delete <id>
 rcr links delete <id1> <id2>   # Multiple IDs
 ```
 
 ### List predicate types
+
 ```bash
 rcr links predicates
 ```
+
 Returns available relationship types for linking records.
 
 ## Browsing History
 
 ### Get daily browsing summary
+
 ```bash
 rcr browsing daily <date>    # Date format: YYYY-MM-DD
 ```
+
 Returns a structured summary for journaling: overview stats, top domains by time spent, browsing sessions (30-min gap threshold), search queries, and notable pages (≥1 min view time). Filters out localhost and omit-listed URLs automatically.
 
 ### Manage omit list
+
 The omit list filters out URLs from browsing summaries. Patterns use SQL LIKE syntax (`%` for wildcard, `_` for single character).
 
 ```bash
@@ -200,20 +222,25 @@ rcr browsing omit-delete "%test.%"     # Remove a pattern
 ## GitHub History
 
 ### Get daily commit summary
+
 ```bash
 rcr github daily <date>    # Date format: YYYY-MM-DD
 ```
+
 Returns commits for the day with: time, repo, commit type, message, AI-generated summary, technologies, and line changes.
 
 ### Get commit details
+
 ```bash
 rcr github get <id>        # Commit ID (SHA or internal)
 ```
+
 Returns full commit details including repository info and file changes (filename, status, additions, deletions, patch).
 
 ## Sync Integrations
 
 ### Run a single sync
+
 ```bash
 rcr sync <integration>
 
@@ -232,14 +259,17 @@ rcr sync <integration>
 ```
 
 ### Run all daily syncs
+
 ```bash
 rcr sync daily
 ```
+
 Runs: browsing, feedbin, raindrop, readwise, github, airtable
 
 ## Database Management
 
 ### Backup database
+
 ```bash
 rcr db backup <local|remote> [options]
 
@@ -249,6 +279,7 @@ rcr db backup <local|remote> [options]
 ```
 
 ### Restore database
+
 ```bash
 rcr db restore <local|remote> [options]
 
@@ -259,16 +290,19 @@ rcr db restore <local|remote> [options]
 ```
 
 ### Reset local database
+
 ```bash
 rcr db reset    # Drops and recreates local database with extensions
 ```
 
 ### Seed database
+
 ```bash
 rcr db seed     # Seeds predicates and core records (local only)
 ```
 
 ### Check database status
+
 ```bash
 rcr db status [local|remote]    # Shows connection info and record counts
 ```

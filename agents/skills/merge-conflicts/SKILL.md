@@ -24,6 +24,7 @@ For each conflicted file:
    ```
 
    Note line numbers for each conflict:
+
    - `start_line` = line with `<<<<<<<`
    - `end_line` = line with `>>>>>>>`
 

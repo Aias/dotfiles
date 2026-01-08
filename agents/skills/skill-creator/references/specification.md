@@ -50,11 +50,13 @@ metadata:
 - Must match parent directory name
 
 Valid:
+
 - `pdf-processing`
 - `data-analysis`
 - `code-review`
 
 Invalid:
+
 - `PDF-Processing` (uppercase)
 - `-pdf` (starts with hyphen)
 - `pdf--processing` (consecutive hyphens)
@@ -66,6 +68,7 @@ Invalid:
 - Include keywords for task matching
 
 Good:
+
 ```
 Extracts text and tables from PDF files, fills forms, merges PDFs.
 Use when working with PDF documents or when the user mentions PDFs,
@@ -73,6 +76,7 @@ forms, or document extraction.
 ```
 
 Poor:
+
 ```
 Helps with PDFs.
 ```
@@ -83,9 +87,11 @@ Helps with PDFs.
 - Only include if specific requirements exist
 
 Examples:
+
 ```yaml
 compatibility: Requires git, docker, jq, and network access
 ```
+
 ```yaml
 compatibility: Designed for Claude Code
 ```
@@ -103,6 +109,7 @@ Arbitrary key-value pairs for additional properties.
 The Markdown body after frontmatter contains instructions. No format restrictions—write what helps agents perform the task.
 
 Recommended sections:
+
 - Step-by-step instructions
 - Examples of inputs/outputs
 - Common edge cases
@@ -113,6 +120,7 @@ Recommended sections:
 ### scripts/
 
 Executable code (Python, Bash, etc.):
+
 - Self-contained or clearly document dependencies
 - Include helpful error messages
 - Handle edge cases
@@ -120,6 +128,7 @@ Executable code (Python, Bash, etc.):
 ### references/
 
 Documentation loaded into context when needed:
+
 - Technical references
 - Form templates
 - Domain-specific docs
@@ -128,6 +137,7 @@ Documentation loaded into context when needed:
 ### assets/
 
 Static resources not loaded into context:
+
 - Templates (`.pptx`, `.docx`)
 - Images (`.png`, `.svg`)
 - Data files (`.csv`, `.json`)
@@ -142,6 +152,7 @@ Three-level loading for efficient context use:
 3. **Resources** (as needed): Files loaded only when required
 
 Guidelines:
+
 - Keep SKILL.md under 500 lines
 - Move detailed reference material to separate files
 - Reference files clearly with relative paths
@@ -167,6 +178,7 @@ skills-ref validate ./my-skill
 ```
 
 Checks:
+
 - Frontmatter format and required fields
 - Naming conventions
 - Directory structure

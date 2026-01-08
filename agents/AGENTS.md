@@ -78,7 +78,7 @@ When rebasing branches:
 2. After resolving each conflict, explain the resolution:
 
 - What the base branch had (it's more up-to-date, prefer its logic)
-- What the commit being applied wanted to change (identify its true *intent*)
+- What the commit being applied wanted to change (identify its true _intent_)
 - Why the resolution is correct (keep base structure, layer commit's intent on top)
 
 1. Wait for user confirmation before running `git rebase --continue`

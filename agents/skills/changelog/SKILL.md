@@ -24,7 +24,7 @@ From the outdated output, identify packages with:
 - **Major version bumps** (e.g., 5.1.4 → 6.0.1)
 - **Minor version bumps** (e.g., 11.7.2 → 11.8.0)
 
-Exclude patch-only updates (e.g., 1.27.3 → 1.27.4) unless they contain security fixes.
+Exclude patch-only updates (e.g., 1.27.3 → 1.27.4) by default, unless they contain security fixes or I explicitly request patch releases be included.
 
 Present the filtered list to me before proceeding.
 

@@ -18,7 +18,7 @@ Apply this skill when reviewing or refactoring React components that use `useEff
 
 ## Core Principle
 
-> "Use Effects only for code that should run *because* the component was displayed to the user."
+> "Use Effects only for code that should run _because_ the component was displayed to the user."
 
 If code runs in response to a user action, it belongs in an event handler—not an Effect.
 
@@ -32,13 +32,13 @@ If code runs in response to a user action, it belongs in an event handler—not 
 
 ```jsx
 // 🔴 Bad
-const [fullName, setFullName] = useState('');
+const [fullName, setFullName] = useState("");
 useEffect(() => {
-  setFullName(firstName + ' ' + lastName);
+  setFullName(firstName + " " + lastName);
 }, [firstName, lastName]);
 
 // ✅ Good - calculate during render
-const fullName = firstName + ' ' + lastName;
+const fullName = firstName + " " + lastName;
 ```
 
 **Fix:** Delete the state and Effect. Calculate the value directly during render.
@@ -77,9 +77,9 @@ const visibleTodos = useMemo(
 ```jsx
 // 🔴 Bad
 function ProfilePage({ userId }) {
-  const [comment, setComment] = useState('');
+  const [comment, setComment] = useState("");
   useEffect(() => {
-    setComment('');
+    setComment("");
   }, [userId]);
 }
 
@@ -109,7 +109,7 @@ function List({ items }) {
 // ✅ Better - store ID, derive the object
 function List({ items }) {
   const [selectedId, setSelectedId] = useState(null);
-  const selection = items.find(item => item.id === selectedId) ?? null;
+  const selection = items.find((item) => item.id === selectedId) ?? null;
 }
 ```
 
@@ -125,14 +125,14 @@ function List({ items }) {
 // 🔴 Bad
 useEffect(() => {
   if (product.isInCart) {
-    showNotification('Added to cart!');
+    showNotification("Added to cart!");
   }
 }, [product]);
 
 // ✅ Good - in the event handler
 function handleBuyClick() {
   addToCart(product);
-  showNotification('Added to cart!');
+  showNotification("Added to cart!");
 }
 ```
 
@@ -149,7 +149,7 @@ function handleBuyClick() {
 const [jsonToSubmit, setJsonToSubmit] = useState(null);
 useEffect(() => {
   if (jsonToSubmit !== null) {
-    post('/api/register', jsonToSubmit);
+    post("/api/register", jsonToSubmit);
   }
 }, [jsonToSubmit]);
 
@@ -161,7 +161,7 @@ function handleSubmit(e) {
 // ✅ Good - POST in handler
 function handleSubmit(e) {
   e.preventDefault();
-  post('/api/register', { firstName, lastName });
+  post("/api/register", { firstName, lastName });
 }
 ```
 
@@ -176,12 +176,12 @@ function handleSubmit(e) {
 ```jsx
 // 🔴 Bad - cascading effects
 useEffect(() => {
-  if (card?.gold) setGoldCardCount(c => c + 1);
+  if (card?.gold) setGoldCardCount((c) => c + 1);
 }, [card]);
 
 useEffect(() => {
   if (goldCardCount > 3) {
-    setRound(r => r + 1);
+    setRound((r) => r + 1);
     setGoldCardCount(0);
   }
 }, [goldCardCount]);
@@ -263,32 +263,40 @@ function Parent() {
 ## When Effects ARE Appropriate
 
 ### ✅ Synchronizing with External Systems
+
 - DOM manipulation (focus, scroll, measure)
 - Non-React widgets (maps, charts, jQuery)
 - Browser APIs (intersection observer, resize observer)
 - WebSocket connections
 
 ### ✅ Analytics/Logging on Mount
+
 ```jsx
 useEffect(() => {
-  post('/analytics/event', { eventName: 'page_view' });
+  post("/analytics/event", { eventName: "page_view" });
 }, []);
 ```
 
 ### ✅ Data Fetching (with cleanup)
+
 ```jsx
 useEffect(() => {
   let ignore = false;
-  fetchData(query).then(data => {
+  fetchData(query).then((data) => {
     if (!ignore) setData(data);
   });
-  return () => { ignore = true; };
+  return () => {
+    ignore = true;
+  };
 }, [query]);
 ```
+
 Consider using a data fetching library (TanStack Query, SWR) or framework instead.
 
 ### ✅ Subscriptions to External Stores
+
 Prefer `useSyncExternalStore` over manual Effects:
+
 ```jsx
 const isOnline = useSyncExternalStore(
   subscribe,
@@ -313,12 +321,12 @@ When you encounter a `useEffect`:
 
 ## Quick Replacements
 
-| Pattern | Replace With |
-|---------|--------------|
-| `useEffect` + `setState` from props | Direct calculation |
+| Pattern                                | Replace With                    |
+| -------------------------------------- | ------------------------------- |
+| `useEffect` + `setState` from props    | Direct calculation              |
 | `useEffect` + `setState` filtered data | `useMemo` or direct calculation |
-| `useEffect` to reset on prop change | `key` prop |
-| `useEffect` + parent callback | Event handler |
-| `useEffect` for user action | Event handler |
-| `useEffect` chain | Single event handler |
-| `useEffect` for external subscription | `useSyncExternalStore` |
+| `useEffect` to reset on prop change    | `key` prop                      |
+| `useEffect` + parent callback          | Event handler                   |
+| `useEffect` for user action            | Event handler                   |
+| `useEffect` chain                      | Single event handler            |
+| `useEffect` for external subscription  | `useSyncExternalStore`          |

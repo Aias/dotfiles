@@ -40,11 +40,10 @@ skill-name/
 
 ```yaml
 ---
-name: skill-name          # Required: lowercase, hyphens, max 64 chars
+name: skill-name # Required: lowercase, hyphens, max 64 chars
 description: What the skill does and when to use it. Include trigger scenarios.
-compatibility: Requires git, jq, network access  # Optional: environment requirements
+compatibility: Requires git, jq, network access # Optional: environment requirements
 ---
-
 # Skill Title
 
 Instructions in markdown...
@@ -53,14 +52,17 @@ Instructions in markdown...
 ### Resource Directories
 
 **scripts/** — Executable code (Python/Bash) for deterministic, repeatable operations
+
 - Example: `rotate_pdf.py`, `extract_data.sh`
 - Run directly without loading into context
 
 **references/** — Documentation loaded into context when needed
+
 - Example: `api_docs.md`, `schema.md`, `workflows.md`
 - Keep large docs here instead of bloating SKILL.md
 
 **assets/** — Files used in output, not loaded into context
+
 - Example: `template.pptx`, `boilerplate/`, `logo.png`
 - Copied or modified in final output
 
@@ -69,6 +71,7 @@ Instructions in markdown...
 ### Step 1: Understand the Use Cases
 
 Before creating a skill, gather concrete examples:
+
 - "What should this skill do?"
 - "What would a user say that should trigger this skill?"
 - "Can you give examples of how this would be used?"
@@ -78,6 +81,7 @@ A clear understanding of use cases drives good skill design.
 ### Step 2: Plan Resources
 
 For each use case, identify what would help repeated execution:
+
 - **Same code rewritten repeatedly?** → Script in `scripts/`
 - **Reference material needed?** → Doc in `references/`
 - **Boilerplate or templates?** → Files in `assets/`
@@ -116,10 +120,12 @@ After installation, restart the agent to pick up new skills.
 ### Frontmatter
 
 **name**: Lowercase, hyphens only, max 64 chars. Match the directory name.
+
 - Good: `pdf-processing`, `pr-review`, `data-analysis`
 - Bad: `PDF-Processing`, `-pdf`, `pdf--processing`
 
 **description**: 1-1024 chars. Include WHAT and WHEN.
+
 - Good: "Extract text from PDFs, fill forms, merge documents. Use when working with PDF files or when the user mentions PDFs, forms, or document extraction."
 - Bad: "Helps with PDFs."
 
@@ -140,6 +146,7 @@ Skills must be **agent-agnostic**—never hardcode paths like `~/.claude/skills/
 
 ```markdown
 ## Usage
+
 Run this command:
 \`\`\`bash
 docker exec -i my-container some-command "YOUR ARGS"
@@ -150,6 +157,7 @@ docker exec -i my-container some-command "YOUR ARGS"
 
 ```markdown
 ## Usage
+
 Run the script (resolve path relative to this skill's directory):
 \`\`\`bash
 scripts/my-script.sh "args"
@@ -160,6 +168,7 @@ scripts/my-script.sh "args"
 
 ```markdown
 ## Usage
+
 Run directly:
 \`\`\`bash
 docker exec -i container cmd "YOUR SQL"
@@ -185,9 +194,11 @@ Keep SKILL.md lean, link to detailed docs:
 
 ```markdown
 ## Quick Start
+
 Basic usage example here.
 
 ## Advanced Features
+
 - **Forms**: See [forms.md](references/forms.md)
 - **API reference**: See [api.md](references/api.md)
 ```
