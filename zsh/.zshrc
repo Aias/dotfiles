@@ -70,6 +70,7 @@ alias yolo="claude --dangerously-skip-permissions"
 alias code="cursor"
 alias dotup="make -C ~/Code/dotfiles update"
 alias dotcheck="make -C ~/Code/dotfiles check"
+alias dotlink="make -C ~/Code/dotfiles link"
 alias up="brew update && brew upgrade && claude update && bun upgrade"
 
 # ─────────────────────────────────────────────────────────────
