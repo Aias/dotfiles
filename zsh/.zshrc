@@ -59,6 +59,13 @@ alias ...="cd ../.."
 alias ....="cd ../../.."
 alias mkdir="mkdir -pv"
 alias grep="grep --color=auto"
+alias o="cursor ."
+alias odot="cd ~/Code/dotfiles && cursor ."
+alias ohome="cd ~ && cursor ."
+alias ocode="cd ~/Code && cursor ."
+alias ocorn="cd ~/Code/acorn && cursor ."
+alias onuts="cd ~/Code/chestnut && cursor ."
+alias ored="cd ~/Code/personal/red-cliff-record && cursor ."
 
 # ─────────────────────────────────────────────────────────────
 # Aliases - Tools & Utilities
