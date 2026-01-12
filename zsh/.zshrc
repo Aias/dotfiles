@@ -65,7 +65,7 @@ alias ohome="cd ~ && cursor ."
 alias ocode="cd ~/Code && cursor ."
 alias ocorn="cd ~/Code/acorn && cursor ."
 alias onuts="cd ~/Code/chestnut && cursor ."
-alias ored="cd ~/Code/personal/red-cliff-record && cursor ."
+alias ored="cd ~/Code/red-cliff-record && cursor ."
 
 # ─────────────────────────────────────────────────────────────
 # Aliases - Tools & Utilities
