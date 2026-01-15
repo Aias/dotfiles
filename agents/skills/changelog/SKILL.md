@@ -17,16 +17,16 @@ scripts/detect-outdated.sh
 
 **Rush monorepos:** If you detect a `rush.json` at the repo root, use `rush-pnpm outdated` instead. This command must be run from within a specific project directory (where `package.json` exists), not from the repo root.
 
-### Step 2: Filter to Minor and Major Updates
+### Step 2: Filter for Changelog Research
 
 From the outdated output, identify packages with:
 
 - **Major version bumps** (e.g., 5.1.4 → 6.0.1)
 - **Minor version bumps** (e.g., 11.7.2 → 11.8.0)
 
-Exclude patch-only updates (e.g., 1.27.3 → 1.27.4) by default, unless they contain security fixes or I explicitly request patch releases be included.
+**Patch-only updates** (e.g., 1.27.3 → 1.27.4) are excluded from changelog research by default since they typically contain only bug fixes without breaking changes. However, they will still be included in the final package updates (see Step 6).
 
-Present the filtered list to me before proceeding.
+Present the filtered list (major/minor only) to me before proceeding with changelog research.
 
 ### Step 3: Research Changelogs in Parallel
 
@@ -116,3 +116,17 @@ Present findings incrementally as subagents complete. Wait for my confirmation b
 - Creating migration PRs
 
 Do NOT run any update commands unless I explicitly request it.
+
+### Step 6: Apply Updates
+
+When the user requests updates, ask whether to include patch-only updates:
+
+> "Would you like to include patch-only updates as well? These weren't researched but are typically safe bug fixes. (Yes by default)"
+
+**Default behavior:** Include all outdated packages (major, minor, AND patch) in the update unless the user:
+
+- Explicitly declines patch updates
+- Requests only specific packages be updated
+- Asks to update only the researched packages
+
+When updating, run all updates in a single command where possible (e.g., `pnpm update pkg1 pkg2 pkg3`) rather than individually.
