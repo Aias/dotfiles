@@ -77,9 +77,20 @@ Before suggesting review comments, write an overview that helps me build the rig
 Do **not** dump all review comments at once. Instead:
 
 1. Propose a numbered **Review Order** (foundational first, then core logic, then usages, then tests).
-2. Start with Review Order item #1 and suggest **one** potential review comment at a time.
-3. Wait for me to respond (questions, followups, “skip”, or “next”) before continuing.
-4. Continue until we exhaust the review order.
+2. Present a **Review Checklist** — a compact table of all potential comments identified so far:
+
+   | # | File | Line | Issue | Priority | Confidence |
+   |---|------|------|-------|----------|------------|
+   | 1 | `src/foo.ts` | 42 | Missing null check | Critical | High |
+   | 2 | `src/bar.ts` | 15 | Unused import | Nit | High |
+
+   Priority levels: **Critical** (blocks merge), **High** (likely bug/regression), **Medium** (should fix), **Low** (minor improvement), **Nit** (style/preference)
+
+   This checklist is a living document — items may be added, removed, or re-prioritized as the review proceeds.
+
+3. Start with checklist item #1 and suggest **one** potential review comment at a time.
+4. Wait for me to respond (questions, followups, "skip", or "next") before continuing.
+5. Continue until we exhaust the checklist (or I say we're done).
 
 Interaction rules:
 
@@ -122,10 +133,19 @@ When suggesting a review comment:
 - Only be strongly opinionated if there's an obvious bug or issue
 - Include the file path and line number
 - **Verify line numbers** by reading the actual file content before suggesting
-- If the suggestion depends on “this used to work differently”, you must show the **actual old code** and the **new code** side-by-side (or as two clearly labeled snippets) so I can compare directly.
-  - Use the PR base branch as “before” (e.g. `origin/dev`), and the checked-out PR branch as “after”.
-  - Example “before” fetch: `git show origin/<baseRefName>:<path>`
-  - Example “after” fetch: read the checked-out file content and cite the exact lines.
+- If the suggestion depends on "this used to work differently", you must show the **actual old code** and the **new code** side-by-side (or as two clearly labeled snippets) so I can compare directly.
+  - Use the PR base branch as "before" (e.g. `origin/dev`), and the checked-out PR branch as "after".
+  - Example "before" fetch: `git show origin/<baseRefName>:<path>`
+  - Example "after" fetch: read the checked-out file content and cite the exact lines.
+- **When calling out potential bugs, trace the logic with a concrete example.** Don't reason abstractly about "possible scenarios"—instead, walk through actual code paths step-by-step showing exactly what would happen. Tie every potential bug to real code and real functional behavior. Example format:
+  ```
+  Scenario: User clicks X while Y is loading
+  1. `handleClick()` is called (line 42)
+  2. This sets `isLoading = true` (line 45)
+  3. But `useEffect` on line 52 checks `isLoading` before it's updated...
+  → Result: stale state causes Z
+  ```
+  If you can't construct a concrete scenario where the bug actually manifests, it's probably not a real issue.
 
 Format each suggestion as:
 

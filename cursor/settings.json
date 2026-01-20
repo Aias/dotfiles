@@ -72,5 +72,6 @@
   "editor.fontFamily": "Berkeley Mono Variable, Menlo, Monaco, 'Courier New', monospace",
   "editor.fontSize": 13,
   "editor.bracketPairColorization.independentColorPoolPerBracketType": true,
-  "markdown.preview.lineHeight": 1.65
+  "markdown.preview.lineHeight": 1.65,
+  "explorer.compactFolders": false
 }

@@ -192,7 +192,6 @@ install_skills() {
     local skills_source="$DOTFILES_DIR/agents/skills"
     local targets=(
         "$HOME/.claude/skills"
-        "$HOME/.cursor/skills"
         "$HOME/.codex/skills"
     )
 
@@ -203,7 +202,7 @@ install_skills() {
     done
 
     for target_dir in "${targets[@]}"; do
-        # Remove whole-directory symlink if it exists (migration from old approach)
+        # Remove whole-directory symlink if it exists
         if [[ -L "$target_dir" ]]; then
             rm "$target_dir"
         fi
@@ -212,7 +211,7 @@ install_skills() {
         for skill_name in "${skills[@]}"; do
             local skill_target="$target_dir/$skill_name"
 
-            # Remove old symlinks (migration)
+            # Remove old symlinks
             if [[ -L "$skill_target" ]]; then
                 rm "$skill_target"
             fi
@@ -223,15 +222,10 @@ install_skills() {
         done
     done
 
-    # Clean up old .user subfolder (migration from previous approach)
-    if [[ -d "$HOME/.codex/skills/.user" ]]; then
-        rm -rf "$HOME/.codex/skills/.user"
-    fi
-
     # Print skill status table
-    printf "  %-20s %s  %s  %s\n" "" "claude" "codex" "cursor"
+    printf "  %-20s %s  %s\n" "" "claude" "codex"
     for skill_name in "${skills[@]}"; do
-        printf "  %-20s ✓       ✓      ✓\n" "$skill_name"
+        printf "  %-20s ✓       ✓\n" "$skill_name"
     done
 }
 

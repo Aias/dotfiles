@@ -1,13 +1,29 @@
 {
+  "permissions": {
+    "allow": [
+      "Shell(ls)",
+      "Shell(rcr)"
+    ],
+    "deny": []
+  },
   "version": 1,
   "editor": {
     "vimMode": false
   },
-  "hasChangedDefaultModel": false,
-  "permissions": {
-    "allow": [
-      "Shell(ls)"
-    ],
-    "deny": []
+  "model": {
+    "modelId": "composer-1",
+    "displayModelId": "composer-1",
+    "displayName": "Composer 1",
+    "displayNameShort": "Composer 1",
+    "aliases": [],
+    "maxMode": false
+  },
+  "hasChangedDefaultModel": true,
+  "privacyCache": {
+    "ghostMode": true,
+    "privacyMode": 2
+  },
+  "network": {
+    "useHttp1ForAgent": false
   }
 }
