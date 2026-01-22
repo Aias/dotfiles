@@ -3,6 +3,7 @@
 
 # CLI Tools
 brew "bat"
+brew "coreutils"
 brew "delta"
 brew "eza"
 brew "fd"

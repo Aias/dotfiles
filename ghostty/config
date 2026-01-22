@@ -1,5 +1,23 @@
 # This is the configuration file for Ghostty.
-#
+# See the end of the file for config and syntax notes. Read those before making updates.
+
+shell-integration = zsh
+window-padding-x = 12
+window-padding-y = 12
+window-width = 125
+window-height = 35
+window-padding-balance = true
+window-colorspace = display-p3
+background-opacity= 0.9
+background-blur = 30
+background = #1B1D21
+foreground = #E8EAED
+font-family = Berkeley Mono Variable
+font-variation = wdth=88
+adjust-cell-height = 10%
+keybind = shift+enter=text:\n
+link-url = true
+
 # The template does not set any default options, since Ghostty ships
 # with sensible defaults for all options. Users should only need to set
 # options that they want to change from the default.
@@ -36,21 +54,3 @@
 # # which is explained in the docs for that config option.
 # # Just for example:
 # resize-overlay-duration = 4s 200ms
-
-shell-integration = zsh
-window-padding-x = 12
-window-padding-y = 12
-window-width = 125
-window-height = 35
-window-padding-balance = true
-window-colorspace = display-p3
-background-opacity= 0.9
-background-blur = 30
-background = #1B1D21
-foreground = #E8EAED
-font-family = Berkeley Mono Variable
-font-variation = wdth=90
-adjust-cell-height = 10%
-keybind = shift+enter=text:\n
-link-url = true
-auto-update-channel = tip
