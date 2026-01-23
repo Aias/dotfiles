@@ -51,6 +51,7 @@ check:
 	echo ""; \
 	echo "Git"; \
 	check_link ~/.gitconfig ".gitconfig"; \
+	check_link ~/.gitignore_global ".gitignore_global"; \
 	echo ""; \
 	echo "Claude"; \
 	check_link ~/.claude/CLAUDE.md ".claude/CLAUDE.md"; \
@@ -73,9 +74,9 @@ check:
 	check_link ~/Library/Application\ Support/Cursor/User/keybindings.json "Cursor/User/keybindings.json"; \
 	echo ""; \
 	echo "Skills (✓=synced, ✗=out of sync, -=missing)"; \
-	printf "  %-20s %s  %s  %s\n" "" "claude" "codex" "cursor"; \
+	printf "  %-20s %s  %s\n" "" "claude" "codex"; \
 	for skill in $$(ls -1d agents/skills/*/ 2>/dev/null | xargs -I{} basename {}); do \
-		claude="-"; codex="-"; cursor="-"; \
+		claude="-"; codex="-"; \
 		src="agents/skills/$$skill/SKILL.md"; \
 		if [ -f ~/.claude/skills/$$skill/SKILL.md ]; then \
 			diff -q "$$src" ~/.claude/skills/$$skill/SKILL.md >/dev/null 2>&1 && claude="✓" || claude="✗"; \
@@ -83,10 +84,7 @@ check:
 		if [ -f ~/.codex/skills/$$skill/SKILL.md ]; then \
 			diff -q "$$src" ~/.codex/skills/$$skill/SKILL.md >/dev/null 2>&1 && codex="✓" || codex="✗"; \
 		fi; \
-		if [ -f ~/.cursor/skills/$$skill/SKILL.md ]; then \
-			diff -q "$$src" ~/.cursor/skills/$$skill/SKILL.md >/dev/null 2>&1 && cursor="✓" || cursor="✗"; \
-		fi; \
-		printf "  %-20s %s       %s      %s\n" "$$skill" "$$claude" "$$codex" "$$cursor"; \
+		printf "  %-20s %s       %s\n" "$$skill" "$$claude" "$$codex"; \
 	done; \
 	if [ "$$failed" = "1" ]; then \
 		echo ""; \

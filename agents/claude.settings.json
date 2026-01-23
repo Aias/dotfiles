@@ -14,5 +14,8 @@
   "alwaysThinkingEnabled": true,
   "feedbackSurveyState": {
     "lastShownTime": 1753980901020
+  },
+  "env": {
+    "ENABLE_TOOL_SEARCH": "true"
   }
 }
