@@ -1,4 +1,4 @@
-.PHONY: install link update backup diff check
+.PHONY: install link update update-skills backup diff check
 
 # Full install with dependencies
 install:
@@ -13,6 +13,13 @@ update:
 	git pull
 	brew bundle install --file=Brewfile
 	./install.sh
+
+# Update external skills from skills.sh
+update-skills:
+	npx skills update
+	@make link
+	@echo ""
+	@echo "External skills updated. Review changes and commit if needed."
 
 # Backup current configs
 backup:
@@ -74,18 +81,31 @@ check:
 	check_link ~/Library/Application\ Support/Cursor/User/keybindings.json "Cursor/User/keybindings.json"; \
 	echo ""; \
 	echo "Skills (✓=synced, ✗=out of sync, -=missing)"; \
-	printf "  %-20s %s  %s\n" "" "claude" "codex"; \
-	for skill in $$(ls -1d agents/skills/*/ 2>/dev/null | xargs -I{} basename {}); do \
-		claude="-"; codex="-"; \
-		src="agents/skills/$$skill/SKILL.md"; \
-		if [ -f ~/.claude/skills/$$skill/SKILL.md ]; then \
-			diff -q "$$src" ~/.claude/skills/$$skill/SKILL.md >/dev/null 2>&1 && claude="✓" || claude="✗"; \
-		fi; \
-		if [ -f ~/.codex/skills/$$skill/SKILL.md ]; then \
-			diff -q "$$src" ~/.codex/skills/$$skill/SKILL.md >/dev/null 2>&1 && codex="✓" || codex="✗"; \
-		fi; \
-		printf "  %-20s %s       %s\n" "$$skill" "$$claude" "$$codex"; \
-	done; \
+	{ \
+		printf "skill\ttype\tclaude\tcodex\n"; \
+		for skill in $$(ls -1d agents/skills/*/ 2>/dev/null | xargs -I{} basename {}); do \
+			claude="-"; codex="-"; \
+			src="agents/skills/$$skill/SKILL.md"; \
+			if [ -f ~/.claude/skills/$$skill/SKILL.md ]; then \
+				diff -q "$$src" ~/.claude/skills/$$skill/SKILL.md >/dev/null 2>&1 && claude="✓" || claude="✗"; \
+			fi; \
+			if [ -f ~/.codex/skills/$$skill/SKILL.md ]; then \
+				diff -q "$$src" ~/.codex/skills/$$skill/SKILL.md >/dev/null 2>&1 && codex="✓" || codex="✗"; \
+			fi; \
+			printf "%s\t%s\t%s\t%s\n" "$$skill" "[P]" "$$claude" "$$codex"; \
+		done; \
+		for skill in $$(ls -1d .agents/skills/*/ 2>/dev/null | xargs -I{} basename {}); do \
+			claude="-"; codex="-"; \
+			src=".agents/skills/$$skill/SKILL.md"; \
+			if [ -f ~/.claude/skills/$$skill/SKILL.md ]; then \
+				diff -q "$$src" ~/.claude/skills/$$skill/SKILL.md >/dev/null 2>&1 && claude="✓" || claude="✗"; \
+			fi; \
+			if [ -f ~/.codex/skills/$$skill/SKILL.md ]; then \
+				diff -q "$$src" ~/.codex/skills/$$skill/SKILL.md >/dev/null 2>&1 && codex="✓" || codex="✗"; \
+			fi; \
+			printf "%s\t%s\t%s\t%s\n" "$$skill" "[E]" "$$claude" "$$codex"; \
+		done; \
+	} | column -t -s $$'\t' | sed 's/^/  /'; \
 	if [ "$$failed" = "1" ]; then \
 		echo ""; \
 		echo "Run 'make link' to fix broken symlinks"; \

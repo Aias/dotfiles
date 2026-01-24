@@ -114,8 +114,9 @@ Use existing infrastructure over adding new dependencies when both work equally 
 
 - **Never compromise type safety**: Type safety is absolute. This means no `any`, no type assertions (`as Type`) or casts, no non-null assertions (`!`), no `ts-ignore`/`eslint-disable`. Avoid `unknown` unless it is narrowed immediately.
 - Order prop intersections with specific props before generic ones (e.g., `{ specific } & RootProps`).
-- Favor readability and clarity over brevity; avoid variables that mirror another variable’s value.
+- Favor readability and clarity over brevity; avoid variables that mirror another variable's value.
 - Add comments only when they clarify non-obvious logic; do not narrate the obvious or restate what the code does. Don't add comments a human wouldn't add or which are inconsistent with the rest of the codebase.
+- **Documentation and comments must be timeless.** Never reference how things "used to be" or "are now" configured. Avoid temporal phrases like "is now", "previously", "has been changed", or "used to". Historical context belongs in PR descriptions or commit messages, not in living documentation. Each comment should stand alone without requiring knowledge of past states.
 - Follow existing conventions—use `rg`, `fd`, and git history to find patterns before adding new ones.
 - Imports: sort by React, environment/runtime, external libs, internal libs, aliased project imports, relative, then local. Use the `type` keyword for type imports. Dependencies in `package.json` are alphabetical.
 - Check for type errors regularly; run type/lint checks yourself when relevant. Re-read this document before finalizing work.

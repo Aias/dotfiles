@@ -1,0 +1,28 @@
+{
+  "skills": {
+    "vercel-react-best-practices": {
+      "source": "vercel-labs/agent-skills",
+      "commitHash": "2f19db57b2db26276bf3c9eb3d0e4bba231337f2",
+      "installedAt": "2026-01-24T18:47:31Z",
+      "lastChecked": "2026-01-24T18:47:31Z"
+    },
+    "web-design-guidelines": {
+      "source": "vercel-labs/agent-skills",
+      "commitHash": "2f19db57b2db26276bf3c9eb3d0e4bba231337f2",
+      "installedAt": "2026-01-24T18:48:52Z",
+      "lastChecked": "2026-01-24T18:48:52Z"
+    },
+    "repomix": {
+      "source": "mrgoonie/claudekit-skills",
+      "commitHash": "2f19db57b2db26276bf3c9eb3d0e4bba231337f2",
+      "installedAt": "2026-01-24T18:50:07Z",
+      "lastChecked": "2026-01-24T18:50:07Z"
+    },
+    "skill-creator": {
+      "source": "anthropics/skills",
+      "commitHash": "2f19db57b2db26276bf3c9eb3d0e4bba231337f2",
+      "installedAt": "2026-01-24T18:52:42Z",
+      "lastChecked": "2026-01-24T18:52:42Z"
+    }
+  }
+}

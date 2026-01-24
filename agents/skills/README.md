@@ -1,22 +1,35 @@
 # Agent Skills
 
-Skills are modular packages that extend agent capabilities with specialized knowledge, workflows, and tools. This directory contains skills that are deployed to agent-specific directories via the dotfiles install script.
+Skills are modular packages that extend agent capabilities with specialized knowledge, workflows, and tools. This directory contains **personal skills** (hand-written) that are deployed alongside external skills to agent-specific directories.
+
+## Personal vs External Skills
+
+- **`agents/skills/`** (this directory) - [P] Personal skills you write and maintain
+- **`.agents/skills/`** - [E] External skills installed from [skills.sh](https://skills.sh)
+
+Both types are synced to `~/.claude/skills/` and `~/.codex/skills/` by the install script.
 
 ## Quick Start
 
-Create a new skill:
+**Create a personal skill:**
 
 ```bash
-skill-creator/scripts/init-skill.py my-new-skill
+~/.claude/skills/skill-creator/scripts/init_skill.py my-new-skill
 ```
 
-Deploy skills:
+**Install an external skill:**
+
+See `skills-manager/README.md` for complete workflow, or:
 
 ```bash
-cd ~/Code/dotfiles && ./install.sh
+npx skills add <source> --skill <skill-name>
 ```
 
-Restart your agent to pick up new skills.
+**Deploy all skills:**
+
+```bash
+cd ~/Code/dotfiles && make link
+```
 
 ## Format Overview
 
@@ -83,37 +96,39 @@ Common patterns:
 
 ## Deployment
 
-Skills in this directory are synced via rsync to agent-specific locations by `install.sh`:
+Skills from both `agents/skills/` (personal) and `.agents/skills/` (external) are synced via rsync to agent-specific locations by `install.sh`:
 
 - `~/.claude/skills/` — Claude Code
 - `~/.codex/skills/` — Codex
 
-The sync uses `rsync -a --delete` to mirror each skill folder individually, removing files deleted from source while preserving other directories in the target. After deployment, restart the agent to load new skills.
+The sync uses `rsync -a --delete` to mirror each skill folder individually. Check sync status:
+
+```bash
+make check
+```
+
+This shows all skills with [P] or [E] labels and their sync status.
 
 ## Creating Skills
 
-Use the `skill-creator` skill for guidance, or run the init script directly:
+Use the `skill-creator` skill for guidance:
 
 ```bash
-# Basic skill
-skill-creator/scripts/init-skill.py pdf-processing
+# Initialize a new skill
+~/.claude/skills/skill-creator/scripts/init_skill.py my-skill-name --path ~/Code/dotfiles/agents/skills/
 
-# With resource directories
-skill-creator/scripts/init-skill.py data-analysis --resources scripts,references
+# Package a skill for distribution
+~/.claude/skills/skill-creator/scripts/package_skill.py ~/Code/dotfiles/agents/skills/my-skill-name
 ```
 
-See `skill-creator/SKILL.md` for comprehensive authoring guidance.
+See `~/.claude/skills/skill-creator/SKILL.md` for comprehensive authoring guidance.
 
-## Current Skills
+## Managing External Skills
 
-| Skill | Description |
-|-------|-------------|
-| `changelog` | Analyze outdated dependencies and summarize changelogs |
-| `deslop` | Remove AI code slop |
-| `diagrams` | Generate Mermaid diagrams from code or architecture |
-| `fresh-pr` | Create a PR from a fresh branch off the base branch |
-| `interview` | Interview about a plan, feature, or code change |
-| `merge-conflicts` | Resolve merge or rebase conflicts interactively |
-| `pr-review` | Review a pull request |
-| `remove-effects` | Remove React useEffect hooks |
-| `skill-creator` | Create or update Agent Skills |
+The `skills-manager` skill (in this directory) handles external skills from skills.sh:
+
+- Install external skills with `npx skills add`
+- Track versions in `.agents/skills.json`
+- Update with `make update-skills`
+
+See `skills-manager/README.md` for full documentation.

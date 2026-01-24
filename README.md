@@ -22,11 +22,17 @@ dotfiles/
 │   └── mcp.json         # MCP server config
 ├── agents/
 │   ├── AGENTS.md    # Shared AI assistant guidelines
-│   └── skills/      # AI agent skills (synced via rsync)
-│       ├── skill-abc/
-│       ├── skill-def/
-│       ├── .../
-│       ├── skill-xyz/
+│   ├── skills/      # [P] Personal skills (hand-written)
+│   │   ├── council/
+│   │   ├── skills-manager/
+│   │   └── .../
+│   └── ...
+├── .agents/
+│   ├── skills/      # [E] External skills (from skills.sh)
+│   │   ├── repomix/
+│   │   ├── skill-creator/
+│   │   └── .../
+│   └── skills.json  # Metadata tracking for external skills
 ├── install.sh       # Symlink installation script
 ├── Makefile         # Common tasks (install, check, etc.)
 └── README.md
@@ -61,20 +67,65 @@ source ~/.zshrc
 
 ## Managing Skills
 
-Skills are synced via rsync into `~/.claude/skills/` and `~/.codex/skills/`. The sync removes files deleted from source while preserving other directories in the target.
+Skills come in two types:
+- **[P] Personal skills** - Hand-written skills in `agents/skills/`
+- **[E] External skills** - Installed from [skills.sh](https://skills.sh) in `.agents/skills/`
 
-**Adding a skill:**
+Both types are synced via rsync to `~/.claude/skills/` and `~/.codex/skills/`.
+
+### Adding a Personal Skill
 
 1. Create a new folder in `agents/skills/<skill-name>/` with a `SKILL.md` file
-2. Run `./install.sh` to sync the skills
+2. Run `make link` to sync the skills
 
-**Removing a skill:**
+### Adding an External Skill
 
+```bash
+# Install from skills.sh (downloads to .agents/skills/)
+npx skills add <source> --skill <skill-name>
+
+# Track metadata
+COMMIT_HASH=$(cd .agents/skills/<skill-name> && git rev-parse HEAD)
+agents/skills/skills-manager/manage-skills.sh add \
+  <skill-name> \
+  <source-repo> \
+  "$COMMIT_HASH"
+
+# Deploy via rsync
+make link
+```
+
+See `agents/skills/skills-manager/README.md` for full documentation.
+
+### Updating External Skills
+
+```bash
+make update-skills
+```
+
+This runs `npx skills update` and redeploys all skills via rsync.
+
+### Removing a Skill
+
+**Personal skill:**
 1. Delete the folder from `agents/skills/`
-2. Run `./install.sh` to remove it from target directories
+2. Run `make link` to remove it from target directories
 
-**Verifying sync status:**
+**External skill:**
+1. Delete the folder from `.agents/skills/`
+2. Remove entry from `.agents/skills.json`
+3. Run `make link` to remove it from target directories
+
+### Verifying Sync Status
 
 ```bash
 make check
+```
+
+Shows a table of all skills with sync status for each agent:
+```
+skill                        type  claude  codex
+changelog                    [P]   ✓       ✓
+skill-creator                [E]   ✓       ✓
+vercel-react-best-practices  [E]   ✓       ✓
 ```

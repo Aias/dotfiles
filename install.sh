@@ -189,16 +189,21 @@ backup_and_link "$DOTFILES_DIR/cursor/keybindings.json" "$HOME/Library/Applicati
 section "Skills"
 
 install_skills() {
-    local skills_source="$DOTFILES_DIR/agents/skills"
+    local personal_skills="$DOTFILES_DIR/agents/skills"
+    local external_skills="$DOTFILES_DIR/.agents/skills"
     local targets=(
         "$HOME/.claude/skills"
         "$HOME/.codex/skills"
     )
 
-    # Collect skill names first
+    # Collect skill names from both directories
     local skills=()
-    for skill in "$skills_source"/*/; do
-        skills+=("$(basename "$skill")")
+    local skill_names=()
+    for skill in "$personal_skills"/*/; do
+        [[ -d "$skill" ]] && skills+=("personal:$(basename "$skill")") && skill_names+=("$(basename "$skill")")
+    done
+    for skill in "$external_skills"/*/; do
+        [[ -d "$skill" ]] && skills+=("external:$(basename "$skill")") && skill_names+=("$(basename "$skill")")
     done
 
     for target_dir in "${targets[@]}"; do
@@ -208,8 +213,35 @@ install_skills() {
         fi
         mkdir -p "$target_dir"
 
-        for skill_name in "${skills[@]}"; do
-            local skill_source="$skills_source/$skill_name/"
+        # Remove orphaned skills (exist in target but not in source)
+        for target_skill in "$target_dir"/*/; do
+            if [[ -d "$target_skill" ]]; then
+                local target_name=$(basename "$target_skill")
+                local found=0
+                for source_name in "${skill_names[@]}"; do
+                    if [[ "$source_name" == "$target_name" ]]; then
+                        found=1
+                        break
+                    fi
+                done
+                if [[ $found -eq 0 ]]; then
+                    rm -rf "$target_skill"
+                    info "Removed orphaned skill: $target_name"
+                fi
+            fi
+        done
+
+        for skill_entry in "${skills[@]}"; do
+            local skill_type="${skill_entry%%:*}"
+            local skill_name="${skill_entry#*:}"
+            local skill_source=""
+
+            if [[ "$skill_type" == "personal" ]]; then
+                skill_source="$personal_skills/$skill_name/"
+            else
+                skill_source="$external_skills/$skill_name/"
+            fi
+
             local skill_target="$target_dir/$skill_name"
 
             # Remove old symlinks
@@ -227,10 +259,16 @@ install_skills() {
     done
 
     # Print skill status table
-    printf "  %-20s %s  %s\n" "" "claude" "codex"
-    for skill_name in "${skills[@]}"; do
-        printf "  %-20s ✓       ✓\n" "$skill_name"
-    done
+    {
+        printf "skill\ttype\tclaude\tcodex\n"
+        for skill_entry in "${skills[@]}"; do
+            local skill_type="${skill_entry%%:*}"
+            local skill_name="${skill_entry#*:}"
+            local type_label="[P]"
+            [[ "$skill_type" == "external" ]] && type_label="[E]"
+            printf "%s\t%s\t%s\t%s\n" "$skill_name" "$type_label" "✓" "✓"
+        done
+    } | column -t -s $'\t' | sed 's/^/  /'
 }
 
 install_skills
