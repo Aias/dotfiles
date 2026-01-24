@@ -26,6 +26,9 @@ From the outdated output, identify packages with:
 
 **Patch-only updates** (e.g., 1.27.3 → 1.27.4) are excluded from changelog research by default since they typically contain only bug fixes without breaking changes. However, they will still be included in the final package updates (see Step 6).
 
+**Special packages:** Some packages require different research approaches:
+- **Drizzle beta versions** (e.g., `drizzle-orm@1.0.0-beta.*`): See [references/drizzle-beta.md](references/drizzle-beta.md) for how to find changelogs and compare versions.
+
 Present the filtered list (major/minor only) to me before proceeding with changelog research.
 
 ### Step 3: Research Changelogs in Parallel
