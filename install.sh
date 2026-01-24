@@ -213,24 +213,6 @@ install_skills() {
         fi
         mkdir -p "$target_dir"
 
-        # Remove orphaned skills (exist in target but not in source)
-        for target_skill in "$target_dir"/*/; do
-            if [[ -d "$target_skill" ]]; then
-                local target_name=$(basename "$target_skill")
-                local found=0
-                for source_name in "${skill_names[@]}"; do
-                    if [[ "$source_name" == "$target_name" ]]; then
-                        found=1
-                        break
-                    fi
-                done
-                if [[ $found -eq 0 ]]; then
-                    rm -rf "$target_skill"
-                    info "Removed orphaned skill: $target_name"
-                fi
-            fi
-        done
-
         for skill_entry in "${skills[@]}"; do
             local skill_type="${skill_entry%%:*}"
             local skill_name="${skill_entry#*:}"
