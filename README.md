@@ -22,14 +22,11 @@ dotfiles/
 │   └── mcp.json         # MCP server config
 ├── agents/
 │   ├── AGENTS.md    # Shared AI assistant guidelines
-│   └── skills/      # AI agent skills (symlinked individually)
-│       ├── changelog/
-│       ├── deslop/
-│       ├── diagrams/
-│       ├── diary/
-│       ├── merge-conflicts/
-│       ├── pr-review/
-│       └── reflect/
+│   └── skills/      # AI agent skills (synced via rsync)
+│       ├── skill-abc/
+│       ├── skill-def/
+│       ├── .../
+│       ├── skill-xyz/
 ├── install.sh       # Symlink installation script
 ├── Makefile         # Common tasks (install, check, etc.)
 └── README.md
@@ -64,17 +61,20 @@ source ~/.zshrc
 
 ## Managing Skills
 
-Skills are symlinked individually into `~/.claude/skills/` and `~/.codex/skills/` to preserve system skills that may exist in those directories. (Cursor uses workspace-level `.cursor/rules/` instead of global skills.)
+Skills are synced via rsync into `~/.claude/skills/` and `~/.codex/skills/`. The sync removes files deleted from source while preserving other directories in the target.
 
 **Adding a skill:**
+
 1. Create a new folder in `agents/skills/<skill-name>/` with a `SKILL.md` file
-2. Run `./install.sh` to create the symlinks
+2. Run `./install.sh` to sync the skills
 
 **Removing a skill:**
-1. Delete the folder from `agents/skills/`
-2. Remove stale symlinks: `rm ~/.claude/skills/<name> ~/.codex/skills/<name>`
 
-**Verifying symlinks:**
+1. Delete the folder from `agents/skills/`
+2. Run `./install.sh` to remove it from target directories
+
+**Verifying sync status:**
+
 ```bash
 make check
 ```

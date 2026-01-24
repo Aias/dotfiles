@@ -209,6 +209,7 @@ install_skills() {
         mkdir -p "$target_dir"
 
         for skill_name in "${skills[@]}"; do
+            local skill_source="$skills_source/$skill_name/"
             local skill_target="$target_dir/$skill_name"
 
             # Remove old symlinks
@@ -216,9 +217,12 @@ install_skills() {
                 rm "$skill_target"
             fi
 
-            # Copy skill directory (overwrite existing)
-            rm -rf "$skill_target"
-            cp -R "$skills_source/$skill_name" "$skill_target"
+            # Sync skill directory with rsync
+            # -a: archive mode (preserves permissions, timestamps, etc.)
+            # --delete: remove files in target that don't exist in source
+            # Trailing slash on source copies contents into target
+            mkdir -p "$skill_target"
+            rsync -a --delete "$skill_source" "$skill_target/"
         done
     done
 

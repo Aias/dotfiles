@@ -83,13 +83,12 @@ Common patterns:
 
 ## Deployment
 
-Skills in this directory are copied to agent-specific locations by `install.sh`:
+Skills in this directory are synced via rsync to agent-specific locations by `install.sh`:
 
 - `~/.claude/skills/` — Claude Code
-- `~/.cursor/skills/` — Cursor
 - `~/.codex/skills/` — Codex
 
-After deployment, restart the agent to load new skills.
+The sync uses `rsync -a --delete` to mirror each skill folder individually, removing files deleted from source while preserving other directories in the target. After deployment, restart the agent to load new skills.
 
 ## Creating Skills
 
