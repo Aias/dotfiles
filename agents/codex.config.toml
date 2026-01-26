@@ -28,6 +28,9 @@ trust_level = "trusted"
 [projects."/Users/nicktrombley/Code"]
 trust_level = "trusted"
 
+[projects."/Users/nicktrombley/Code/acorn--dev-pinned"]
+trust_level = "trusted"
+
 [mcp_servers.context7]
 url = "https://mcp.context7.com/mcp"
 
