@@ -53,11 +53,10 @@ if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
         git_info="${git_info} ${BRIGHT_BLACK}#${pr_number}${NC}"
     fi
 
-    # Git dirty indicator
+    # Check if dirty (for file counts below)
     is_dirty=false
     if ! git diff-index --quiet HEAD -- 2>/dev/null || [ -n "$(git ls-files --others --exclude-standard 2>/dev/null)" ]; then
         is_dirty=true
-        git_info="${git_info} ${BRIGHT_BLACK}*${NC}"
     fi
 
     # Ahead/behind origin
