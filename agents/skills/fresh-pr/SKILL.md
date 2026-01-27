@@ -8,15 +8,21 @@ compatibility: Requires git and GitHub CLI (gh).
 
 Use this skill when you have uncommitted changes (or changes on a different branch) that need to be submitted as a PR from a clean branch based on the latest base branch (typically `dev` or `main`).
 
-## Step 1: Identify the Base Branch
+## Step 1: Gather Parameters
 
-Determine the base branch for the PR. Common patterns:
-
+**Base branch:** Common patterns:
 - `dev` — most feature work
 - `main` or `master` — hotfixes or repos without a dev branch
 - A feature branch — for sub-features of a larger effort
 
-If not specified, ask which base branch to use.
+**Changes to include:** Determine if the PR should include:
+- All uncommitted changes (staged + unstaged)
+- Staged changes only (`git diff --cached`)
+- Specific files
+
+**Branch naming:** If the user mentions a ticket number (e.g., RMRK-1234), use it in the branch name from the start: `<handle>/rmrk-1234`. This ensures Linear auto-linking works and avoids renaming branches after PR creation.
+
+If any of these are unclear, ask before proceeding.
 
 ## Step 2: Choose Workflow
 
@@ -34,9 +40,22 @@ If unclear which to use, ask the user. Default to worktree if there are signs of
 
 ### W1: Preserve Current State
 
-Note which files need to be changed for the PR. If changes are uncommitted, either:
-- Keep track of the file paths to copy them to the worktree
-- Create a patch: `git diff > /tmp/pr-changes.patch`
+Note which files need to be changed for the PR. Create a patch based on what should be included:
+
+**All uncommitted changes:**
+```bash
+git diff > /tmp/pr-changes.patch
+```
+
+**Staged changes only:**
+```bash
+git diff --cached > /tmp/pr-changes.patch
+```
+
+**Specific files:**
+```bash
+git diff -- <file1> <file2> > /tmp/pr-changes.patch
+```
 
 ### W2: Create Worktree with Fresh Branch
 
@@ -75,8 +94,9 @@ git apply /tmp/pr-changes.patch
 cd <worktree-path>
 ```
 
-1. Run type checks if applicable
-2. Stage and commit:
+**Note:** Worktrees don't have `node_modules` installed. Skip local validation (type checks, linting) and rely on CI. Running `pnpm install` or `rush update` in a worktree is usually not worth the time for a quick PR.
+
+1. Stage and commit:
    ```bash
    git add <files>
    git commit -m "<commit message>"
@@ -101,6 +121,25 @@ Return to original directory and remove worktree:
 cd <original-directory>
 git worktree remove <worktree-path>
 ```
+
+### W6: Handle Original Changes
+
+The worktree approach leaves the original directory untouched. After PR creation, ask the user what to do with the local changes that were copied to the PR:
+
+**Keep changes (continuing to iterate):** No action needed. The local changes remain staged/unstaged. This won't cause merge conflicts later—when the PR merges and you rebase, git auto-resolves identical content.
+
+**Unstage but keep as working changes:**
+```bash
+git restore --staged <files>
+```
+
+**Discard (changes are now on PR branch):**
+```bash
+git restore --staged <files>
+git restore <files>
+```
+
+If the user doesn't specify, ask: "The changes are now on the PR branch. Should I keep them locally (for continued iteration), unstage them, or discard them?"
 
 ---
 
