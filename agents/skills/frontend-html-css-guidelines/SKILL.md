@@ -7,7 +7,8 @@ description: Semantic HTML and modern CSS best practices. Use when writing, revi
 
 ## Semantic HTML First
 
-Prefer built-in elements over generic containers:
+Prefer built-in semantic elements over generic containers:
+
 - Structure: `article`, `header`, `main`, `nav`, `section`, `ul/li`
 - Interactive: `button`, `form`, `label`
 - Content: `table`, `time`
@@ -17,12 +18,14 @@ Avoid `div`/`span` unless necessary. Prefer screen-reader text with proper struc
 ## Modern CSS Patterns
 
 ### Layout
+
 - Use flexbox/grid with `gap`
-- Padding on containers, minimal margins
-- Logical properties: `block`/`inline`, `start`/`end`
-- Transform sub-properties: `translate`, `rotate`, `scale`
+- Use of `margin` is a code smell. In most cases you should prefer setting `padding` on a container element or using `gap` properties to control spacing and layout. Margins break encapsulation and make components less modular.
+- Prefer logical properties: `block`/`inline`, `start`/`end` over `left`/`right` and `top`/`bottom`.
+- Use transform sub-properties: `translate`, `rotate`, `scale` rather than a single `transform` property.
 
 ### Colors
+
 - Use tokens/custom properties when available
 - Otherwise: `oklch` or hex (not rgb)
 - Note: "Tokens" and CSS custom properties are interchangeable terms

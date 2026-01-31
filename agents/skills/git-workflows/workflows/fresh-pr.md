@@ -1,21 +1,17 @@
----
-name: fresh-pr
-description: Create a PR from a fresh branch off the base branch
-compatibility: Requires git and GitHub CLI (gh).
----
-
 # Create a Fresh PR
 
-Use this skill when you have uncommitted changes (or changes on a different branch) that need to be submitted as a PR from a clean branch based on the latest base branch (typically `dev` or `main`).
+Use this workflow when you have uncommitted changes (or changes on a different branch) that need to be submitted as a PR from a clean branch based on the latest base branch (typically `dev` or `main`).
 
 ## Step 1: Gather Parameters
 
 **Base branch:** Common patterns:
+
 - `dev` — most feature work
 - `main` or `master` — hotfixes or repos without a dev branch
 - A feature branch — for sub-features of a larger effort
 
 **Changes to include:** Determine if the PR should include:
+
 - All uncommitted changes (staged + unstaged)
 - Staged changes only (`git diff --cached`)
 - Specific files
@@ -43,16 +39,19 @@ If unclear which to use, ask the user. Default to worktree if there are signs of
 Note which files need to be changed for the PR. Create a patch based on what should be included:
 
 **All uncommitted changes:**
+
 ```bash
 git diff > /tmp/pr-changes.patch
 ```
 
 **Staged changes only:**
+
 ```bash
 git diff --cached > /tmp/pr-changes.patch
 ```
 
 **Specific files:**
+
 ```bash
 git diff -- <file1> <file2> > /tmp/pr-changes.patch
 ```
@@ -67,6 +66,7 @@ git worktree add <worktree-path> origin/<base-branch> -b <new-branch-name>
 Use a path outside the current repo, e.g., `../<repo>-pr-workspace` or `/tmp/<repo>-pr`.
 
 Branch naming conventions:
+
 - Use the user's handle prefix if they have one (e.g., `trombley/feature-name`)
 - Include a ticket number if applicable (e.g., `trombley/RMRK-1234`)
 - Keep names descriptive but concise
@@ -76,11 +76,13 @@ Branch naming conventions:
 Choose the appropriate method:
 
 **Copy files directly:**
+
 ```bash
 cp <file> <worktree-path>/<file>
 ```
 
 **Apply a patch:**
+
 ```bash
 cd <worktree-path>
 git apply /tmp/pr-changes.patch
@@ -101,7 +103,7 @@ cd <worktree-path>
    git add <files>
    git commit -m "<commit message>"
    ```
-3. Push:
+2. Push:
    ```bash
    git push -u origin <branch-name>
    ```
@@ -109,6 +111,7 @@ cd <worktree-path>
 ### W5: Create PR and Clean Up
 
 Create the PR:
+
 ```bash
 gh pr create --base <base-branch> --title "<title>" --body "$(cat <<'EOF'
 <Description of what this PR does>
@@ -117,6 +120,7 @@ EOF
 ```
 
 Return to original directory and remove worktree:
+
 ```bash
 cd <original-directory>
 git worktree remove <worktree-path>
@@ -129,11 +133,13 @@ The worktree approach leaves the original directory untouched. After PR creation
 **Keep changes (continuing to iterate):** No action needed. The local changes remain staged/unstaged. This won't cause merge conflicts later—when the PR merges and you rebase, git auto-resolves identical content.
 
 **Unstage but keep as working changes:**
+
 ```bash
 git restore --staged <files>
 ```
 
 **Discard (changes are now on PR branch):**
+
 ```bash
 git restore --staged <files>
 git restore <files>
@@ -169,6 +175,7 @@ git checkout -b <new-branch-name> origin/<base-branch>
 ```
 
 Branch naming conventions:
+
 - Use the user's handle prefix if they have one (e.g., `trombley/feature-name`)
 - Include a ticket number if applicable (e.g., `trombley/RMRK-1234`)
 - Keep names descriptive but concise
@@ -178,6 +185,7 @@ Branch naming conventions:
 Choose the appropriate method:
 
 **If changes were stashed:**
+
 ```bash
 git stash pop
 ```
@@ -185,6 +193,7 @@ git stash pop
 Note: If the stash was created from a different branch, you may need to manually re-apply changes using the Edit tool, as the stash may contain unrelated changes from the original branch.
 
 **If cherry-picking from another branch:**
+
 ```bash
 git cherry-pick <commit-sha>
 ```
@@ -212,6 +221,7 @@ git push -u origin <branch-name>
 ```
 
 Create the PR:
+
 ```bash
 gh pr create --base <base-branch> --title "<title>" --body "$(cat <<'EOF'
 <Description of what this PR does>
@@ -228,6 +238,7 @@ git checkout <original-branch>
 ```
 
 Pop any stashes that belong to the user (ask first if uncertain):
+
 ```bash
 git stash list
 git stash pop  # or drop if no longer needed

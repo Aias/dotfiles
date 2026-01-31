@@ -16,7 +16,6 @@ TypeScript-specific application of the universal type safety principle in AGENTS
 - Order prop intersections: specific props before generic (`{ specific } & RootProps`)
 - Favor readability over brevity; avoid mirror variables
 - Comments only for non-obvious logic, never narration
-- **Documentation must be timeless**: No "now", "previously", "used to" references
 - Follow existing conventions: use `rg`, `fd`, git history before adding patterns
 - Don't declare variables only used once immediately after; inline them
 

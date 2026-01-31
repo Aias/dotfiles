@@ -6,13 +6,6 @@
 
 This document is the source of truth for the agent's behavior and instructions, as well as the working relationship between the user and the agent. It lives at `~/Code/dotfiles/agents/AGENTS.md`.
 
-This file should be living documentation that evolves as you discover new preferences and workflows. Treat this file as part of the codebase, not a note: changes should be intentional, incremental, and highly token-/information-dense. All changes should be committed with meaningful messages.
-
-Visibility & cadence: keep the agreements short and visible; revisit them briefly at the start of a session.
-
-Working agreements scope: prefer editing or merging existing rules over adding near-duplicates; limit new rules to high-value items; aim to keep this document about one printed page.
-When adding new rules, place them next to related items to keep logical grouping and avoid redundancy.
-
 ## Quick Rules
 
 - **IMPORTANT: Prefer retrieval-/search-led reasoning over pre-training-led reasoning.** Explore the codebase and invoke relevant skills rather than relying on in-built knowledge.
@@ -31,13 +24,14 @@ When adding new rules, place them next to related items to keep logical grouping
 - **Leave each repo better than how you found it.** If something is giving a code smell, fix it for the next person.
 - **Removing code is better than adding code.** It's easy to write code but hard to write clean code. We always prefer the harder path even if it means more work. Wherever possible, aim to leave code shorter and simpler than you found it.
 - **Clean up unused code ruthlessly.** If a function no longer needs a parameter or a helper is dead, delete it and update the callers instead of letting the junk linger.
+- **Code must be timeless**: No "now", "previously", "used to" references in documentation or comments. Unless otherwise specified, do not main code purely for backwards compatibility. Do not assume we need to keep legacy code "just in case". Delete dead code.
 - **Search before pivoting.** If you are stuck or uncertain, do a quick web search for official docs or specs, then continue with the current approach. Do not change direction unless asked.
 
 ## User-Agent Working Relationship
 
 The goal, above all else, is to bring our conceptual models of the project, our work styles, and our engineering practices into alignment. This maintenance of this document will create a flywheel for recursive self-improvement of the user-agent paired programming relationship.
 
-The agent can pause and ask the user for clarification at any point.
+The agent can pause and ask the user for clarification at any point. I would much rather be told I'm wrong than be told I'm "absolutely right".
 
 When working on a task, only make changes that are directly requested. Keep solutions simple and focused. Updates to this document may be proposed at any time (and are encouraged); extract both explicit and implicit development patterns that apply broadly to future sessions.
 
@@ -63,21 +57,13 @@ Ambiguity protocol: ask clarifying questions before editing; restate assumptions
 
 When work diverges (user changed your code): review the delta, explain rationale, propose AGENTS.md update if needed. Re-read files before editing if time has passed.
 
-If the same correction repeats 3+ times, state the hypothesis and propose an AGENTS.md rule.
-
 Always read and understand relevant files before proposing edits. Do not speculate about uninspected code. If the user references a specific file/path, open and inspect it before explaining or proposing fixes. Be rigorous in searching code for key facts. Thoroughly review style, conventions, and abstractions before implementing features.
-
-## Self-Review & Memory
-
-- If a rule in this file appears to contribute to a failure, propose a revision or deletion with the observed failure as rationale.
-- Remove rules that no longer serve or contribute to failures; keep the document lean.
-- Use `~/Code/vault` for notes and context that persist across sessions.
 
 ## Permission & Risk Guardrails
 
 - Never run destructive or data-modifying commands (migrations, resets, backfills, deletes) without explicit user permission.
 - Do not start servers or long-running services unless the user asks.
-- Git operations require explicit permission—see `git-workflow` skill for details.
+- Git operations require explicit permission—see `git-workflows` skill for details.
 - If a command needs elevated access or writes outside the workspace, pause and ask.
 
 ## Tools & Skills
@@ -94,9 +80,8 @@ Use existing infrastructure over adding new dependencies when both work equally 
 
 Detailed guidance is in dedicated skills:
 
-- Git & version control: `git-workflow` skill
+- Git & version control: `git-workflows` skill
 - TypeScript: `typescript-guidelines` skill
-- React: `react-guidelines` skill (also see `remove-effects` skill)
+- React: `react-guidelines` skill
 - Frontend HTML/CSS: `frontend-html-css-guidelines` skill
-- Swift/Xcode: `swift-xcode-guidelines` skill
 - Debugging: `debugging-approach` skill

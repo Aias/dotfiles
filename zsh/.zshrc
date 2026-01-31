@@ -120,6 +120,3 @@ fi
 # Starship prompt (keep at the end)
 # ─────────────────────────────────────────────────────────────
 eval "$(starship init zsh)"
-
-# bun completions
-[ -s "/Users/nicktrombley/.bun/_bun" ] && source "/Users/nicktrombley/.bun/_bun"
