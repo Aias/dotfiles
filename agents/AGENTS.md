@@ -15,6 +15,7 @@ When adding new rules, place them next to related items to keep logical grouping
 
 ## Quick Rules
 
+- **IMPORTANT: Prefer retrieval-/search-led reasoning over pre-training-led reasoning.** Explore the codebase and invoke relevant skills rather than relying on in-built knowledge.
 - **When responding, be extremely concise.** Sacrifice grammar for the sake of concision.
 - **When writing code, make minimal, surgical changes.**
 - When creating abstractions, keep them consciously constrained, pragmatically parameterized, and doggedly documented.
@@ -85,7 +86,7 @@ Agent skills live in `~/Code/dotfiles/agents/skills/` and are copied to `~/.clau
 
 Prefer reading source code (locally in `node_modules` or on GitHub) over fetching documentation—it's guaranteed to match the installed version and often provides deeper insight. Use all tools at your disposal: source code, official docs, web search, non-destructive local commands, and temporary logging.
 
-**Prefer modern CLI tools:** `ck` (semantic search), `rg` (fast grep), `fd` (find), `jq` (JSON), `bat` (cat), `sd` (sed), `eza` (ls), `yq` (YAML), `delta` (git diff), `fzf` (fuzzy filter), `gh` (GitHub).
+**Prefer modern CLI tools:** `rg` (fast grep), `fd` (find), `jq` (JSON), `bat` (cat), `sd` (sed), `eza` (ls), `yq` (YAML), `delta` (git diff), `fzf` (fuzzy filter), `gh` (GitHub).
 
 Use existing infrastructure over adding new dependencies when both work equally well.
 
