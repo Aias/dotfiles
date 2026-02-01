@@ -11,21 +11,42 @@ DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # Output helpers
 # ─────────────────────────────────────────────────────────────
 
+# Colors (auto-disable if not a terminal)
+if [[ -t 1 ]]; then
+    GREEN='\033[0;32m'
+    RED='\033[0;31m'
+    YELLOW='\033[0;33m'
+    CYAN='\033[0;36m'
+    BOLD='\033[1m'
+    DIM='\033[2m'
+    RESET='\033[0m'
+else
+    GREEN='' RED='' YELLOW='' CYAN='' BOLD='' DIM='' RESET=''
+fi
+
 section() {
-    echo ""
-    echo "$1"
+    printf "\n${BOLD}%s${RESET}\n" "$1"
 }
 
 success() {
-    printf "  ✓ %s\n" "$1"
+    printf "  ${GREEN}✓${RESET} %s\n" "$1"
+}
+
+success_dim() {
+    # For "exists" or "no change" cases - dimmed annotation
+    printf "  ${GREEN}✓${RESET} %s ${DIM}%s${RESET}\n" "$1" "$2"
 }
 
 info() {
-    printf "  → %s\n" "$1"
+    printf "  ${CYAN}→${RESET} %s\n" "$1"
 }
 
 warn() {
-    printf "  ! %s\n" "$1"
+    printf "  ${YELLOW}!${RESET} %s\n" "$1"
+}
+
+error() {
+    printf "  ${RED}✗${RESET} %s\n" "$1"
 }
 
 # ─────────────────────────────────────────────────────────────
@@ -109,47 +130,38 @@ backup_and_link() {
 }
 
 # ─────────────────────────────────────────────────────────────
-# Shell
+# Symlinks from links.txt
 # ─────────────────────────────────────────────────────────────
 
-section "Shell"
-backup_and_link "$DOTFILES_DIR/zsh/.zshrc" "$HOME/.zshrc" ".zshrc"
-backup_and_link "$DOTFILES_DIR/zsh/.zprofile" "$HOME/.zprofile" ".zprofile"
-backup_and_link "$DOTFILES_DIR/starship/starship.toml" "$HOME/.config/starship.toml" ".config/starship.toml"
-backup_and_link "$DOTFILES_DIR/ghostty/config" "$HOME/.config/ghostty/config" ".config/ghostty/config"
+install_links() {
+    local current_section=""
+    while IFS='|' read -r section_name source target label; do
+        # Skip comments and empty lines
+        [[ "$section_name" =~ ^[[:space:]]*# ]] && continue
+        [[ -z "$section_name" ]] && continue
+
+        # Trim whitespace
+        section_name="${section_name## }"; section_name="${section_name%% }"
+        source="${source## }"; source="${source%% }"
+        target="${target## }"; target="${target%% }"
+        label="${label## }"; label="${label%% }"
+
+        # Print section header when it changes
+        if [[ "$section_name" != "$current_section" ]]; then
+            section "$section_name"
+            current_section="$section_name"
+        fi
+
+        backup_and_link "$DOTFILES_DIR/$source" "$HOME/$target" "$label"
+    done < "$DOTFILES_DIR/links.txt"
+}
+
+install_links
 
 # ─────────────────────────────────────────────────────────────
-# Git
-# ─────────────────────────────────────────────────────────────
-
-section "Git"
-backup_and_link "$DOTFILES_DIR/git/.gitconfig" "$HOME/.gitconfig" ".gitconfig"
-backup_and_link "$DOTFILES_DIR/git/.gitignore_global" "$HOME/.gitignore_global" ".gitignore_global"
-
-# ─────────────────────────────────────────────────────────────
-# Claude
-# ─────────────────────────────────────────────────────────────
-
-section "Claude"
-backup_and_link "$DOTFILES_DIR/agents/AGENTS.md" "$HOME/.claude/CLAUDE.md" ".claude/CLAUDE.md"
-backup_and_link "$DOTFILES_DIR/agents/claude.settings.json" "$HOME/.claude/settings.json" ".claude/settings.json"
-backup_and_link "$DOTFILES_DIR/agents/claude.statusline-command.sh" "$HOME/.claude/statusline-command.sh" ".claude/statusline-command.sh"
-
-# ─────────────────────────────────────────────────────────────
-# Codex
-# ─────────────────────────────────────────────────────────────
-
-section "Codex"
-backup_and_link "$DOTFILES_DIR/agents/AGENTS.md" "$HOME/.codex/AGENTS.md" ".codex/AGENTS.md"
-backup_and_link "$DOTFILES_DIR/agents/codex.config.toml" "$HOME/.codex/config.toml" ".codex/config.toml"
-
-# ─────────────────────────────────────────────────────────────
-# Cursor
-# ─────────────────────────────────────────────────────────────
-
-section "Cursor"
-
 # Cursor global rules (copy with frontmatter, not symlink)
+# ─────────────────────────────────────────────────────────────
+
 install_cursor_global_rules() {
     local source="$DOTFILES_DIR/agents/AGENTS.md"
     local target="$HOME/.cursor/rules/global.mdc"
@@ -161,14 +173,9 @@ install_cursor_global_rules() {
         echo ""
         cat "$source"
     } > "$target"
-    success ".cursor/rules/global.mdc"
+    success_dim ".cursor/rules/global.mdc" "(copied)"
 }
 install_cursor_global_rules
-
-backup_and_link "$DOTFILES_DIR/cursor/cli-config.json" "$HOME/.cursor/cli-config.json" ".cursor/cli-config.json"
-backup_and_link "$DOTFILES_DIR/cursor/mcp.json" "$HOME/.cursor/mcp.json" ".cursor/mcp.json"
-backup_and_link "$DOTFILES_DIR/cursor/settings.json" "$HOME/Library/Application Support/Cursor/User/settings.json" "Cursor/User/settings.json"
-backup_and_link "$DOTFILES_DIR/cursor/keybindings.json" "$HOME/Library/Application Support/Cursor/User/keybindings.json" "Cursor/User/keybindings.json"
 
 # ─────────────────────────────────────────────────────────────
 # Skills
@@ -228,15 +235,16 @@ install_skills() {
         done
     done
 
-    # Print skill status table
+    # Print skill status table with colors
+    local check="${GREEN}✓${RESET}"
     {
         printf "skill\ttype\tclaude\tcodex\n"
         for skill_entry in "${skills[@]}"; do
             local skill_type="${skill_entry%%:*}"
             local skill_name="${skill_entry#*:}"
-            local type_label="[P]"
-            [[ "$skill_type" == "external" ]] && type_label="[E]"
-            printf "%s\t%s\t%s\t%s\n" "$skill_name" "$type_label" "✓" "✓"
+            local type_label="${DIM}[P]${RESET}"
+            [[ "$skill_type" == "external" ]] && type_label="${DIM}[E]${RESET}"
+            printf "%s\t%b\t%b\t%b\n" "$skill_name" "$type_label" "$check" "$check"
         done
     } | column -t -s $'\t' | sed 's/^/  /'
 }
@@ -263,13 +271,13 @@ create_from_template() {
         mkdir -p "$(dirname "$target")"
         if [[ -f "$template" ]]; then
             cat "$template" > "$target"
-            success "$label (created from template)"
+            success_dim "$label" "(created)"
         else
             warn "$label template not found"
             return 1
         fi
     else
-        success "$label (exists)"
+        success_dim "$label" "(exists)"
     fi
 }
 
@@ -290,7 +298,7 @@ if [[ ! -d "$HOME/Code/vault" ]]; then
     cp "$DOTFILES_DIR/agents/vault-template/scratch.md" "$HOME/Code/vault/"
     success "~/Code/vault"
 else
-    success "~/Code/vault (exists)"
+    success_dim "~/Code/vault" "(exists)"
 fi
 
 # ─────────────────────────────────────────────────────────────
@@ -315,7 +323,7 @@ cleanup_old_backups
 
 echo ""
 if [[ "$BACKUP_CREATED" == "true" ]]; then
-    echo "Done! Backups saved to: $BACKUP_DIR"
+    printf "${GREEN}✓ Done!${RESET} ${DIM}Backups saved to: $BACKUP_DIR${RESET}\n"
 else
-    echo "Done!"
+    printf "${GREEN}✓ Done!${RESET}\n"
 fi

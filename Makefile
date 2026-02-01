@@ -38,76 +38,71 @@ diff:
 
 # Check symlink health
 check:
-	@failed=0; \
-	check_link() { \
-		local label="$$2"; \
-		if [ -L "$$1" ]; then \
-			printf "  ✓ %s\n" "$$label"; \
-		elif [ -e "$$1" ]; then \
-			printf "  ✗ %s (not a symlink)\n" "$$label"; \
-			failed=1; \
-		else \
-			printf "  - %s (missing)\n" "$$label"; \
+	@GREEN='\033[0;32m'; RED='\033[0;31m'; YELLOW='\033[0;33m'; BOLD='\033[1m'; DIM='\033[2m'; RESET='\033[0m'; \
+	issues=""; \
+	current_section=""; \
+	while IFS='|' read -r section source target label; do \
+		case "$$section" in \#*|"") continue;; esac; \
+		section=$$(echo "$$section" | xargs); \
+		target=$$(echo "$$target" | xargs); \
+		label=$$(echo "$$label" | xargs); \
+		if [ "$$section" != "$$current_section" ]; then \
+			[ -n "$$current_section" ] && echo ""; \
+			printf "$${BOLD}%s$${RESET}\n" "$$section"; \
+			current_section="$$section"; \
 		fi; \
-	}; \
-	echo "Shell"; \
-	check_link ~/.zshrc ".zshrc"; \
-	check_link ~/.zprofile ".zprofile"; \
-	check_link ~/.config/starship.toml ".config/starship.toml"; \
-	check_link ~/.config/ghostty/config ".config/ghostty/config"; \
+		target_path=~/"$$target"; \
+		if [ -L "$$target_path" ]; then \
+			printf "  $${GREEN}✓$${RESET} %s\n" "$$label"; \
+		elif [ -e "$$target_path" ]; then \
+			printf "  $${RED}✗$${RESET} %s $${DIM}(not a symlink)$${RESET}\n" "$$label"; \
+			issues="$$issues $$label"; \
+		else \
+			printf "  $${YELLOW}-$${RESET} %s $${DIM}(missing)$${RESET}\n" "$$label"; \
+			issues="$$issues $$label"; \
+		fi; \
+	done < links.txt; \
 	echo ""; \
-	echo "Git"; \
-	check_link ~/.gitconfig ".gitconfig"; \
-	check_link ~/.gitignore_global ".gitignore_global"; \
-	echo ""; \
-	echo "Claude"; \
-	check_link ~/.claude/CLAUDE.md ".claude/CLAUDE.md"; \
-	check_link ~/.claude/settings.json ".claude/settings.json"; \
-	check_link ~/.claude/statusline-command.sh ".claude/statusline-command.sh"; \
-	echo ""; \
-	echo "Codex"; \
-	check_link ~/.codex/AGENTS.md ".codex/AGENTS.md"; \
-	check_link ~/.codex/config.toml ".codex/config.toml"; \
-	echo ""; \
-	echo "Cursor"; \
+	printf "$${BOLD}Cursor (special)$${RESET}\n"; \
 	if [ -f ~/.cursor/rules/global.mdc ]; then \
-		printf "  ✓ %s\n" ".cursor/rules/global.mdc"; \
+		printf "  $${GREEN}✓$${RESET} %s\n" ".cursor/rules/global.mdc"; \
 	else \
-		printf "  - %s (missing)\n" ".cursor/rules/global.mdc"; \
+		printf "  $${YELLOW}-$${RESET} %s $${DIM}(missing)$${RESET}\n" ".cursor/rules/global.mdc"; \
+		issues="$$issues .cursor/rules/global.mdc"; \
 	fi; \
-	check_link ~/.cursor/cli-config.json ".cursor/cli-config.json"; \
-	check_link ~/.cursor/mcp.json ".cursor/mcp.json"; \
-	check_link ~/Library/Application\ Support/Cursor/User/settings.json "Cursor/User/settings.json"; \
-	check_link ~/Library/Application\ Support/Cursor/User/keybindings.json "Cursor/User/keybindings.json"; \
 	echo ""; \
-	echo "Skills (✓=synced, ✗=out of sync, -=missing)"; \
+	printf "$${BOLD}Skills$${RESET} $${DIM}(✓=synced, ✗=out of sync, -=missing)$${RESET}\n"; \
 	{ \
 		printf "skill\ttype\tclaude\tcodex\n"; \
 		for skill in $$(ls -1d agents/skills/*/ 2>/dev/null | xargs -I{} basename {}); do \
-			claude="-"; codex="-"; \
+			claude="$${YELLOW}-$${RESET}"; codex="$${YELLOW}-$${RESET}"; \
 			src="agents/skills/$$skill/SKILL.md"; \
 			if [ -f ~/.claude/skills/$$skill/SKILL.md ]; then \
-				diff -q "$$src" ~/.claude/skills/$$skill/SKILL.md >/dev/null 2>&1 && claude="✓" || claude="✗"; \
+				diff -q "$$src" ~/.claude/skills/$$skill/SKILL.md >/dev/null 2>&1 && claude="$${GREEN}✓$${RESET}" || claude="$${RED}✗$${RESET}"; \
 			fi; \
 			if [ -f ~/.codex/skills/$$skill/SKILL.md ]; then \
-				diff -q "$$src" ~/.codex/skills/$$skill/SKILL.md >/dev/null 2>&1 && codex="✓" || codex="✗"; \
+				diff -q "$$src" ~/.codex/skills/$$skill/SKILL.md >/dev/null 2>&1 && codex="$${GREEN}✓$${RESET}" || codex="$${RED}✗$${RESET}"; \
 			fi; \
-			printf "%s\t%s\t%s\t%s\n" "$$skill" "[P]" "$$claude" "$$codex"; \
+			printf "%s\t$${DIM}[P]$${RESET}\t%b\t%b\n" "$$skill" "$$claude" "$$codex"; \
 		done; \
 		for skill in $$(ls -1d .agents/skills/*/ 2>/dev/null | xargs -I{} basename {}); do \
-			claude="-"; codex="-"; \
+			claude="$${YELLOW}-$${RESET}"; codex="$${YELLOW}-$${RESET}"; \
 			src=".agents/skills/$$skill/SKILL.md"; \
 			if [ -f ~/.claude/skills/$$skill/SKILL.md ]; then \
-				diff -q "$$src" ~/.claude/skills/$$skill/SKILL.md >/dev/null 2>&1 && claude="✓" || claude="✗"; \
+				diff -q "$$src" ~/.claude/skills/$$skill/SKILL.md >/dev/null 2>&1 && claude="$${GREEN}✓$${RESET}" || claude="$${RED}✗$${RESET}"; \
 			fi; \
 			if [ -f ~/.codex/skills/$$skill/SKILL.md ]; then \
-				diff -q "$$src" ~/.codex/skills/$$skill/SKILL.md >/dev/null 2>&1 && codex="✓" || codex="✗"; \
+				diff -q "$$src" ~/.codex/skills/$$skill/SKILL.md >/dev/null 2>&1 && codex="$${GREEN}✓$${RESET}" || codex="$${RED}✗$${RESET}"; \
 			fi; \
-			printf "%s\t%s\t%s\t%s\n" "$$skill" "[E]" "$$claude" "$$codex"; \
+			printf "%s\t$${DIM}[E]$${RESET}\t%b\t%b\n" "$$skill" "$$claude" "$$codex"; \
 		done; \
 	} | column -t -s $$'\t' | sed 's/^/  /'; \
-	if [ "$$failed" = "1" ]; then \
-		echo ""; \
-		echo "Run 'make link' to fix broken symlinks"; \
+	echo ""; \
+	if [ -n "$$issues" ]; then \
+		count=$$(echo "$$issues" | wc -w | xargs); \
+		printf "$${RED}✗ $$count item(s) out of sync:$${RESET}$$issues\n"; \
+		printf "$${DIM}Run 'make link' to fix$${RESET}\n"; \
 		exit 1; \
+	else \
+		printf "$${GREEN}✓ All synced$${RESET}\n"; \
 	fi
