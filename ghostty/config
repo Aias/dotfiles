@@ -17,6 +17,10 @@ font-variation = wdth=88
 adjust-cell-height = 10%
 keybind = shift+enter=text:\n
 link-url = true
+unfocused-split-opacity = 0.9
+unfocused-split-fill = #3D2B1F
+window-decoration = none
+window-save-state = always
 
 # The template does not set any default options, since Ghostty ships
 # with sensible defaults for all options. Users should only need to set
