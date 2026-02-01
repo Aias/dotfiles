@@ -1,0 +1,77 @@
+---
+name: remember-that
+description: |
+  Persist learnings from the current session for future conversations. Use when the user says "remember that", "add this to the rules", "update AGENTS.md", "save this preference", or otherwise indicates they want Claude to remember something across sessions. Extracts general principles and patterns (not one-offs) and determines the appropriate storage location.
+---
+
+# Remember That
+
+Extract durable learnings from conversation context and persist them appropriately.
+
+## Process
+
+1. **Analyze recent context** — Review the last few user messages and the conversation thread to identify what the user wants remembered. Look for:
+
+   - Explicit corrections ("don't do X", "always do Y")
+   - Preferences revealed through feedback ("I prefer...", "that's too verbose")
+   - Patterns that emerged during the session
+   - Implicit standards the user enforced
+
+2. **Filter for durability** — Only persist learnings that are:
+
+   - General principles or repeatable patterns (not one-off task details)
+   - Applicable across multiple sessions
+   - Not already captured in existing rules
+
+3. **Determine storage location(s)** — A learning may require edits to multiple files:
+
+   | Scope               | Location                                                                            | When to use                                                                        |
+   | ------------------- | ----------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+   | Global behavior     | `~/Code/dotfiles/agents/AGENTS.md`                                                  | Universal preferences, communication style, coding standards that apply everywhere |
+   | Project-specific    | `./CLAUDE.md` or `./AGENTS.md` in project root                                      | Patterns specific to this codebase, local conventions                              |
+   | Workflow/technology | New or existing skill in `~/Code/dotfiles/agents/skills/` or local `.claude/skills` | Detailed procedures for specific tools, frameworks, or workflows                   |
+
+   **Decision heuristics:**
+
+   - "Every conversation" → global AGENTS.md
+   - "Every conversation in this project" → project root (use whichever of CLAUDE.md or AGENTS.md already exists; if neither, prefer CLAUDE.md)
+   - "When working with X technology/workflow" → skill
+
+4. **Consolidate, don't accumulate** — Before adding:
+
+   - Read the target file(s)
+   - Check if a more general rule would capture this + existing related rules
+   - Merge overlapping instructions into one
+   - Prefer editing existing rules over adding new ones
+   - Delete redundant rules when consolidating
+
+5. **Propose changes** — Use `AskUserQuestion` to present:
+
+   - What will be remembered (the extracted principle)
+   - Where it will go (file path and section)
+   - How it relates to existing rules (consolidation, replacement, or addition)
+   - The exact diff or new text
+
+   Wait for explicit user confirmation before making any edits.
+
+## Examples
+
+**User feedback:** "Stop adding docstrings to functions I didn't modify"
+**Extract:** Don't add comments/docstrings to unchanged code
+**Location:** AGENTS.md (universal coding practice)
+**Check:** Already covered by "only make changes that are directly requested" → no edit needed, just acknowledge
+
+**User feedback:** "In this repo we use pnpm, not npm"
+**Extract:** Use pnpm as package manager
+**Location:** Project CLAUDE.md (project-specific)
+
+**User feedback:** "When reviewing PRs, always check for console.log statements"
+**Extract:** PR review should flag debug statements
+**Location:** `pr-review` skill (workflow-specific)
+
+## Anti-patterns
+
+- Don't persist task-specific details ("remember to fix the login bug")
+- Don't duplicate existing rules in different words
+- Don't add rules that contradict existing ones without consolidating
+- Don't create new skills for single simple rules — use AGENTS.md or project CLAUDE.md

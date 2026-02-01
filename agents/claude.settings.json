@@ -6,7 +6,47 @@
     "type": "command",
     "command": "bash ~/.claude/statusline-command.sh"
   },
-  "enabledPlugins": {},
+  "enabledPlugins": {
+    "context7@claude-plugins-official": true,
+    "github@claude-plugins-official": true,
+    "typescript-lsp@claude-plugins-official": true,
+    "commit-commands@claude-plugins-official": true,
+    "pr-review-toolkit@claude-plugins-official": true,
+    "linear@claude-plugins-official": true,
+    "slack@claude-plugins-official": true
+  },
+  "spinnerVerbs": {
+    "mode": "replace",
+    "verbs": [
+      "Assembling",
+      "Blooming",
+      "Calcifying",
+      "Crenellating",
+      "Desiccating",
+      "Diagramming",
+      "Dissembling",
+      "Fragmenting",
+      "Furnishing",
+      "Fusing",
+      "Glimmering",
+      "Glinting",
+      "Governing",
+      "Imbibing",
+      "Lilting",
+      "Limning",
+      "Looming",
+      "Meandering",
+      "Meshing",
+      "Murmuring",
+      "Mouldering",
+      "Orchestrating",
+      "Ossifying",
+      "Perforating",
+      "Pullulating",
+      "Raking",
+      "Tessellating"
+    ]
+  },
   "alwaysThinkingEnabled": true,
   "feedbackSurveyState": {
     "lastShownTime": 1753980901020
