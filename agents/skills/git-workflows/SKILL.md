@@ -31,6 +31,7 @@ A collection of git-related workflows and guidelines. Use this skill for any git
 
 - Commit messages and PR descriptions should have a single point of view—write as the author, not as an AI assistant
 - No "Generated with Claude" footers, no co-authored-by AI attribution, no "I helped implement" phrasing
+- Strip non-essential information from commit/PR messages—focus on what changed, not how it was written
 
 ## Tool Notes
 

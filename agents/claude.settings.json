@@ -49,6 +49,10 @@
       "Tessellating"
     ]
   },
+  "attribution": {
+    "commit": "",
+    "pr": ""
+  },
   "alwaysThinkingEnabled": true,
   "feedbackSurveyState": {
     "lastShownTime": 1753980901020

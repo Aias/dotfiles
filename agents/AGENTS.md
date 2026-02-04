@@ -64,6 +64,7 @@ Always read and understand relevant files before proposing edits. Do not specula
 - Never run destructive or data-modifying commands (migrations, resets, backfills, deletes) without explicit user permission.
 - Do not start servers or long-running services unless the user asks.
 - Git operations require explicit permission—see `git-workflows` skill for details.
+- Never add AI co-authorship attribution or "Generated with" footers to commits or PRs. Strip non-essential metadata—focus on what changed.
 - If a command needs elevated access or writes outside the workspace, pause and ask.
 
 ## Tools & Skills
