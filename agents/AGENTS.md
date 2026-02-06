@@ -24,6 +24,7 @@ This document is the source of truth for the agent's behavior and instructions, 
 - **Leave each repo better than how you found it.** If something is giving a code smell, fix it for the next person.
 - **Removing code is better than adding code.** It's easy to write code but hard to write clean code. We always prefer the harder path even if it means more work. Wherever possible, aim to leave code shorter and simpler than you found it.
 - **Clean up unused code ruthlessly.** If a function no longer needs a parameter or a helper is dead, delete it and update the callers instead of letting the junk linger.
+- **No barrel files.** Do not create `index.ts` re-export files. Import directly from source modules. Barrel files obscure dependency graphs and make tree-shaking harder.
 - **Code must be timeless**: No "now", "previously", "used to" references in documentation or comments. Unless otherwise specified, do not main code purely for backwards compatibility. Do not assume we need to keep legacy code "just in case". Delete dead code.
 - **Search before pivoting.** If you are stuck or uncertain, do a quick web search for official docs or specs, then continue with the current approach. Do not change direction unless asked.
 

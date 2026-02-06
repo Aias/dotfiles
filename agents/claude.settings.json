@@ -2,6 +2,10 @@
   "env": {
     "ENABLE_TOOL_SEARCH": "true"
   },
+  "attribution": {
+    "commit": "",
+    "pr": ""
+  },
   "statusLine": {
     "type": "command",
     "command": "bash ~/.claude/statusline-command.sh"
@@ -46,12 +50,9 @@
       "Perforating",
       "Pullulating",
       "Raking",
+      "Shivering",
       "Tessellating"
     ]
-  },
-  "attribution": {
-    "commit": "",
-    "pr": ""
   },
   "alwaysThinkingEnabled": true,
   "feedbackSurveyState": {
