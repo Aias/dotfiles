@@ -1,10 +1,10 @@
 file_opener = "cursor"
-model = "gpt-5.2-codex"
+model = "gpt-5.3-codex"
 model_reasoning_effort = "high"
 personality = "pragmatic"
+web_search = "live"
 
 [features]
-web_search_request = true
 rmcp_client = true
 skills = true
 
@@ -32,11 +32,14 @@ trust_level = "trusted"
 [projects."/Users/nicktrombley/Code/acorn--dev-pinned"]
 trust_level = "trusted"
 
+[projects."/Users/nicktrombley/Code/intents-redesign"]
+trust_level = "trusted"
+
+[projects."/Users/nicktrombley"]
+trust_level = "trusted"
+
 [mcp_servers.context7]
 url = "https://mcp.context7.com/mcp"
-
-[mcp_servers.figma-desktop]
-url = "http://127.0.0.1:3845/mcp"
 
 [mcp_servers.linear]
 url = "https://mcp.linear.app/mcp"
