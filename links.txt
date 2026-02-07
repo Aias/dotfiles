@@ -12,12 +12,12 @@ Git | git/.gitconfig | .gitconfig | .gitconfig
 Git | git/.gitignore_global | .gitignore_global | .gitignore_global
 
 # Claude
-Claude | agents/AGENTS.md | .claude/CLAUDE.md | .claude/CLAUDE.md
+Claude | agents/GLOBAL.md | .claude/CLAUDE.md | .claude/CLAUDE.md
 Claude | agents/claude.settings.json | .claude/settings.json | .claude/settings.json
 Claude | agents/claude.statusline-command.sh | .claude/statusline-command.sh | .claude/statusline-command.sh
 
 # Codex
-Codex | agents/AGENTS.md | .codex/AGENTS.md | .codex/AGENTS.md
+Codex | agents/GLOBAL.md | .codex/AGENTS.md | .codex/AGENTS.md
 Codex | agents/codex.config.toml | .codex/config.toml | .codex/config.toml
 
 # Cursor (symlinks only - global.mdc uses copy with frontmatter, handled separately)

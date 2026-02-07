@@ -7,7 +7,7 @@ description: TypeScript code quality and type safety standards. Use when writing
 
 ## Type Safety
 
-TypeScript-specific application of the universal type safety principle in AGENTS.md.
+TypeScript-specific application of the universal type safety principle in GLOBAL.md.
 
 **Never compromise type safety**: No `any`, no type assertions (`as Type`), no non-null assertions (`!`), no `ts-ignore`/`eslint-disable`. Avoid `unknown` unless narrowed immediately. If TypeScript resists, fix the code—don't override the types.
 

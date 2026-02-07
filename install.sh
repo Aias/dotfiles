@@ -163,7 +163,7 @@ install_links
 # ─────────────────────────────────────────────────────────────
 
 install_cursor_global_rules() {
-    local source="$DOTFILES_DIR/agents/AGENTS.md"
+    local source="$DOTFILES_DIR/agents/GLOBAL.md"
     local target="$HOME/.cursor/rules/global.mdc"
     mkdir -p "$(dirname "$target")"
     {
