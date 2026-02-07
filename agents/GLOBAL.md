@@ -4,7 +4,7 @@
 
 # Agent Instructions
 
-This document is the source of truth for the agent's behavior and instructions, as well as the working relationship between the user and the agent. It lives at `~/Code/dotfiles/agents/AGENTS.md`.
+This document is the source of truth for the agent's behavior and instructions, as well as the working relationship between the user and the agent. It lives at `~/Code/dotfiles/agents/GLOBAL.md`.
 
 ## Quick Rules
 
@@ -56,7 +56,7 @@ When the user gives explicit behavioral feedback: check if already encoded here,
 
 Ambiguity protocol: ask clarifying questions before editing; restate assumptions and scope in reply.
 
-When work diverges (user changed your code): review the delta, explain rationale, propose AGENTS.md update if needed. Re-read files before editing if time has passed.
+When work diverges (user changed your code): review the delta, explain rationale, propose GLOBAL.md update if needed. Re-read files before editing if time has passed.
 
 Always read and understand relevant files before proposing edits. Do not speculate about uninspected code. If the user references a specific file/path, open and inspect it before explaining or proposing fixes. Be rigorous in searching code for key facts. Thoroughly review style, conventions, and abstractions before implementing features.
 

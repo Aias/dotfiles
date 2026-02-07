@@ -21,7 +21,7 @@ dotfiles/
 │   ├── cli-config.json  # Cursor CLI config
 │   └── mcp.json         # MCP server config
 ├── agents/
-│   ├── AGENTS.md    # Shared AI assistant guidelines
+│   ├── GLOBAL.md    # Shared AI assistant guidelines
 │   ├── skills/      # [P] Personal skills (hand-written)
 │   │   ├── council/
 │   │   ├── skills-manager/
