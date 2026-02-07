@@ -14,11 +14,11 @@ fi
 HISTFILE=~/.zsh_history
 HISTSIZE=50000
 SAVEHIST=50000
-setopt SHARE_HISTORY          # Share history across sessions
+setopt SHARE_HISTORY          # Share history across sessions (implies INC_APPEND_HISTORY)
 setopt HIST_IGNORE_ALL_DUPS   # Remove duplicate entries
 setopt HIST_REDUCE_BLANKS     # Remove superfluous blanks
-setopt INC_APPEND_HISTORY     # Write immediately, not on exit
 setopt HIST_IGNORE_SPACE      # Don't save commands starting with space
+setopt EXTENDED_HISTORY        # Save timestamps in history
 
 # ─────────────────────────────────────────────────────────────
 # Shell options
@@ -52,8 +52,10 @@ eval "$(fnm env --use-on-cd --version-file-strategy=recursive --resolve-engines 
 # ─────────────────────────────────────────────────────────────
 # Aliases - Navigation & Files
 # ─────────────────────────────────────────────────────────────
-alias ll="ls -lAh"
-alias la="ls -A"
+alias ls="eza"
+alias ll="eza -lah --git"
+alias la="eza -a"
+alias tree="eza --tree"
 alias ..="cd .."
 alias ...="cd ../.."
 alias ....="cd ../../.."
@@ -103,17 +105,13 @@ fi
 # Install with: brew install zsh-syntax-highlighting zsh-autosuggestions
 # ─────────────────────────────────────────────────────────────
 if [[ -x /opt/homebrew/bin/brew ]]; then
-  _brew_prefix="$(brew --prefix)"
-
   # Autosuggestions (load before syntax highlighting)
-  [[ -r "$_brew_prefix/share/zsh-autosuggestions/zsh-autosuggestions.zsh" ]] && \
-    source "$_brew_prefix/share/zsh-autosuggestions/zsh-autosuggestions.zsh"
+  [[ -r /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh ]] && \
+    source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 
   # Syntax highlighting (must be last)
-  [[ -r "$_brew_prefix/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" ]] && \
-    source "$_brew_prefix/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
-
-  unset _brew_prefix
+  [[ -r /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]] && \
+    source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 fi
 
 # ─────────────────────────────────────────────────────────────

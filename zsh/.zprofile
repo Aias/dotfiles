@@ -34,6 +34,9 @@ export PATH="$HOME/go/bin:$PATH"
 # Environment variables
 # ─────────────────────────────────────────────────────────────
 export HOMEBREW_NO_ENV_HINTS=1
+export COREPACK_ENABLE_DOWNLOAD_PROMPT=0
+export EDITOR="${EDITOR:-cursor --wait}"
+export VISUAL="${VISUAL:-cursor --wait}"
 
 # Local environment (paths, exports)
 [[ -r "$HOME/.local/bin/env" ]] && source "$HOME/.local/bin/env"

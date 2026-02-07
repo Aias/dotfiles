@@ -23,11 +23,12 @@ update-skills:
 
 # Backup current configs
 backup:
-	@mkdir -p ~/.dotfiles-backup/$$(date +%Y%m%d_%H%M%S)
-	@cp ~/.zshrc ~/.dotfiles-backup/$$(date +%Y%m%d_%H%M%S)/ 2>/dev/null || true
-	@cp ~/.zprofile ~/.dotfiles-backup/$$(date +%Y%m%d_%H%M%S)/ 2>/dev/null || true
-	@cp ~/.gitconfig ~/.dotfiles-backup/$$(date +%Y%m%d_%H%M%S)/ 2>/dev/null || true
-	@echo "Backup saved to ~/.dotfiles-backup/$$(date +%Y%m%d_%H%M%S)/"
+	@ts=$$(date +%Y%m%d_%H%M%S); \
+	mkdir -p ~/.dotfiles-backup/$$ts; \
+	cp ~/.zshrc ~/.dotfiles-backup/$$ts/ 2>/dev/null || true; \
+	cp ~/.zprofile ~/.dotfiles-backup/$$ts/ 2>/dev/null || true; \
+	cp ~/.gitconfig ~/.dotfiles-backup/$$ts/ 2>/dev/null || true; \
+	echo "Backup saved to ~/.dotfiles-backup/$$ts/"
 
 # Check for config drift
 diff:

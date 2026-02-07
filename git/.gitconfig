@@ -20,6 +20,16 @@
 	name = Nick Trombley
 	email = trombley.nick@gmail.com
 	signingkey = ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFp4f8Dr581sbnlCM7k0QsP/iv+q5IfIXUDgGeNQ2hqL
+[init]
+	defaultBranch = main
+[pull]
+	rebase = true
+[push]
+	autoSetupRemote = true
+[fetch]
+	prune = true
+[rerere]
+	enabled = true
 [merge]
 	tool = araxis
 	conflictstyle = diff3
