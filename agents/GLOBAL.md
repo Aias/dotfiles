@@ -95,4 +95,4 @@ Detailed guidance is in dedicated skills:
 - TypeScript: `typescript-guidelines` skill
 - React: `react-guidelines` skill
 - Frontend HTML/CSS: `frontend-html-css-guidelines` skill
-- Debugging: `debugging-approach` skill
+- Debugging: `debugger` skill

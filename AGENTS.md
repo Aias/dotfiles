@@ -7,7 +7,7 @@ Personal dotfiles repo — shell config, git, editor settings, and AI agent conf
 - `agents/GLOBAL.md` — Global agent instructions (symlinked to `~/.claude/CLAUDE.md`, `~/.codex/AGENTS.md`, Cursor rules)
 - `agents/skills/` — Personal agent skills
 - `agents/claude.settings.json` — Claude Code settings
-- `.agents/skills/` — External skills (from skills.sh, gitignored)
+- `.agents/skills/` — External skills (from skills.sh)
 - `install.sh` — Symlink installer (reads `links.txt`)
 - `Makefile` — Common tasks (`make link`, `make check`, `make update-skills`)
 
