@@ -7,11 +7,14 @@ description: Manage external skills in the dotfiles repo. Use when asked to add,
 
 Manages external skills within the dotfiles setup. External skills live in `.agents/skills/` and deploy via `make link`.
 
+**When invoked with no additional user context**, use `AskUserQuestion` to present the available actions (install/update, delete, cleanup, find) as interactive prompts rather than listing them as plain text.
+
 ## Directory Structure
 
 ```
 dotfiles/
-├── agents/skills/           # [P] Personal skills (hand-written)
+├── agents/skills/           # [P] Personal skills (hand-written, tracked in git)
+├── agents/skills.local/     # [L] Local skills (machine-specific, gitignored)
 ├── .agents/skills/          # [E] External skills (from GitHub)
 └── .claude/skills/          # Symlinks created by npx skills (delete these)
 

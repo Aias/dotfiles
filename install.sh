@@ -186,19 +186,24 @@ section "Skills"
 install_skills() {
     local personal_skills="$DOTFILES_DIR/agents/skills"
     local external_skills="$DOTFILES_DIR/.agents/skills"
+    local local_skills="$DOTFILES_DIR/agents/skills.local"
     local targets=(
         "$HOME/.claude/skills"
         "$HOME/.codex/skills"
     )
 
-    # Collect skill names from both directories
+    # Collect skill names from all directories
     local skills=()
     local skill_names=()
+    mkdir -p "$local_skills"
     for skill in "$personal_skills"/*/; do
         [[ -d "$skill" ]] && skills+=("personal:$(basename "$skill")") && skill_names+=("$(basename "$skill")")
     done
     for skill in "$external_skills"/*/; do
         [[ -d "$skill" ]] && skills+=("external:$(basename "$skill")") && skill_names+=("$(basename "$skill")")
+    done
+    for skill in "$local_skills"/*/; do
+        [[ -d "$skill" ]] && skills+=("local:$(basename "$skill")") && skill_names+=("$(basename "$skill")")
     done
 
     for target_dir in "${targets[@]}"; do
@@ -215,8 +220,10 @@ install_skills() {
 
             if [[ "$skill_type" == "personal" ]]; then
                 skill_source="$personal_skills/$skill_name/"
-            else
+            elif [[ "$skill_type" == "external" ]]; then
                 skill_source="$external_skills/$skill_name/"
+            else
+                skill_source="$local_skills/$skill_name/"
             fi
 
             local skill_target="$target_dir/$skill_name"
@@ -244,6 +251,7 @@ install_skills() {
             local skill_name="${skill_entry#*:}"
             local type_label="${DIM}[P]${RESET}"
             [[ "$skill_type" == "external" ]] && type_label="${DIM}[E]${RESET}"
+            [[ "$skill_type" == "local" ]] && type_label="${DIM}[L]${RESET}"
             printf "%s\t%b\t%b\t%b\n" "$skill_name" "$type_label" "$check" "$check"
         done
     } | column -t -s $'\t' | sed 's/^/  /'

@@ -2,3 +2,5 @@
 *.swp
 *.swo
 *~
+agents/skills.local/*
+!agents/skills.local/.gitkeep
