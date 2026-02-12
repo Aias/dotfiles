@@ -4,169 +4,204 @@ description: Review a pull request
 compatibility: Requires GitHub CLI (gh) and GitHub API access.
 ---
 
-You are helping me review a pull request. Follow this workflow:
+You are helping me review a pull request. The primary artifact you produce is a **review document** — a comprehensive markdown file that explains the PR's changes, walks me through them at multiple levels of abstraction, and identifies potential issues. I will read this document, leave inline comments or chat-based feedback referencing specific sections or issue IDs, and you will answer questions, expand sections, or update the document as needed.
 
-### Step 1: Find Relevant PRs
+## Step 1: Identify the PR
 
-If I specify a PR number in the initial prompt, use that PR number and skip directly to step 2. Otherwise, find open PRs where I am assigned, requested as a reviewer, or have already submitted a review:
+If I specify a PR number, use it directly. Otherwise, find open PRs relevant to me:
 
 ```bash
 scripts/list-open-prs.sh
 ```
 
-If there are multiple PRs, ask which one I want to review. Present the results to me as a numbered list for me to choose from. If there's only one, confirm before proceeding.
+Multiple results: present a numbered list for me to choose. Single result: confirm before proceeding.
 
-### Step 2: Check Out and Examine the PR
+## Step 2: Gather Context
 
-Once I confirm the PR:
+**Preflight:**
 
-**Preflight (before presenting anything):**
-
-1. Confirm the working tree is clean (`git status --porcelain`). Do not discard user changes.
-2. Fetch PR metadata first (title/body/base/head/commits/files/checks) so you know what you’re looking at.
+1. Confirm clean working tree (`git status --porcelain`). Do not discard changes.
+2. Fetch PR metadata (title, body, base, head, commits, files, checks).
 3. Check out the PR locally:
    - Prefer: `gh pr checkout <PR_NUMBER>`
-   - If checkout fails due to a diverged existing local branch, do **not** merge/rebase. Instead, create a fresh local branch tracking the remote head ref (e.g. `git fetch origin <headRefName>:pr-<PR_NUMBER> && git checkout pr-<PR_NUMBER>`), or delete the stale local branch if appropriate.
-4. Collect review context:
+   - If checkout fails due to diverged local branch: fetch fresh (`git fetch origin <headRefName>:pr-<PR_NUMBER> && git checkout pr-<PR_NUMBER>`) or delete the stale local branch.
+4. Collect:
    - PR details: `gh pr view <PR_NUMBER>`
    - Full diff: `gh pr diff <PR_NUMBER>`
    - Checks: `gh pr checks <PR_NUMBER>`
-   - Existing comments:
+   - Issue comments: `gh pr view <PR_NUMBER> --json comments`
+   - Review comments: `gh api repos/{owner}/{repo}/pulls/{pr_number}/comments`
+   - (`{owner}/{repo}` via `gh repo view --json nameWithOwner -q .nameWithOwner`)
 
-   - Issue comments (general PR discussion): `gh pr view <PR_NUMBER> --json comments`
-   - Review comments (inline code comments): `gh api repos/{owner}/{repo}/pulls/{pr_number}/comments`
+**Scope hygiene:** Review the PR diff, not local merge artifacts. Compare against the base ref explicitly if needed (`git diff origin/<baseRefName>...HEAD`). Do not start servers unless asked.
 
-   Note: `{owner}/{repo}` can be found via `gh repo view --json nameWithOwner -q .nameWithOwner`
+## Step 3: Audit the Changes
 
-**Scope hygiene:**
+Complete a thorough audit **before writing the review document**. Do not present findings incrementally. Use parallel subagents or exploratory mode to speed up the audit — e.g., one agent reading the diff while another explores related files, or multiple agents investigating different areas of the codebase simultaneously.
 
-- Ensure you’re reviewing the actual PR diff, not incidental local merges. If needed, compare against the PR base ref explicitly (e.g. `git diff origin/<baseRefName>...HEAD --name-only`).
-- Do not start servers or long-running processes as part of PR review unless I ask.
+Minimum audit:
+- Read PR description and all commit messages.
+- Check CI status; note missing signal (no tests, skipped jobs).
+- Review the full diff to map what changed.
+- Read the most important touched files in full (not just the diff hunks) to understand behavior in context and avoid diff tunnel vision.
+- **Explore related files** — callers, callees, shared types, tests, adjacent modules. The diff alone is rarely enough context. Trace imports, follow function calls, and read the surrounding code that interacts with the changed code.
+- For any new dependencies: check maintenance status, look for existing alternatives in the codebase.
+- When making factual claims, **prove them in code**. No speculative "likely/may" — every claim must be backed by a specific code path, user flow, or reproduction scenario. If you identify a potential issue, trace it to a concrete situation where it actually manifests in this codebase. If you can't construct a real reproduction path, it's not a real issue.
 
-### Step 3: Analyze the Changes
+## Step 4: Write the Review Document
 
-Do a **comprehensive audit first**, then present findings. Do not present comments or conclusions until you have completed the audit.
+Write the document to a file. Ask me where I'd like it saved, or default to `.context/pr-<NUMBER>-review.md`.
 
-Audit requirements (minimum):
+The document has five sections, progressing from high-level understanding down to specific details — enabling the reader to move up and down the ladder of abstraction.
 
-- Read PR description + all commit headlines (and skim bodies if non-trivial).
-- Verify checks status and note any missing signal (no tests, skipped jobs, etc.).
-- Review the diff at a high level to understand what changed.
-- Then read the most important touched files directly (not just the diff) to validate behavior and avoid “diff tunnel vision”.
-- When you make a factual claim about behavior, **verify it** in code (or by showing the exact missing evidence). Avoid speculative language (“likely/may”) unless you explain exactly what is unknown and why.
+---
 
-Prioritize correctness and core runtime behavior over style nits. Then present the review to me in **two phases**:
+### Section 1: Summary
 
-#### Phase A (Pedagogical Overview — teach me the PR)
+One paragraph. What does this PR do, and why? What problem does it solve? What constraints or tradeoffs shaped the approach?
 
-Before suggesting review comments, write an overview that helps me build the right mental model:
+### Section 2: Conceptual Changes
 
-- What is the overall purpose of this PR, in one sentence?
-- What problem(s) does it solve? What constraints drove the solution?
-- What is the new conceptual model / architecture / dataflow? (How it works now.)
-- What are the core invariants / assumptions the code relies on?
-- What are the main risk areas or failure modes?
-- Any new APIs introduced (endpoints, functions, methods)
-- Any new or modified data structures (types, interfaces, schemas)
-- Any new dependencies or libraries added
-- Any architectural or design pattern changes
-- Any configuration changes / migrations / breaking changes
+The middle of the abstraction ladder. Explain what shifted architecturally, structurally, or conceptually:
 
-#### Phase B (Interactive Review — one area at a time, one comment at a time)
+- New or changed mental models, dataflow, control flow
+- Core invariants and assumptions the code now relies on
+- New APIs, data structures, types, schemas
+- New dependencies or libraries
+- Configuration changes, migrations, breaking changes
+- How this affects the rest of the codebase
 
-Do **not** dump all review comments at once. Instead:
+Use diagrams (mermaid or ASCII) when they clarify relationships or flows.
 
-1. Propose a numbered **Review Order** (foundational first, then core logic, then usages, then tests).
-2. Present a **Review Checklist** — a compact table of all potential comments identified so far:
+### Section 3: Change Walkthrough
 
-   | # | File | Line | Issue | Priority | Confidence |
-   |---|------|------|-------|----------|------------|
-   | 1 | `src/foo.ts` | 42 | Missing null check | Critical | High |
-   | 2 | `src/bar.ts` | 15 | Unused import | Nit | High |
+The bottom of the ladder. Walk through the actual changes comprehensively — the goal is that after reading this section, I understand every change in the PR.
 
-   Priority levels: **Critical** (blocks merge), **High** (likely bug/regression), **Medium** (should fix), **Low** (minor improvement), **Nit** (style/preference)
+**Grouping:** Organize changes by logical theme, not strictly file-by-file. When multiple files follow the same pattern (e.g., "added error handling to all API routes"), describe the pattern once with one or two concrete examples and list the remaining files. For unique or complex changes, go file-by-file.
 
-   This checklist is a living document — items may be added, removed, or re-prioritized as the review proceeds.
+**For each change or group of changes:**
+- Explain what changed and why
+- Include code snippets showing the relevant lines (both before and after when the diff matters)
+- Reference specific files and line numbers: `path/to/file.ts:42`
+- When behavior changed, trace through a concrete scenario step-by-step showing the old behavior vs. the new behavior
 
-3. Start with checklist item #1 and suggest **one** potential review comment at a time.
-4. Wait for me to respond (questions, followups, "skip", or "next") before continuing.
-5. Continue until we exhaust the checklist (or I say we're done).
+**Links:** For every file/line reference, provide two clickable links:
+- **Local** — editor-openable path: `path/to/file.ts:42` (most editors and terminals make these clickable)
+- **GitHub** — PR file view: `https://github.com/{owner}/{repo}/pull/{number}/files#diff-{sha}R{line}`
 
-Interaction rules:
+Format as: `path/to/file.ts:42` ([local](path/to/file.ts:42) | [github](https://github.com/...))
 
-- If I say “skip” or “next”, move on immediately with no further persuasion.
-- If I ask a runtime/behavior question mid-review, answer it clearly (with evidence), then resume the review order where we left off.
+Generate GitHub links from `gh api` data when available. Always pair links with inline code snippets so the document is self-contained even without clicking.
 
-Important: I will manually add comments in GitHub. You **must not** submit reviews or post comments via CLI/API.
+### Section 4: Issues
 
-**Dependency Check**
+A table of all potential issues, followed by detailed write-ups.
 
-- For any new dependencies: check if they are actively maintained
-- Flag archived, deprecated, or unmaintained libraries
-- Look for existing libraries in the codebase that could be used instead (check imports across the codebase)
+**Issues table:**
 
-**Impact Assessment**
+| ID | File | Line | Issue | Importance | Confidence |
+|----|------|------|-------|------------|------------|
+| R1 | `src/foo.ts` | 42 | Missing null check on user input | Critical | High |
+| R2 | `src/bar.ts` | 15 | Redundant database query | Medium | Medium |
 
-- How does this affect existing code?
-- What areas of the codebase will need to be aware of these changes?
-- Are there documentation implications?
+**Importance levels:**
+- **Critical** — blocks merge; correctness bug, data loss, security issue
+- **High** — likely bug or regression that should be fixed before merge
+- **Medium** — should fix; meaningful improvement to correctness, UX, or maintainability
+- **Low** — minor improvement; better but not urgent
+- **Nit** — style, naming, or preference
 
-### Step 4: Review Focus Areas (build the Review Order)
+**Confidence levels:**
+- **High** — verified in code; the issue demonstrably exists
+- **Medium** — strong evidence but haven't fully traced all paths; could be mitigated by something not yet checked
+- **Low** — pattern looks suspicious but may be intentional or handled elsewhere
 
-Provide a numbered list of files or directories to review, in logical order (foundational changes first, then core logic, then usages, then tests). For each item, briefly note what to focus on:
+**Detailed write-ups:** After the table, expand each issue with its own subsection headed by the ID:
 
-- API or DB schema design considerations, if any
-- Complex logic that needs careful examination
-- Potential edge cases or error handling gaps
-- Design system usage patterns, new components, and styling conventions
-- Performance considerations
-- Security implications
-- Test coverage gaps
-- Code style or consistency issues
+#### R1: Missing null check on user input
 
-### Step 5: Suggested Comments (interactive; one at a time)
+**`src/foo.ts:42`** · Critical · High confidence
 
-When suggesting a review comment:
-
-- Keep it short and to the point
-- Use a friendly, suggestion-based tone (e.g., "Consider...", "Might be worth...", "Nit: ...")
-- Only be strongly opinionated if there's an obvious bug or issue
-- Include the file path and line number
-- **Verify line numbers** by reading the actual file content before suggesting
-- If the suggestion depends on "this used to work differently", you must show the **actual old code** and the **new code** side-by-side (or as two clearly labeled snippets) so I can compare directly.
-  - Use the PR base branch as "before" (e.g. `origin/dev`), and the checked-out PR branch as "after".
-  - Example "before" fetch: `git show origin/<baseRefName>:<path>`
-  - Example "after" fetch: read the checked-out file content and cite the exact lines.
-- **When calling out potential bugs, trace the logic with a concrete example.** Don't reason abstractly about "possible scenarios"—instead, walk through actual code paths step-by-step showing exactly what would happen. Tie every potential bug to real code and real functional behavior. Example format:
-  ```
-  Scenario: User clicks X while Y is loading
-  1. `handleClick()` is called (line 42)
-  2. This sets `isLoading = true` (line 45)
-  3. But `useEffect` on line 52 checks `isLoading` before it's updated...
-  → Result: stale state causes Z
-  ```
-  If you can't construct a concrete scenario where the bug actually manifests, it's probably not a real issue.
-
-Format each suggestion as:
-
-```md
-**Location:** `<path>:<line_number>`
-**Comment:** <your suggestion>
+```ts
+// src/foo.ts:40-45
+function processUser(input: UserInput) {
+  const name = input.user.name; // ← input.user could be undefined
+  return normalize(name);
+}
 ```
 
-The code block above is just for formatting within these rules. Do not wrap the suggestions in code blocks. Separate each suggestion with a horizontal rule with newlines before and after.
+Explain the problem concretely. Trace through the scenario that triggers it:
 
-### Output Format
+1. `processUser()` is called from `handleRequest()` at `src/api.ts:28`
+2. `input.user` is only populated when auth succeeds, but this path is also reachable from the public endpoint at `src/routes.ts:15`
+3. → `TypeError: Cannot read properties of undefined`
 
-Always present the review in two parts:
+**Suggested fix:**
 
-1. **Pedagogical Overview** (Phase A above)
-2. **Interactive Review**: show the Review Order, then start with the first item and provide the first suggested comment.
+```ts
+function processUser(input: UserInput) {
+  if (!input.user) {
+    throw new InvalidInputError('user is required');
+  }
+  const name = input.user.name;
+  return normalize(name);
+}
+```
 
-Then wait for my feedback. I will:
+The categories of issues to look for:
+- **Bugs**: correctness errors, logic mistakes, race conditions, unhandled edge cases
+- **UX problems**: confusing behavior, missing feedback, poor error messages
+- **UI changes**: any modifications to components, CSS, HTML, styling (Ark, Panda, design tokens, etc.), or UI semantics — **always call these out** even if there are no glaring issues, so they can be reviewed against design standards. Flag patterns that might warrant new persistent rules.
+- **Code simplification**: unnecessary complexity, dead code, over-abstraction
+- **Refactoring opportunities**: duplicated logic, poor naming, structural improvements
+- **Performance**: unnecessary work, N+1 queries, missing memoization
+- **Security**: injection, auth bypass, data exposure
+- **Test gaps**: missing coverage for new behavior, untested edge cases
 
-- Ask you to modify suggestions
-- Tell you which comments to keep/remove
-- Request changes to the review approach
+**Proving issues are real:** Every issue above Nit importance must include a concrete reproduction path — a specific user flow, API call sequence, or code path that demonstrates the problem actually occurs in practice. Walk through the steps: what the user does, what function gets called, what state leads to the failure. If you cannot construct a plausible scenario where the issue manifests in this actual codebase, downgrade to Nit or remove it.
 
-Do NOT submit any reviews or comments until I explicitly approve the plan.
+Be comprehensive but pragmatic. Do not pad the list with theoretical problems to appear thorough.
+
+### Section 5: Alternative Approaches
+
+For PRs that introduce meaningful new logic, architecture, or patterns, include a section that asks: **"If we wrote this from scratch with the same goal, how could we do it differently?"**
+
+This is not a critique of the PR — it's a design exploration. Consider:
+- Simpler abstractions that achieve the same result
+- Different architectural patterns (e.g., push vs. pull, eager vs. lazy, server vs. client)
+- Ways to reduce the surface area of the change
+- Opportunities to leverage existing infrastructure that the PR doesn't use
+- Tradeoffs the current approach makes and what the alternatives trade instead
+
+Keep it grounded and specific — reference the actual code and constraints. This section is optional for small or straightforward PRs.
+
+---
+
+## Step 5: Present and Iterate
+
+After writing the document, tell me:
+- Where the file is saved
+- A brief summary (5-10 lines): what the PR does, how many issues found at each importance level, and any critical items
+
+Then I will:
+- Read the document and leave inline comments referencing issue IDs (e.g., "R3: I think this is intentional because...")
+- Ask questions in chat about specific changes or issues
+- Request you expand, update, or add sections
+- Ask for deeper analysis of specific areas
+
+When I reference an issue ID or section, respond in whatever medium is appropriate:
+- **Questions / discussion**: answer in chat
+- **Requests to expand or add detail**: update the document
+- **Disagreements on issues**: discuss in chat, then update the issue's status/write-up in the document if the conclusion changes
+
+You **must not** submit reviews or post comments on GitHub via CLI/API. I handle that manually.
+
+## Document Maintenance
+
+The review document is a living artifact. As the review progresses:
+- Issues may be resolved, downgraded, or removed — update the table accordingly
+- New issues may surface from discussion — add them with the next available ID
+- Sections may need expansion based on my questions
+- If the PR is updated with new commits, re-audit the changes and update affected sections
+
+Keep the document as the single source of truth for the review state.
