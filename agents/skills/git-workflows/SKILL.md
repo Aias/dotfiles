@@ -10,11 +10,10 @@ A collection of git-related workflows and guidelines. Use this skill for any git
 
 ## When to Use
 
-| Situation                                    | Workflow                                                |
-| -------------------------------------------- | ------------------------------------------------------- |
-| Creating a PR from uncommitted/local changes | [fresh-pr](workflows/fresh-pr.md)                       |
-| Rebasing a branch onto another               | [rebasing](workflows/rebasing.md)                       |
-| Resolving merge or rebase conflicts          | [conflict-resolution](workflows/conflict-resolution.md) |
+| Situation                             | Workflow                                            |
+| ------------------------------------- | --------------------------------------------------- |
+| Creating a PR                         | [pr-guidelines](workflows/pr-guidelines.md)         |
+| Rebasing or resolving merge conflicts | [conflict-resolution](workflows/conflict-resolution.md) |
 
 ## General Principles
 
@@ -40,10 +39,3 @@ The `Read` and `StrReplace` tools may have difficulty with conflict markers. Dur
 - **View conflicts:** `sed -n '<start>,<end>p' <file>` or `bat --plain -r <start>:<end> <file>`
 - **Apply resolutions:** head/tail reconstruction (see conflict-resolution workflow)
 - **Verify resolution:** `rg "^<<<<<<" <file>` or `git diff --check`
-
-## Guidelines
-
-- Prefer combining changes when they're independent
-- Look at imports and surrounding code—one side may add dependencies the other needs
-- For rebases, "ours" and "theirs" are swapped vs merges
-- If a resolution is complex, break it into smaller pieces for review
