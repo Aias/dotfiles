@@ -40,6 +40,7 @@ Multiple results: present a numbered list for me to choose. Single result: confi
 Complete a thorough audit **before writing the review document**. Do not present findings incrementally. Use parallel subagents or exploratory mode to speed up the audit — e.g., one agent reading the diff while another explores related files, or multiple agents investigating different areas of the codebase simultaneously.
 
 Minimum audit:
+
 - Read PR description and all commit messages.
 - Check CI status; note missing signal (no tests, skipped jobs).
 - Review the full diff to map what changed.
@@ -80,16 +81,18 @@ The bottom of the ladder. Walk through the actual changes comprehensively — th
 **Grouping:** Organize changes by logical theme, not strictly file-by-file. When multiple files follow the same pattern (e.g., "added error handling to all API routes"), describe the pattern once with one or two concrete examples and list the remaining files. For unique or complex changes, go file-by-file.
 
 **For each change or group of changes:**
+
 - Explain what changed and why
 - Include code snippets showing the relevant lines (both before and after when the diff matters)
 - Reference specific files and line numbers: `path/to/file.ts:42`
 - When behavior changed, trace through a concrete scenario step-by-step showing the old behavior vs. the new behavior
 
 **Links:** For every file/line reference, provide two clickable links:
-- **Local** — editor-openable path: `path/to/file.ts:42` (most editors and terminals make these clickable)
+
+- **Local** — workspace-root-relative path with `#L` fragment: `/path/to/file.ts#L42`
 - **GitHub** — PR file view: `https://github.com/{owner}/{repo}/pull/{number}/files#diff-{sha}R{line}`
 
-Format as: `path/to/file.ts:42` ([local](path/to/file.ts:42) | [github](https://github.com/...))
+Format as: `path/to/file.ts:42` ([local](/path/to/file.ts#L42) | [github](https://github.com/...))
 
 Generate GitHub links from `gh api` data when available. Always pair links with inline code snippets so the document is self-contained even without clicking.
 
@@ -99,12 +102,13 @@ A table of all potential issues, followed by detailed write-ups.
 
 **Issues table:**
 
-| ID | File | Line | Issue | Importance | Confidence |
-|----|------|------|-------|------------|------------|
-| R1 | `src/foo.ts` | 42 | Missing null check on user input | Critical | High |
-| R2 | `src/bar.ts` | 15 | Redundant database query | Medium | Medium |
+| ID  | File         | Line | Issue                            | Importance | Confidence |
+| --- | ------------ | ---- | -------------------------------- | ---------- | ---------- |
+| R1  | `src/foo.ts` | 42   | Missing null check on user input | Critical   | High       |
+| R2  | `src/bar.ts` | 15   | Redundant database query         | Medium     | Medium     |
 
 **Importance levels:**
+
 - **Critical** — blocks merge; correctness bug, data loss, security issue
 - **High** — likely bug or regression that should be fixed before merge
 - **Medium** — should fix; meaningful improvement to correctness, UX, or maintainability
@@ -112,6 +116,7 @@ A table of all potential issues, followed by detailed write-ups.
 - **Nit** — style, naming, or preference
 
 **Confidence levels:**
+
 - **High** — verified in code; the issue demonstrably exists
 - **Medium** — strong evidence but haven't fully traced all paths; could be mitigated by something not yet checked
 - **Low** — pattern looks suspicious but may be intentional or handled elsewhere
@@ -141,7 +146,7 @@ Explain the problem concretely. Trace through the scenario that triggers it:
 ```ts
 function processUser(input: UserInput) {
   if (!input.user) {
-    throw new InvalidInputError('user is required');
+    throw new InvalidInputError("user is required");
   }
   const name = input.user.name;
   return normalize(name);
@@ -149,6 +154,7 @@ function processUser(input: UserInput) {
 ```
 
 The categories of issues to look for:
+
 - **Bugs**: correctness errors, logic mistakes, race conditions, unhandled edge cases
 - **UX problems**: confusing behavior, missing feedback, poor error messages
 - **UI changes**: any modifications to components, CSS, HTML, styling (Ark, Panda, design tokens, etc.), or UI semantics — **always call these out** even if there are no glaring issues, so they can be reviewed against design standards. Flag patterns that might warrant new persistent rules.
@@ -167,6 +173,7 @@ Be comprehensive but pragmatic. Do not pad the list with theoretical problems to
 For PRs that introduce meaningful new logic, architecture, or patterns, include a section that asks: **"If we wrote this from scratch with the same goal, how could we do it differently?"**
 
 This is not a critique of the PR — it's a design exploration. Consider:
+
 - Simpler abstractions that achieve the same result
 - Different architectural patterns (e.g., push vs. pull, eager vs. lazy, server vs. client)
 - Ways to reduce the surface area of the change
@@ -180,16 +187,19 @@ Keep it grounded and specific — reference the actual code and constraints. Thi
 ## Step 5: Present and Iterate
 
 After writing the document, tell me:
+
 - Where the file is saved
 - A brief summary (5-10 lines): what the PR does, how many issues found at each importance level, and any critical items
 
 Then I will:
+
 - Read the document and leave inline comments referencing issue IDs (e.g., "R3: I think this is intentional because...")
 - Ask questions in chat about specific changes or issues
 - Request you expand, update, or add sections
 - Ask for deeper analysis of specific areas
 
 When I reference an issue ID or section, respond in whatever medium is appropriate:
+
 - **Questions / discussion**: answer in chat
 - **Requests to expand or add detail**: update the document
 - **Disagreements on issues**: discuss in chat, then update the issue's status/write-up in the document if the conclusion changes
@@ -199,6 +209,7 @@ You **must not** submit reviews or post comments on GitHub via CLI/API. I handle
 ## Document Maintenance
 
 The review document is a living artifact. As the review progresses:
+
 - Issues may be resolved, downgraded, or removed — update the table accordingly
 - New issues may surface from discussion — add them with the next available ID
 - Sections may need expansion based on my questions

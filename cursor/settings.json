@@ -75,5 +75,6 @@
   "markdown.preview.lineHeight": 1.65,
   "explorer.compactFolders": false,
   "diffEditor.ignoreTrimWhitespace": false,
-  "window.newWindowDimensions": "inherit"
+  "window.newWindowDimensions": "inherit",
+  "security.promptForLocalFileProtocolHandling": false
 }

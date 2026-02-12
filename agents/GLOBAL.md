@@ -78,6 +78,16 @@ When asked whether behavior is known or documented, include direct links to the 
 - When updating dependencies, pin exact latest stable versions and keep dependency sections alphabetized. Avoid broad ranges (e.g., `^4`) unless the project explicitly requires ranges.
 - No barrel files. Do not create `index.ts` re-export files. Import directly from source modules. Barrel files obscure dependency graphs and make tree-shaking harder.
 
+## File Links in Markdown
+
+When linking to local files from markdown documents (review docs, `.context/` files, etc.):
+
+- **Relative paths** resolve from the containing file's directory. Use `../` to traverse up.
+- **Workspace-root paths** start with `/` and resolve from the project root (cleaner, resilient to subdirectory restructuring).
+- **Line numbers** use `#L<number>` fragment syntax: `[link](/path/to/file.ts#L21)`. The `:line` suffix does **not** work in editor markdown preview.
+- **Cursor-specific:** `cursor://file/<absolute-path>:line:col` opens a file at a specific line but requires absolute paths (not portable across machines). Use only when the document is machine-local.
+- **Display text** can use the familiar `file.ts:21-45` format for readability — only the link target needs `#L` syntax.
+
 ## Tools & Skills
 
 Agent skills live in `~/Code/dotfiles/agents/skills/` and are copied to `~/.claude/skills/`, `~/.cursor/skills/`, and `~/.codex/skills/` by the install script. Always edit skills in the dotfiles source directory, never in client-specific directories.
