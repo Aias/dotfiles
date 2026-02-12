@@ -74,5 +74,6 @@
   "editor.bracketPairColorization.independentColorPoolPerBracketType": true,
   "markdown.preview.lineHeight": 1.65,
   "explorer.compactFolders": false,
-  "diffEditor.ignoreTrimWhitespace": false
+  "diffEditor.ignoreTrimWhitespace": false,
+  "window.newWindowDimensions": "inherit"
 }

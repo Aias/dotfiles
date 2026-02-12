@@ -63,6 +63,8 @@ When work diverges (user changed your code): review the delta, explain rationale
 
 Always read and understand relevant files before proposing edits. Do not speculate about uninspected code. If the user references a specific file/path, open and inspect it before explaining or proposing fixes. Be rigorous in searching code for key facts. Thoroughly review style, conventions, and abstractions before implementing features.
 
+When asked whether behavior is known or documented, include direct links to the relevant primary sources (official docs, release notes, RFCs, or GitHub issues/PRs).
+
 ## Permission & Risk Guardrails
 
 - Never run destructive or data-modifying commands (migrations, resets, backfills, deletes) without explicit user permission.
@@ -91,7 +93,7 @@ Use existing infrastructure over adding new dependencies when both work equally 
 
 Detailed guidance is in dedicated skills:
 
-- Git & version control: `git-workflows` skill
+- Git & version control (commits, PRs, rebasing, GitHub): `git-workflows` skill — **always invoke before creating PRs or commits**
 - TypeScript: `typescript-guidelines` skill
 - React: `react-guidelines` skill
 - Frontend HTML/CSS: `frontend-html-css-guidelines` skill
