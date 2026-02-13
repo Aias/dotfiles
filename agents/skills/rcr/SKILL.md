@@ -20,7 +20,7 @@ The `rcr` CLI provides direct access to Red Cliff Record, a **highly networked, 
 
 ## Administration
 
-- **Sync**: Pull data from external integrations (`rcr sync <integration>`, `rcr sync daily`)
+- **Sync**: Pull data from external integrations (`rcr sync` for all, `rcr sync <integration>` for one)
 - **Database**: Backup, restore, reset, seed, and status commands (`rcr db <command>`)
 
 ## Output Format
