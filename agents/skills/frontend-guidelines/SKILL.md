@@ -41,19 +41,26 @@ Avoid `div`/`span` unless necessary. Prefer screen-reader text with proper struc
 
 Prefer CSS for behavior over JavaScript solutions when both achieve the same result.
 
-<!-- @> srOnly over aria-label. Keyboard Enter+Space on custom interactive elements. dvw/dvh over vw/vh -->
+<!-- @> srOnly over aria-label. focus-visible on all interactive elements, never outline-none without replacement. dvw/dvh over vw/vh -->
 ## Accessibility
 
 - Prefer `srOnly` text over `aria-label` duplication — screen readers get richer context from real DOM text.
 - Custom interactive elements (`div` with `onClick`) need keyboard handlers for Enter and Space.
+- All interactive elements need visible focus indicators via `focus-visible`. Never apply `outline-none` without a replacement. Prefer `:focus-visible` over `:focus`.
 - Use `dvw`/`dvh` over `vw`/`vh` — more reliable on mobile (accounts for browser chrome).
+
+## Images
+
+- Always include explicit `width` and `height` to prevent Cumulative Layout Shift.
+- Use `loading="lazy"` for below-fold images; `priority`/`fetchpriority="high"` for critical above-fold images.
 
 ## Tips
 
 - `maskImage` for gradient fades — works regardless of background color.
 - Icons: fix missing `viewBox` at the SVG source, not at every usage site.
 
-## Library-Specific References
+## References
 
 - [PandaCSS patterns](references/pandacss.md) — boxSize, colorPalette, token(), data attributes, icon styling
 - [Ark UI patterns](references/ark-ui.md) — RadioGroups, component conventions
+- [Web Interface Guidelines](references/web-interface-guidelines.md) — Vercel's comprehensive UI checklist (forms, typography, touch, performance, dark mode)
