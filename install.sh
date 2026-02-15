@@ -213,6 +213,8 @@ install_skills() {
         fi
         mkdir -p "$target_dir"
 
+        # Note: This loop syncs discovered source skills only.
+        # External skill lifecycle (install/remove) is owned by skills-manager.
         for skill_entry in "${skills[@]}"; do
             local skill_type="${skill_entry%%:*}"
             local skill_name="${skill_entry#*:}"

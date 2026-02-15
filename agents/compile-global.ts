@@ -18,7 +18,7 @@
  *   bun agents/compile-global.ts --check  # check staleness (exit 1 if stale)
  */
 
-import { readdir, mkdir } from "fs/promises";
+import { readdir, mkdir, rm } from "fs/promises";
 import { join, dirname } from "path";
 
 const ANNOTATION_RE = /^<!-- @> (.+?) -->$/;
@@ -257,6 +257,8 @@ async function main() {
   }
 
   // Write cleaned files to .build/
+  // Clean first so removed annotations/files do not leave stale overlays.
+  await rm(buildDir, { recursive: true, force: true });
   await mkdir(buildDir, { recursive: true });
   let fileCount = 0;
   for (const skill of processed) {

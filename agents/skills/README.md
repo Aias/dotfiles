@@ -111,6 +111,8 @@ Skills from `agents/skills/` (personal), `.agents/skills/` (external), and `agen
 
 The sync uses `rsync -a --delete` to mirror each skill folder individually. After syncing, cleaned skill files from `agents/.build/skills/` are overlaid to strip `@>` annotations from installed copies.
 
+External skill install/remove lifecycle is managed by `skills-manager` (`npx skills add/remove/update`). `install.sh` only syncs skills present in source directories.
+
 ```bash
 make check    # Show all skills with [P]/[E]/[L] labels and sync status
 make compile  # Regenerate GLOBAL.md compiled block and .build/ cleaned files
