@@ -192,18 +192,16 @@ install_skills() {
         "$HOME/.codex/skills"
     )
 
-    # Collect skill names from all directories
     local skills=()
-    local skill_names=()
     mkdir -p "$local_skills"
     for skill in "$personal_skills"/*/; do
-        [[ -d "$skill" ]] && skills+=("personal:$(basename "$skill")") && skill_names+=("$(basename "$skill")")
+        [[ -d "$skill" ]] && skills+=("personal:$(basename "$skill")")
     done
     for skill in "$external_skills"/*/; do
-        [[ -d "$skill" ]] && skills+=("external:$(basename "$skill")") && skill_names+=("$(basename "$skill")")
+        [[ -d "$skill" ]] && skills+=("external:$(basename "$skill")")
     done
     for skill in "$local_skills"/*/; do
-        [[ -d "$skill" ]] && skills+=("local:$(basename "$skill")") && skill_names+=("$(basename "$skill")")
+        [[ -d "$skill" ]] && skills+=("local:$(basename "$skill")")
     done
 
     for target_dir in "${targets[@]}"; do
@@ -235,10 +233,6 @@ install_skills() {
                 rm "$skill_target"
             fi
 
-            # Sync skill directory with rsync
-            # -a: archive mode (preserves permissions, timestamps, etc.)
-            # --delete: remove files in target that don't exist in source
-            # Trailing slash on source copies contents into target
             mkdir -p "$skill_target"
             rsync -a --delete "$skill_source" "$skill_target/"
         done
@@ -257,19 +251,22 @@ install_skills() {
         fi
     done
 
-    # Print skill status table with colors
+    # Print skill status table with colors (streamed, no column buffering)
     local check="${GREEN}✓${RESET}"
-    {
-        printf "skill\ttype\tclaude\tcodex\n"
-        for skill_entry in "${skills[@]}"; do
-            local skill_type="${skill_entry%%:*}"
-            local skill_name="${skill_entry#*:}"
-            local type_label="${DIM}[P]${RESET}"
-            [[ "$skill_type" == "external" ]] && type_label="${DIM}[E]${RESET}"
-            [[ "$skill_type" == "local" ]] && type_label="${DIM}[L]${RESET}"
-            printf "%s\t%b\t%b\t%b\n" "$skill_name" "$type_label" "$check" "$check"
-        done
-    } | column -t -s $'\t' | sed 's/^/  /'
+    local max_w=5  # "skill" header length
+    for skill_entry in "${skills[@]}"; do
+        local name="${skill_entry#*:}"
+        (( ${#name} > max_w )) && max_w=${#name}
+    done
+    printf "  %-${max_w}s  type  claude  codex\n" "skill"
+    for skill_entry in "${skills[@]}"; do
+        local skill_type="${skill_entry%%:*}"
+        local skill_name="${skill_entry#*:}"
+        local type_label="${DIM}[P]${RESET}"
+        [[ "$skill_type" == "external" ]] && type_label="${DIM}[E]${RESET}"
+        [[ "$skill_type" == "local" ]] && type_label="${DIM}[L]${RESET}"
+        printf "  %-${max_w}s  %b   %b       %b\n" "$skill_name" "$type_label" "$check" "$check"
+    done
 }
 
 install_skills
@@ -309,9 +306,6 @@ create_from_template "$HOME/.secrets" "$DOTFILES_DIR/local/secrets.template" ".s
 
 # Local environment file (sourced by .zprofile)
 create_from_template "$HOME/.local/bin/env" "$DOTFILES_DIR/local/env.template" ".local/bin/env"
-
-# Ensure ~/.local/bin directory exists for local scripts
-mkdir -p "$HOME/.local/bin"
 
 # Vault (cross-session memory for agents)
 if [[ ! -d "$HOME/Code/vault" ]]; then

@@ -229,13 +229,8 @@ async function main() {
   const globalMdPath = join(scriptDir, "GLOBAL.md");
   const buildDir = join(scriptDir, ".build", "skills");
 
-  // Find and process skills
   const processed = await findAndProcessSkills(repoDir);
-
-  // Build compiled block
   const compiledBlock = buildCompiledBlock(processed);
-
-  // Update GLOBAL.md
   const globalContent = await Bun.file(globalMdPath).text();
   const { updated, changed } = updateGlobalMd(globalContent, compiledBlock);
 
@@ -248,7 +243,6 @@ async function main() {
     return;
   }
 
-  // Write GLOBAL.md
   if (changed) {
     await Bun.write(globalMdPath, updated);
     console.log("Updated GLOBAL.md");
@@ -256,8 +250,7 @@ async function main() {
     console.log("GLOBAL.md up to date");
   }
 
-  // Write cleaned files to .build/
-  // Clean first so removed annotations/files do not leave stale overlays.
+  // Clean first so removed annotations/files do not leave stale overlays
   await rm(buildDir, { recursive: true, force: true });
   await mkdir(buildDir, { recursive: true });
   let fileCount = 0;
