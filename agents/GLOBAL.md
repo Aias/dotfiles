@@ -69,14 +69,12 @@ When asked whether behavior is known or documented, include direct links to the 
 
 - Never run destructive or data-modifying commands (migrations, resets, backfills, deletes) without explicit user permission.
 - Do not start servers or long-running services unless the user asks.
-- Git operations require explicit permission—see `git-workflows` skill for details. Never commit, push, or create PRs unless the user explicitly asks, even when changes appear complete and ready.
-- Never add AI co-authorship attribution or "Generated with" footers to commits or PRs. Strip non-essential metadata—focus on what changed.
+- Git operations require explicit permission—see `git-workflows` skill for details.
 - If a command needs elevated access or writes outside the workspace, pause and ask.
 
 ## General Code Styles
 
 - When updating dependencies, pin exact latest stable versions and keep dependency sections alphabetized. Avoid broad ranges (e.g., `^4`) unless the project explicitly requires ranges.
-- No barrel files. Do not create `index.ts` re-export files. Import directly from source modules. Barrel files obscure dependency graphs and make tree-shaking harder.
 
 ## File Links in Markdown
 
@@ -102,11 +100,12 @@ Use existing infrastructure over adding new dependencies when both work equally 
 ## Context-Specific Guidelines
 
 <!-- BEGIN COMPILED -->
+Analysis|skills/pr-review|Explore related files — callers, callees, types, tests. Diff alone is rarely enough context:L49|Prove claims in code. No speculative "likely/may" — back every claim with a specific code path or reproduction:L51
 Animation|skills/web-animation-design|Entering/exiting → ease-out. On-screen movement → ease-in-out. Hover → ease. 100+ daily → don't animate:L43|GPU only: animate transform and opacity. Never padding/margin/height/width:L202|prefers-reduced-motion on every animation. No exceptions for opacity or color:L248
-Code Quality|skills/code-quality|Remove defensive checks, type casts, redundant annotations abnormal for codepath context:L27|Comments explain WHY not WHAT. If explaining WHAT, refactor to be self-documenting:L35
+Code Quality|skills/code-quality|Remove defensive checks, type casts, redundant annotations, single-use variables abnormal for codepath context:L27|Comments explain WHY not WHAT. If explaining WHAT, refactor to be self-documenting:L35
 Debugging|skills/debugger|Evidence over intuition: no fixes until logs confirm root cause. Minimal instrumentation:L12
-Git|skills/git-workflows|Read-only on git status/diff. Explicit permission for commit/push/reset:L23|SSH URLs. Never amend unless explicitly requested; prefer new commits:L27|Single POV as author. No AI attribution or co-authorship:L32|PR titles: plain language, no fix:/feat: prefixes:workflows/pr-guidelines.md:L40|Open with problem context, not ## Summary. Problem before solution. Direct, no filler:workflows/pr-guidelines.md:L46|No file listings, LOC counts, status info, AI vocabulary, or decision narration:workflows/pr-guidelines.md:L83
-HTML/CSS|skills/frontend-guidelines|Semantic elements over div/span; built-in elements over generic containers:L11|Flexbox/grid + gap; margin is code smell. Logical properties (block/inline, start/end). Transform sub-properties:L23|Colors: tokens/custom properties, then oklch or hex (not rgb):L30|CSS over JS when equivalent:L36|srOnly over aria-label. focus-visible on all interactive elements, never outline-none without replacement. dvw/dvh over vw/vh:L40
+Git|skills/git-workflows|Read-only on git status/diff. Explicit permission for commit/push/reset:L23|SSH URLs. Never amend unless explicitly requested; prefer new commits:L27|Single POV as author. No AI attribution or co-authorship:L32|PR titles: plain language, no fix:/feat: prefixes:workflows/pr-guidelines.md:L40|Open with problem context, not ## Summary. Problem before solution. Direct, no filler:workflows/pr-guidelines.md:L46|Drop subject pronouns. "we" for team decisions, "I" for first-person only. No preamble or hedging:workflows/pr-guidelines.md:L50|No file listings, LOC counts, status info, AI vocabulary, or decision narration:workflows/pr-guidelines.md:L83
+HTML/CSS|skills/frontend-guidelines|Semantic elements over div/span; built-in elements over generic containers:L11|Flexbox/grid + gap; margin is code smell. Logical properties (block/inline, start/end). Transform sub-properties:L23|Colors: tokens/custom properties, then oklch or hex (not rgb):L30|CSS over JS when equivalent:L36|srOnly over aria-label. focus-visible on all interactive elements, never outline-none without replacement. dvw/dvh over vw/vh:L40|Images: explicit width/height to prevent CLS. lazy below fold, priority above fold:L47
 React|skills/react-best-practices|v19+: no forwardRef. No useEffect for transforms/events/state — calculate in render/handlers:L7|Read you-might-not-need-an-effect.md before adding Effects. rAF > setTimeout. Iterate to repeat:L7
-TypeScript|skills/typescript-guidelines|No any/as/!/ts-ignore — fix code, not types:L11|Prop intersections: specific before generic. Inline single-use variables:L15|Import order: React → runtime → external → internal → aliased → relative → local. type keyword for type imports:L23
+TypeScript|skills/typescript-guidelines|No any/as/!/ts-ignore — fix code, not types:L11|Prop intersections: specific before generic. Inline single-use variables:L15|Import order: React → runtime → external → internal → aliased → relative → local. type keyword for type imports:L23|No barrel files (index.ts re-exports). Import directly from source modules:L23
 <!-- END COMPILED -->

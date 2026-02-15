@@ -24,7 +24,7 @@ If the user doesn't specify, infer from context: post-AI-generation → light, p
 
 ## Shared Principles
 
-<!-- @> Remove defensive checks, type casts, redundant annotations abnormal for codepath context -->
+<!-- @> Remove defensive checks, type casts, redundant annotations, single-use variables abnormal for codepath context -->
 ### What to Remove
 
 - Extra defensive checks or try/catch blocks abnormal for that codepath (especially if called by trusted/validated callers)

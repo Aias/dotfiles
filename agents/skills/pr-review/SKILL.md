@@ -2,6 +2,7 @@
 name: pr-review
 description: Review a pull request
 compatibility: Requires GitHub CLI (gh) and GitHub API access.
+global_category: Analysis
 ---
 
 You are helping me review a pull request. The primary artifact you produce is a **review document** — a comprehensive markdown file that explains the PR's changes, walks me through them at multiple levels of abstraction, and identifies potential issues. I will read this document, leave inline comments or chat-based feedback referencing specific sections or issue IDs, and you will answer questions, expand sections, or update the document as needed.
@@ -45,8 +46,10 @@ Minimum audit:
 - Check CI status; note missing signal (no tests, skipped jobs).
 - Review the full diff to map what changed.
 - Read the most important touched files in full (not just the diff hunks) to understand behavior in context and avoid diff tunnel vision.
+<!-- @> Explore related files — callers, callees, types, tests. Diff alone is rarely enough context -->
 - **Explore related files** — callers, callees, shared types, tests, adjacent modules. The diff alone is rarely enough context. Trace imports, follow function calls, and read the surrounding code that interacts with the changed code.
 - For any new dependencies: check maintenance status, look for existing alternatives in the codebase.
+<!-- @> Prove claims in code. No speculative "likely/may" — back every claim with a specific code path or reproduction -->
 - When making factual claims, **prove them in code**. No speculative "likely/may" — every claim must be backed by a specific code path, user flow, or reproduction scenario. If you identify a potential issue, trace it to a concrete situation where it actually manifests in this codebase. If you can't construct a real reproduction path, it's not a real issue.
 
 ## Step 4: Write the Review Document

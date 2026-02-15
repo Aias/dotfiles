@@ -49,6 +49,7 @@ Prefer CSS for behavior over JavaScript solutions when both achieve the same res
 - All interactive elements need visible focus indicators via `focus-visible`. Never apply `outline-none` without a replacement. Prefer `:focus-visible` over `:focus`.
 - Use `dvw`/`dvh` over `vw`/`vh` — more reliable on mobile (accounts for browser chrome).
 
+<!-- @> Images: explicit width/height to prevent CLS. lazy below fold, priority above fold -->
 ## Images
 
 - Always include explicit `width` and `height` to prevent Cumulative Layout Shift.

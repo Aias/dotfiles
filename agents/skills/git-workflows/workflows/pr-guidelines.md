@@ -49,6 +49,7 @@ If any of these are unclear, ask before proceeding.
 
 No opening `##` header. Start directly with a paragraph explaining the problem, context, or motivation — why this PR exists. Then use flat bullet points describing what changed, focused on *what* and *why*.
 
+<!-- @> Drop subject pronouns. "we" for team decisions, "I" for first-person only. No preamble or hedging -->
 ### Voice
 
 - Prefer dropping subject pronouns entirely — "Updated X to do Y" not "We updated X to do Y". Use "we" for team-level decisions or project direction. "I" only for genuinely first-person observations.

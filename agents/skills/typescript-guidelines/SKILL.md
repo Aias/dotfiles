@@ -23,10 +23,12 @@ Core rules are compiled into GLOBAL.md. This skill contains additional detail.
 - Don't declare variables only used once immediately after; inline them
 
 <!-- @> Import order: React → runtime → external → internal → aliased → relative → local. type keyword for type imports -->
+<!-- @> No barrel files (index.ts re-exports). Import directly from source modules -->
 ## Imports & Dependencies
 
 - Import order: React → runtime → external → internal → aliased → relative → local
 - Use `type` keyword for type imports: `import type { Foo } from './types'`
+- No barrel files — don't create `index.ts` re-export files. Import directly from source modules.
 - Dependencies in `package.json`: alphabetical
 
 ## Quality Checks
