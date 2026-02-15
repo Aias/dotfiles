@@ -50,6 +50,7 @@ After the intro, use **flat bullet points** to describe what changed. Keep them 
 - **First person is fine, but use it sparingly.** Reserve "I" for personal observations — "I noticed this during testing", "I was initially skeptical of the dialog approach". For describing the software itself, use a detached voice: "Previously the system did X, now we do Y", "The loader was injecting CSS properties onto..." Use "we" for team decisions or project direction.
 - **Problem before solution.** Explain what was broken or missing, then what was done about it.
 - **Be direct.** No preamble, no hedging, no filler. Every sentence should add information.
+- **State the situation, then describe the action.** Don't narrate the decision process or justify the approach — just explain what exists and what was done about it. "We have X, this PR does Y" not "Rather than doing X, I chose to do Y instead."
 - **Mention edge cases as asides** rather than in dedicated sections — "This does *not* make a related update where..." or parenthetical notes.
 - **Group small related changes** at the end with "Also:" or "Miscellaneous:" or "A couple other semi-related changes:" rather than burying them in the main narrative.
 - **Reference related work naturally** — link to tickets, Slack threads, Figma files, related PRs inline rather than in a dedicated section.
@@ -61,6 +62,7 @@ After the intro, use **flat bullet points** to describe what changed. Keep them 
 - **No LOC counts** ("~26 LOC thin wrapper (was ~190)")
 - **No status information** like "all tests pass" or "ran typecheck" — this is assumed
 - **No AI vocabulary** — "defense-in-depth", "leveraging", "ensuring robustness"
+- **No decision narration** — "Rather than X, I extracted Y" or "Instead of fixing each spot individually..." reads as justifying choices. State the facts: "There are many places that assume X. This PR adds Y."
 - **No numbered step-by-step behavioral flows** unless genuinely explaining a race condition or sequence-dependent bug
 - **No `Fixes #123` as the entire body** — always explain *why*, even briefly
 

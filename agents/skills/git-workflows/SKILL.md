@@ -1,6 +1,6 @@
 ---
 name: git-workflows
-description: Git and version control workflows including creating PRs, rebasing, conflict resolution, and commit conventions. Use when working with git commands, creating PRs, resolving merge conflicts, or managing version control.
+description: Git and version control workflows including creating PRs, updating or writing PRs, rebasing, conflict resolution, and commit conventions. Use when working with git commands, pull requests, resolving merge conflicts, or managing version control.
 compatibility: Requires git and GitHub CLI (gh).
 ---
 
@@ -10,12 +10,14 @@ A collection of git-related workflows and guidelines. Use this skill for any git
 
 ## When to Use
 
-| Situation                             | Workflow                                            |
-| ------------------------------------- | --------------------------------------------------- |
-| Creating a PR                         | [pr-guidelines](workflows/pr-guidelines.md)         |
+| Situation                             | Workflow                                                |
+| ------------------------------------- | ------------------------------------------------------- |
+| Creating a PR                         | [pr-guidelines](workflows/pr-guidelines.md)             |
 | Rebasing or resolving merge conflicts | [conflict-resolution](workflows/conflict-resolution.md) |
 
 ## General Principles
+
+**When working with pull requests (PRs), you _must_ read the guidelines in the [pr-guidelines](workflows/pr-guidelines.md) workflow.**
 
 **Read-only by default:** When inspecting `git status` or `git diff`, treat them as read-only context. Never revert or assume missing changes were yours. Other agents or the user may have already committed updates.
 
