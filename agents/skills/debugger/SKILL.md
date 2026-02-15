@@ -6,8 +6,10 @@ description: >
   wants structured debug logging, or invokes /debugger. Triggers on: "debug
   this", "help me debug", "can't figure out why", "add debug logging",
   "instrument the code", "hypothesis". JS/TS projects only.
+global_category: Debugging
 ---
 
+<!-- @> Evidence over intuition: no fixes until logs confirm root cause. Minimal instrumentation -->
 # Debugger
 
 Systematic debugging through hypothesis generation, targeted instrumentation, and runtime log analysis. Never guess at fixes — gather evidence first.

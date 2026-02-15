@@ -6,8 +6,9 @@ Skills are modular packages that extend agent capabilities with specialized know
 
 - **`agents/skills/`** (this directory) - [P] Personal skills you write and maintain
 - **`.agents/skills/`** - [E] External skills installed from [skills.sh](https://skills.sh)
+- **`agents/skills.local/`** - [L] Local-only skills (not committed)
 
-Both types are synced to `~/.claude/skills/` and `~/.codex/skills/` by the install script.
+All types are synced to `~/.claude/skills/` and `~/.codex/skills/` by the install script.
 
 ## Quick Start
 
@@ -38,8 +39,9 @@ Skills follow the [Agent Skills open standard](https://agentskills.io/). Each sk
 ```
 skill-name/
 ├── SKILL.md          # Required: metadata + instructions
+├── workflows/        # Optional: step-by-step procedures
+├── references/       # Optional: documentation loaded into context
 ├── scripts/          # Optional: executable code
-├── references/       # Optional: documentation
 └── assets/           # Optional: templates, resources
 ```
 
@@ -49,7 +51,7 @@ skill-name/
 ---
 name: skill-name          # Lowercase, hyphens, max 64 chars
 description: What the skill does and WHEN to use it.
-compatibility: git, network  # Optional: requirements
+global_category: Category  # Optional: opt into GLOBAL.md compiled index
 ---
 
 # Skill Title
@@ -59,6 +61,39 @@ Instructions in markdown...
 
 The `description` field is critical—it determines when the skill triggers. Include both what the skill does AND specific scenarios/keywords that should activate it.
 
+### Compiled Annotations
+
+Skills with `global_category` in their frontmatter contribute to a dense always-in-context index in `GLOBAL.md`. Add `<!-- @> summary text -->` annotations above relevant sections to surface key rules:
+
+```markdown
+<!-- @> GPU only: animate transform and opacity. Never padding/margin/height/width -->
+### The Golden Rule
+
+Only animate `transform` and `opacity`...
+```
+
+Annotations are extracted by `bun agents/compile-global.ts` (or `make compile`) into a pipe-delimited block in GLOBAL.md. Cleaned copies (annotations stripped) are written to `agents/.build/skills/` and overlaid onto installed skill copies during deployment.
+
+See the [Annotation Compilation](/CLAUDE.md#annotation-compilation) section in CLAUDE.md for full details.
+
+## Resource Directories
+
+**workflows/** — Step-by-step procedures for specific modes or scenarios
+- Used by skills with multiple intensity levels or distinct workflows
+- Example: `code-quality/workflows/deslop.md`, `git-workflows/workflows/pr-guidelines.md`
+
+**references/** — Documentation loaded into context when needed
+- Library-specific patterns, API docs, schema references
+- Example: `frontend-guidelines/references/pandacss.md`, `frontend-guidelines/references/ark-ui.md`
+
+**scripts/** — Executable code run directly without loading into context
+- Python, Bash, etc.
+- Example: `rotate_pdf.py`, `extract_data.sh`
+
+**assets/** — Files used in output, never loaded into context
+- Templates, images, boilerplate
+- Example: `template.pptx`, `boilerplate/`
+
 ## Naming Conventions
 
 - Lowercase letters, numbers, hyphens only (`a-z`, `0-9`, `-`)
@@ -67,47 +102,20 @@ The `description` field is critical—it determines when the skill triggers. Inc
 - Max 64 characters
 - Directory name must match the `name` field
 
-## Resource Directories
-
-**scripts/** — Executable code run directly without loading into context
-- Python, Bash, etc.
-- Example: `rotate_pdf.py`, `extract_data.sh`
-
-**references/** — Documentation loaded into context when needed
-- Keep detailed docs here instead of bloating SKILL.md
-- Example: `api_docs.md`, `schema.md`
-
-**assets/** — Files used in output, never loaded into context
-- Templates, images, boilerplate
-- Example: `template.pptx`, `boilerplate/`
-
-## Compatibility Field
-
-Only use when specific requirements exist:
-
-```yaml
-compatibility: Requires GitHub CLI (gh) and git.
-```
-
-Common patterns:
-- CLI tools: `git`, `gh`, `jq`, `docker`
-- Network access: `network access`, `GitHub API access`
-- Agent-specific: `Designed for Claude Code`
-
 ## Deployment
 
-Skills from both `agents/skills/` (personal) and `.agents/skills/` (external) are synced via rsync to agent-specific locations by `install.sh`:
+Skills from `agents/skills/` (personal), `.agents/skills/` (external), and `agents/skills.local/` (local) are synced via rsync to agent-specific locations by `install.sh`:
 
 - `~/.claude/skills/` — Claude Code
 - `~/.codex/skills/` — Codex
 
-The sync uses `rsync -a --delete` to mirror each skill folder individually. Check sync status:
+The sync uses `rsync -a --delete` to mirror each skill folder individually. After syncing, cleaned skill files from `agents/.build/skills/` are overlaid to strip `@>` annotations from installed copies.
 
 ```bash
-make check
+make check    # Show all skills with [P]/[E]/[L] labels and sync status
+make compile  # Regenerate GLOBAL.md compiled block and .build/ cleaned files
+make link     # Full install: symlinks + skills + compilation
 ```
-
-This shows all skills with [P] or [E] labels and their sync status.
 
 ## Creating Skills
 

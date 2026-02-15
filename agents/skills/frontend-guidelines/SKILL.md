@@ -1,10 +1,10 @@
 ---
-name: frontend-html-css-guidelines
-description: Semantic HTML and modern CSS best practices. Use when writing, reviewing, or refactoring frontend HTML/CSS. Triggers on .html/.css files, styling questions, or accessibility discussions.
+name: frontend-guidelines
+description: Semantic HTML, modern CSS, and frontend markup best practices. Use when writing, reviewing, or refactoring HTML, CSS, or templating markup. Triggers on .html/.css files, layout and spacing questions, flexbox/grid patterns, color systems, accessibility/a11y, semantic elements, responsive design, CSS custom properties, or styling architecture decisions.
 global_category: HTML/CSS
 ---
 
-# Frontend HTML/CSS Guidelines
+# Frontend Guidelines
 
 Core rules are compiled into GLOBAL.md. This skill contains additional detail.
 
@@ -40,3 +40,20 @@ Avoid `div`/`span` unless necessary. Prefer screen-reader text with proper struc
 ## CSS Over JavaScript
 
 Prefer CSS for behavior over JavaScript solutions when both achieve the same result.
+
+<!-- @> srOnly over aria-label. Keyboard Enter+Space on custom interactive elements. dvw/dvh over vw/vh -->
+## Accessibility
+
+- Prefer `srOnly` text over `aria-label` duplication — screen readers get richer context from real DOM text.
+- Custom interactive elements (`div` with `onClick`) need keyboard handlers for Enter and Space.
+- Use `dvw`/`dvh` over `vw`/`vh` — more reliable on mobile (accounts for browser chrome).
+
+## Tips
+
+- `maskImage` for gradient fades — works regardless of background color.
+- Icons: fix missing `viewBox` at the SVG source, not at every usage site.
+
+## Library-Specific References
+
+- [PandaCSS patterns](references/pandacss.md) — boxSize, colorPalette, token(), data attributes, icon styling
+- [Ark UI patterns](references/ark-ui.md) — RadioGroups, component conventions

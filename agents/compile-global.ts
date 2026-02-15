@@ -1,25 +1,25 @@
 #!/usr/bin/env bun
 
 /**
- * Compiles @> annotations from SKILL.md files into a dense index in GLOBAL.md.
+ * Compiles @> annotations from skill .md files into a dense index in GLOBAL.md.
  *
- * Source syntax (in SKILL.md):
- *   - Frontmatter: `global_category: CategoryName`
- *   - Inline: `<!-- @> summary text -->` above the relevant section
+ * Source syntax:
+ *   - SKILL.md frontmatter: `global_category: CategoryName`
+ *   - Any .md file in the skill dir: `<!-- @> summary text -->` above relevant section
  *
  * Output (in GLOBAL.md between BEGIN/END COMPILED markers):
- *   Category|skills/skill-name|summary:Lnn|summary:Lnn|...
+ *   Category|skills/skill-name|summary:Lnn|summary:subpath:Lnn|...
+ *   (subpath omitted for SKILL.md — it's the default)
  *
- * Cleaned SKILL.md files (annotations stripped) are written to agents/.build/skills/.
+ * Cleaned .md files (annotations stripped) written to agents/.build/skills/.
  *
  * Usage:
  *   bun agents/compile-global.ts          # compile
  *   bun agents/compile-global.ts --check  # check staleness (exit 1 if stale)
  */
 
-import { readdir, readFile, writeFile, mkdir } from "fs/promises";
+import { readdir, mkdir } from "fs/promises";
 import { join, dirname } from "path";
-import { existsSync } from "fs";
 
 const ANNOTATION_RE = /^<!-- @> (.+?) -->$/;
 const BEGIN_MARKER = "<!-- BEGIN COMPILED -->";
@@ -31,27 +31,29 @@ const END_MARKER = "<!-- END COMPILED -->";
 
 interface Summary {
   text: string;
-  line: number; // 1-indexed line in cleaned output
+  line: number;
+  file: string; // relative to skill dir, e.g. "SKILL.md" or "workflows/pr-guidelines.md"
+}
+
+interface ProcessedFile {
+  relPath: string; // relative to skill dir
+  summaries: Summary[];
+  cleanedContent: string;
 }
 
 interface ProcessedSkill {
   category: string;
-  skillPath: string; // e.g. "skills/typescript-guidelines"
-  summaries: Summary[];
-  cleanedContent: string;
+  skillPath: string; // e.g. "skills/git-workflows"
+  files: ProcessedFile[];
 }
 
 // ---------------------------------------------------------------------------
 // Frontmatter
 // ---------------------------------------------------------------------------
 
-function parseFrontmatter(raw: string): {
-  data: Record<string, string>;
-  body: string;
-  fullContent: string;
-} {
-  const match = raw.match(/^---\n([\s\S]*?)\n---\n?([\s\S]*)$/);
-  if (!match) return { data: {}, body: raw, fullContent: raw };
+function parseFrontmatter(raw: string): Record<string, string> {
+  const match = raw.match(/^---\n([\s\S]*?)\n---\n/);
+  if (!match) return {};
 
   const data: Record<string, string> = {};
   for (const line of match[1].split("\n")) {
@@ -61,21 +63,14 @@ function parseFrontmatter(raw: string): {
     const val = line.slice(colonIdx + 1).trim();
     if (key) data[key] = val;
   }
-  return { data, body: match[2], fullContent: raw };
+  return data;
 }
 
 // ---------------------------------------------------------------------------
-// Process a single skill
+// Process a single .md file for annotations
 // ---------------------------------------------------------------------------
 
-function processSkill(
-  content: string,
-  skillRelPath: string,
-): ProcessedSkill | null {
-  const { data } = parseFrontmatter(content);
-  const category = data.global_category;
-  if (!category) return null;
-
+function processFile(content: string, fileRelPath: string): ProcessedFile {
   const inputLines = content.split("\n");
   const cleanedLines: string[] = [];
   const summaries: Summary[] = [];
@@ -85,62 +80,89 @@ function processSkill(
     const m = line.match(ANNOTATION_RE);
     if (m) {
       pendingSummaries.push(m[1]);
-      continue; // strip from output
+      continue;
     }
 
     cleanedLines.push(line);
 
-    // Pair pending summaries with first non-blank content line
     if (pendingSummaries.length > 0 && line.trim() !== "") {
-      const lineNum = cleanedLines.length; // 1-indexed
+      const lineNum = cleanedLines.length;
       for (const text of pendingSummaries) {
         if (text.includes("|")) {
           console.error(
-            `Error: annotation contains pipe character in ${skillRelPath}: "${text}"`,
+            `Error: annotation contains pipe character in ${fileRelPath}: "${text}"`,
           );
           process.exit(1);
         }
-        summaries.push({ text, line: lineNum });
+        summaries.push({ text, line: lineNum, file: fileRelPath });
       }
       pendingSummaries.length = 0;
     }
   }
 
-  // Flush any trailing annotations (no content after them)
   if (pendingSummaries.length > 0) {
     const lineNum = cleanedLines.length || 1;
     for (const text of pendingSummaries) {
-      summaries.push({ text, line: lineNum });
+      summaries.push({ text, line: lineNum, file: fileRelPath });
     }
   }
 
   return {
-    category,
-    skillPath: skillRelPath,
+    relPath: fileRelPath,
     summaries,
     cleanedContent: cleanedLines.join("\n"),
   };
 }
 
 // ---------------------------------------------------------------------------
-// Find skill files
+// Find and process skills
 // ---------------------------------------------------------------------------
 
-async function findSkillFiles(
+async function findAndProcessSkills(
   repoDir: string,
-): Promise<Array<{ path: string; relPath: string }>> {
-  const results: Array<{ path: string; relPath: string }> = [];
+): Promise<ProcessedSkill[]> {
+  const results: ProcessedSkill[] = [];
 
   for (const skillsDir of ["agents/skills", ".agents/skills"]) {
     const fullDir = join(repoDir, skillsDir);
-    if (!existsSync(fullDir)) continue;
-
-    const entries = await readdir(fullDir, { withFileTypes: true });
+    let entries;
+    try {
+      entries = await readdir(fullDir, { withFileTypes: true });
+    } catch {
+      continue;
+    }
     for (const entry of entries) {
       if (!entry.isDirectory()) continue;
-      const skillMd = join(fullDir, entry.name, "SKILL.md");
-      if (existsSync(skillMd)) {
-        results.push({ path: skillMd, relPath: `skills/${entry.name}` });
+
+      const skillDir = join(fullDir, entry.name);
+      const skillMdFile = Bun.file(join(skillDir, "SKILL.md"));
+      if (!(await skillMdFile.exists())) continue;
+
+      // Check for global_category in SKILL.md frontmatter
+      const skillMdContent = await skillMdFile.text();
+      const frontmatter = parseFrontmatter(skillMdContent);
+      if (!frontmatter.global_category) continue;
+
+      // Scan all .md files in this skill directory
+      const glob = new Bun.Glob("**/*.md");
+      const mdFiles = Array.from(glob.scanSync(skillDir));
+      const processedFiles: ProcessedFile[] = [];
+
+      for (const mdRelPath of mdFiles) {
+        const mdFullPath = join(skillDir, mdRelPath);
+        const content = await Bun.file(mdFullPath).text();
+        const processed = processFile(content, mdRelPath);
+        if (processed.summaries.length > 0) {
+          processedFiles.push(processed);
+        }
+      }
+
+      if (processedFiles.length > 0) {
+        results.push({
+          category: frontmatter.global_category,
+          skillPath: `skills/${entry.name}`,
+          files: processedFiles,
+        });
       }
     }
   }
@@ -159,7 +181,16 @@ function buildCompiledBlock(skills: ProcessedSkill[]): string {
 
   const lines: string[] = [];
   for (const skill of sorted) {
-    const parts = skill.summaries.map((s) => `${s.text}:L${s.line}`);
+    const parts: string[] = [];
+    for (const file of skill.files) {
+      for (const s of file.summaries) {
+        if (s.file === "SKILL.md") {
+          parts.push(`${s.text}:L${s.line}`);
+        } else {
+          parts.push(`${s.text}:${s.file}:L${s.line}`);
+        }
+      }
+    }
     lines.push([skill.category, skill.skillPath, ...parts].join("|"));
   }
   return lines.join("\n") + "\n";
@@ -199,20 +230,13 @@ async function main() {
   const buildDir = join(scriptDir, ".build", "skills");
 
   // Find and process skills
-  const skillFiles = await findSkillFiles(repoDir);
-  const processed: ProcessedSkill[] = [];
-
-  for (const { path: skillPath, relPath } of skillFiles) {
-    const content = await readFile(skillPath, "utf-8");
-    const result = processSkill(content, relPath);
-    if (result) processed.push(result);
-  }
+  const processed = await findAndProcessSkills(repoDir);
 
   // Build compiled block
   const compiledBlock = buildCompiledBlock(processed);
 
   // Update GLOBAL.md
-  const globalContent = await readFile(globalMdPath, "utf-8");
+  const globalContent = await Bun.file(globalMdPath).text();
   const { updated, changed } = updateGlobalMd(globalContent, compiledBlock);
 
   if (checkMode) {
@@ -226,22 +250,28 @@ async function main() {
 
   // Write GLOBAL.md
   if (changed) {
-    await writeFile(globalMdPath, updated);
+    await Bun.write(globalMdPath, updated);
     console.log("Updated GLOBAL.md");
   } else {
     console.log("GLOBAL.md up to date");
   }
 
-  // Write cleaned skills to .build/
+  // Write cleaned files to .build/
   await mkdir(buildDir, { recursive: true });
+  let fileCount = 0;
   for (const skill of processed) {
     const skillName = skill.skillPath.replace("skills/", "");
-    const outDir = join(buildDir, skillName);
-    await mkdir(outDir, { recursive: true });
-    await writeFile(join(outDir, "SKILL.md"), skill.cleanedContent);
+    for (const file of skill.files) {
+      const outPath = join(buildDir, skillName, file.relPath);
+      await mkdir(dirname(outPath), { recursive: true });
+      await Bun.write(outPath, file.cleanedContent);
+      fileCount++;
+    }
   }
 
-  console.log(`Cleaned ${processed.length} skill(s) → agents/.build/skills/`);
+  console.log(
+    `Cleaned ${fileCount} file(s) across ${processed.length} skill(s) → agents/.build/skills/`,
+  );
 }
 
 main().catch((err) => {

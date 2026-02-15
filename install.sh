@@ -241,16 +241,15 @@ install_skills() {
             rsync -a --delete "$skill_source" "$skill_target/"
         done
 
-        # Overwrite SKILL.md with cleaned versions (annotations stripped)
+        # Overwrite with cleaned versions (annotations stripped)
         local build_dir="$DOTFILES_DIR/agents/.build/skills"
         if [[ -d "$build_dir" ]]; then
-            for cleaned_skill in "$build_dir"/*/SKILL.md; do
-                [[ -f "$cleaned_skill" ]] || continue
+            for build_skill in "$build_dir"/*/; do
+                [[ -d "$build_skill" ]] || continue
                 local skill_name
-                skill_name="$(basename "$(dirname "$cleaned_skill")")"
-                local target_skill="$target_dir/$skill_name/SKILL.md"
-                if [[ -f "$target_skill" ]]; then
-                    cp "$cleaned_skill" "$target_skill"
+                skill_name="$(basename "$build_skill")"
+                if [[ -d "$target_dir/$skill_name" ]]; then
+                    rsync -a "$build_skill" "$target_dir/$skill_name/"
                 fi
             done
         fi

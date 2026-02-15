@@ -37,12 +37,14 @@ EOF
 
 If any of these are unclear, ask before proceeding.
 
+<!-- @> PR titles: plain language, no fix:/feat: prefixes -->
 ## PR Title
 
 - Plain language in sentence case — no commit-style prefixes (`feat:`, `fix:`, etc.)
 - Describe what changed, not the ticket number
 - Concise but specific
 
+<!-- @> Open with problem context, not ## Summary. Problem before solution. Direct, no filler -->
 ## PR Description
 
 No opening `##` header. Start directly with a paragraph explaining the problem, context, or motivation — why this PR exists. Then use flat bullet points describing what changed, focused on *what* and *why*.
@@ -80,6 +82,7 @@ Embed screenshots inline near the text they illustrate, not in a separate "Scree
 
 Place `Fixes <ticket>` or `Closes <ticket>` on its own line, near the top (after opening context) or at the bottom. For related-but-not-closed tickets, use inline links.
 
+<!-- @> No file listings, LOC counts, status info, AI vocabulary, or decision narration -->
 ## What to Avoid
 
 - File-by-file change listings or mechanical inventories (unless the refactoring is the point)
