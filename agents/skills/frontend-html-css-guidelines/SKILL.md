@@ -1,10 +1,14 @@
 ---
 name: frontend-html-css-guidelines
 description: Semantic HTML and modern CSS best practices. Use when writing, reviewing, or refactoring frontend HTML/CSS. Triggers on .html/.css files, styling questions, or accessibility discussions.
+global_category: HTML/CSS
 ---
 
 # Frontend HTML/CSS Guidelines
 
+Core rules are compiled into GLOBAL.md. This skill contains additional detail.
+
+<!-- @> Semantic elements over div/span; built-in elements over generic containers -->
 ## Semantic HTML First
 
 Prefer built-in semantic elements over generic containers:
@@ -17,6 +21,7 @@ Avoid `div`/`span` unless necessary. Prefer screen-reader text with proper struc
 
 ## Modern CSS Patterns
 
+<!-- @> Flexbox/grid + gap; margin is code smell. Logical properties (block/inline, start/end). Transform sub-properties -->
 ### Layout
 
 - Use flexbox/grid with `gap`
@@ -24,12 +29,14 @@ Avoid `div`/`span` unless necessary. Prefer screen-reader text with proper struc
 - Prefer logical properties: `block`/`inline`, `start`/`end` over `left`/`right` and `top`/`bottom`.
 - Use transform sub-properties: `translate`, `rotate`, `scale` rather than a single `transform` property.
 
+<!-- @> Colors: tokens/custom properties, then oklch or hex (not rgb) -->
 ### Colors
 
 - Use tokens/custom properties when available
 - Otherwise: `oklch` or hex (not rgb)
 - Note: "Tokens" and CSS custom properties are interchangeable terms
 
+<!-- @> CSS over JS when equivalent -->
 ## CSS Over JavaScript
 
 Prefer CSS for behavior over JavaScript solutions when both achieve the same result.

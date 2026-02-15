@@ -46,9 +46,7 @@ make link
 npx skills add anthropics/skills --skill frontend-design -a claude-code -y
 rm .claude/skills/frontend-design
 
-# Vercel skills
-npx skills add vercel-labs/agent-skills --skill vercel-react-best-practices -a claude-code -y
-rm .claude/skills/vercel-react-best-practices
+# Vercel skills (note: vercel-react-best-practices has been adopted as react-best-practices in agents/skills/)
 
 make link
 rm -rf .claude/skills # Remove the whole subfolder, it's not needed

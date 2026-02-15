@@ -1,11 +1,15 @@
-.PHONY: install link update update-skills backup diff check
+.PHONY: compile install link update update-skills backup diff check
+
+# Compile @> annotations from skills into GLOBAL.md + cleaned .build/ copies
+compile:
+	bun agents/compile-global.ts
 
 # Full install with dependencies
-install:
+install: compile
 	./install.sh
 
 # Link only (skip brew packages)
-link:
+link: compile
 	SKIP_DEPENDENCY_INSTALL=1 ./install.sh
 
 # Pull latest and reinstall

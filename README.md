@@ -127,5 +127,5 @@ Shows a table of all skills with sync status for each agent:
 skill                        type  claude  codex
 changelog                    [P]   ✓       ✓
 skill-creator                [E]   ✓       ✓
-vercel-react-best-practices  [E]   ✓       ✓
+react-best-practices         [P]   ✓       ✓
 ```

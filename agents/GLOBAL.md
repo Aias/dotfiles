@@ -101,10 +101,12 @@ Use existing infrastructure over adding new dependencies when both work equally 
 
 ## Context-Specific Guidelines
 
-Detailed guidance is in dedicated skills:
+<!-- BEGIN COMPILED -->
+HTML/CSS|skills/frontend-html-css-guidelines|Semantic elements over div/span; built-in elements over generic containers:L11|Flexbox/grid + gap; margin is code smell. Logical properties (block/inline, start/end). Transform sub-properties:L23|Colors: tokens/custom properties, then oklch or hex (not rgb):L30|CSS over JS when equivalent:L36
+React|skills/react-best-practices|v19+: no forwardRef. No useEffect for transforms/events/state — calculate in render/handlers:L7|Read you-might-not-need-an-effect.md before adding Effects. rAF > setTimeout. Iterate to repeat:L7
+TypeScript|skills/typescript-guidelines|No any/as/!/ts-ignore — fix code, not types:L11|Prop intersections: specific before generic. Inline single-use variables:L15|Import order: React → runtime → external → internal → aliased → relative → local. type keyword for type imports:L23
+<!-- END COMPILED -->
 
-- Git & version control (commits, PRs, rebasing, GitHub): `git-workflows` skill — **always invoke before creating PRs or commits**
-- TypeScript: `typescript-guidelines` skill
-- React: `react-guidelines` skill
-- Frontend HTML/CSS: `frontend-html-css-guidelines` skill
+### Other Skills
+- Git & version control: `git-workflows` skill — **always invoke before creating PRs or commits**
 - Debugging: `debugger` skill

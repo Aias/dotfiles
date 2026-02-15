@@ -1,15 +1,16 @@
 ---
-name: vercel-react-best-practices
-description: React and Next.js performance optimization guidelines from Vercel Engineering. This skill should be used when writing, reviewing, or refactoring React/Next.js code to ensure optimal performance patterns. Triggers on tasks involving React components, Next.js pages, data fetching, bundle optimization, or performance improvements.
-license: MIT
-metadata:
-  author: vercel
-  version: "1.0.0"
+name: react-best-practices
+description: React and Next.js performance optimization and patterns. Use when writing, reviewing, or refactoring React/Next.js code. Triggers on .jsx/.tsx files, React hooks, component patterns, data fetching, bundle optimization, or performance improvements.
+global_category: React
 ---
 
-# Vercel React Best Practices
+<!-- @> v19+: no forwardRef. No useEffect for transforms/events/state — calculate in render/handlers -->
+<!-- @> Read you-might-not-need-an-effect.md before adding Effects. rAF > setTimeout. Iterate to repeat -->
+# React Best Practices
 
-Comprehensive performance optimization guide for React and Next.js applications, maintained by Vercel. Contains 57 rules across 8 categories, prioritized by impact to guide automated refactoring and code generation.
+Performance optimization guide for React and Next.js applications. 57 rules across 8 categories, prioritized by impact. Originally adopted from [Vercel Engineering](https://github.com/vercel/next.js) (MIT).
+
+Core rules are compiled into GLOBAL.md. This skill contains additional detail.
 
 ## When to Apply
 
@@ -116,6 +117,10 @@ Reference these guidelines when:
 - `advanced-init-once` - Initialize app once per app load
 - `advanced-use-latest` - useLatest for stable callback refs
 
+## References
+
+- `references/you-might-not-need-an-effect.md` — Comprehensive guide to when Effects are and aren't appropriate. **Read before adding any `useEffect`.**
+
 ## How to Use
 
 Read individual rule files for detailed explanations and code examples:
@@ -130,7 +135,3 @@ Each rule file contains:
 - Incorrect code example with explanation
 - Correct code example with explanation
 - Additional context and references
-
-## Full Compiled Document
-
-For the complete guide with all rules expanded: `AGENTS.md`
