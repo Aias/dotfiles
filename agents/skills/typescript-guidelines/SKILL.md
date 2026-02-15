@@ -1,16 +1,19 @@
 ---
 name: typescript-guidelines
 description: TypeScript code quality and type safety standards. Use when writing, reviewing, or refactoring TypeScript code. Triggers on .ts/.tsx files, type errors, or TypeScript-specific questions.
+global_category: TypeScript
 ---
 
 # TypeScript Guidelines
 
-## Type Safety
+Core rules are compiled into GLOBAL.md. This skill contains additional detail.
 
-TypeScript-specific application of the universal type safety principle in GLOBAL.md.
+<!-- @> No any/as/!/ts-ignore — fix code, not types -->
+## Type Safety
 
 **Never compromise type safety**: No `any`, no type assertions (`as Type`), no non-null assertions (`!`), no `ts-ignore`/`eslint-disable`. Avoid `unknown` unless narrowed immediately. If TypeScript resists, fix the code—don't override the types.
 
+<!-- @> Prop intersections: specific before generic. Inline single-use variables -->
 ## Code Style
 
 - Order prop intersections: specific props before generic (`{ specific } & RootProps`)
@@ -19,6 +22,7 @@ TypeScript-specific application of the universal type safety principle in GLOBAL
 - Follow existing conventions: use `rg`, `fd`, git history before adding patterns
 - Don't declare variables only used once immediately after; inline them
 
+<!-- @> Import order: React → runtime → external → internal → aliased → relative → local. type keyword for type imports -->
 ## Imports & Dependencies
 
 - Import order: React → runtime → external → internal → aliased → relative → local

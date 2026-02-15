@@ -27,15 +27,20 @@ Extract durable learnings from conversation context and persist them appropriate
 
    | Scope               | Location                                                                            | When to use                                                                        |
    | ------------------- | ----------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
-   | Global behavior     | `~/Code/dotfiles/agents/GLOBAL.md`                                                  | Universal preferences, communication style, coding standards that apply everywhere |
+   | Global behavior     | `~/Code/dotfiles/agents/GLOBAL.md` (direct edit)                                    | Universal preferences not tied to any skill domain                                 |
+   | Global (via skill)  | Skill SKILL.md + `<!-- @> summary -->` annotation                                   | Learning relates to a skill with `global_category` — edit the skill, add annotation, run `make compile` |
    | Project-specific    | `./AGENTS.md` in project root (symlink `./CLAUDE.md → ./AGENTS.md`)                 | Patterns specific to this codebase, local conventions                              |
    | Workflow/technology | New or existing skill in `~/Code/dotfiles/agents/skills/` or local `.claude/skills` | Detailed procedures for specific tools, frameworks, or workflows                   |
 
    **Decision heuristics:**
 
-   - "Every conversation" → global GLOBAL.md
+   - "Every conversation" → global GLOBAL.md (direct or via skill annotation)
    - "Every conversation in this project" → project root `AGENTS.md` (create `CLAUDE.md` symlink if missing)
    - "When working with X technology/workflow" → skill
+
+   **Global via skill annotation:** When a learning falls within a skill that has `global_category` in its frontmatter (e.g., `git-workflows`, `react-best-practices`, `typescript-guidelines`), prefer editing/expanding the skill content AND adding a `<!-- @> token-dense summary -->` annotation above the relevant section. Then run `make compile` to regenerate the compiled GLOBAL.md index. This keeps the full context in the skill while surfacing a dense summary in always-loaded context.
+
+   This only applies to the dotfiles-source GLOBAL.md — project-level AGENTS.md and CLAUDE.md have no compilation step.
 
 4. **Consolidate, don't accumulate** — Before adding:
 

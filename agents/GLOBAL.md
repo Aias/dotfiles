@@ -101,10 +101,12 @@ Use existing infrastructure over adding new dependencies when both work equally 
 
 ## Context-Specific Guidelines
 
-Detailed guidance is in dedicated skills:
-
-- Git & version control (commits, PRs, rebasing, GitHub): `git-workflows` skill — **always invoke before creating PRs or commits**
-- TypeScript: `typescript-guidelines` skill
-- React: `react-guidelines` skill
-- Frontend HTML/CSS: `frontend-html-css-guidelines` skill
-- Debugging: `debugger` skill
+<!-- BEGIN COMPILED -->
+Animation|skills/web-animation-design|Entering/exiting → ease-out. On-screen movement → ease-in-out. Hover → ease. 100+ daily → don't animate:L43|GPU only: animate transform and opacity. Never padding/margin/height/width:L202|prefers-reduced-motion on every animation. No exceptions for opacity or color:L248
+Code Quality|skills/code-quality|Remove defensive checks, type casts, redundant annotations abnormal for codepath context:L27|Comments explain WHY not WHAT. If explaining WHAT, refactor to be self-documenting:L35
+Debugging|skills/debugger|Evidence over intuition: no fixes until logs confirm root cause. Minimal instrumentation:L12
+Git|skills/git-workflows|Read-only on git status/diff. Explicit permission for commit/push/reset:L23|SSH URLs. Never amend unless explicitly requested; prefer new commits:L27|Single POV as author. No AI attribution or co-authorship:L32|PR titles: plain language, no fix:/feat: prefixes:workflows/pr-guidelines.md:L40|Open with problem context, not ## Summary. Problem before solution. Direct, no filler:workflows/pr-guidelines.md:L46|No file listings, LOC counts, status info, AI vocabulary, or decision narration:workflows/pr-guidelines.md:L83
+HTML/CSS|skills/frontend-guidelines|Semantic elements over div/span; built-in elements over generic containers:L11|Flexbox/grid + gap; margin is code smell. Logical properties (block/inline, start/end). Transform sub-properties:L23|Colors: tokens/custom properties, then oklch or hex (not rgb):L30|CSS over JS when equivalent:L36|srOnly over aria-label. focus-visible on all interactive elements, never outline-none without replacement. dvw/dvh over vw/vh:L40
+React|skills/react-best-practices|v19+: no forwardRef. No useEffect for transforms/events/state — calculate in render/handlers:L7|Read you-might-not-need-an-effect.md before adding Effects. rAF > setTimeout. Iterate to repeat:L7
+TypeScript|skills/typescript-guidelines|No any/as/!/ts-ignore — fix code, not types:L11|Prop intersections: specific before generic. Inline single-use variables:L15|Import order: React → runtime → external → internal → aliased → relative → local. type keyword for type imports:L23
+<!-- END COMPILED -->

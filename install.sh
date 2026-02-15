@@ -213,6 +213,8 @@ install_skills() {
         fi
         mkdir -p "$target_dir"
 
+        # Note: This loop syncs discovered source skills only.
+        # External skill lifecycle (install/remove) is owned by skills-manager.
         for skill_entry in "${skills[@]}"; do
             local skill_type="${skill_entry%%:*}"
             local skill_name="${skill_entry#*:}"
@@ -240,6 +242,19 @@ install_skills() {
             mkdir -p "$skill_target"
             rsync -a --delete "$skill_source" "$skill_target/"
         done
+
+        # Overwrite with cleaned versions (annotations stripped)
+        local build_dir="$DOTFILES_DIR/agents/.build/skills"
+        if [[ -d "$build_dir" ]]; then
+            for build_skill in "$build_dir"/*/; do
+                [[ -d "$build_skill" ]] || continue
+                local skill_name
+                skill_name="$(basename "$build_skill")"
+                if [[ -d "$target_dir/$skill_name" ]]; then
+                    rsync -a "$build_skill" "$target_dir/$skill_name/"
+                fi
+            done
+        fi
     done
 
     # Print skill status table with colors

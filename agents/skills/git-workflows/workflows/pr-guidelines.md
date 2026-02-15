@@ -1,5 +1,24 @@
 # PR Guidelines
 
+## Procedure
+
+1. Run `git status` to see changes
+2. Run `git diff` to understand what changed
+3. Run `git log` to see commit message style
+4. Run pre-submission checks (type checks, linting, formatting, tests)
+5. Stage and commit with a concise message
+6. Push branch to remote with `-u` flag
+7. Create draft PR using `gh pr create --draft`
+
+Use HEREDOC for the PR body to preserve formatting:
+
+```bash
+gh pr create --draft --title "Fix login crash on empty session" --body "$(cat <<'EOF'
+PR body here...
+EOF
+)"
+```
+
 ## Parameters
 
 **Base branch:** Common patterns:
@@ -18,64 +37,60 @@
 
 If any of these are unclear, ask before proceeding.
 
-## Pre-Submission Checks
+<!-- @> PR titles: plain language, no fix:/feat: prefixes -->
+## PR Title
 
-Run all applicable checks before committing — type checks, linting, formatting, and tests.
-
-## Writing the PR Title
-
-- Use plain language, not commit-style prefixes (`fix:`, `feat:`)
+- Plain language in sentence case — no commit-style prefixes (`feat:`, `fix:`, etc.)
 - Describe what changed, not the ticket number
-- Keep it concise but specific
+- Concise but specific
 
-## Writing the PR Description
+<!-- @> Open with problem context, not ## Summary. Problem before solution. Direct, no filler -->
+## PR Description
 
-Write PR descriptions in the user's voice — conversational, direct, first-person. The description should read like a short explanation to a teammate, not a report.
+No opening `##` header. Start directly with a paragraph explaining the problem, context, or motivation — why this PR exists. Then use flat bullet points describing what changed, focused on *what* and *why*.
 
-### Structure
+### Voice
 
-**Always open with an introductory paragraph** — no `## Summary` header. Explain the problem being solved and why it matters. This is the most important part of the PR.
+- Prefer dropping subject pronouns entirely — "Updated X to do Y" not "We updated X to do Y". Use "we" for team-level decisions or project direction. "I" only for genuinely first-person observations.
+- Problem or motivation before solution. Explain what was broken, missing, or needed, then what was done.
+- Direct — every sentence adds information. No preamble, hedging, or filler.
+- Mention edge cases as asides or parentheticals, not dedicated sections.
+- Group small related changes at the end with "Also:" or "A couple other semi-related changes:".
+- Reference related work inline — link to tickets, Slack threads, Figma files, related PRs naturally in the text.
 
-After the intro, use **flat bullet points** to describe what changed. Keep them focused on the *what* and *why*, not a file-by-file inventory.
+### Scale to PR Size
 
-**Scale structure to PR size:**
+- **Small:** One or two sentences + screenshot/video if visual. Nothing more.
+- **Medium:** Intro paragraph + bullet points + inline media + related links.
+- **Large:** Can use headers to organize. Prefer descriptive headers (e.g., subsystem name) over generic ones like "Changes".
 
-- **Small PRs:** One or two sentences + screenshot/video if visual. Nothing more.
-- **Medium PRs:** Intro paragraph, bullet points, inline media, related links.
-- **Large PRs:** Can use headers to organize, but only when the content genuinely needs them. Prefer descriptive headers (e.g., the name of a subsystem) over generic ones like "Changes".
+### Considered Alternatives
 
-### Voice and tone
-
-- **Start with context, not a header.** Open with why this PR exists — the problem, the investigation, the customer report. Don't start with `## Summary`.
-- **First person is fine, but use it sparingly.** Reserve "I" for personal observations — "I noticed this during testing", "I was initially skeptical of the dialog approach". For describing the software itself, use a detached voice: "Previously the system did X, now we do Y", "The loader was injecting CSS properties onto..." Use "we" for team decisions or project direction.
-- **Problem before solution.** Explain what was broken or missing, then what was done about it.
-- **Be direct.** No preamble, no hedging, no filler. Every sentence should add information.
-- **State the situation, then describe the action.** Don't narrate the decision process or justify the approach — just explain what exists and what was done about it. "We have X, this PR does Y" not "Rather than doing X, I chose to do Y instead."
-- **Mention edge cases as asides** rather than in dedicated sections — "This does *not* make a related update where..." or parenthetical notes.
-- **Group small related changes** at the end with "Also:" or "Miscellaneous:" or "A couple other semi-related changes:" rather than burying them in the main narrative.
-- **Reference related work naturally** — link to tickets, Slack threads, Figma files, related PRs inline rather than in a dedicated section.
-
-### What to avoid
-
-- **No `## Summary` / `## Test plan` scaffolding** — these are AI patterns. Open with prose, use `## Testing` or `## Validation` only when needed
-- **No file-by-file change listings** — describe the *what* and *why* of changes, not a mechanical inventory
-- **No LOC counts** ("~26 LOC thin wrapper (was ~190)")
-- **No status information** like "all tests pass" or "ran typecheck" — this is assumed
-- **No AI vocabulary** — "defense-in-depth", "leveraging", "ensuring robustness"
-- **No decision narration** — "Rather than X, I extracted Y" or "Instead of fixing each spot individually..." reads as justifying choices. State the facts: "There are many places that assume X. This PR adds Y."
-- **No numbered step-by-step behavioral flows** unless genuinely explaining a race condition or sequence-dependent bug
-- **No `Fixes #123` as the entire body** — always explain *why*, even briefly
-
-### Visual evidence
-
-Embed screenshots and videos directly in the description body, near the text they illustrate. Don't put them in a separate "Screenshots" section. A video of the fix working is often better than a paragraph explaining it.
+When alternatives were explored during development and intentionally rejected, include a brief note — either inline or in a short `## Considered but not done` section. Useful when a reviewer might naturally suggest the rejected approach. Infer when to include this from commit history or conversation context.
 
 ### Testing / Validation
 
-Only include a `## Testing` or `## Validation` section when testing is non-obvious — complex interactions, specific reproduction steps, or multi-step verification. For straightforward changes, the code review and CI are sufficient.
+Only include when testing is non-obvious — complex interactions, specific reproduction steps, or multi-step verification. For straightforward changes, code review and CI are sufficient.
 
-When included, write simple prose steps a human can walk through — not checkboxes. Describe how to reproduce or confirm the fix: what page to navigate to, what data needs to exist, what to click, what to look for. The goal is a quick walkthrough, not a QA checklist.
+When included, use a bulleted list for independent things to check, or an ordered list if steps must be done in sequence. No checkboxes — except in draft PRs to show remaining work (remove them when moving to ready for review). Describe what page to visit, what data needs to exist, what to look for.
 
-### Ticket references
+### Visual Evidence
 
-Place `Fixes RMRK-XXXX` or `Closes RMRK-XXXX` on its own line, either near the top (after the opening context) or at the bottom. For related-but-not-closed tickets, use inline links.
+Embed screenshots inline near the text they illustrate, not in a separate "Screenshots" section. Leave `[screenshot placeholder: <description of what to capture>]` markers for visual changes so the author can fill them in before merging.
+
+### Ticket References
+
+Place `Fixes <ticket>` or `Closes <ticket>` on its own line, near the top (after opening context) or at the bottom. For related-but-not-closed tickets, use inline links.
+
+<!-- @> No file listings, LOC counts, status info, AI vocabulary, or decision narration -->
+## What to Avoid
+
+- File-by-file change listings or mechanical inventories (unless the refactoring is the point)
+- LOC counts (unless the PR's purpose is reducing complexity or simplifying)
+- Status information ("all tests pass", "ran typecheck") — this is assumed
+- AI vocabulary ("defense-in-depth", "leveraging", "ensuring robustness")
+- Decision narration ("Rather than X, I extracted Y") — state facts, not justifications. Use the "Considered Alternatives" section instead when rejection context is genuinely useful.
+- Numbered step-by-step behavioral flows (unless explaining a race condition or sequence-dependent bug)
+- `Fixes #123` as the entire body — always explain *why*
+- `## Summary` / `## Test plan` scaffolding
+- "Generated with Claude Code" or similar AI footers / co-authorship
