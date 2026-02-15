@@ -10,19 +10,10 @@ Example:
     python utils/package_skill.py skills/public/my-skill ./dist
 """
 
-import importlib.util
 import sys
 import zipfile
 from pathlib import Path
-
-_spec = importlib.util.spec_from_file_location(
-    "quick_validate", Path(__file__).parent / "quick_validate.py"
-)
-_mod = importlib.util.module_from_spec(_spec)
-sys.dont_write_bytecode = True
-_spec.loader.exec_module(_mod)
-sys.dont_write_bytecode = False
-validate_skill = _mod.validate_skill
+from quick_validate import validate_skill
 
 
 def package_skill(skill_path, output_dir=None):
