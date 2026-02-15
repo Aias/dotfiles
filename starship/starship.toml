@@ -38,6 +38,7 @@ format = "[$branch]($style) "
 style = "bright-black"
 
 [git_status]
+use_git_executable = true
 format = "[$ahead_behind]($style) [($conflicted)($staged)($modified)($untracked)](bright-black)"
 style = "cyan"
 conflicted = "[!${count}](red) "
