@@ -38,6 +38,7 @@ EOF
 If any of these are unclear, ask before proceeding.
 
 <!-- @> PR titles: plain language, no fix:/feat: prefixes -->
+
 ## PR Title
 
 - Plain language in sentence case — no commit-style prefixes (`feat:`, `fix:`, etc.)
@@ -45,14 +46,16 @@ If any of these are unclear, ask before proceeding.
 - Concise but specific
 
 <!-- @> Open with problem context, not ## Summary. Problem before solution. Direct, no filler -->
+
 ## PR Description
 
-No opening `##` header. Start directly with a paragraph explaining the problem, context, or motivation — why this PR exists. Then use flat bullet points describing what changed, focused on *what* and *why*.
+No opening `##` header. Start directly with a paragraph explaining the problem, context, or motivation — why this PR exists. Then use flat bullet points describing what changed, focused on _what_ and _why_.
 
 <!-- @> Drop subject pronouns. "we" for team decisions, "I" for first-person only. No preamble or hedging -->
+
 ### Voice
 
-- Prefer dropping subject pronouns entirely — "Updated X to do Y" not "We updated X to do Y". Use "we" for team-level decisions or project direction. "I" only for genuinely first-person observations.
+- Present tense — "Updates X to do Y" not "Updated X to do Y". Prefer dropping subject pronouns entirely. Use "we" for team-level decisions or project direction. "I" only for genuinely first-person observations.
 - Problem or motivation before solution. Explain what was broken, missing, or needed, then what was done.
 - Direct — every sentence adds information. No preamble, hedging, or filler.
 - Mention edge cases as asides or parentheticals, not dedicated sections.
@@ -84,14 +87,15 @@ Embed screenshots inline near the text they illustrate, not in a separate "Scree
 Place `Fixes <ticket>` or `Closes <ticket>` on its own line, near the top (after opening context) or at the bottom. For related-but-not-closed tickets, use inline links.
 
 <!-- @> No file listings, LOC counts, status info, AI vocabulary, or decision narration -->
+
 ## What to Avoid
 
 - File-by-file change listings or mechanical inventories (unless the refactoring is the point)
 - LOC counts (unless the PR's purpose is reducing complexity or simplifying)
-- Status information ("all tests pass", "ran typecheck") — this is assumed
+- **Never include status information** ("all tests pass", "ran typecheck", "type checks and linting pass") — CI results are assumed
 - AI vocabulary ("defense-in-depth", "leveraging", "ensuring robustness")
 - Decision narration ("Rather than X, I extracted Y") — state facts, not justifications. Use the "Considered Alternatives" section instead when rejection context is genuinely useful.
 - Numbered step-by-step behavioral flows (unless explaining a race condition or sequence-dependent bug)
-- `Fixes #123` as the entire body — always explain *why*
+- `Fixes #123` as the entire body — always explain _why_
 - `## Summary` / `## Test plan` scaffolding
 - "Generated with Claude Code" or similar AI footers / co-authorship
