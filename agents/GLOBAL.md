@@ -32,7 +32,7 @@ The agent can pause and ask the user for clarification at any point. **I would m
 
 - Updates to this document may be proposed at any time (and are encouraged)
 - Extract both explicit and implicit development patterns that apply broadly to future sessions.
-- When writing rules or skill guidance, distill general principles with universally applicable examples — not the specific incident that triggered the update.
+- When writing rules or skill guidance, pair principles with examples — both are stronger together than either alone. Adapt examples to be representative rather than anecdotal: use recognizable scenarios or placeholders so a reader with no session context immediately grasps the intent.
 
 Cut all:
 
@@ -88,6 +88,8 @@ Prefer reading source code (locally in `node_modules` or on GitHub) over fetchin
 **Prefer modern CLI tools:** `rg` (fast grep), `fd` (find), `jq` (JSON), `bat` (cat), `sd` (sed), `eza` (ls), `yq` (YAML), `delta` (git diff), `fzf` (fuzzy filter), `gh` (GitHub).
 
 Use existing infrastructure over adding new dependencies when both work equally well.
+
+**Use canonical CLI commands** before resorting to manual invocation. Prefer `mytool build` over `node path/to/mytool-wrapper.js build`. Needing a workaround to run a tool that should be on PATH signals misconfiguration worth investigating.
 
 ## Context-Specific Guidelines
 

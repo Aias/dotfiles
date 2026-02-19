@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+# Auto-compile GLOBAL.md annotations before committing
+# If compilation changes GLOBAL.md, auto-stage the updated file
+
+make compile --no-print-directory 2>&1
+
+if ! git diff --quiet agents/GLOBAL.md 2>/dev/null; then
+  git add agents/GLOBAL.md
+  echo "pre-commit: auto-compiled and staged agents/GLOBAL.md"
+fi
