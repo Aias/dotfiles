@@ -1,7 +1,7 @@
 ---
 name: remember-that
 description: |
-  Persist learnings from the current session for future conversations. Use when the user says "remember that", "add this to the rules", "update GLOBAL.md", "save this preference", or otherwise indicates they want Claude to remember something across sessions. Extracts general principles and patterns (not one-offs) and determines the appropriate storage location.
+  Persist learnings and enforce patterns across sessions. Triggers on: "remember that", "add this to the rules", "update GLOBAL.md", "save this preference", "add a hook for", "enforce this", "make sure the agent always", "inject this context when", "never forget to", or any indication the user wants behavior persisted, enforced, or injected into future conversations. Determines the right mechanism: always-loaded rules (GLOBAL.md), on-demand skills, project instructions (AGENTS.md), or enforcement hooks.
 ---
 
 # Remember That
