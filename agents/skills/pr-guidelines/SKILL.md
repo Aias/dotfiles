@@ -1,3 +1,10 @@
+---
+name: pr-guidelines
+description: Review a pull request PR. Use when creating or updating a PR, writing PR descriptions, or running gh pr commands. Triggers on "open a PR", "create PR", "update PR description", "gh pr create", "gh pr edit".
+compatibility: Requires GitHub CLI (gh).
+global_category: Git
+---
+
 # PR Guidelines
 
 ## Procedure
