@@ -13,12 +13,7 @@ Example:
 import sys
 import zipfile
 from pathlib import Path
-
-sys.dont_write_bytecode = True
-try:
-    from quick_validate import validate_skill
-finally:
-    sys.dont_write_bytecode = False
+from quick_validate import validate_skill
 
 
 def package_skill(skill_path, output_dir=None):
