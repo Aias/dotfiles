@@ -1,7 +1,7 @@
 ---
 name: remember-that
 description: |
-  Persist learnings and enforce patterns across sessions. Triggers on: "remember that", "add this to the rules", "update GLOBAL.md", "save this preference", "add a hook for", "enforce this", "make sure the agent always", "inject this context when", "never forget to", or any indication the user wants behavior persisted, enforced, or injected into future conversations. Determines the right mechanism: always-loaded rules (GLOBAL.md), on-demand skills, project instructions (AGENTS.md), or enforcement hooks.
+  Persist learnings and enforce patterns across sessions. Triggers on: "remember that", "add this to the rules", "update GLOBAL.md", "save this preference", "add a hook for", "enforce this", "make sure the agent always", "inject this context when", "never forget to". Also triggers on user corrections and interruptions — "wait", "stop", "no", "undo that", "don't do that", "that's wrong", "I said X not Y", "you keep doing X" — since repeated corrections signal a pattern worth persisting. Determines the right mechanism: always-loaded rules (GLOBAL.md), on-demand skills, project instructions (AGENTS.md), or enforcement hooks.
 ---
 
 # Remember That
