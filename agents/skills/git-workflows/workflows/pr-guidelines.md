@@ -10,6 +10,20 @@
 6. Push branch to remote with `-u` flag
 7. Create draft PR using `gh pr create --draft`
 
+<!-- @> After pushing to an existing PR, review and update title/description to reflect current changes -->
+
+## Updating an Existing PR
+
+After pushing new commits to a branch with an open PR:
+
+1. Run `gh pr view` to read the current title and description
+2. Compare against the full diff (`git diff <base>...HEAD`) — not just the new commits
+3. Update title and/or description with `gh pr edit` if they no longer accurately reflect the PR's scope
+
+The title and description should always describe the PR as a whole, not just the latest push. Apply the same voice and formatting rules from [PR Title](#pr-title) and [PR Description](#pr-description).
+
+## Creating a New PR
+
 Use HEREDOC for the PR body to preserve formatting:
 
 ```bash
@@ -51,11 +65,12 @@ If any of these are unclear, ask before proceeding.
 
 No opening `##` header. Start directly with a paragraph explaining the problem, context, or motivation — why this PR exists. Then use flat bullet points describing what changed, focused on _what_ and _why_.
 
-<!-- @> Drop subject pronouns. "we" for team decisions, "I" for first-person only. No preamble or hedging -->
+<!-- @> Present tense ("Adds", not "Added"). Drop subject pronouns. "we" for team decisions, "I" for first-person only -->
 
 ### Voice
 
-- Present tense — "Updates X to do Y" not "Updated X to do Y". Prefer dropping subject pronouns entirely. Use "we" for team-level decisions or project direction. "I" only for genuinely first-person observations.
+- Present tense — "Adds validation for empty inputs" not "Added validation for empty inputs". This applies to both the opening paragraph and bullet points.
+- Drop subject pronouns. Use "we" for team-level decisions or project direction. "I" only for genuinely first-person observations.
 - Problem or motivation before solution. Explain what was broken, missing, or needed, then what was done.
 - Direct — every sentence adds information. No preamble, hedging, or filler.
 - Mention edge cases as asides or parentheticals, not dedicated sections.
