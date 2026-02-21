@@ -27,6 +27,7 @@ From the outdated output, identify packages with:
 **Patch-only updates** (e.g., 1.27.3 → 1.27.4) are excluded from changelog research by default since they typically contain only bug fixes without breaking changes. However, they will still be included in the final package updates (see Step 6).
 
 **Special packages:** Some packages require different research approaches:
+
 - **Drizzle beta versions** (e.g., `drizzle-orm@1.0.0-beta.*`): See [references/drizzle-beta.md](references/drizzle-beta.md) for how to find changelogs and compare versions.
 
 Present the filtered list (major/minor only) and then proceed to changelog research. All major and minor updates are researched by default unless otherwise specified.
@@ -36,7 +37,6 @@ Present the filtered list (major/minor only) and then proceed to changelog resea
 For each package with a minor or major update, spawn a parallel subagent/subtask to research the changelog. Each subagent should:
 
 1. **Find the best changelog source** by checking (in order of preference):
-
    - GitHub releases page: `https://github.com/{owner}/{repo}/releases`
    - CHANGELOG.md in the repo root
    - RELEASES.md or HISTORY.md in the repo
@@ -44,7 +44,6 @@ For each package with a minor or major update, spawn a parallel subagent/subtask
    - npm package page changelog tab
 
 2. **Extract relevant changes** between the current and latest versions:
-
    - Breaking changes (for major updates)
    - New features and APIs
    - Deprecations
@@ -122,13 +121,8 @@ Do NOT run any update commands unless I explicitly request it.
 
 ### Step 6: Apply Updates
 
-When the user requests updates, ask whether to include patch-only updates:
+When the user requests updates, include all outdated packages (major, minor, AND patch) without asking. Only exclude packages if the user:
 
-> "Would you like to include patch-only updates as well? These weren't researched but are typically safe bug fixes. (Yes by default)"
-
-**Default behavior:** Include all outdated packages (major, minor, AND patch) in the update unless the user:
-
-- Explicitly declines patch updates
 - Requests only specific packages be updated
 - Asks to update only the researched packages
 
