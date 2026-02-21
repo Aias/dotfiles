@@ -13,12 +13,10 @@ A collection of git-related workflows and guidelines. Use this skill for any git
 
 | Situation                             | Workflow                                                |
 | ------------------------------------- | ------------------------------------------------------- |
-| Creating or updating a PR             | [pr-guidelines](workflows/pr-guidelines.md)             |
+| Creating or updating a PR             | `pr-guidelines` skill                                   |
 | Rebasing or resolving merge conflicts | [conflict-resolution](workflows/conflict-resolution.md) |
 
 ## General Principles
-
-**When working with pull requests (PRs), you _must_ read the guidelines in the [pr-guidelines](workflows/pr-guidelines.md) workflow.**
 
 <!-- @> Read-only on git status/diff. Explicit permission for commit/push/reset -->
 **Read-only by default:** When inspecting `git status` or `git diff`, treat them as read-only context. Never revert or assume missing changes were yours. Other agents or the user may have already committed updates.
