@@ -1,4 +1,4 @@
-.PHONY: compile install link update update-skills backup diff check
+.PHONY: compile install setup link update update-skills backup diff check
 
 # Compile @> annotations from skills into GLOBAL.md + cleaned .build/ copies
 compile:
@@ -7,6 +7,10 @@ compile:
 # Full install with dependencies
 install: compile
 	./install.sh
+
+# Repo-local setup (git hooks, etc.) — run per clone/worktree
+setup:
+	./setup.sh
 
 # Link only (skip brew packages)
 link: compile
