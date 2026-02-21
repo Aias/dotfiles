@@ -29,6 +29,23 @@ Avoid `div`/`span` unless necessary. Prefer screen-reader text with proper struc
 - Prefer logical properties: `block`/`inline`, `start`/`end` over `left`/`right` and `top`/`bottom`.
 - Use transform sub-properties: `translate`, `rotate`, `scale` rather than a single `transform` property.
 
+<!-- @> Order CSS declarations logically (outside-in): position/display → flex/grid → sizing/spacing → overflow → typography → visual → transforms → interaction -->
+### Declaration Order
+
+Order CSS properties logically by concern, outside-in — not alphabetically, not randomly. Group related properties and order broad → specific within each group:
+
+1. **Position & Layout** — `display`, `position`, `inset`, `zIndex`, `visibility`, `contain`
+2. **Flex/Grid Container** — `flexDirection`, `flexWrap`, `alignItems`, `justifyContent`, `gap`
+3. **Flex/Grid Child** — `flex`, `flexGrow`, `flexShrink`, `alignSelf`, `order`
+4. **Sizing & Spacing** — `width`, `height`, `min/max-*`, `padding`, `margin`
+5. **Overflow & Scroll** — `overflow`, `overscrollBehavior`, `scrollbar*`
+6. **Typography** — `textStyle`, `font*`, `lineHeight`, `textAlign`, `textWrap`, `lineClamp`
+7. **Visual & Decoration** — `color`, `background*`, `border*`, `borderRadius`, `boxShadow`, `opacity`
+8. **Transform & Animation** — `transform`, `translate`, `transition*`, `animation*`, `viewTransitionName`
+9. **Interaction** — `cursor`, `pointerEvents`, `userSelect`
+
+Applies to all CSS-in-JS style objects (`css={{}}`, `css()`, recipe/sva slots, `styled()` base styles).
+
 <!-- @> Colors: tokens/custom properties, then oklch or hex (not rgb) -->
 ### Colors
 

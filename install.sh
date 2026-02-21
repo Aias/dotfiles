@@ -335,27 +335,10 @@ cleanup_old_backups() {
 cleanup_old_backups
 
 # ─────────────────────────────────────────────────────────────
-# Git hooks (tracked in git-hooks/, installed to .git/hooks/)
+# Repo-local setup (git hooks, etc.)
 # ─────────────────────────────────────────────────────────────
 
-install_git_hooks() {
-    local hooks_src="$DOTFILES_DIR/git-hooks"
-    local hooks_dst="$DOTFILES_DIR/.git/hooks"
-
-    [[ -d "$hooks_src" ]] || return 0
-
-    section "Git hooks"
-    for hook in "$hooks_src"/*; do
-        [[ -f "$hook" ]] || continue
-        local name
-        name="$(basename "$hook")"
-        cp "$hook" "$hooks_dst/$name"
-        chmod +x "$hooks_dst/$name"
-        success "$name"
-    done
-}
-
-install_git_hooks
+"$DOTFILES_DIR/setup.sh"
 
 # ─────────────────────────────────────────────────────────────
 # Done

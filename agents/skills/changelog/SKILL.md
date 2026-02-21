@@ -29,7 +29,7 @@ From the outdated output, identify packages with:
 **Special packages:** Some packages require different research approaches:
 - **Drizzle beta versions** (e.g., `drizzle-orm@1.0.0-beta.*`): See [references/drizzle-beta.md](references/drizzle-beta.md) for how to find changelogs and compare versions.
 
-Present the filtered list (major/minor only) to me before proceeding with changelog research.
+Present the filtered list (major/minor only) and then proceed to changelog research. All major and minor updates are researched by default unless otherwise specified.
 
 ### Step 3: Research Changelogs in Parallel
 
