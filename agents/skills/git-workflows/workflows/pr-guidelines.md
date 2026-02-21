@@ -10,6 +10,20 @@
 6. Push branch to remote with `-u` flag
 7. Create draft PR using `gh pr create --draft`
 
+<!-- @> After pushing to an existing PR, review and update title/description to reflect current changes -->
+
+## Updating an Existing PR
+
+After pushing new commits to a branch with an open PR:
+
+1. Run `gh pr view` to read the current title and description
+2. Compare against the full diff (`git diff <base>...HEAD`) — not just the new commits
+3. Update title and/or description with `gh pr edit` if they no longer accurately reflect the PR's scope
+
+The title and description should always describe the PR as a whole, not just the latest push. Apply the same voice and formatting rules from [PR Title](#pr-title) and [PR Description](#pr-description).
+
+## Creating a New PR
+
 Use HEREDOC for the PR body to preserve formatting:
 
 ```bash
