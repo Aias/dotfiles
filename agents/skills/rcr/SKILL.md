@@ -170,8 +170,8 @@ The `rcr` CLI provides direct access to Red Cliff Record, a highly networked, ma
   - `--dry-run` uses a placeholder dump path when no matching file exists.
 - `rcr db reset [dev]` (dev only)
 - `rcr db seed [dev]` (dev only)
-- `rcr db status [prod|dev]`
-  - Note: actual connection comes from runtime environment (`--dev`/`NODE_ENV`).
+- `rcr db status`
+  - Connection determined by `--dev` flag / `NODE_ENV`. Use `--dev` for dev, omit for prod.
 - `rcr db clone-prod-to-dev [--dry-run|-n] [--yes|-y]`
 
 ### `fetch`

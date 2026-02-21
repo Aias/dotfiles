@@ -9,6 +9,19 @@
   "permissions": {
     "defaultMode": "default"
   },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/check-pr-guidelines.sh"
+          }
+        ]
+      }
+    ]
+  },
   "statusLine": {
     "type": "command",
     "command": "bash ~/.claude/statusline-command.sh"
@@ -60,19 +73,6 @@
       "Spooling",
       "Tessellating",
       "Winnowing"
-    ]
-  },
-  "hooks": {
-    "PreToolUse": [
-      {
-        "matcher": "Bash",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "~/.claude/hooks/check-pr-guidelines.sh"
-          }
-        ]
-      }
     ]
   },
   "alwaysThinkingEnabled": true,
