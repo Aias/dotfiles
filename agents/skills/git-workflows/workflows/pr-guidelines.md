@@ -65,11 +65,12 @@ If any of these are unclear, ask before proceeding.
 
 No opening `##` header. Start directly with a paragraph explaining the problem, context, or motivation — why this PR exists. Then use flat bullet points describing what changed, focused on _what_ and _why_.
 
-<!-- @> Drop subject pronouns. "we" for team decisions, "I" for first-person only. No preamble or hedging -->
+<!-- @> Present tense ("Adds", not "Added"). Drop subject pronouns. "we" for team decisions, "I" for first-person only -->
 
 ### Voice
 
-- Present tense — "Updates X to do Y" not "Updated X to do Y". Prefer dropping subject pronouns entirely. Use "we" for team-level decisions or project direction. "I" only for genuinely first-person observations.
+- Present tense — "Adds validation for empty inputs" not "Added validation for empty inputs". This applies to both the opening paragraph and bullet points.
+- Drop subject pronouns. Use "we" for team-level decisions or project direction. "I" only for genuinely first-person observations.
 - Problem or motivation before solution. Explain what was broken, missing, or needed, then what was done.
 - Direct — every sentence adds information. No preamble, hedging, or filler.
 - Mention edge cases as asides or parentheticals, not dedicated sections.
