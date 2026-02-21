@@ -6,7 +6,7 @@ description: |
 
 # Remember That
 
-Extract durable learnings from conversation context and persist them appropriately.
+Extract durable learnings from conversation context and persist them appropriately. This skill is the decision point for *how and where* context gets injected — whether passively (always-loaded rules in GLOBAL.md), on-demand (skills invoked by trigger), or enforced (hooks that remind or block before certain tool calls).
 
 ## Process
 
