@@ -31,12 +31,14 @@ Extract durable learnings from conversation context and persist them appropriate
    | Global (via skill)  | Skill SKILL.md + `<!-- @> summary -->` annotation                                   | Learning relates to a skill with `global_category` — edit the skill, add annotation, run `make compile` |
    | Project-specific    | `./AGENTS.md` in project root (symlink `./CLAUDE.md → ./AGENTS.md`)                 | Patterns specific to this codebase, local conventions                              |
    | Workflow/technology | New or existing skill in `~/Code/dotfiles/agents/skills/` or local `.claude/skills` | Detailed procedures for specific tools, frameworks, or workflows                   |
+   | Enforcement         | Hook script in `~/Code/dotfiles/agents/hooks/` + registration in `claude.settings.json` | When a skill or rule must be loaded before certain tool calls (e.g. read pr-guidelines before `gh pr` commands) |
 
    **Decision heuristics:**
 
    - "Every conversation" → global GLOBAL.md (direct or via skill annotation)
    - "Every conversation in this project" → project root `AGENTS.md` (create `CLAUDE.md` symlink if missing)
    - "When working with X technology/workflow" → skill
+   - "Must not forget to do X before Y" → companion hook that reminds or blocks. Hook matchers filter by tool name only (regex); command-content filtering happens inside the script.
 
    **Global via skill annotation:** When a learning falls within a skill that has `global_category` in its frontmatter (e.g., `git-workflows`, `react-best-practices`, `typescript-guidelines`), prefer editing/expanding the skill content AND adding a `<!-- @> token-dense summary -->` annotation above the relevant section. Then run `make compile` to regenerate the compiled GLOBAL.md index. This keeps the full context in the skill while surfacing a dense summary in always-loaded context.
 
