@@ -8,7 +8,9 @@
 4. Run pre-submission checks (type checks, linting, formatting, tests)
 5. Stage and commit with a concise message
 6. Push branch to remote with `-u` flag
-7. Create draft PR using `gh pr create --draft`
+7. Draft the PR title and description following the guidelines below
+8. Re-read the draft through the lens of the `/write` skill — edit sentence by sentence for clarity, concision, and craft. Even technical documentation should be a joy to read.
+9. Create draft PR using `gh pr create --draft`
 
 <!-- @> After pushing to an existing PR, review and update title/description to reflect current changes -->
 
@@ -19,6 +21,7 @@ After pushing new commits to a branch with an open PR:
 1. Run `gh pr view` to read the current title and description
 2. Compare against the full diff (`git diff <base>...HEAD`) — not just the new commits
 3. Update title and/or description with `gh pr edit` if they no longer accurately reflect the PR's scope
+4. Apply the `/write` skill to the revised description — edit for clarity and craft before submitting
 
 The title and description should always describe the PR as a whole, not just the latest push. Apply the same voice and formatting rules from [PR Title](#pr-title) and [PR Description](#pr-description).
 
