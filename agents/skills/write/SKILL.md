@@ -2,7 +2,7 @@
 name: write
 description: >
   Prose writing and editing guidance grounded in sentence-level craft. Use when
-  writing, editing, or revising any prose — PR descriptions, documentation,
+  writing, editing, or revising any prose: PR descriptions, documentation,
   commit messages, agent instructions, READMEs, comments, or freeform text.
   Triggers on: "write this", "edit this", "revise", "rewrite", "tighten the
   prose", "how does this read", "draft", "wordsmith", /write.
@@ -12,18 +12,18 @@ description: >
 
 Sentence-level prose craft, grounded in three canonical sources:
 
-- [Klinkenborg — *Several Short Sentences About Writing*](references/klinkenborg.md)
-- [Pinker — *The Sense of Style*](references/pinker.md)
-- [Strunk & White — *The Elements of Style*](references/strunk-white.md)
-- [Owen — *The Objectively Objectionable Grammatical Pet Peeve*](references/owen.md)
+- [Klinkenborg, *Several Short Sentences About Writing*](references/klinkenborg.md)
+- [Pinker, *The Sense of Style*](references/pinker.md)
+- [Strunk & White, *The Elements of Style*](references/strunk-white.md)
+- [Owen, *The Objectively Objectionable Grammatical Pet Peeve*](references/owen.md)
 
 ## Principles
 
-**The sentence is the unit of work.** Know what each sentence says, what it doesn't say, and what it implies. If something feels off — the internal quaver — find the cause and fix it.
+**The sentence is the unit of work.** Know what each sentence says, what it doesn't say, and what it implies. If something feels off (the internal quaver), find the cause and fix it.
 
-**Omit needless words.** Every word must tell. When a sentence is made stronger, it usually becomes shorter. This does not mean all sentences should be short — it means every word earns its place.
+**Omit needless words.** Every word must tell. When a sentence is made stronger, it usually becomes shorter. This does not mean all sentences should be short; it means every word earns its place.
 
-**Clarity over style.** Pursue clarity; style reveals itself in that pursuit. Style is not a garnish — it is nondetachable, unfilterable. The approach to style is by way of plainness, simplicity, orderliness, sincerity.
+**Clarity over style.** Pursue clarity; style reveals itself in that pursuit. Style is not a garnish; it is nondetachable, unfilterable. The approach to style is by way of plainness, simplicity, orderliness, sincerity.
 
 **Classic style: prose as a window.** Orient the reader's gaze so they can see for themselves. Assume equality between writer and reader. Good writing makes the reader feel like a genius; bad writing makes the reader feel like a dunce.
 
@@ -65,20 +65,46 @@ Sentence-level prose craft, grounded in three canonical sources:
 2. **Write sentences, not paragraphs.** Audition many sentences. One gets the part. Build outward from sentences that earn their place.
 3. **Read each sentence in isolation.** Does it say what it means? Does it imply something unintended? Is it ambiguous?
 4. **Arrange by ear.** Try different orders. The right sequence will feel inevitable, but it's discovered, not predetermined.
-5. **Cut.** If a sentence doesn't teach, clarify, or move — remove it.
+5. **Cut.** If a sentence doesn't teach, clarify, or move, remove it.
 
 ### Editing existing prose
 
 1. **Read the whole piece first.** Understand its shape before touching anything.
 2. **Sentence by sentence.** What does it actually say? Is that what it should say? Can it be shorter?
-3. **Hunt clichés, nominalizations, and filler.** Phrases that arrive pre-assembled — "in order to", "it should be noted that", "at the end of the day" — replace or remove. Verbs turned into nouns — turn them back.
+3. **Hunt clichés, nominalizations, and filler.** Phrases that arrive pre-assembled ("in order to", "it should be noted that", "at the end of the day"): replace or remove. Verbs turned into nouns: turn them back.
 4. **Check transitions.** Earned by the sentences themselves, or scaffolding ("However", "Additionally", "Furthermore") hiding weak connections?
 5. **Read it aloud.** The ear catches what the eye forgives.
+
+## AI Writing Tells
+
+LLMs produce recognizable tics. Hunt and eliminate these during every editing pass. For the full catalog with before/after examples: [references/ai-tells.md](references/ai-tells.md)
+
+**Never use "not just X, but Y."** Any construction using "just" to contrast or elevate: "not just X, but Y", "it's X, not just Y", "more than just X". The single most reliable AI marker. State the stronger claim directly.
+
+**No em dashes.** Use commas, periods, colons, semicolons, or parentheses.
+
+**No copula avoidance.** "X is Y", not "X serves as Y" or "X stands as Y."
+
+**No -ing phrase tails.** Cut participial phrases tacked onto sentences for fake depth: "ensuring better maintainability", "showcasing the team's commitment."
+
+**No AI vocabulary.** "Delve", "leverage", "ensure", "robust", "seamless", "comprehensive", "streamline", "foster", "harness", "empower", "bolster", "facilitate." If it sounds like a press release, cut it.
+
+**No inflated significance.** "Testament", "pivotal", "crucial", "cornerstone", "transformative", "groundbreaking", "paradigm shift." State the fact.
+
+**No hedging stacks.** "It might potentially help to consider" collapses to "consider". One hedge per sentence maximum; prefer zero.
+
+**No rhythmic triplets.** Two items or a full list. Three adjectives in a row is a tell.
+
+**No sycophantic tone.** "Great question!", "You're absolutely right!", "I hope this helps!" Cut entirely.
+
+**No filler phrases.** "In order to" = "to". "Due to the fact that" = "because". "It is important to note that" = delete.
+
+**Sentence case in headings.** Title Case Is An AI Tell.
 
 ## Context-Specific Guidance
 
 ### PR descriptions and commit messages
-Problem before solution. Direct, no filler. Present tense. Every sentence carries information — no throat-clearing ("This PR adds..."), no status narration, no file listings.
+Problem before solution. Direct, no filler. Present tense. Every sentence carries information. No throat-clearing ("This PR adds..."), no status narration, no file listings.
 
 ### Documentation and READMEs
 Significant everywhere. Each section useful on its own, not a waypoint to the next. Prefer examples over explanation — show, then name. Do not explain too much: it is seldom advisable to tell all.
@@ -87,4 +113,4 @@ Significant everywhere. Each section useful on its own, not a waypoint to the ne
 Maximum density. Each rule one sentence if possible. Pair principles with examples. Imperative mood. No hedging ("should probably", "might want to").
 
 ### Comments in code
-Comments explain WHY, not WHAT. If explaining WHAT — refactor the code. A comment that could be a better function name is not worth keeping.
+Comments explain WHY, not WHAT. If explaining WHAT, refactor the code. A comment that could be a better function name is not worth keeping.
