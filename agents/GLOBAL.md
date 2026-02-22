@@ -95,7 +95,7 @@ Use existing infrastructure over adding new dependencies when both work equally 
 
 When adding agent instructions to a project, create a new file as `AGENTS.md` at the project root. `CLAUDE.md` should be a symlink to `AGENTS.md` unless the project has an existing convention. If both exist, never edit `CLAUDE.md` directly, always edit `AGENTS.md`.
 
-Agent skills live in `~/Code/dotfiles/agents/skills/` and are copied to `~/.claude/skills/`, `~/.cursor/skills/`, and `~/.codex/skills/` by the install script. Always edit skills in the dotfiles source directory, never in client-specific directories.
+Agent skills live in `~/Code/dotfiles/agents/skills/` and are copied to `~/.claude/skills/` and `~/.codex/skills/` by the install script. Machine-specific skills go in `agents/skills.local/` (gitignored). Always edit skills in the dotfiles source directory, never in client-specific directories.
 For agent config files, treat dotfiles as source of truth: when both `~/...` and `~/Code/dotfiles/...` paths exist, check symlink mapping first and edit the dotfiles source file only.
 
 <!-- BEGIN COMPILED -->
