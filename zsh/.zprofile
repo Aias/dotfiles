@@ -21,9 +21,6 @@ export PATH="$BUN_INSTALL/bin:$PATH"
 # Postgres.app CLIs
 export PATH="/Applications/Postgres.app/Contents/Versions/latest/bin:$PATH"
 
-# fnm (Node version manager) - added to PATH for lazy loading
-export PATH="$HOME/.local/share/fnm:$PATH"
-
 # Local binaries
 export PATH="$HOME/.local/bin:$PATH"
 

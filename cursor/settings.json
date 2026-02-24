@@ -42,9 +42,7 @@
     "**/styled-system": true
   },
   "terminal.integrated.defaultProfile.osx": "zsh",
-  "terminal.integrated.env.osx": {
-    "FNM_DIR": "/Users/nicktrombley/.fnm"
-  },
+  "terminal.integrated.env.osx": {},
   "terminal.integrated.inheritEnv": true,
   "terminal.integrated.shell.osx": "/bin/zsh",
   "typescript.updateImportsOnFileMove.enabled": "always",

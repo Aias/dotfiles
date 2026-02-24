@@ -45,9 +45,9 @@ zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'  # Case-insensitive
 [[ -s "$HOME/.bun/_bun" ]] && source "$HOME/.bun/_bun"
 
 # ─────────────────────────────────────────────────────────────
-# fnm (Node version manager)
+# mise (dev tool version manager)
 # ─────────────────────────────────────────────────────────────
-eval "$(fnm env --use-on-cd --version-file-strategy=recursive --resolve-engines --shell zsh)"
+eval "$(mise activate zsh)"
 
 # ─────────────────────────────────────────────────────────────
 # Aliases - Navigation & Files
