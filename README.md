@@ -7,6 +7,7 @@ Personal configuration files and environment setup.
 ```
 dotfiles/
 ├── zsh/
+│   ├── .zshenv      # Global zsh env (all shell modes)
 │   ├── .zshrc       # Interactive shell config
 │   └── .zprofile    # Login shell config (PATH, env vars)
 ├── git/
@@ -62,7 +63,7 @@ source ~/.zshrc
 ## Adding New Configs
 
 1. Add the config file to the appropriate directory
-2. Update `install.sh` to create the symlink
+2. Add mapping to `links.txt`
 3. Run `./install.sh` to link it
 
 ## Managing Skills

@@ -69,6 +69,15 @@ Acceptable comments:
 - Comments justifying an inconsistency or deviation
 - Comments translating symbols/phrases otherwise unintelligible
 
+## Workflow Shape
+
+Every cleanup follows explore → propose → approve → apply:
+
+1. **Explore.** Read the code. Identify all cleanup opportunities. Do not edit files.
+2. **Propose.** Present a numbered list of changes, ordered largest-to-smallest refactor. Each item: one-line description, affected file(s), and rough scope (structural / cosmetic / deletion).
+3. **Approve.** Ask the user to approve the list. They may approve all, select specific items by number, or deny. Only proceed with approved items.
+4. **Apply.** Make the approved changes. Run build/tests afterward.
+
 ## Summary
 
 Report at the end with a few sentences summarizing what changed and why.

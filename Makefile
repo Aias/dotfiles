@@ -33,6 +33,7 @@ update-skills:
 backup:
 	@ts=$$(date +%Y%m%d_%H%M%S); \
 	mkdir -p ~/.dotfiles-backup/$$ts; \
+	cp ~/.zshenv ~/.dotfiles-backup/$$ts/ 2>/dev/null || true; \
 	cp ~/.zshrc ~/.dotfiles-backup/$$ts/ 2>/dev/null || true; \
 	cp ~/.zprofile ~/.dotfiles-backup/$$ts/ 2>/dev/null || true; \
 	cp ~/.gitconfig ~/.dotfiles-backup/$$ts/ 2>/dev/null || true; \
@@ -41,6 +42,7 @@ backup:
 # Check for config drift
 diff:
 	@echo "Checking for drift between repo and live configs..."
+	@diff -q ~/.zshenv zsh/.zshenv 2>/dev/null || echo "  zshenv differs"
 	@diff -q ~/.zshrc zsh/.zshrc 2>/dev/null || echo "  zshrc differs"
 	@diff -q ~/.zprofile zsh/.zprofile 2>/dev/null || echo "  zprofile differs"
 	@diff -q ~/.gitconfig git/.gitconfig 2>/dev/null || echo "  gitconfig differs"

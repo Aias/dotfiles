@@ -47,6 +47,7 @@ zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'  # Case-insensitive
 # ─────────────────────────────────────────────────────────────
 # mise (dev tool version manager)
 # ─────────────────────────────────────────────────────────────
+# Shim PATH lives in .zshenv so all zsh shells resolve tool versions.
 eval "$(mise activate zsh)"
 
 # ─────────────────────────────────────────────────────────────

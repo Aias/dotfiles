@@ -2,6 +2,7 @@
 # Lines starting with # are comments, empty lines are ignored
 
 # Shell
+Shell | zsh/.zshenv | .zshenv | .zshenv
 Shell | zsh/.zshrc | .zshrc | .zshrc
 Shell | zsh/.zprofile | .zprofile | .zprofile
 Shell | starship/starship.toml | .config/starship.toml | .config/starship.toml
