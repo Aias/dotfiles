@@ -19,22 +19,32 @@ A collection of git-related workflows and guidelines. Use this skill for any git
 ## General Principles
 
 <!-- @> Read-only on git status/diff. Explicit permission for commit/push/reset -->
+
 **Read-only by default:** When inspecting `git status` or `git diff`, treat them as read-only context. Never revert or assume missing changes were yours. Other agents or the user may have already committed updates.
 
 **Explicit permission required:** Do not run `git commit`, `git push`, `git reset`, or similar without explicit user permission. Prefer proposing diffs.
 
 <!-- @> SSH URLs. Never amend unless explicitly requested; prefer new commits -->
+
 **Repository operations:**
 
 - Always use SSH URLs for cloning (e.g., `git@github.com:user/repo.git`), never HTTPS
 - Never use `git commit --amend` unless the user specifically requests it; prefer creating new commits over rewriting history
 
 <!-- @> Single POV as author. No AI attribution or co-authorship -->
+
 **Commit authorship:**
 
 - Commit messages and PR descriptions should have a single point of view—write as the author, not as an AI assistant
 - No "Generated with Claude" footers, no co-authored-by AI attribution, no "I helped implement" phrasing
 - Strip non-essential information from commit/PR messages—focus on what changed, not how it was written
+
+<!-- @> Scope PR work to real base/head refs. Resolve via gh pr view, compare against origin/<base> -->
+
+**PR context:**
+
+- For reviews and cleanup, resolve the PR's source and target branches first (e.g., via `gh pr view`) and compare against `origin/<base>`
+- Do not rely on local branch names as the diff base — they may be stale or wrong
 
 ## Tool Notes
 

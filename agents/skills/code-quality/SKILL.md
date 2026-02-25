@@ -15,16 +15,24 @@ Cleanup and refactoring at the intensity the user requests.
 
 ## Intensity Spectrum
 
-| Level | Trigger phrases | Scope |
-|-------|----------------|-------|
-| **Light** (deslop) | "deslop", "remove slop", "clean up the AI stuff" | Strip AI artifacts. No structural changes. [Workflow →](workflows/deslop.md) |
+| Level                | Trigger phrases                                        | Scope                                                                                                    |
+| -------------------- | ------------------------------------------------------ | -------------------------------------------------------------------------------------------------------- |
+| **Light** (deslop)   | "deslop", "remove slop", "clean up the AI stuff"       | Strip AI artifacts. No structural changes. [Workflow →](workflows/deslop.md)                             |
 | **Heavy** (refactor) | "refactor pass", "simplify", "tighten up", "dead code" | Structural cleanup, dead path removal, build/test verification. [Workflow →](workflows/refactor-pass.md) |
 
 If the user doesn't specify, infer from context: post-AI-generation → light, post-feature-complete → heavy. When uncertain, ask.
 
 ## Shared Principles
 
+<!-- @> Primary outcome: cleanup passes should generally end with net fewer lines than before; if LOC increases, justify why complexity decreased -->
+
+### Primary Outcome
+
+- Prefer net line reduction: after cleanup, total LOC should usually be lower than before.
+- If a cleanup increases LOC, keep it only when it clearly reduces complexity or risk, and call out that tradeoff.
+
 <!-- @> Remove defensive checks, type casts, redundant annotations, single-use variables abnormal for codepath context -->
+
 ### What to Remove
 
 - Extra defensive checks or try/catch blocks abnormal for that codepath (especially if called by trusted/validated callers)
@@ -33,7 +41,15 @@ If the user doesn't specify, infer from context: post-AI-generation → light, p
 - Obvious variable declarations only used once right after declaration
 - Any style inconsistent with the surrounding file
 
+<!-- @> Do not auto-remove useCallback, useMemo, or memo. Only change with clear evidence or explicit user direction -->
+
+### Performance Primitives
+
+- Do not remove `useCallback`, `useMemo`, or `memo` automatically during cleanup.
+- Only change memoization with clear evidence (profiling, measurable impact) or explicit user direction.
+
 <!-- @> Comments explain WHY not WHAT. If explaining WHAT, refactor to be self-documenting -->
+
 ### Comment Policy
 
 Remove unacceptable comments:
