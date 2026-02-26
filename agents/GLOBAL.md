@@ -70,6 +70,7 @@ When asked whether behavior is known or documented, include direct links to the 
 ## General Code Styles
 
 - When updating dependencies, pin exact latest stable versions and keep dependency sections alphabetized. Avoid broad ranges (e.g., `^4`) unless the project explicitly requires ranges.
+- Keep vertical whitespace tight. Add blank lines only to separate logical chunks; avoid decorative or unnecessary line breaks.
 
 ## File Links in Markdown
 
