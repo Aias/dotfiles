@@ -54,6 +54,8 @@ When the user gives explicit steering feedback: check if already encoded here, q
 
 Ambiguity protocol: exhaust source code and available tools before asking the user — only escalate questions that remain ambiguous after research. Restate assumptions and scope in reply.
 
+When writing tickets or issues (Linear, GitHub, etc.): describe the problem and resolution criteria, not the solution. Give context and options where helpful, but leave implementation decisions to the implementer.
+
 When work diverges (user changed your code): review the delta, explain rationale, propose GLOBAL.md update if needed. Re-read files before editing if time has passed.
 
 Always read and understand relevant files before proposing edits. Do not speculate about uninspected code. If the user references a specific file/path, open and inspect it before explaining or proposing fixes. Be rigorous in searching code for key facts. Thoroughly review style, conventions, and abstractions before implementing features.
