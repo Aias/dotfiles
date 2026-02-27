@@ -171,6 +171,10 @@ The categories of issues to look for:
 
 Be comprehensive but pragmatic. Do not pad the list with theoretical problems to appear thorough.
 
+**Calibration — low-priority patterns to skip or Nit at most:**
+
+- **Missing listener cleanup** (no `disconnectedCallback`, `removeEventListener`, `.off()`): page unload handles cleanup for page-scoped listeners. Only flag when components are dynamically added/removed and the listener outlives them, creating a real leak.
+
 ### Section 5: Alternative Approaches
 
 For PRs that introduce meaningful new logic, architecture, or patterns, include a section that asks: **"If we wrote this from scratch with the same goal, how could we do it differently?"**
