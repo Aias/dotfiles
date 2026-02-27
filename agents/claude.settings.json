@@ -1,4 +1,7 @@
 {
+  "additionalDirectories": [
+    "/Users/nicktrombley/Code/dotfiles"
+  ],
   "env": {
     "ENABLE_TOOL_SEARCH": "1"
   },
