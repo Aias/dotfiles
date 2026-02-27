@@ -3,11 +3,11 @@ model = "gpt-5.3-codex"
 model_reasoning_effort = "high"
 personality = "pragmatic"
 web_search = "live"
+default_mode_request_user_input = true
 
 [features]
 rmcp_client = true
 skills = true
-default_mode_request_user_input = true
 
 [projects."/Users/nicktrombley/Code/acorn"]
 trust_level = "trusted"
