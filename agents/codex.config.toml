@@ -7,6 +7,7 @@ web_search = "live"
 [features]
 rmcp_client = true
 skills = true
+default_mode_request_user_input = true
 
 [projects."/Users/nicktrombley/Code/acorn"]
 trust_level = "trusted"
