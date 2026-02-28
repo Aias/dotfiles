@@ -39,10 +39,9 @@ Skills follow the [Agent Skills open standard](https://agentskills.io/). Each sk
 ```
 skill-name/
 ├── SKILL.md          # Required: metadata + instructions
-├── workflows/        # Optional: step-by-step procedures
-├── references/       # Optional: documentation loaded into context
+├── references/       # Optional: documentation loaded on demand
 ├── scripts/          # Optional: executable code
-└── assets/           # Optional: templates, resources
+└── assets/           # Optional: templates, static resources
 ```
 
 ### SKILL.md
@@ -78,19 +77,17 @@ See the [Annotation Compilation](/CLAUDE.md#annotation-compilation) section in C
 
 ## Resource Directories
 
-**workflows/** — Step-by-step procedures for specific modes or scenarios
-- Used by skills with multiple intensity levels or distinct workflows
-- Example: `code-quality/workflows/deslop.md`, `git-workflows/workflows/pr-guidelines.md`
+Per the [Agent Skills spec](https://agentskills.io/specification), skills use three optional directories:
 
-**references/** — Documentation loaded into context when needed
-- Library-specific patterns, API docs, schema references
-- Example: `frontend-guidelines/references/pandacss.md`, `frontend-guidelines/references/ark-ui.md`
+**references/** — Documentation loaded into context on demand
+- Workflows, library patterns, API docs, schema references
+- Example: `code-quality/references/deslop.md`, `frontend-guidelines/references/pandacss.md`
 
 **scripts/** — Executable code run directly without loading into context
 - Python, Bash, etc.
 - Example: `rotate_pdf.py`, `extract_data.sh`
 
-**assets/** — Files used in output, never loaded into context
+**assets/** — Static resources (templates, images, data files)
 - Templates, images, boilerplate
 - Example: `template.pptx`, `boilerplate/`
 

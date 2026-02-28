@@ -14,7 +14,7 @@ A collection of git-related workflows and guidelines. Use this skill for any git
 | Situation                             | Workflow                                                |
 | ------------------------------------- | ------------------------------------------------------- |
 | Creating or updating a PR             | `pr-guidelines` skill                                   |
-| Rebasing or resolving merge conflicts | [conflict-resolution](workflows/conflict-resolution.md) |
+| Rebasing or resolving merge conflicts | [conflict-resolution](references/conflict-resolution.md) |
 
 ## General Principles
 

@@ -301,7 +301,7 @@ Touch devices trigger hover on tap, causing false positives.
 
 ## Practical Tips
 
-Quick reference for common scenarios. See [PRACTICAL-TIPS.md](PRACTICAL-TIPS.md) for detailed implementations.
+Quick reference for common scenarios. See [PRACTICAL-TIPS.md](references/PRACTICAL-TIPS.md) for detailed implementations.
 
 | Scenario                        | Solution                                        |
 | ------------------------------- | ----------------------------------------------- |
@@ -330,6 +330,6 @@ Is the element entering or exiting the viewport?
 
 ## Reference Files
 
-- [PRACTICAL-TIPS.md](PRACTICAL-TIPS.md) - Detailed implementations for common animation scenarios
+- [PRACTICAL-TIPS.md](references/PRACTICAL-TIPS.md) - Detailed implementations for common animation scenarios
 
 ---

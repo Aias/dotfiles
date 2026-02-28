@@ -17,8 +17,9 @@ Cleanup and refactoring at the intensity the user requests.
 
 | Level                | Trigger phrases                                        | Scope                                                                                                    |
 | -------------------- | ------------------------------------------------------ | -------------------------------------------------------------------------------------------------------- |
-| **Light** (deslop)   | "deslop", "remove slop", "clean up the AI stuff"       | Strip AI artifacts. No structural changes. [Workflow →](workflows/deslop.md)                             |
-| **Heavy** (refactor) | "refactor pass", "simplify", "tighten up", "dead code" | Structural cleanup, dead path removal, build/test verification. [Workflow →](workflows/refactor-pass.md) |
+| **Light** (deslop)    | "deslop", "remove slop", "clean up the AI stuff"    | Strip AI artifacts. No structural changes. [Workflow →](references/deslop.md)                             |
+| **Heavy** (refactor)  | "refactor pass", "tighten up", "dead code"           | Structural cleanup, dead path removal, build/test verification. [Workflow →](references/refactor-pass.md) |
+| **Review** (simplify) | "simplify", "review for reuse", "review for quality" | Parallel 3-agent review (reuse, quality, efficiency) on changed files. [Workflow →](references/simplify.md) |
 
 If the user doesn't specify, infer from context: post-AI-generation → light, post-feature-complete → heavy. When uncertain, ask.
 
