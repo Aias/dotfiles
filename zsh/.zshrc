@@ -81,7 +81,7 @@ alias code="cursor"
 alias dotup="make -C ~/Code/dotfiles update"
 alias dotcheck="make -C ~/Code/dotfiles check"
 alias dotlink="make -C ~/Code/dotfiles link"
-alias up="brew update && brew upgrade && claude update && bun upgrade"
+alias up="brew update && brew upgrade && npm update -g && claude update && bun upgrade"
 alias mini="ssh nicktrombley@mac-mini"
 alias timeout="gtimeout"
 
