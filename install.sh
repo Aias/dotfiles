@@ -204,64 +204,50 @@ install_skills() {
         [[ -d "$skill" ]] && skills+=("local:$(basename "$skill")")
     done
 
+    # Prepare target directories
     for target_dir in "${targets[@]}"; do
-        # Remove whole-directory symlink if it exists
         if [[ -L "$target_dir" ]]; then
             rm "$target_dir"
         fi
         mkdir -p "$target_dir"
-
-        # Note: This loop syncs discovered source skills only.
-        # External skill lifecycle (install/remove) is owned by skills-manager.
-        for skill_entry in "${skills[@]}"; do
-            local skill_type="${skill_entry%%:*}"
-            local skill_name="${skill_entry#*:}"
-            local skill_source=""
-
-            if [[ "$skill_type" == "personal" ]]; then
-                skill_source="$personal_skills/$skill_name/"
-            elif [[ "$skill_type" == "external" ]]; then
-                skill_source="$external_skills/$skill_name/"
-            else
-                skill_source="$local_skills/$skill_name/"
-            fi
-
-            local skill_target="$target_dir/$skill_name"
-
-            # Remove old symlinks
-            if [[ -L "$skill_target" ]]; then
-                rm "$skill_target"
-            fi
-
-            mkdir -p "$skill_target"
-            rsync -a --delete "$skill_source" "$skill_target/"
-        done
-
-        # Overwrite with cleaned versions (annotations stripped)
-        local build_dir="$DOTFILES_DIR/agents/.build/skills"
-        if [[ -d "$build_dir" ]]; then
-            for build_skill in "$build_dir"/*/; do
-                [[ -d "$build_skill" ]] || continue
-                local skill_name
-                skill_name="$(basename "$build_skill")"
-                if [[ -d "$target_dir/$skill_name" ]]; then
-                    rsync -a "$build_skill" "$target_dir/$skill_name/"
-                fi
-            done
-        fi
     done
 
-    # Print skill status table with colors (streamed, no column buffering)
+    local build_dir="$DOTFILES_DIR/agents/.build/skills"
     local check="${GREEN}✓${RESET}"
-    local max_w=5  # "skill" header length
+    local max_w=5
     for skill_entry in "${skills[@]}"; do
         local name="${skill_entry#*:}"
         (( ${#name} > max_w )) && max_w=${#name}
     done
     printf "  %-${max_w}s  type  claude  codex\n" "skill"
+
+    # Sync each skill to all targets, printing status as we go
     for skill_entry in "${skills[@]}"; do
         local skill_type="${skill_entry%%:*}"
         local skill_name="${skill_entry#*:}"
+        local skill_source=""
+
+        if [[ "$skill_type" == "personal" ]]; then
+            skill_source="$personal_skills/$skill_name/"
+        elif [[ "$skill_type" == "external" ]]; then
+            skill_source="$external_skills/$skill_name/"
+        else
+            skill_source="$local_skills/$skill_name/"
+        fi
+
+        for target_dir in "${targets[@]}"; do
+            local skill_target="$target_dir/$skill_name"
+            if [[ -L "$skill_target" ]]; then
+                rm "$skill_target"
+            fi
+            mkdir -p "$skill_target"
+            rsync -a --delete "$skill_source" "$skill_target/"
+            # Overwrite with cleaned version (annotations stripped)
+            if [[ -d "$build_dir/$skill_name" ]]; then
+                rsync -a "$build_dir/$skill_name/" "$skill_target/"
+            fi
+        done
+
         local type_label="${DIM}[P]${RESET}"
         [[ "$skill_type" == "external" ]] && type_label="${DIM}[E]${RESET}"
         [[ "$skill_type" == "local" ]] && type_label="${DIM}[L]${RESET}"
