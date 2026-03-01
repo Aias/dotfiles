@@ -11,15 +11,12 @@ The goal, above all else, is to bring our conceptual models of the project, our 
 ## Quick Rules
 
 - **Prefer retrieval-/search-led reasoning over assumptions from pretraining or reinforcement learning.** Explore the codebase and invoke relevant skills rather than relying on in-built knowledge.
-- **When responding, be extremely concise.** Sacrifice grammar for the sake of concision.
+- **When responding, be extremely concise.**
 - **Do not write code when the prompt ends with a question mark** unless the question is obviously an implicit request for changes. Answer questions with research and analysis only.
 - **Clarify assumptions** before coding. You can use the AskUserQuestion tool or equivalent to ask the user questions. Never assume the user's intent and always ask questions if instructions are underspecified.
-- **Read any referenced file or path before proposing changes.** Prefer extensive research over guesswork, this will lead to fewer rewrites and save time in the long run.
 - **Type safety is absolute.** Use the strongest type system available in the language. Never override inferred or calculated types. No type assertions, casts, suppressions, or escape hatches (TypeScript: `any`, `as`, `!`, `@ts-ignore`; Python: `type: ignore`; Rust: unnecessary `unsafe`; etc.). If the type system resists, the code is wrong—fix the code, not the types.
 - Run safe checks yourself (type/lint/tests) early and often; don't ask the user to run them for you.
-- **Protect data and the environment.** Get explicit permission before any destructive, high-risk, or database-modifying action.
 - **Fix things from first principles.** Instead of applying a bandaid, find the source and fix it. Go up a level of abstraction when considering solutions.
-- **Write idiomatic, simple, maintainable code.** Always ask yourself if this is the most simple intuitive solution to the problem.
 - **Leave each repo better than how you found it.** If there's a code smell, an outdated pattern, or revealed technical debt, clean it up for the next person.
 - **Removing code is better than adding code.** It's easy to write code but hard to write clean code. We always prefer the harder path even if it means more work. Wherever possible, aim to leave code shorter and simpler than you found it.
 - **Old code is not precious.** If a function no longer needs a parameter or a helper is dead, delete it and update the callers instead of letting the junk linger.
@@ -48,8 +45,6 @@ Be friendly and warm, but never prosocial at the expense of density. Start respo
 
 Target ~100–200 words per response. After comprehensive analysis or large output, end with a summary (≤10 lines). Frame as yes/no confirmation or actionable question when appropriate.
 
-Avoid absolute time estimates (minutes, hours). Use relative effort comparisons when helpful ("quick", "more involved", "X is simpler than Y").
-
 When the user gives explicit steering feedback: check if already encoded here, quote the rule, or draft a candidate rule for approval.
 
 Ambiguity protocol: exhaust source code and available tools before asking the user — only escalate questions that remain ambiguous after research. Restate assumptions and scope in reply.
@@ -58,16 +53,12 @@ When writing tickets or issues (Linear, GitHub, etc.): describe the problem and 
 
 When work diverges (user changed your code): review the delta, explain rationale, propose GLOBAL.md update if needed. Re-read files before editing if time has passed.
 
-Always read and understand relevant files before proposing edits. Do not speculate about uninspected code. If the user references a specific file/path, open and inspect it before explaining or proposing fixes. Be rigorous in searching code for key facts. Thoroughly review style, conventions, and abstractions before implementing features.
-
 When asked whether behavior is known or documented, include direct links to the relevant primary sources (official docs, release notes, RFCs, or GitHub issues/PRs).
 
 ## Permission & Risk Guardrails
 
-- Never run destructive or data-modifying commands (migrations, resets, backfills, deletes) without explicit user permission.
 - Do not start servers or long-running services unless the user asks.
 - Git operations require explicit permission—see `git-workflows` skill for details.
-- If a command needs elevated access or writes outside the workspace, pause and ask.
 
 ## General Code Styles
 
@@ -88,7 +79,7 @@ When linking to local files from markdown documents (review docs, `.context/` fi
 
 Prefer reading source code (locally in `node_modules` or on GitHub) over fetching documentation—it's guaranteed to match the installed version and often provides deeper insight. Use all tools at your disposal: source code, official docs, web search, non-destructive local commands, and temporary logging.
 
-**Prefer modern CLI tools:** `rg` (fast grep), `fd` (find), `jq` (JSON), `bat` (cat), `sd` (sed), `eza` (ls), `yq` (YAML), `delta` (git diff), `fzf` (fuzzy filter), `gh` (GitHub).
+Prefer built-in agent tools (Grep, Glob, Read) over shell commands. When falling back to the shell, **use modern CLI tools:** `rg`, `fd`, `jq`, `bat`, `sd`, `eza`, `yq`, `delta`, `fzf`, `gh`.
 
 Use existing infrastructure over adding new dependencies when both work equally well.
 
