@@ -4,7 +4,14 @@ Review all changed files for reuse, quality, and efficiency. Fix any issues foun
 
 ## Phase 1: Identify Changes
 
-Run `git diff` (or `git diff HEAD` if there are staged changes) to see what changed. If there are no git changes, review the most recently modified files that the user mentioned or that you edited earlier in this conversation.
+Scope the diff to only the changes introduced by the current branch:
+
+1. If a PR exists, use `gh pr diff` (or diff against the PR's base ref).
+2. If no PR exists, find the merge-base with the parent branch (`git merge-base <base> HEAD`) and diff from there.
+3. If there are no branch-level changes (e.g. working on an uncommitted feature), fall back to `git diff` / `git diff HEAD`.
+4. If there are no git changes at all, review the most recently modified files that the user mentioned or that you edited earlier in this conversation.
+
+Never diff the full range between two long-lived branches (e.g. `dev...HEAD`) — this pulls in unrelated merged work and pollutes the review.
 
 ## Phase 2: Launch Three Review Agents in Parallel
 
