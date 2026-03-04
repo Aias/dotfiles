@@ -43,8 +43,7 @@ A collection of git-related workflows and guidelines. Use this skill for any git
 
 **PR context:**
 
-- For reviews and cleanup, resolve the PR's source and target branches first (e.g., via `gh pr view`) and compare against `origin/<base>`
-- Do not rely on local branch names as the diff base — they may be stale or wrong
+- Always use `gh pr diff` or diff against `origin/<base>` (after fetching) — local branches may be stale. The source of truth is the target branch on GitHub.
 
 ## Tool Notes
 

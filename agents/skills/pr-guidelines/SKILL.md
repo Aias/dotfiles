@@ -10,7 +10,7 @@ global_category: Git
 ## Procedure
 
 1. Run `git status` to see changes
-2. Run `git diff` to understand what changed
+2. Use `gh pr diff` (for existing PRs) or `git diff origin/<base>...HEAD` (after fetching) to review changes — never diff against a local branch, which may be stale
 3. Run `git log` to see commit message style
 4. Run pre-submission checks (type checks, linting, formatting, tests)
 5. Stage and commit with a concise message
@@ -26,7 +26,7 @@ global_category: Git
 After pushing new commits to a branch with an open PR:
 
 1. Run `gh pr view` to read the current title and description
-2. Compare against the full diff (`git diff <base>...HEAD`) — not just the new commits
+2. Compare against the full diff (`gh pr diff` or `git diff origin/<base>...HEAD`) — not just the new commits
 3. Update title and/or description with `gh pr edit` if they no longer accurately reflect the PR's scope
 4. Apply the `/write` skill to the revised description — edit for clarity and craft before submitting
 
