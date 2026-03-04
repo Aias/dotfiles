@@ -81,7 +81,42 @@ alias code="cursor"
 alias dotup="make -C ~/Code/dotfiles update"
 alias dotcheck="make -C ~/Code/dotfiles check"
 alias dotlink="make -C ~/Code/dotfiles link"
-alias up="brew update && brew upgrade && npm update -g && claude update && bun upgrade"
+function up() {
+  local dim=$'\e[2m' bold=$'\e[1m' reset=$'\e[0m' blue=$'\e[34m'
+  local all=false
+  [[ "$1" == "--all" ]] && all=true
+  local total=$($all && echo 7 || echo 6) step=0
+  _up_step() { step=$((step + 1)); echo "\n${blue}${bold}[${step}/${total}]${reset} ${bold}$1${reset}\n${dim}─────────────────────────────────────${reset}"; }
+
+  _up_step "brew update"
+  brew update
+
+  _up_step "brew upgrade"
+  brew upgrade
+
+  _up_step "npm update -g"
+  npm update -g
+
+  if $all; then
+    _up_step "npm update -g (other node versions)"
+    for dir in ~/.local/share/mise/installs/node/*/; do
+      [[ "$(basename "$dir")" == "$(node -v | sed 's/^v//')"* ]] && continue
+      echo "${dim}node $(basename "$dir")${reset}"
+      "$dir/bin/npm" update -g
+    done
+  fi
+
+  _up_step "claude update"
+  claude update
+
+  _up_step "bun upgrade"
+  bun upgrade
+
+  _up_step "mise upgrade"
+  mise upgrade
+
+  unfunction _up_step
+}
 alias mini="ssh nicktrombley@mac-mini"
 alias timeout="gtimeout"
 
