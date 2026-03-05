@@ -34,6 +34,7 @@
     "mode": "replace",
     "verbs": [
       "Annealing",
+      "Arraying",
       "Assembling",
       "Blooming",
       "Calcifying",
@@ -59,7 +60,10 @@
       "Lilting",
       "Limning",
       "Looming",
+      "Machining",
       "Meandering",
+      "Meshing",
+      "Milling",
       "Mouldering",
       "Murmuring",
       "Orchestrating",
@@ -72,7 +76,8 @@
       "Sounding",
       "Spooling",
       "Tessellating",
-      "Winnowing"
+      "Winnowing",
+      "Writhing"
     ]
   },
   "alwaysThinkingEnabled": true,
