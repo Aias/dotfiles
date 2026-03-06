@@ -41,6 +41,7 @@ This is a destructive rewrite of the current branch. The user will force-push th
    - Break the implementation into self-contained logical steps — typically fewer commits than the original history
    - Each commit should represent a coherent, functional stage of development. A reviewer reading the PR commit-by-commit should see a clear progression where each step builds naturally on the last.
    - Strip out any dead ends, reverts, fixups, or back-and-forth from the original history. The rewritten history should read as if the implementation went smoothly from start to finish.
+   - Aim for the smallest number of commits that are each independently valid but maximally separable — each commit should compile and work on its own, but no commit should mix unrelated concerns. New infrastructure before migration, migration before removal. Never delete code that is still referenced in a later commit.
    - Consider: what would a reviewer want to see first? What context do they need before the next piece makes sense?
 
 5. **Rewrite the history**

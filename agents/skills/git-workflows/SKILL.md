@@ -39,11 +39,11 @@ A collection of git-related workflows and guidelines. Use this skill for any git
 - No "Generated with Claude" footers, no co-authored-by AI attribution, no "I helped implement" phrasing
 - Strip non-essential information from commit/PR messages—focus on what changed, not how it was written
 
-<!-- @> Scope PR work to real base/head refs. Resolve via gh pr view, compare against origin/<base> -->
+<!-- @> Always fetch and diff against origin/<base>, never local branches. Local branches go stale silently -->
 
 **PR context:**
 
-- Always use `gh pr diff` or diff against `origin/<base>` (after fetching) — local branches may be stale. The source of truth is the target branch on GitHub.
+- Always `git fetch origin <base>` before diffing. Diff against `origin/<base>`, never a local branch — local branches go stale silently and produce inaccurate diffs. The remote ref is the source of truth.
 
 ## Tool Notes
 
