@@ -9,13 +9,18 @@ Personal dotfiles repo — shell config, git, editor settings, and AI agent conf
 - `agents/compile-global.ts` — Compiles `@>` annotations from skills into GLOBAL.md's dense index
 - `agents/.build/skills/` — Cleaned skill files (annotations stripped), gitignored
 - `agents/claude.settings.json` — Claude Code settings
+- `agents/codex.config.toml` — Codex settings
+- `agents/hooks/` — Claude Code hooks (e.g. PR guideline checks)
 - `.agents/skills/` — External skills (from skills.sh)
+- `skills-lock.json` — External skill version tracking
 - `install.sh` — Symlink installer (reads `links.txt`), copies skills + cleaned overlays
+- `setup.sh` — Repo-local setup (git hooks)
 - `Makefile` — Common tasks (`make link`, `make check`, `make compile`, `make update-skills`)
 
 ## Conventions
 
 - Edit config in this repo, not in `~/` — symlinks propagate changes automatically
+- This repo is public. Never commit private information, credentials, machine-specific secrets, personal data, or internal-only notes here, even temporarily. Use ignored local files or tracked templates instead.
 - For agent config, dotfiles is source of truth; check symlink mapping before editing
 - Skills: personal in `agents/skills/`, external in `.agents/skills/`
 

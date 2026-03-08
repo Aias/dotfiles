@@ -7,35 +7,48 @@ Personal configuration files and environment setup.
 ```
 dotfiles/
 ├── zsh/
-│   ├── .zshenv      # Global zsh env (all shell modes)
-│   ├── .zshrc       # Interactive shell config
-│   └── .zprofile    # Login shell config (PATH, env vars)
+│   ├── .zshenv        # Global zsh env (all shell modes)
+│   ├── .zshrc         # Interactive shell config
+│   └── .zprofile      # Login shell config (PATH, env vars)
 ├── git/
-│   └── .gitconfig   # Git configuration
+│   ├── .gitconfig     # Git configuration
+│   └── .gitignore_global
+├── node/
+│   └── .default-npm-packages  # Global npm packages (installed by mise)
 ├── starship/
-│   └── starship.toml # Starship prompt configuration
+│   └── starship.toml  # Starship prompt configuration
 ├── ghostty/
-│   └── config       # Ghostty terminal configuration
+│   └── config         # Ghostty terminal configuration
 ├── cursor/
 │   ├── settings.json    # Cursor editor settings
 │   ├── keybindings.json # Cursor keybindings
 │   ├── cli-config.json  # Cursor CLI config
 │   └── mcp.json         # MCP server config
 ├── agents/
-│   ├── GLOBAL.md    # Shared AI assistant guidelines
-│   ├── skills/      # [P] Personal skills (hand-written)
-│   │   ├── council/
+│   ├── GLOBAL.md      # Shared AI assistant guidelines
+│   ├── claude.settings.json     # Claude Code settings
+│   ├── codex.config.toml        # Codex settings
+│   ├── claude.statusline-command.sh
+│   ├── hooks/         # Claude Code hooks
+│   ├── compile-global.ts        # Annotation compiler
+│   ├── vault-template/          # Template for ~/Code/vault
+│   ├── skills/        # [P] Personal skills (hand-written)
+│   │   ├── git-workflows/
+│   │   ├── write/
 │   │   ├── skills-manager/
 │   │   └── .../
-│   └── ...
+│   └── skills.local/  # [L] Local-only skills (not committed)
 ├── .agents/
-│   ├── skills/      # [E] External skills (from skills.sh)
-│   │   ├── repomix/
-│   │   ├── skill-creator/
-│   │   └── .../
-│   └── skills.json  # Metadata tracking for external skills
-├── install.sh       # Symlink installation script
-├── Makefile         # Common tasks (install, check, etc.)
+│   └── skills/        # [E] External skills (from skills.sh)
+│       ├── dogfood/
+│       ├── skill-creator/
+│       └── .../
+├── install.sh         # Symlink installation script
+├── setup.sh           # Repo-local setup (git hooks)
+├── Brewfile           # Homebrew dependencies
+├── skills-lock.json   # External skill version tracking
+├── links.txt          # Symlink mappings
+├── Makefile           # Common tasks (install, check, etc.)
 └── README.md
 ```
 
@@ -114,7 +127,7 @@ This runs `npx skills update` and redeploys all skills via rsync.
 
 **External skill:**
 1. Delete the folder from `.agents/skills/`
-2. Remove entry from `.agents/skills.json`
+2. Remove entry from `skills-lock.json`
 3. Run `make link` to remove it from target directories
 
 ### Verifying Sync Status
