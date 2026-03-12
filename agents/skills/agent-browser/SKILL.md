@@ -344,13 +344,17 @@ Persistent settings via `agent-browser.json` in project root or `~/.agent-browse
 - [references/profiling.md](references/profiling.md) — Chrome DevTools profiling for performance analysis
 - [references/proxy-support.md](references/proxy-support.md) — Proxy configuration, geo-testing, rotating proxies
 
-## Experimental: Native Mode
+## Native Mode
 
-agent-browser has an experimental native Rust daemon that communicates with Chrome directly via CDP, bypassing Node.js and Playwright entirely. It is opt-in and not recommended for production use yet.
+agent-browser has a native Rust daemon that communicates with Chrome directly via CDP, bypassing Node.js and Playwright entirely. Auth cookies persist across browser restarts in native mode.
 
 ```bash
 agent-browser --native open example.com
 # Or: export AGENT_BROWSER_NATIVE=1
+
+# Use Lightpanda browser engine (implies --native)
+agent-browser --engine lightpanda open example.com
+# Or: export AGENT_BROWSER_ENGINE=lightpanda
 ```
 
-The native daemon supports Chromium and Safari (via WebDriver). Firefox and WebKit are not yet supported. All core commands work identically. Use `agent-browser close` before switching between native and default mode within the same session.
+The native daemon supports Chromium, Safari (via WebDriver), and Lightpanda. Firefox and WebKit are not yet supported. All core commands work identically. Use `agent-browser close` before switching between native and default mode within the same session.

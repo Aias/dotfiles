@@ -23,7 +23,7 @@ global_category: Git
 
 ## Updating an Existing PR
 
-After pushing new commits to a branch with an open PR:
+After pushing new commits to a branch with an open PR, **always** check whether the title and description still match the current state. Do this proactively — don't wait for the user to invoke `/pr-guidelines`.
 
 1. Run `gh pr view` to read the current title and description
 2. Compare against the full diff (`gh pr diff` or `git diff origin/<base>...HEAD`) — not just the new commits
@@ -45,11 +45,18 @@ EOF
 
 ## Parameters
 
-**Base branch:** Common patterns:
+<!-- @> Verify base branch first: Conductor target → existing PR → repo convention → ask. Wrong base = wrong diff -->
+**Base branch:** Determine the correct base before doing anything else — a wrong base makes the entire diff meaningless.
 
-- `dev` — most feature work
-- `main` or `master` — hotfixes or repos without a dev branch
-- A feature branch — for sub-features of a larger effort
+1. **Conductor workspace:** If a target branch is specified in the system instruction, use that.
+2. **Existing PR:** Run `gh pr view --json baseRefName -q .baseRefName` — the PR already knows its base.
+3. **Convention:** Check the repo's default branch and branching model:
+   - `dev` — most feature work in repos that use a dev branch
+   - `main` or `master` — hotfixes or repos without a dev branch
+   - A feature branch — for sub-features of a larger effort
+4. **Ask** if still ambiguous.
+
+Always `git fetch origin <base>` before diffing. Diff against `origin/<base>`, never a local branch.
 
 **Changes to include:** Determine if the PR should include:
 

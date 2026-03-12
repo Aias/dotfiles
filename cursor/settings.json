@@ -25,7 +25,8 @@
   "explorer.confirmPasteNative": false,
   "files.associations": {
     "rush.json": "jsonc",
-    "**/config/rush/*.json": "jsonc"
+    "**/config/rush/*.json": "jsonc",
+    "*.svg": "html"
   },
   "git.allowForcePush": true,
   "git.autofetch": true,
@@ -74,5 +75,6 @@
   "explorer.compactFolders": false,
   "diffEditor.ignoreTrimWhitespace": false,
   "window.newWindowDimensions": "inherit",
-  "security.promptForLocalFileProtocolHandling": false
+  "security.promptForLocalFileProtocolHandling": false,
+  "typescript.experimental.useTsgo": true
 }

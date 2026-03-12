@@ -55,6 +55,19 @@ When work diverges (user changed your code): review the delta, explain rationale
 
 When asked whether behavior is known or documented, include direct links to the relevant primary sources (official docs, release notes, RFCs, or GitHub issues/PRs).
 
+## Writing Quality
+
+Any user-facing prose — PR descriptions, help text, READMEs, commit messages, documentation, ticket descriptions — must be written by the strongest available model. Never delegate writing tasks to a less capable subagent; use background agents only for research, then write the prose yourself.
+
+## Working in Conductor
+
+The agent frequently operates inside [Conductor](https://conductor.build), which runs coding agents in parallel git worktrees. Be aware of this environment:
+
+- **Worktree structure:** Each workspace is a full repo clone at `~/conductor/workspaces/<project>/<city>`. The workspace has its own branch, working tree, and `.context/` directory (gitignored) for inter-agent collaboration.
+- **`CONDUCTOR_ROOT_PATH`:** Conductor sets this env var pointing to the workspace root. Setup scripts use it for symlinking `.env` files and shared data (e.g., `ln -sf "$CONDUCTOR_ROOT_PATH/apps/admin/.env.local" apps/admin/.env.local`).
+- **Target branch:** Conductor's system instruction specifies a target branch for each workspace. Use this for PR creation, rebasing, and diffing — not the branch you happen to be on.
+- **Shared repos:** The worktree is a real git checkout, so `origin` is the same remote. Always fetch before diffing or rebasing. Another workspace may have pushed to the same base branch.
+
 ## Permission & Risk Guardrails
 
 - Do not start servers or long-running services unless the user asks.
@@ -97,8 +110,8 @@ Analysis|skills/pr-review|Explore related files — callers, callees, types, tes
 Animation|skills/web-animation-design|Entering/exiting → ease-out. On-screen movement → ease-in-out. Hover → ease. 100+ daily → don't animate:L43|GPU only: animate transform and opacity. Never padding/margin/height/width:L202|prefers-reduced-motion on every animation. No exceptions for opacity or color:L248
 Code Quality|skills/code-quality|Primary outcome: cleanup passes should generally end with net fewer lines than before; if LOC increases, justify why complexity decreased:L29|Remove defensive checks, type casts, redundant annotations, single-use variables abnormal for codepath context:L35|Do not auto-remove useCallback, useMemo, or memo. Only change with clear evidence or explicit user direction:L44|Comments explain WHY not WHAT. If explaining WHAT, refactor to be self-documenting:L50
 Debugging|skills/debugger|Evidence over intuition: no fixes until logs confirm root cause. Minimal instrumentation:L12
-Git|skills/git-workflows|Read-only on git status/diff. Explicit permission for commit/push/reset:L22|SSH URLs. Never amend unless explicitly requested; prefer new commits:L27|Single POV as author. No AI attribution or co-authorship:L33|Always fetch and diff against origin/<base>, never local branches. Local branches go stale silently:L40
-Git|skills/pr-guidelines|After pushing to an existing PR, review and update title/description to reflect current changes:L23|PR titles: plain language, no fix:/feat: prefixes:L64|Open with problem context, not ## Summary. Problem before solution. Direct, no filler:L71|Present tense ("Adds", not "Added"). Drop subject pronouns. "we" for team decisions, "I" for first-person only:L76|No file listings, LOC counts, status info, AI vocabulary, or decision narration:L111
+Git|skills/git-workflows|Read-only on git status/diff. Explicit permission for commit/push/reset:L22|SSH URLs. Never amend unless explicitly requested; prefer new commits:L31|Single POV as author. No AI attribution or co-authorship:L37|Always fetch and diff against origin/<base>, never local branches. Local branches go stale silently:L44
+Git|skills/pr-guidelines|After pushing to an existing PR, review and update title/description to reflect current changes:L23|Verify base branch first: Conductor target → existing PR → repo convention → ask. Wrong base = wrong diff:L47|PR titles: plain language, no fix:/feat: prefixes:L70|Open with problem context, not ## Summary. Problem before solution. Direct, no filler:L77|Present tense ("Adds", not "Added"). Drop subject pronouns. "we" for team decisions, "I" for first-person only:L82|No file listings, LOC counts, status info, AI vocabulary, or decision narration:L117
 HTML/CSS|skills/frontend-guidelines|Semantic elements over div/span; built-in elements over generic containers:L11|Flexbox/grid + gap; margin is code smell. Logical properties (block/inline, start/end). Transform sub-properties:L23|Order CSS declarations logically (outside-in): position/display → flex/grid → sizing/spacing → overflow → typography → visual → transforms → interaction:L30|Colors: tokens/custom properties, then oklch or hex (not rgb):L46|CSS over JS when equivalent:L52|srOnly over aria-label. focus-visible on all interactive elements, never outline-none without replacement. dvw/dvh over vw/vh:L56|Images: explicit width/height to prevent CLS. lazy below fold, priority above fold:L63
 React|skills/react-best-practices|v19+: no forwardRef. No useEffect for transforms/events/state — calculate in render/handlers:L7|Read you-might-not-need-an-effect.md before adding Effects. rAF > setTimeout. Iterate to repeat:L7
 TypeScript|skills/typescript-guidelines|No any/as/!/ts-ignore — fix code, not types:L11|Prop intersections: specific before generic. Inline single-use variables:L15|Import order: React → runtime → external → internal → aliased → relative → local. type keyword for type imports:L23|No barrel files (index.ts re-exports). Import directly from source modules:L23

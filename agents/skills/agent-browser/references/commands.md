@@ -228,6 +228,7 @@ agent-browser --proxy-bypass <hosts>  # Hosts to bypass proxy
 agent-browser --headers <json> ...    # HTTP headers scoped to URL's origin
 agent-browser --executable-path <p>   # Custom browser executable
 agent-browser --extension <path> ...  # Load browser extension (repeatable)
+agent-browser --engine <name> ...     # Browser engine: chrome (default), lightpanda (implies --native)
 agent-browser --ignore-https-errors   # Ignore SSL certificate errors
 agent-browser --help                  # Show help (-h)
 agent-browser --version               # Show version (-V)
@@ -258,6 +259,7 @@ AGENT_BROWSER_SESSION="mysession"            # Default session name
 AGENT_BROWSER_EXECUTABLE_PATH="/path/chrome" # Custom browser path
 AGENT_BROWSER_EXTENSIONS="/ext1,/ext2"       # Comma-separated extension paths
 AGENT_BROWSER_PROVIDER="browserbase"         # Cloud browser provider
+AGENT_BROWSER_ENGINE="lightpanda"               # Browser engine: chrome (default), lightpanda
 AGENT_BROWSER_STREAM_PORT="9223"             # WebSocket streaming port
 AGENT_BROWSER_HOME="/path/to/agent-browser"  # Custom install location
 ```

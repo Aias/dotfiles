@@ -22,7 +22,11 @@ A collection of git-related workflows and guidelines. Use this skill for any git
 
 **Read-only by default:** When inspecting `git status` or `git diff`, treat them as read-only context. Never revert or assume missing changes were yours. Other agents or the user may have already committed updates.
 
-**Explicit permission required:** Do not run `git commit`, `git push`, `git reset`, or similar without explicit user permission. Prefer proposing diffs.
+**Explicit permission required:** Do not run `git commit`, `git push`, `git reset`, or similar without explicit user permission. Treat commit and push as separate permission gates — "commit these changes" does not imply "and push." Wait for explicit push permission.
+
+**Pre-commit checks are mandatory:** Always run available lint, typecheck, and format commands before any commit — not just PR submissions. If a project has `bun check`, `rush lint`, `pnpm typecheck`, or similar, run them. Fix any issues before committing.
+
+**Commit scope awareness:** Before committing, review what's staged. Never commit temporary debugging instrumentation, one-off migration scripts, or exploratory code unless the user explicitly asks. If you added `console.log` or debug logging during investigation, clean it up before committing.
 
 <!-- @> SSH URLs. Never amend unless explicitly requested; prefer new commits -->
 
@@ -43,7 +47,8 @@ A collection of git-related workflows and guidelines. Use this skill for any git
 
 **PR context:**
 
-- Always `git fetch origin <base>` before diffing. Diff against `origin/<base>`, never a local branch — local branches go stale silently and produce inaccurate diffs. The remote ref is the source of truth.
+- Always `git fetch origin <base>` before diffing or rebasing. Diff against `origin/<base>`, never a local branch — local branches go stale silently and produce inaccurate diffs. The remote ref is the source of truth.
+- Before creating a branch or PR, verify the correct base — see the `pr-guidelines` skill for the resolution order. Getting the base wrong is the single most common git mistake.
 
 ## Tool Notes
 
