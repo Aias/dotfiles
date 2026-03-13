@@ -1,8 +1,10 @@
 {
   "mcpServers": {
     "Linear": {
-      "url": "https://mcp.linear.app/sse",
-      "headers": {}
+      "url": "https://mcp.linear.app/sse"
+    },
+    "Sentry": {
+      "url": "https://mcp.sentry.dev/mcp"
     },
     "Figma": {
       "url": "http://127.0.0.1:3845/mcp"

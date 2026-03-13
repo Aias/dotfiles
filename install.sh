@@ -308,6 +308,36 @@ fi
 # Cleanup old backups (keep last 10)
 # ─────────────────────────────────────────────────────────────
 
+# ─────────────────────────────────────────────────────────────
+# MCP servers (Claude Code — user scope)
+# ─────────────────────────────────────────────────────────────
+
+install_claude_mcp_servers() {
+    section "MCP Servers (Claude Code)"
+    if ! command -v claude >/dev/null 2>&1; then
+        warn "claude CLI not found, skipping MCP setup"
+        return
+    fi
+
+    # Clean up old names
+    claude mcp remove --scope user figma-desktop 2>/dev/null || true
+
+    local servers=(
+        "linear|https://mcp.linear.app/mcp"
+        "sentry|https://mcp.sentry.dev/mcp"
+        "figma|http://127.0.0.1:3845/mcp"
+    )
+
+    for entry in "${servers[@]}"; do
+        local name="${entry%%|*}"
+        local url="${entry#*|}"
+        claude mcp add --scope user --transport http "$name" "$url" 2>/dev/null
+        success "$name"
+    done
+}
+
+install_claude_mcp_servers
+
 cleanup_old_backups() {
     local backup_root="$HOME/.dotfiles-backup"
     local keep=10

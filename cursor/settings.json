@@ -75,6 +75,5 @@
   "explorer.compactFolders": false,
   "diffEditor.ignoreTrimWhitespace": false,
   "window.newWindowDimensions": "inherit",
-  "security.promptForLocalFileProtocolHandling": false,
-  "typescript.experimental.useTsgo": true
+  "security.promptForLocalFileProtocolHandling": false
 }
