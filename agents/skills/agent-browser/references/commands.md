@@ -17,6 +17,8 @@ agent-browser connect 9222    # Connect to browser via CDP port
 
 ## Snapshot (page analysis)
 
+Snapshots auto-traverse iframes. Cursor-interactive elements (divs with onclick, cursor:pointer) are included in the snapshot tree by default.
+
 ```bash
 agent-browser snapshot            # Full accessibility tree
 agent-browser snapshot -i         # Interactive elements only (recommended)
@@ -38,6 +40,8 @@ agent-browser press Enter         # Press key (alias: key)
 agent-browser press Control+a     # Key combination
 agent-browser keydown Shift       # Hold key down
 agent-browser keyup Shift         # Release key
+agent-browser keyboard type "t"   # Type at current focus (no selector)
+agent-browser keyboard inserttext "text"  # Insert text at focus
 agent-browser hover @e1           # Hover
 agent-browser check @e1           # Check checkbox
 agent-browser uncheck @e1         # Uncheck checkbox
@@ -73,11 +77,15 @@ agent-browser is checked @e1      # Check if checked
 
 ## Screenshots and PDF
 
+`--full`/`-f` is a per-command flag (not global).
+
 ```bash
-agent-browser screenshot          # Save to temporary directory
-agent-browser screenshot path.png # Save to specific path
-agent-browser screenshot --full   # Full page
-agent-browser pdf output.pdf      # Save as PDF
+agent-browser screenshot              # Save to temporary directory
+agent-browser screenshot path.png     # Save to specific path
+agent-browser screenshot --full       # Full page
+agent-browser screenshot --annotate   # Annotated with numbered element labels
+agent-browser screenshot --screenshot-dir ./caps --screenshot-format jpeg --screenshot-quality 80
+agent-browser pdf output.pdf          # Save as PDF
 ```
 
 ## Video Recording
@@ -159,6 +167,8 @@ agent-browser network route <url> --body '{}'  # Mock response
 agent-browser network unroute [url]            # Remove routes
 agent-browser network requests                 # View tracked requests
 agent-browser network requests --filter api    # Filter requests
+agent-browser network har start                # Start HAR capture (HAR 1.2)
+agent-browser network har stop [output.har]    # Stop and save (temp dir if no path)
 ```
 
 ## Tabs and Windows
@@ -172,7 +182,26 @@ agent-browser tab close 2         # Close tab by index
 agent-browser window new          # New window
 ```
 
+## Clipboard
+
+```bash
+agent-browser clipboard read          # Read clipboard content
+agent-browser clipboard write "text"  # Write text to clipboard
+agent-browser clipboard copy          # Trigger Ctrl+C
+agent-browser clipboard paste         # Trigger Ctrl+V
+```
+
+## Batch Execution
+
+```bash
+agent-browser batch < commands.json           # Execute commands from stdin (JSON array of string arrays)
+agent-browser batch --bail < commands.json    # Stop on first error
+agent-browser batch --json < commands.json    # Structured JSON output
+```
+
 ## Frames
+
+Snapshots and interactions auto-traverse iframes (0.21.0+). Explicit frame switching is still available:
 
 ```bash
 agent-browser frame "#iframe"     # Switch to iframe
@@ -220,7 +249,6 @@ agent-browser state load auth.json    # Restore saved state
 agent-browser --session <name> ...    # Isolated browser session
 agent-browser --json ...              # JSON output for parsing
 agent-browser --headed ...            # Show browser window (not headless)
-agent-browser --full ...              # Full page screenshot (-f)
 agent-browser --cdp <port> ...        # Connect via Chrome DevTools Protocol
 agent-browser -p <provider> ...       # Cloud browser provider (--provider)
 agent-browser --proxy <url> ...       # Use proxy server
@@ -228,7 +256,12 @@ agent-browser --proxy-bypass <hosts>  # Hosts to bypass proxy
 agent-browser --headers <json> ...    # HTTP headers scoped to URL's origin
 agent-browser --executable-path <p>   # Custom browser executable
 agent-browser --extension <path> ...  # Load browser extension (repeatable)
-agent-browser --engine <name> ...     # Browser engine: chrome (default), lightpanda (implies --native)
+agent-browser --engine <name> ...     # Browser engine: chrome (default), lightpanda
+agent-browser --idle-timeout <dur>    # Daemon auto-shutdown (10s, 3m, 1h)
+agent-browser --user-data-dir <path>  # Chrome user data directory
+agent-browser --screenshot-dir <dir>  # Default screenshot output directory
+agent-browser --screenshot-format fmt # Screenshot format (png, jpeg)
+agent-browser --screenshot-quality N  # Screenshot quality (jpeg only, 0-100)
 agent-browser --ignore-https-errors   # Ignore SSL certificate errors
 agent-browser --help                  # Show help (-h)
 agent-browser --version               # Show version (-V)
@@ -241,6 +274,8 @@ agent-browser <command> --help        # Show detailed help for a command
 agent-browser --headed open example.com   # Show browser window
 agent-browser --cdp 9222 snapshot         # Connect via CDP port
 agent-browser connect 9222                # Alternative: connect command
+agent-browser inspect                     # Open Chrome DevTools for active page
+agent-browser get cdp-url                 # Get CDP WebSocket URL for external tools
 agent-browser console                     # View console messages
 agent-browser console --clear             # Clear console
 agent-browser errors                      # View page errors
@@ -259,7 +294,13 @@ AGENT_BROWSER_SESSION="mysession"            # Default session name
 AGENT_BROWSER_EXECUTABLE_PATH="/path/chrome" # Custom browser path
 AGENT_BROWSER_EXTENSIONS="/ext1,/ext2"       # Comma-separated extension paths
 AGENT_BROWSER_PROVIDER="browserbase"         # Cloud browser provider
-AGENT_BROWSER_ENGINE="lightpanda"               # Browser engine: chrome (default), lightpanda
+AGENT_BROWSER_ENGINE="lightpanda"            # Browser engine: chrome (default), lightpanda
+AGENT_BROWSER_IDLE_TIMEOUT_MS="180000"       # Daemon auto-shutdown timeout (ms)
+AGENT_BROWSER_SCREENSHOT_DIR="./caps"        # Default screenshot output directory
+AGENT_BROWSER_SCREENSHOT_FORMAT="jpeg"       # Screenshot format (png, jpeg)
+AGENT_BROWSER_SCREENSHOT_QUALITY="80"        # Screenshot quality (jpeg only)
 AGENT_BROWSER_STREAM_PORT="9223"             # WebSocket streaming port
 AGENT_BROWSER_HOME="/path/to/agent-browser"  # Custom install location
+BROWSERLESS_API_KEY="..."                    # Browserless.io API key (--provider browserless)
+BROWSERLESS_API_URL="..."                    # Browserless.io API URL
 ```

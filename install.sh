@@ -331,7 +331,7 @@ install_claude_mcp_servers() {
     for entry in "${servers[@]}"; do
         local name="${entry%%|*}"
         local url="${entry#*|}"
-        claude mcp add --scope user --transport http "$name" "$url" 2>/dev/null
+        claude mcp add --scope user --transport http "$name" "$url" 2>/dev/null || true
         success "$name"
     done
 }
@@ -365,4 +365,12 @@ if [[ "$BACKUP_CREATED" == "true" ]]; then
     printf "${GREEN}✓ Done!${RESET} ${DIM}Backups saved to: $BACKUP_DIR${RESET}\n"
 else
     printf "${GREEN}✓ Done!${RESET}\n"
+fi
+
+# Remind about manual steps that require sudo
+if [[ ! -f /etc/paths.d/mise ]]; then
+    echo ""
+    printf "${YELLOW}Manual step needed:${RESET}\n"
+    printf "  Add mise shims to system PATH (needed for GUI apps like Cursor to find mise-managed tools):\n"
+    printf "  ${BOLD}echo \"\$HOME/.local/share/mise/shims\" | sudo tee /etc/paths.d/mise${RESET}\n"
 fi

@@ -33,7 +33,7 @@
   "git.confirmSync": false,
   "git.enableSmartCommit": true,
   "git.mergeEditor": true,
-  "git.path": "/usr/bin/git",
+  "git.path": "/opt/homebrew/bin/git",
   "github.gitProtocol": "ssh",
   "projectManager.git.baseFolders": ["~/Code"],
   "search.exclude": {
@@ -75,5 +75,7 @@
   "explorer.compactFolders": false,
   "diffEditor.ignoreTrimWhitespace": false,
   "window.newWindowDimensions": "inherit",
-  "security.promptForLocalFileProtocolHandling": false
+  "security.promptForLocalFileProtocolHandling": false,
+  "cursor.composer.queueMessageDefaultBehavior": "stop-and-send",
+  "typescript.experimental.useTsgo": true
 }

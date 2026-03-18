@@ -56,9 +56,8 @@ agent-browser forward                 # Go forward in history
 agent-browser reload                  # Reload current page
 agent-browser close                   # Close browser
 
-# Snapshot
-agent-browser snapshot -i             # Interactive elements with refs (recommended)
-agent-browser snapshot -i -C          # Include cursor-interactive elements (divs with onclick, cursor:pointer)
+# Snapshot (auto-traverses iframes)
+agent-browser snapshot -i             # Interactive elements with refs (recommended; includes cursor-interactive elements)
 agent-browser snapshot -s "#selector" # Scope to CSS selector
 
 # Interaction (use @refs from snapshot)
@@ -72,6 +71,10 @@ agent-browser check @e1               # Check checkbox
 agent-browser hover @e1               # Hover (for dropdowns, menus, tooltips)
 agent-browser press Enter             # Press key (also: Control+a, Shift, etc.)
 agent-browser keyboard type "text"    # Type at current focus (no selector)
+agent-browser clipboard read          # Read clipboard content
+agent-browser clipboard write "text"  # Write text to clipboard
+agent-browser clipboard copy          # Trigger Ctrl+C
+agent-browser clipboard paste         # Trigger Ctrl+V
 agent-browser scroll down 500         # Scroll page (up/down/left/right)
 agent-browser scroll down 500 --selector "div.content"  # Scroll within container
 agent-browser drag @e1 @e2            # Drag and drop
@@ -117,14 +120,25 @@ agent-browser --download-path ./downloads open <url>  # Set default download dir
 
 # Capture
 agent-browser screenshot              # Screenshot to temp dir
-agent-browser screenshot --full       # Full page screenshot
+agent-browser screenshot --full       # Full page screenshot (--full is per-command, not global)
 agent-browser screenshot --annotate   # Annotated screenshot with numbered element labels
+agent-browser screenshot --screenshot-dir ./caps --screenshot-format jpeg --screenshot-quality 80
 agent-browser pdf output.pdf          # Save as PDF
 
 # Debugging
 agent-browser console                 # View browser console output
 agent-browser errors                  # View JavaScript errors
 agent-browser highlight @e1           # Highlight element visually
+agent-browser inspect                 # Open Chrome DevTools for active page
+agent-browser get cdp-url             # Get CDP WebSocket URL for external tools
+
+# Network capture
+agent-browser network har start                      # Start capturing network traffic (HAR 1.2)
+agent-browser network har stop [output.har]          # Stop and save HAR (temp dir if no path)
+
+# Batch execution
+agent-browser batch --json < commands.json           # Execute commands from stdin (JSON array of string arrays)
+agent-browser batch --bail < commands.json           # Stop on first error
 
 # Diff (compare page states)
 agent-browser diff snapshot                          # Compare current vs last snapshot
@@ -203,6 +217,7 @@ agent-browser set media dark                                  # During session
 ```bash
 agent-browser --headed open https://example.com  # Or AGENT_BROWSER_HEADED=1
 agent-browser highlight @e1
+agent-browser inspect                             # Open Chrome DevTools
 agent-browser record start demo.webm
 agent-browser record stop
 ```
@@ -270,7 +285,7 @@ agent-browser --session agent1 open site-a.com
 agent-browser --session agent1 close
 ```
 
-If a previous session wasn't closed properly, `agent-browser close` cleans up the daemon. See [references/session-management.md](references/session-management.md) for parallel sessions, state persistence, and concurrent scraping.
+If a previous session wasn't closed properly, `agent-browser close` cleans up the daemon. Use `--idle-timeout` (e.g., `10s`, `3m`, `1h`) or `AGENT_BROWSER_IDLE_TIMEOUT_MS` for automatic daemon shutdown. See [references/session-management.md](references/session-management.md) for parallel sessions, state persistence, and concurrent scraping.
 
 ## Ref Lifecycle (Important)
 
@@ -344,17 +359,14 @@ Persistent settings via `agent-browser.json` in project root or `~/.agent-browse
 - [references/profiling.md](references/profiling.md) — Chrome DevTools profiling for performance analysis
 - [references/proxy-support.md](references/proxy-support.md) — Proxy configuration, geo-testing, rotating proxies
 
-## Native Mode
+## Browser Engines
 
-agent-browser has a native Rust daemon that communicates with Chrome directly via CDP, bypassing Node.js and Playwright entirely. Auth cookies persist across browser restarts in native mode.
+agent-browser uses a native Rust daemon that communicates with Chrome directly via CDP. Auth cookies persist across browser restarts.
 
 ```bash
-agent-browser --native open example.com
-# Or: export AGENT_BROWSER_NATIVE=1
-
-# Use Lightpanda browser engine (implies --native)
+# Use Lightpanda browser engine (alternative to Chrome)
 agent-browser --engine lightpanda open example.com
 # Or: export AGENT_BROWSER_ENGINE=lightpanda
 ```
 
-The native daemon supports Chromium, Safari (via WebDriver), and Lightpanda. Firefox and WebKit are not yet supported. All core commands work identically. Use `agent-browser close` before switching between native and default mode within the same session.
+Supported engines: Chrome/Chromium/Brave (auto-discovered), Safari (via WebDriver), and Lightpanda.

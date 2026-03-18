@@ -51,6 +51,8 @@ Minimum audit:
 - For any new dependencies: check maintenance status, look for existing alternatives in the codebase.
 <!-- @> Prove claims in code. No speculative "likely/may" — back every claim with a specific code path or reproduction -->
 - When making factual claims, **prove them in code**. No speculative "likely/may" — every claim must be backed by a specific code path, user flow, or reproduction scenario. If you identify a potential issue, trace it to a concrete situation where it actually manifests in this codebase. If you can't construct a real reproduction path, it's not a real issue.
+<!-- @> When a repeated review pattern appears, audit the whole changed surface, comprehensively -->
+- When a review comment or first finding reveals a repeated pattern, **audit the whole changed surface for that pattern** instead of fixing or reporting only the commented line. For admin UI diffs, explicitly check for Panda shorthands that survived partial cleanups, semantic token substitutions made by meaning rather than string replacement, and raw `var(--colors-...)` usage in TSX/SVG attributes.
 
 ## Step 4: Write the Review Document
 

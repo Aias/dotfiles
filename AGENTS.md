@@ -5,7 +5,8 @@ Personal dotfiles repo — shell config, git, editor settings, and AI agent conf
 ## Structure
 
 - `agents/GLOBAL.md` — Global agent instructions (symlinked to `~/.claude/CLAUDE.md`, `~/.codex/AGENTS.md`, Cursor rules)
-- `agents/skills/` — Personal agent skills
+- `agents/skills/` — Personal agent skills (tracked)
+- `agents/skills.local/` — Machine-specific skills (gitignored)
 - `agents/compile-global.ts` — Compiles `@>` annotations from skills into GLOBAL.md's dense index
 - `agents/.build/skills/` — Cleaned skill files (annotations stripped), gitignored
 - `agents/claude.settings.json` — Claude Code settings
@@ -13,16 +14,18 @@ Personal dotfiles repo — shell config, git, editor settings, and AI agent conf
 - `agents/hooks/` — Claude Code hooks (e.g. PR guideline checks)
 - `.agents/skills/` — External skills (from skills.sh)
 - `skills-lock.json` — External skill version tracking
-- `install.sh` — Symlink installer (reads `links.txt`), copies skills + cleaned overlays
+- `install.sh` — Symlink installer (reads `links.txt`), syncs skills, discovers MCP servers
 - `setup.sh` — Repo-local setup (git hooks)
-- `Makefile` — Common tasks (`make link`, `make check`, `make compile`, `make update-skills`)
+- `git-hooks/pre-commit` — Auto-compiles GLOBAL.md annotations before each commit
+- `local/` — Templates for machine-specific env vars and secrets (not tracked)
+- `Makefile` — Common tasks (`make install`, `make link`, `make check`, `make compile`, `make setup`, `make update-skills`)
 
 ## Conventions
 
 - Edit config in this repo, not in `~/` — symlinks propagate changes automatically
 - This repo is public. Never commit private information, credentials, machine-specific secrets, personal data, or internal-only notes here, even temporarily. Use ignored local files or tracked templates instead.
 - For agent config, dotfiles is source of truth; check symlink mapping before editing
-- Skills: personal in `agents/skills/`, external in `.agents/skills/`
+- Skills: personal in `agents/skills/`, machine-specific in `agents/skills.local/` (gitignored), external in `.agents/skills/`
 
 ## Annotation Compilation
 

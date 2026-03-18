@@ -15,6 +15,8 @@ dotfiles/
 │   └── .gitignore_global
 ├── node/
 │   └── .default-npm-packages  # Global npm packages (installed by mise)
+├── mise/
+│   └── config.toml   # mise version manager config
 ├── starship/
 │   └── starship.toml  # Starship prompt configuration
 ├── ghostty/
@@ -29,18 +31,25 @@ dotfiles/
 │   ├── claude.settings.json     # Claude Code settings
 │   ├── codex.config.toml        # Codex settings
 │   ├── claude.statusline-command.sh
-│   ├── hooks/         # Claude Code hooks
+│   ├── hooks/         # Claude Code hooks (e.g. PR guideline check)
 │   ├── compile-global.ts        # Annotation compiler
 │   ├── vault-template/          # Template for ~/Code/vault
+│   ├── .build/skills/ # Cleaned skill files (annotations stripped, gitignored)
 │   ├── skills/        # [P] Personal skills (hand-written)
 │   │   ├── git-workflows/
 │   │   ├── write/
 │   │   ├── skills-manager/
 │   │   └── .../
 │   └── skills.local/  # [L] Local-only skills (not committed)
+├── local/
+│   ├── env.template       # Machine-specific env vars template
+│   └── secrets.template   # API keys/tokens template
+├── git-hooks/
+│   └── pre-commit         # Auto-compiles GLOBAL.md annotations
 ├── .agents/
 │   └── skills/        # [E] External skills (from skills.sh)
 │       ├── dogfood/
+│       ├── next-best-practices/
 │       ├── skill-creator/
 │       └── .../
 ├── install.sh         # Symlink installation script
@@ -55,19 +64,24 @@ dotfiles/
 ## Installation
 
 ```bash
-./install.sh
+make install    # Full install (compile annotations + symlink + sync skills)
+make setup      # Repo-local setup (git hooks) — run once per clone/worktree
 ```
 
-This will:
+`make install` will:
 
-1. Back up any existing files to `~/.dotfiles-backup/`
-2. Create symlinks from this repo to your home directory
+1. Compile `@>` annotations from skills into GLOBAL.md
+2. Back up any existing files to `~/.dotfiles-backup/`
+3. Create symlinks from this repo to `~/` (based on `links.txt`)
+4. Copy Cursor global rule with `.mdc` frontmatter
+5. Sync all skills (personal, external, local) to `~/.claude/skills/` and `~/.codex/skills/`
+6. Discover and symlink MCP server configs across Claude, Codex, and Cursor
+
+Use `make link` to skip dependency installation (brew). Use `make update` to pull, install brew deps, and reinstall.
 
 ## Usage
 
-Edit files in this repo, changes apply immediately via symlinks.
-
-To update after pulling changes:
+Edit files in this repo, changes apply immediately via symlinks. After pulling:
 
 ```bash
 source ~/.zshrc
@@ -77,39 +91,34 @@ source ~/.zshrc
 
 1. Add the config file to the appropriate directory
 2. Add mapping to `links.txt`
-3. Run `./install.sh` to link it
+3. Run `make link` to sync
 
 ## Managing Skills
 
-Skills come in two types:
-- **[P] Personal skills** - Hand-written skills in `agents/skills/`
-- **[E] External skills** - Installed from [skills.sh](https://skills.sh) in `.agents/skills/`
+Skills come in three types:
+- **[P] Personal** — Hand-written, tracked in `agents/skills/`
+- **[L] Local** — Machine-specific, gitignored in `agents/skills.local/`
+- **[E] External** — Installed from GitHub via [skills.sh](https://skills.sh) in `.agents/skills/`
 
-Both types are synced via rsync to `~/.claude/skills/` and `~/.codex/skills/`.
+All types are synced to `~/.claude/skills/` and `~/.codex/skills/` by `make link`.
 
 ### Adding a Personal Skill
 
-1. Create a new folder in `agents/skills/<skill-name>/` with a `SKILL.md` file
-2. Run `make link` to sync the skills
+1. Create `agents/skills/<skill-name>/SKILL.md`
+2. Run `make link`
 
 ### Adding an External Skill
 
 ```bash
-# Install from skills.sh (downloads to .agents/skills/)
-npx skills add <source> --skill <skill-name>
+# Install (downloads to .agents/skills/)
+npx skills add OWNER/REPO --skill SKILL-NAME -a claude-code -y
 
-# Track metadata
-COMMIT_HASH=$(cd .agents/skills/<skill-name> && git rev-parse HEAD)
-agents/skills/skills-manager/manage-skills.sh add \
-  <skill-name> \
-  <source-repo> \
-  "$COMMIT_HASH"
+# Remove the symlink it creates (we deploy via make link instead)
+rm -f .claude/skills/SKILL-NAME
 
-# Deploy via rsync
+# Deploy
 make link
 ```
-
-See `agents/skills/skills-manager/README.md` for full documentation.
 
 ### Updating External Skills
 
@@ -117,18 +126,9 @@ See `agents/skills/skills-manager/README.md` for full documentation.
 make update-skills
 ```
 
-This runs `npx skills update` and redeploys all skills via rsync.
-
 ### Removing a Skill
 
-**Personal skill:**
-1. Delete the folder from `agents/skills/`
-2. Run `make link` to remove it from target directories
-
-**External skill:**
-1. Delete the folder from `.agents/skills/`
-2. Remove entry from `skills-lock.json`
-3. Run `make link` to remove it from target directories
+Delete the folder from the appropriate directory, remove any `skills-lock.json` entry, then clean up orphaned deployments from `~/.claude/skills/` and `~/.codex/skills/`.
 
 ### Verifying Sync Status
 
