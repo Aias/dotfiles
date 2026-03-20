@@ -80,11 +80,13 @@ If any of these are unclear, ask before proceeding.
 - Describe what changed, not the ticket number
 - Concise but specific
 
-<!-- @> Open with problem context, not ## Summary. Problem before solution. Direct, no filler -->
+<!-- @> No headers in PR body. Max 3-4 bullets per group; break longer lists with prose paragraphs. Problem before solution, direct, no filler -->
 
 ## PR Description
 
-No opening `##` header. Start directly with a paragraph explaining the problem, context, or motivation — why this PR exists. Then use flat bullet points describing what changed, focused on _what_ and _why_.
+Never use `##` headers in the PR body. Start directly with a paragraph explaining the problem, context, or motivation — why this PR exists. Then use bullet points describing what changed, focused on _what_ and _why_.
+
+Never list more than 3–4 bullets in a row. Break longer lists into conceptual groups, each introduced by a sentence or two of prose. Readers should be able to scan at multiple levels of hierarchy — paragraph-level for the gist, bullet-level for details.
 
 <!-- @> Present tense ("Adds", not "Added"). Drop subject pronouns. "we" for team decisions, "I" for first-person only -->
 
@@ -102,7 +104,7 @@ No opening `##` header. Start directly with a paragraph explaining the problem, 
 
 - **Small:** One or two sentences + screenshot/video if visual. Nothing more.
 - **Medium:** Intro paragraph + bullet points + inline media + related links.
-- **Large:** Can use headers to organize. Prefer descriptive headers (e.g., subsystem name) over generic ones like "Changes".
+- **Large:** Same flat structure — no headers. Group related bullets under short prose paragraphs to create scannable sections.
 
 ### Considered Alternatives
 
@@ -112,7 +114,7 @@ When alternatives were explored during development and intentionally rejected, i
 
 Only include when testing is non-obvious — complex interactions, specific reproduction steps, or multi-step verification. For straightforward changes, code review and CI are sufficient.
 
-When included, use a bulleted list for independent things to check, or an ordered list if steps must be done in sequence. No checkboxes — except in draft PRs to show remaining work (remove them when moving to ready for review). Describe what page to visit, what data needs to exist, what to look for.
+When included, use a bulleted list for independent things to check, or an ordered list if steps must be done in sequence. Never use checkboxes. Describe what page to visit, what data needs to exist, what to look for.
 
 ### Visual Evidence
 
@@ -122,7 +124,7 @@ Many PRs would benefit from screenshots or videos to illustrate changes, but unf
 
 Place `Fixes <ticket>` or `Closes <ticket>` on its own line, near the top (after opening context) or at the bottom. For related-but-not-closed tickets, use inline links.
 
-<!-- @> No file listings, LOC counts, status info, AI vocabulary, or decision narration -->
+<!-- @> No file listings, LOC counts, status info, AI vocabulary, decision narration, checkboxes, or "smoke test" -->
 
 ## What to Avoid
 
@@ -134,4 +136,10 @@ Place `Fixes <ticket>` or `Closes <ticket>` on its own line, near the top (after
 - Numbered step-by-step behavioral flows (unless explaining a race condition or sequence-dependent bug)
 - `Fixes #123` as the entire body — always explain _why_
 - `## Summary` / `## Test plan` scaffolding
+- Checkboxes (task lists) — use plain bullets or ordered lists instead
+- The phrase "smoke test"
 - "Generated with Claude Code" or similar AI footers / co-authorship
+
+## PR Comments and Interactions
+
+Never post comments, replies, or reviews on GitHub PRs without explicit user permission. When asked to "get" or "check" PR comments, present them in the conversation — do not reply on GitHub. The user decides what gets posted.

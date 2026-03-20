@@ -66,6 +66,7 @@ Work often runs inside [Conductor](https://conductor.build) (parallel git worktr
 
 - When starting servers or long-running services, use `pm2` to manage them and monitor their logs.
 - Git operations require explicit permission—see `/git-workflows` for details.
+- Do not post GitHub, Linear, or other review/comments on my behalf unless I explicitly ask you to publish them. Default to drafting them in chat or a local file.
 
 ## General Code Styles
 
@@ -110,7 +111,7 @@ Code Quality|skills/code-quality|Primary outcome: cleanup passes should generall
 Conductor|skills/conductor|Worktree clone at ~/conductor/workspaces/<project>/<city>; CONDUCTOR_ROOT_PATH = repo root; .context/ gitignored for inter-agent files:L19|Conductor target branch in system instruction → PR base, rebase, diff — not the checked-out branch name alone:L24|Same origin across workspaces; git fetch before diff/rebase; other workspaces may push the same base:L27
 Debugging|skills/debugger|Evidence over intuition: no fixes until logs confirm root cause. Minimal instrumentation:L11
 Git|skills/git-workflows|Read-only on git status/diff. Explicit permission for commit/push/reset:L26|Always fetch and diff against origin/<base>, never local branches. Local branches go stale silently:L46
-Git|skills/pr-guidelines|After pushing to an existing PR, review and update title/description to reflect current changes:L26|Verify base branch first: Conductor target → existing PR → repo convention → ask. Wrong base = wrong diff:L51|PR titles: plain language, no fix:/feat: prefixes:L74|Open with problem context, not ## Summary. Problem before solution. Direct, no filler:L81|Present tense ("Adds", not "Added"). Drop subject pronouns. "we" for team decisions, "I" for first-person only:L86|No file listings, LOC counts, status info, AI vocabulary, or decision narration:L121
+Git|skills/pr-guidelines|After pushing to an existing PR, review and update title/description to reflect current changes:L26|Verify base branch first: Conductor target → existing PR → repo convention → ask. Wrong base = wrong diff:L51|PR titles: plain language, no fix:/feat: prefixes:L74|No headers in PR body. Max 3-4 bullets per group; break longer lists with prose paragraphs. Problem before solution, direct, no filler:L81|Present tense ("Adds", not "Added"). Drop subject pronouns. "we" for team decisions, "I" for first-person only:L88|No file listings, LOC counts, status info, AI vocabulary, decision narration, checkboxes, or "smoke test":L123
 React|skills/react-best-practices|v19+: no forwardRef. No useEffect for transforms/events/state — calculate in render/handlers:L11|Read `/avoid-effects` before adding Effects. rAF > setTimeout. Iterate to repeat:L11
 React|skills/avoid-effects|Effects only for external sync; derive in render; events for interactions; useSyncExternalStore for stores; fetch Effects need stale cleanup:L74
 <!-- END COMPILED -->
