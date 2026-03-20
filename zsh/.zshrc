@@ -19,13 +19,16 @@ setopt HIST_IGNORE_ALL_DUPS   # Remove duplicate entries
 setopt HIST_REDUCE_BLANKS     # Remove superfluous blanks
 setopt HIST_IGNORE_SPACE      # Don't save commands starting with space
 setopt EXTENDED_HISTORY        # Save timestamps in history
+setopt HIST_VERIFY            # Show expanded history before running (!, !!, etc.)
 
 # ─────────────────────────────────────────────────────────────
 # Shell options
 # ─────────────────────────────────────────────────────────────
 setopt AUTO_CD                # cd into directories by typing name
-setopt CORRECT                # Spell correction for commands
 setopt GLOB_DOTS              # Include dotfiles in globbing
+setopt AUTO_PUSHD             # cd pushes onto directory stack (popd / ~1 to jump back)
+setopt PUSHD_IGNORE_DUPS
+setopt PUSHD_SILENT           # Don't print stack on each cd
 setopt NO_BEEP                # Disable terminal beep
 setopt INTERACTIVE_COMMENTS   # Allow comments in interactive shell
 
@@ -40,6 +43,17 @@ else
 fi
 zstyle ':completion:*' menu select
 zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'  # Case-insensitive
+zstyle ':completion:*' use-cache yes
+zstyle ':completion:*' cache-path "$HOME/.cache/zsh"
+[[ -d "$HOME/.cache/zsh" ]] || mkdir -p "$HOME/.cache/zsh"
+
+# fzf (fuzzy finder) — Ctrl-T files, Ctrl-R history, Alt-C dirs
+if [[ -x /opt/homebrew/bin/brew ]]; then
+  _fzf_base="$(/opt/homebrew/bin/brew --prefix fzf 2>/dev/null)/shell"
+  [[ -r "$_fzf_base/completion.zsh" ]] && source "$_fzf_base/completion.zsh"
+  [[ -r "$_fzf_base/key-bindings.zsh" ]] && source "$_fzf_base/key-bindings.zsh"
+  unset _fzf_base
+fi
 
 # Bun completions
 [[ -s "$HOME/.bun/_bun" ]] && source "$HOME/.bun/_bun"
@@ -80,7 +94,7 @@ alias yolo="claude --dangerously-skip-permissions"
 alias code="cursor"
 alias dotup="make -C ~/Code/dotfiles update"
 alias dotcheck="make -C ~/Code/dotfiles check"
-alias dotlink="make -C ~/Code/dotfiles link"
+alias dotlink="make -C ~/Code/dotfiles link && resource"
 function up() {
   local dim=$'\e[2m' bold=$'\e[1m' reset=$'\e[0m' blue=$'\e[34m'
   local all=false
@@ -119,6 +133,13 @@ function up() {
 }
 alias mini="ssh nicktrombley@mac-mini"
 alias timeout="gtimeout"
+
+# Git repo root (monorepos / worktrees)
+gr() {
+  local root
+  root="$(git rev-parse --show-toplevel 2>/dev/null)" || return 1
+  [[ -n "$root" ]] && builtin cd "$root"
+}
 
 # ─────────────────────────────────────────────────────────────
 # Zoxide (smart cd) - install with: brew install zoxide

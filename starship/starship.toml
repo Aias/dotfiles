@@ -4,11 +4,13 @@ format = """
 $username\
 $hostname\
 $directory\
+${custom.conductor}\
 $git_branch\
 $git_state\
 $git_status\
 $cmd_duration\
 $line_break\
+$jobs\
 $sudo\
 $character"""
 
@@ -80,6 +82,20 @@ disabled = true
 format = "[sudo]($style) "
 style = "red"
 disabled = false
+
+[jobs]
+format = "[$symbol$number]($style) "
+style = "bright-black"
+symbol = "✦ "
+number_threshold = 1
+
+# Conductor (conductor.build) — see agents/skills/conductor/SKILL.md
+[custom.conductor]
+description = "Conductor workspace"
+when = 'test -n "${CONDUCTOR_WORKSPACE_NAME:-}"'
+command = 'printf %s "$CONDUCTOR_WORKSPACE_NAME"; test -n "${CONDUCTOR_PORT:-}" && printf " ·%s" "$CONDUCTOR_PORT"'
+format = "[$output]($style) "
+style = "bright-black"
 
 # ─────────────────────────────────────────────────────────────
 # Disabled modules (speeds up prompt initialization)
