@@ -1,11 +1,15 @@
 ---
 name: react-best-practices
-description: React and Next.js performance optimization and patterns. Use when writing, reviewing, or refactoring React/Next.js code. Triggers on .jsx/.tsx files, React hooks, component patterns, data fetching, bundle optimization, or performance improvements.
+description: >
+  Use when writing or reviewing React/Next.js—hooks, server/client boundaries, data fetching, re-renders,
+  bundle splitting, suspense, streaming, or performance tuning. Triggers on .jsx/.tsx, memo, hydration,
+  "slow render", RSC patterns. For `useEffect` specifically, refer to `/avoid-effects`.
 global_category: React
 ---
 
 <!-- @> v19+: no forwardRef. No useEffect for transforms/events/state — calculate in render/handlers -->
-<!-- @> Read you-might-not-need-an-effect.md before adding Effects. rAF > setTimeout. Iterate to repeat -->
+<!-- @> Read `/avoid-effects` before adding Effects. rAF > setTimeout. Iterate to repeat -->
+
 # React Best Practices
 
 Performance optimization guide for React and Next.js applications. 57 rules across 8 categories, prioritized by impact. Originally adopted from [Vercel Engineering](https://github.com/vercel/next.js) (MIT).
@@ -15,6 +19,7 @@ Core rules are compiled into GLOBAL.md. This skill contains additional detail.
 ## When to Apply
 
 Reference these guidelines when:
+
 - Writing new React components or Next.js pages
 - Implementing data fetching (client or server-side)
 - Reviewing code for performance issues
@@ -23,16 +28,16 @@ Reference these guidelines when:
 
 ## Rule Categories by Priority
 
-| Priority | Category | Impact | Prefix |
-|----------|----------|--------|--------|
-| 1 | Eliminating Waterfalls | CRITICAL | `async-` |
-| 2 | Bundle Size Optimization | CRITICAL | `bundle-` |
-| 3 | Server-Side Performance | HIGH | `server-` |
-| 4 | Client-Side Data Fetching | MEDIUM-HIGH | `client-` |
-| 5 | Re-render Optimization | MEDIUM | `rerender-` |
-| 6 | Rendering Performance | MEDIUM | `rendering-` |
-| 7 | JavaScript Performance | LOW-MEDIUM | `js-` |
-| 8 | Advanced Patterns | LOW | `advanced-` |
+| Priority | Category                  | Impact      | Prefix       |
+| -------- | ------------------------- | ----------- | ------------ |
+| 1        | Eliminating Waterfalls    | CRITICAL    | `async-`     |
+| 2        | Bundle Size Optimization  | CRITICAL    | `bundle-`    |
+| 3        | Server-Side Performance   | HIGH        | `server-`    |
+| 4        | Client-Side Data Fetching | MEDIUM-HIGH | `client-`    |
+| 5        | Re-render Optimization    | MEDIUM      | `rerender-`  |
+| 6        | Rendering Performance     | MEDIUM      | `rendering-` |
+| 7        | JavaScript Performance    | LOW-MEDIUM  | `js-`        |
+| 8        | Advanced Patterns         | LOW         | `advanced-`  |
 
 ## Quick Reference
 
@@ -119,4 +124,4 @@ Reference these guidelines when:
 
 ## Additional References
 
-- [`you-might-not-need-an-effect`](references/you-might-not-need-an-effect.md) — Comprehensive guide to when Effects are and aren't appropriate. **Read before adding any `useEffect`.**
+- `/avoid-effects` — When `useEffect` is and isn’t appropriate (it usually isn't); full React doc in that skill’s `references/react-dev-full-article.md`. **Read before adding any `useEffect`.**

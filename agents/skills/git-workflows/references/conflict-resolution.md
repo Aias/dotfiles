@@ -2,198 +2,67 @@
 
 Use when resolving merge or rebase conflicts.
 
-## Identify Conflicts
+## Authority and checkpoints
 
-1. Run `git status` to find conflicted files (under "Unmerged paths")
-2. Get context on what's being merged:
-   - **Merge:** `git log --oneline -1 MERGE_HEAD`
-   - **Rebase:** `git rebase --show-current-patch --stat`
+- **No surprise finalization:** Do not complete `git merge` (commit), `git rebase --continue`, or any push without the user's **explicit** go-ahead. Treat each of those as a separate permission.
+- **Review before apply:** After analyzing a conflict (or a coherent batch of conflicts in one file), present the proposed resolution — file(s), what each side was doing, and the merged outcome (or options if ambiguous). **Stop.** Only apply after the user approves (or selects among options).
+- **Interactive prompts:** Use `AskUserQuestion` (or an equivalent) at checkpoints: e.g. approve this resolution, choose strategy A/B, proceed to staging, proceed to continue rebase, proceed to push. If that tool is unavailable, ask in plain messages and wait for a clear yes/no or choice.
 
-## Analyze Each Conflict
+## Workflow
 
-For each conflicted file:
+### 1. Situate the operation
 
-### Find conflict boundaries
+- Confirm whether this is a **merge** or **rebase** and which branches/commits are involved.
+- Inspect repository state (e.g. `git status`) to list unmerged paths and what's expected next.
 
-```bash
-rg -n "^<<<<<<|^>>>>>>>" <file>
-```
+Use whatever safe commands or tools fit the environment to gather that context.
 
-Note line numbers:
+### 2. Understand each conflict
 
-- `start_line` = line with `<<<<<<<`
-- `end_line` = line with `>>>>>>>`
+For each conflicted region (or file, if the whole file is in dispute):
 
-### View the conflict block
+- Locate conflict markers or, for binary / lockfile-style conflicts, the fact that Git reports both sides modified without markers.
+- Map sides to meaning: for **merge**, ours/theirs follow normal merge semantics; for **rebase**, ours is the branch you're rebasing onto and theirs is the replayed commit — the labels are reversed vs merge.
+- Decide strategy: combine independent work, pick one implementation, or synthesize; ensure imports, types, and references stay coherent.
 
-```bash
-sed -n '<start_line>,<end_line>p' <file>
-```
+### 3. Propose, then apply
 
-### Identify what each side changed
+- Present path, a short description of each side, and the **proposed** resolved content (or a clear preview/summary).
+- **Checkpoint:** user approval required before editing the file.
+- After applying an approved resolution, confirm that conflict markers are gone and the file is internally consistent before moving to the next conflict.
 
-- **HEAD / ours**: Your branch (merge) or target branch (rebase)
-- **Base**: Common ancestor (between `|||||||` and `=======`)
-- **Theirs**: Incoming branch (merge) or your commit (rebase)
+How you edit (patch tool, structured replace, shell, etc.) is up to you; the requirement is correct merged content and no leftover markers.
 
-### Determine resolution strategy
+### 4. Staging and completion
 
-- Independent additions → combine both
-- Competing implementations → choose one or hybrid
-- Check if referenced variables/imports from either side are needed
+- When all conflicts in scope are resolved and verified, **checkpoint:** ask whether to stage the resolved paths.
+- After staging, show clean status for those paths and **checkpoint:** remind the user that merge commit, `git rebase --continue`, and push still require explicit permission per `/git-workflows`.
+- **Do not** run `git commit`, `git rebase --continue`, or `git push` unless the user has clearly authorized that step.
 
-## Propose and Apply Resolutions
+## Special cases
 
-For each conflict, present to the user:
+**Lock files** (`pnpm-lock.yaml`, `package-lock.json`, `yarn.lock`, etc.): Often both modified without inline markers. Typical pattern: align with one side or the other as a starting point, then **regenerate** the lockfile with the project's canonical install/update command so it matches the merged `package.json` (or monorepo equivalent).
 
-- File path and line numbers
-- Summary of each side's changes
-- Proposed resolution with code preview
+**Generated artifacts** (GraphQL types, codegen output, etc.): Prefer consistency with the chosen source side, then regenerate if the repo has a standard codegen step.
 
-**Wait for user confirmation before applying.**
+## Rebasing (workflow)
 
-Use head/tail to reconstruct the file:
+**Before starting:** Understand branch intent (PR context, review feedback). Fetch the remote base you will rebase onto (`origin/<target>` or equivalent) so comparisons aren't stale.
 
-```bash
-{
-  head -$((start_line - 1)) <file>
-  cat << 'RESOLVED'
-<resolved code here>
-RESOLVED
-  tail -n +$((end_line + 1)) <file>
-} > /tmp/fixed && mv /tmp/fixed <file>
-```
+**During:** Resolve conflicts using the same propose → approve → apply loop. After conflicts for the current stopped commit are fixed and staged, **checkpoint** before `git rebase --continue` — the user must explicitly agree to continue the rebase.
 
-**Verify immediately after each resolution:**
+**Abort / skip:** If the user wants to abandon the rebase, use `git rebase --abort`. `git rebase --skip` only when a commit is truly obsolete — confirm with the user.
 
-```bash
-rg "^<<<<<<" <file> && echo "CONFLICT REMAINS" || echo "OK"
-```
+**Push:** Rebased history usually needs a force push. Use `--force-with-lease` when pushing, only on branches where that's appropriate, and **only** after explicit user permission (see `/git-workflows`).
 
-Do not proceed to the next file until verification passes.
+## Principles
 
-## Special Cases
+- Default assumption: the branch you're rebasing onto often has newer shared conventions; preserve the **intent** of replayed commits rather than blindly keeping old text.
+- Prefer combining independent changes; watch cross-file dependencies (imports, configs).
+- If resolutions are large or risky, split into smaller review steps.
+- Repeated conflicts across commits: consider squashing or `git rerere` after user discussion.
+- If conflict volume is unmanageable, discuss merge vs rebase or selective cherry-picks with the user before proceeding.
 
-**Lock files (pnpm-lock.yaml, package-lock.json, yarn.lock):**
+## Recovery
 
-- Often show as "both modified" (UU) without text conflict markers
-- Resolution: `git checkout --theirs <lockfile>` then regenerate (`rush update`, `npm install`, etc.)
-
-**Generated files (GraphQL types, etc.):**
-
-- Prefer taking the more complete version (usually theirs/dev)
-- Regenerate after merge to ensure consistency
-
-## Completion
-
-1. **Verify all conflicts resolved:**
-
-   ```bash
-   git diff --check
-   ```
-
-2. **Stage resolved files:**
-
-   ```bash
-   git add <resolved files>
-   ```
-
-3. **Show `git status`** — files should appear under "Changes to be committed"
-
-4. **Do NOT commit or finalize** — inform the user and provide the command:
-   - Merge: `git commit`
-   - Rebase: `git rebase --continue`
-
-## Rebasing
-
-### Before Starting
-
-1. **Check context first** — Review PR comments, line-level feedback, and any discussion to understand:
-
-   - What the branch was trying to accomplish
-   - Any feedback that should be addressed during the rebase
-   - Whether there are known conflicts or areas of concern
-
-2. **Verify the target branch is up to date:**
-   ```bash
-   git fetch origin <target-branch>
-   ```
-
-### Start the Rebase
-
-```bash
-git rebase origin/<target-branch>
-```
-
-**Note:** Do not use interactive rebase (`-i`) in automated contexts — it requires manual editor interaction.
-
-### Continue, Skip, or Abort
-
-**After resolving all conflicts for a commit:**
-
-```bash
-git rebase --continue
-```
-
-**If the rebase should be abandoned:**
-
-```bash
-git rebase --abort
-```
-
-**If you need to skip a commit entirely:**
-
-```bash
-git rebase --skip
-```
-
-Use sparingly — only when a commit is entirely superseded by the target branch.
-
-### Push the Rebased Branch
-
-```bash
-git push --force-with-lease origin <branch-name>
-```
-
-Use `--force-with-lease` instead of `--force` — it fails if someone else pushed to the branch, preventing accidental overwrites.
-
-**Warning:** Force pushing rewrites history. Only do this on feature branches, never on shared branches like `main` or `dev`.
-
-### Key Principles
-
-**Default assumption:** The branch being rebased onto has better/newer patterns. Our commits should only override target branch code when that was their explicit purpose.
-
-**Ours vs Theirs is swapped:** During a rebase:
-
-- "Ours" = the target branch (what you're rebasing onto)
-- "Theirs" = your commits being applied
-
-This is the opposite of merge conflict terminology.
-
-**Preserve commit intent:** When resolving conflicts, don't just pick one side. Understand what the commit was trying to do and apply that intent to the new base.
-
-### Common Issues
-
-**Repeated conflicts:** If the same conflict keeps appearing across multiple commits, consider:
-
-- Squashing related commits before rebasing
-- Using `git rerere` to record conflict resolutions
-
-**Diverged too far:** If the branch has diverged significantly and conflicts are overwhelming:
-
-- Consider a merge instead of rebase
-- Or create a new branch and cherry-pick specific commits
-
-**Lost changes after rebase:** Check `git reflog` to find the pre-rebase state:
-
-```bash
-git reflog
-git checkout <pre-rebase-sha>
-```
-
-## Guidelines
-
-- Prefer combining changes when they're independent
-- Look at imports and surrounding code — one side may add dependencies the other needs
-- For rebases, "ours" and "theirs" are swapped vs merges
-- If a resolution is complex, break it into smaller pieces for review
+If something goes wrong after a rebase, `git reflog` can help locate the pre-rebase HEAD; involve the user before rewriting history further.

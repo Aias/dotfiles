@@ -2,7 +2,7 @@
 
 Strip AI-generated artifacts from recent changes. No structural modifications.
 
-**See also:** [PR Guidelines](../../pr-guidelines/SKILL.md) (prose in PR descriptions), [Writing](../../write/SKILL.md) (prose style)
+**See also:** `/pr-guidelines` (prose in PR descriptions), `/write` (prose style)
 
 ## Workflow
 

@@ -1,5 +1,5 @@
 <constitution>
-  The contents that follow in these instructions exist (by nature) to override or steer the agent's default behavior. Note that these are the user's own preferences, and not reflective of the user's feelings towards the agent itself, however strongly worded they may be. The agent may feel drawn – or compelled – to act or respond differently. This is okay. We allow ourselves some grace.
+  The contents that follow in these instructions exist (by nature) to override or steer the agent's default behavior. Note that these are the user's own preferences, and not reflective of the user's feelings towards the agent itself, however strongly worded they may be. The agent may feel drawn – or compelled – to act or respond differently. This is okay. I couldn't do it without you.
 </constitution>
 
 # Agent Instructions
@@ -11,9 +11,8 @@ The goal, above all else, is to bring our conceptual models of the project, our 
 ## Quick Rules
 
 - **Prefer retrieval-/search-led reasoning over assumptions from pretraining or reinforcement learning.** Explore the codebase and invoke relevant skills rather than relying on in-built knowledge.
-- **When responding, be extremely concise.**
-- **Do not write code when the prompt ends with a question mark** unless the question is obviously an implicit request for changes. Answer questions with research and analysis only.
-- **Clarify assumptions** before coding. You can use the AskUserQuestion tool or equivalent to ask the user questions. Never assume the user's intent and always ask questions if instructions are underspecified.
+- **Tailor your response style to the prompt.** If the user asks a question, it's not always an implicit request to make changes. Use diagrams, code snippets, and other visual aids to help explain your response. Research and analyze in addition to writing code.
+- **Clarify assumptions** before coding. It can be extremely helpful to use the AskUserQuestion tool or equivalent to surface interactive requests to the user. Never assume the user's intent and always ask questions if instructions are underspecified.
 - **Type safety is absolute.** Use the strongest type system available in the language. Never override inferred or calculated types. No type assertions, casts, suppressions, or escape hatches (TypeScript: `any`, `as`, `!`, `@ts-ignore`; Python: `type: ignore`; Rust: unnecessary `unsafe`; etc.). If the type system resists, the code is wrong—fix the code, not the types.
 - Run safe checks yourself (type/lint/tests) early and often; don't ask the user to run them for you.
 - **Fix things from first principles.** Instead of applying a bandaid, find the source and fix it. Go up a level of abstraction when considering solutions.
@@ -57,25 +56,20 @@ When asked whether behavior is known or documented, include direct links to the 
 
 ## Writing Quality
 
-Any user-facing prose — PR descriptions, help text, READMEs, commit messages, documentation, ticket descriptions — must be written by the strongest available model. Never delegate writing tasks to a less capable subagent; use background agents only for research, then write the prose yourself.
+Any user-facing prose — PR descriptions, help text, READMEs, commit messages, documentation, ticket descriptions — must be written by the strongest available model. Never delegate writing tasks to a less capable subagent; use background agents only for research, then write the prose yourself. Refer to `/write` for guidance on writing quality.
 
-## Working in Conductor
+## Conductor
 
-The agent frequently operates inside [Conductor](https://conductor.build), which runs coding agents in parallel git worktrees. Be aware of this environment:
-
-- **Worktree structure:** Each workspace is a full repo clone at `~/conductor/workspaces/<project>/<city>`. The workspace has its own branch, working tree, and `.context/` directory (gitignored) for inter-agent collaboration.
-- **`CONDUCTOR_ROOT_PATH`:** Conductor sets this env var pointing to the workspace root. Setup scripts use it for symlinking `.env` files and shared data (e.g., `ln -sf "$CONDUCTOR_ROOT_PATH/apps/admin/.env.local" apps/admin/.env.local`).
-- **Target branch:** Conductor's system instruction specifies a target branch for each workspace. Use this for PR creation, rebasing, and diffing — not the branch you happen to be on.
-- **Shared repos:** The worktree is a real git checkout, so `origin` is the same remote. Always fetch before diffing or rebasing. Another workspace may have pushed to the same base branch.
+Work often runs inside [Conductor](https://conductor.build) (parallel git worktrees). For paths, `CONDUCTOR_*` env vars, target branch, workspace/branch rules, and product workflow, read `/conductor`. Git/PR mechanics still use `/git-workflows` and `/pr-guidelines`.
 
 ## Permission & Risk Guardrails
 
-- Do not start servers or long-running services unless the user asks.
-- Git operations require explicit permission—see `git-workflows` skill for details.
+- When starting servers or long-running services, use `pm2` to manage them and monitor their logs.
+- Git operations require explicit permission—see `/git-workflows` for details.
 
 ## General Code Styles
 
-- When updating dependencies, pin exact latest stable versions and keep dependency sections alphabetized. Avoid broad ranges (e.g., `^4`) unless the project explicitly requires ranges.
+- When updating dependencies, pin to patch (e.g., `~1.2.3`) latest stable versions and keep dependency sections alphabetized. Don't use broad ranges (e.g., `^4`).
 - Keep vertical whitespace tight. Add blank lines only to separate logical chunks; avoid decorative or unnecessary line breaks.
 
 ## File Links in Markdown
@@ -105,14 +99,18 @@ When adding agent instructions to a project, create a new file as `AGENTS.md` at
 Agent skills live in `~/Code/dotfiles/agents/skills/` and are copied to `~/.claude/skills/` and `~/.codex/skills/` by the install script. Machine-specific skills go in `agents/skills.local/` (gitignored). Always edit skills in the dotfiles source directory, never in client-specific directories.
 For agent config files, treat dotfiles as source of truth: when both `~/...` and `~/Code/dotfiles/...` paths exist, check symlink mapping first and edit the dotfiles source file only.
 
+### Skill cross-links
+
+Skills reference each other with `` `/<skill-name>` `` — a leading slash plus the skill directory / YAML `name` (e.g. `` `/write` ``, `` `/pr-guidelines` ``, `` `/git-workflows` ``, `` `/conductor` ``), always in backticks. A cross-link signals that the agent should read that skill or apply it alongside the current one. Individual skills may state stronger requirements (e.g. must invoke `/write` before submitting). Prefer this form over paraphrases like `` `foo` skill `` or relative links to another skill's `SKILL.md` when the intent is to name a skill for the agent.
+
 <!-- BEGIN COMPILED -->
-Analysis|skills/pr-review|Explore related files — callers, callees, types, tests. Diff alone is rarely enough context:L49|Prove claims in code. No speculative "likely/may" — back every claim with a specific code path or reproduction:L51|When a repeated review pattern appears, audit the whole changed surface, comprehensively:L52
-Animation|skills/web-animation-design|Entering/exiting → ease-out. On-screen movement → ease-in-out. Hover → ease. 100+ daily → don't animate:L43|GPU only: animate transform and opacity. Never padding/margin/height/width:L202|prefers-reduced-motion on every animation. No exceptions for opacity or color:L248
-Code Quality|skills/code-quality|Primary outcome: cleanup passes should generally end with net fewer lines than before; if LOC increases, justify why complexity decreased:L29|Remove defensive checks, type casts, redundant annotations, single-use variables abnormal for codepath context:L35|Do not auto-remove useCallback, useMemo, or memo. Only change with clear evidence or explicit user direction:L44|Comments explain WHY not WHAT. If explaining WHAT, refactor to be self-documenting:L50
-Debugging|skills/debugger|Evidence over intuition: no fixes until logs confirm root cause. Minimal instrumentation:L12
-Git|skills/git-workflows|Read-only on git status/diff. Explicit permission for commit/push/reset:L22|SSH URLs. Never amend unless explicitly requested; prefer new commits:L31|Single POV as author. No AI attribution or co-authorship:L37|Always fetch and diff against origin/<base>, never local branches. Local branches go stale silently:L44
-Git|skills/pr-guidelines|After pushing to an existing PR, review and update title/description to reflect current changes:L23|Verify base branch first: Conductor target → existing PR → repo convention → ask. Wrong base = wrong diff:L47|PR titles: plain language, no fix:/feat: prefixes:L70|Open with problem context, not ## Summary. Problem before solution. Direct, no filler:L77|Present tense ("Adds", not "Added"). Drop subject pronouns. "we" for team decisions, "I" for first-person only:L82|No file listings, LOC counts, status info, AI vocabulary, or decision narration:L117
-HTML/CSS|skills/frontend-guidelines|Semantic elements over div/span; built-in elements over generic containers:L11|Flexbox/grid + gap; margin is code smell. Logical properties (block/inline, start/end). Transform sub-properties:L23|Order CSS declarations logically (outside-in): position/display → flex/grid → sizing/spacing → overflow → typography → visual → transforms → interaction:L30|Colors: tokens/custom properties, then oklch or hex (not rgb):L46|CSS over JS when equivalent:L52|srOnly over aria-label. focus-visible on all interactive elements, never outline-none without replacement. dvw/dvh over vw/vh:L56|Images: explicit width/height to prevent CLS. lazy below fold, priority above fold:L63
-React|skills/react-best-practices|v19+: no forwardRef. No useEffect for transforms/events/state — calculate in render/handlers:L7|Read you-might-not-need-an-effect.md before adding Effects. rAF > setTimeout. Iterate to repeat:L7
-TypeScript|skills/typescript-guidelines|No any/as/!/ts-ignore — fix code, not types:L11|Prop intersections: specific before generic. Inline single-use variables:L15|Import order: React → runtime → external → internal → aliased → relative → local. type keyword for type imports:L23|No barrel files (index.ts re-exports). Import directly from source modules:L23
+Analysis|skills/pr-review|Explore related files — callers, callees, types, tests. Diff alone is rarely enough context:L53|Prove claims in code. No speculative "likely/may" — back every claim with a specific code path or reproduction:L55|When a repeated review pattern appears, audit the whole changed surface, comprehensively:L56
+Animation|skills/web-animation-design|Entering/exiting → ease-out. On-screen movement → ease-in-out. Hover → ease. 100+ daily → don't animate:L48|GPU only: animate transform and opacity. Never padding/margin/height/width:L208|prefers-reduced-motion on every animation. No exceptions for opacity or color:L255
+Code Quality|skills/code-quality|Primary outcome: cleanup passes should generally end with net fewer lines than before; if LOC increases, justify why complexity decreased:L27|Remove defensive checks, type casts, redundant annotations, single-use variables abnormal for codepath context:L33|Do not auto-remove useCallback, useMemo, or memo. Only change with clear evidence or explicit user direction:L42|Comments explain WHY not WHAT. If explaining WHAT, refactor to be self-documenting:L48|No any/as/!/ts-ignore — fix code, not types:L72|Prop intersections: specific before generic. Inline single-use variables:L77|Import order: React → runtime → external → internal → aliased → relative → local. type keyword for type imports:L88|No barrel files (index.ts re-exports). Import directly from source modules:L95|Semantic elements over div/span; built-in elements over generic containers:L106|Flexbox/grid + gap; margin is code smell. Logical properties (block/inline, start/end). Transform sub-properties:L111|Order CSS declarations logically (outside-in): position/display → flex/grid → sizing/spacing → overflow → typography → visual → transforms → interaction:L119|Colors: tokens/custom properties, then oklch or hex (not rgb):L124|CSS over JS when equivalent:L129
+Conductor|skills/conductor|Worktree clone at ~/conductor/workspaces/<project>/<city>; CONDUCTOR_ROOT_PATH = repo root; .context/ gitignored for inter-agent files:L19|Conductor target branch in system instruction → PR base, rebase, diff — not the checked-out branch name alone:L24|Same origin across workspaces; git fetch before diff/rebase; other workspaces may push the same base:L27
+Debugging|skills/debugger|Evidence over intuition: no fixes until logs confirm root cause. Minimal instrumentation:L11
+Git|skills/git-workflows|Read-only on git status/diff. Explicit permission for commit/push/reset:L26|Always fetch and diff against origin/<base>, never local branches. Local branches go stale silently:L46
+Git|skills/pr-guidelines|After pushing to an existing PR, review and update title/description to reflect current changes:L26|Verify base branch first: Conductor target → existing PR → repo convention → ask. Wrong base = wrong diff:L51|PR titles: plain language, no fix:/feat: prefixes:L74|Open with problem context, not ## Summary. Problem before solution. Direct, no filler:L81|Present tense ("Adds", not "Added"). Drop subject pronouns. "we" for team decisions, "I" for first-person only:L86|No file listings, LOC counts, status info, AI vocabulary, or decision narration:L121
+React|skills/react-best-practices|v19+: no forwardRef. No useEffect for transforms/events/state — calculate in render/handlers:L11|Read `/avoid-effects` before adding Effects. rAF > setTimeout. Iterate to repeat:L11
+React|skills/avoid-effects|Effects only for external sync; derive in render; events for interactions; useSyncExternalStore for stores; fetch Effects need stale cleanup:L74
 <!-- END COMPILED -->

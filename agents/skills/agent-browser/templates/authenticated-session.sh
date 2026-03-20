@@ -3,10 +3,7 @@
 # Purpose: Login once, save state, reuse for subsequent runs
 # Usage: ./authenticated-session.sh <login-url> [state-file]
 #
-# RECOMMENDED: Use the auth vault instead of this template:
-#   echo "<pass>" | agent-browser auth save myapp --url <login-url> --username <user> --password-stdin
-#   agent-browser auth login myapp
-# The auth vault stores credentials securely and the LLM never sees passwords.
+# RECOMMENDED: Prefer `agent-browser auth save` + `auth login` over env-var passwords in scripts.
 #
 # Environment variables:
 #   APP_USERNAME - Login username/email

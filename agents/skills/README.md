@@ -48,17 +48,18 @@ skill-name/
 
 ```yaml
 ---
-name: skill-name          # Lowercase, hyphens, max 64 chars
-description: What the skill does and WHEN to use it.
-global_category: Category  # Optional: opt into GLOBAL.md compiled index
+name: skill-name # Lowercase, hyphens, max 64 chars
+description: >
+  Lead with when to invoke—situations, user phrases, keywords, file types—then a short capability line.
+  Be specific enough to combat under-triggering; see `/skill-creator`.
+global_category: Category # Optional: opt into GLOBAL.md compiled index
 ---
-
 # Skill Title
 
 Instructions in markdown...
 ```
 
-The `description` field is critical—it determines when the skill triggers. Include both what the skill does AND specific scenarios/keywords that should activate it.
+The `description` field is the primary trigger signal. Prioritize **when** to load the skill (contexts, phrases, synonyms, adjacent intents); add a brief **what** second. Models under-trigger—err on listing concrete keywords and near-miss situations. See `.agents/skills/skill-creator/SKILL.md` (Write the SKILL.md → description).
 
 ### Compiled Annotations
 
@@ -66,6 +67,7 @@ Skills with `global_category` in their frontmatter contribute to a dense always-
 
 ```markdown
 <!-- @> GPU only: animate transform and opacity. Never padding/margin/height/width -->
+
 ### The Golden Rule
 
 Only animate `transform` and `opacity`...
@@ -80,14 +82,17 @@ See the [Annotation Compilation](/CLAUDE.md#annotation-compilation) section in C
 Per the [Agent Skills spec](https://agentskills.io/specification), skills use three optional directories:
 
 **references/** — Documentation loaded into context on demand
+
 - Workflows, library patterns, API docs, schema references
-- Example: `code-quality/references/deslop.md`, `frontend-guidelines/references/pandacss.md`
+- Example: `code-quality/references/deslop.md`, `code-quality/references/web-interface-guidelines.md`
 
 **scripts/** — Executable code run directly without loading into context
+
 - Python, Bash, etc.
 - Example: `rotate_pdf.py`, `extract_data.sh`
 
 **assets/** — Static resources (templates, images, data files)
+
 - Templates, images, boilerplate
 - Example: `template.pptx`, `boilerplate/`
 
@@ -118,7 +123,7 @@ make link     # Full install: symlinks + skills + compilation
 
 ## Creating Skills
 
-Use the `skill-creator` skill for guidance:
+Use `/skill-creator` for guidance:
 
 ```bash
 # Initialize a new skill
@@ -132,7 +137,7 @@ See `~/.claude/skills/skill-creator/SKILL.md` for comprehensive authoring guidan
 
 ## Managing External Skills
 
-The `skills-manager` skill (in this directory) handles external skills from skills.sh:
+`/skills-manager` (in this directory) handles external skills from skills.sh:
 
 - Install external skills with `npx skills add`
 - Track versions in `.agents/skills.json`

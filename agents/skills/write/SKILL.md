@@ -1,23 +1,21 @@
 ---
 name: write
 description: >
-  Prose writing and editing guidance grounded in sentence-level craft. Use when
-  writing, editing, or revising any prose: PR descriptions, documentation,
-  commit messages, agent instructions, READMEs, comments, or freeform text.
-  Triggers on: "write this", "edit this", "revise", "rewrite", "tighten the
-  prose", "how does this read", "draft", "wordsmith", /write.
+  Use when drafting or revising prose—PR descriptions, docs, READMEs, commit messages, agent rules,
+  comments, tickets, or `/write`. Triggers on "revise", "edit this", "how does this read", "wordsmith",
+  "tighten", "draft". Sentence-level craft and clarity.
 ---
 
 # Write
 
 Sentence-level prose craft, grounded in canonical sources and working writers:
 
-- [Klinkenborg, *Several Short Sentences About Writing*](references/klinkenborg.md)
-- [Pinker, *The Sense of Style*](references/pinker.md)
-- [Strunk & White, *The Elements of Style*](references/strunk-white.md)
-- [Owen, *The Objectively Objectionable Grammatical Pet Peeve*](references/owen.md)
-- [Graham, *Write Simply* / *The Goodness of Good Writing*](references/graham.md)
-- [Nielsen, *Notes on Writing*](references/nielsen.md)
+- [Klinkenborg, _Several Short Sentences About Writing_](references/klinkenborg.md)
+- [Pinker, _The Sense of Style_](references/pinker.md)
+- [Strunk & White, _The Elements of Style_](references/strunk-white.md)
+- [Owen, _The Objectively Objectionable Grammatical Pet Peeve_](references/owen.md)
+- [Graham, _Write Simply_ / _The Goodness of Good Writing_](references/graham.md)
+- [Nielsen, _Notes on Writing_](references/nielsen.md)
 - [Collected practitioners](references/practitioners.md) — Saunders, McPhee, Constantin, Karlsson, Orwell, Oliver, Maverick, Might, Keer, Luu
 
 ## Principles
@@ -32,11 +30,11 @@ Sentence-level prose craft, grounded in canonical sources and working writers:
 
 **Defeat the curse of knowledge.** The better you know something, the less you remember about how hard it was to learn. Spell out the logic, explain the jargon, supply the necessary detail. The order in which thoughts occur to the writer is different from the order in which they are easily discovered by a reader.
 
-**Active voice. Positive form.** *"He usually came late"* not *"He was not very often on time."* The reader wishes to be told what is, not only what is not. If every sentence admits a doubt, writing lacks authority.
+**Active voice. Positive form.** _"He usually came late"_ not _"He was not very often on time."_ The reader wishes to be told what is, not only what is not. If every sentence admits a doubt, writing lacks authority.
 
 **No clichés.** A cliché is the debris of someone else's thinking. If a phrase comes too easily, it probably came from somewhere else.
 
-**No nominalizations.** Use verbs, not zombie nouns. *"We excluded people who failed to understand"* not *"Comprehension checks were used as exclusion criteria."*
+**No nominalizations.** Use verbs, not zombie nouns. _"We excluded people who failed to understand"_ not _"Comprehension checks were used as exclusion criteria."_
 
 **Prefer the specific and concrete.** Prefer the specific to the general, the definite to the vague, the concrete to the abstract.
 
@@ -139,13 +137,17 @@ LLMs produce recognizable tics. Hunt and eliminate these during every editing pa
 ## Context-Specific Guidance
 
 ### PR descriptions and commit messages
+
 Problem before solution. Direct, no filler. Present tense. Every sentence carries information. No throat-clearing ("This PR adds..."), no status narration, no file listings.
 
 ### Documentation and READMEs
+
 Significant everywhere. Each section useful on its own, not a waypoint to the next. Prefer examples over explanation — show, then name. Do not explain too much: it is seldom advisable to tell all.
 
 ### Agent instructions and CLAUDE.md rules
+
 Maximum density. Each rule one sentence if possible. Pair principles with examples. Imperative mood. No hedging ("should probably", "might want to").
 
 ### Comments in code
+
 Comments explain WHY, not WHAT. If explaining WHAT, refactor the code. A comment that could be a better function name is not worth keeping.

@@ -1,6 +1,9 @@
 ---
 name: agent-browser
-description: Browser automation CLI for AI agents. Use when the user needs to interact with websites, including navigating pages, filling forms, clicking buttons, taking screenshots, extracting data, testing web apps, or automating any browser task. Triggers include requests to "open a website", "fill out a form", "click a button", "take a screenshot", "scrape data from a page", "test this web app", "login to a site", "automate browser actions", or any task requiring programmatic web interaction.
+description: >
+  Use when programmatic browser work—navigate, fill forms, click, screenshots, scrape/extract data,
+  login flows, or E2E-style checks without manual driving. Triggers on "open this site", "automate
+  the browser", "take a screenshot", "test in the browser", headless UI verification. Uses agent-browser.
 allowed-tools: Bash(npx agent-browser:*), Bash(agent-browser:*)
 ---
 
@@ -167,7 +170,7 @@ agent-browser wait --load networkidle
 
 ### Authentication
 
-For quick re-login without exposing credentials to the LLM, use the auth vault:
+For quick re-login without piping passwords through the model, use **`agent-browser auth`** (CLI-stored credentials):
 
 ```bash
 echo "pass" | agent-browser auth save github --url https://github.com/login --username user --password-stdin

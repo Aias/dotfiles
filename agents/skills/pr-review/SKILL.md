@@ -1,6 +1,10 @@
 ---
 name: pr-review
-description: Review a pull request
+description: >
+  Use when reviewing a pull request or branch diff before merge—code review, "look at this PR",
+  pre-merge risk pass, or structured feedback on proposed changes. Produces an evidence-based
+  markdown review document (not the GitHub PR description; that is `/pr-guidelines`). Triggers on
+  PR review, `/pr review`, review comments on a diff.
 compatibility: Requires GitHub CLI (gh) and GitHub API access.
 global_category: Analysis
 ---

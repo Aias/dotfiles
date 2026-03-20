@@ -1,6 +1,9 @@
 ---
 name: changelog
-description: Analyze outdated dependencies and summarize changelogs
+description: >
+  Use when outdated packages, upgrades, "what changed in [dependency]", Renovate/Dependabot output,
+  semver or breaking-change risk, release notes before bumping, or "should I upgrade". Summarizes
+  changelogs and highlights migration-relevant changes.
 compatibility: Requires npm, pnpm, yarn, or bun, plus network access.
 ---
 

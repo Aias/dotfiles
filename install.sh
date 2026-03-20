@@ -293,17 +293,6 @@ create_from_template "$HOME/.secrets" "$DOTFILES_DIR/local/secrets.template" ".s
 # Local environment file (sourced by .zprofile)
 create_from_template "$HOME/.local/bin/env" "$DOTFILES_DIR/local/env.template" ".local/bin/env"
 
-# Vault (cross-session memory for agents)
-if [[ ! -d "$HOME/Code/vault" ]]; then
-    info "Creating vault directory at ~/Code/vault"
-    mkdir -p "$HOME/Code/vault/sessions"
-    cp "$DOTFILES_DIR/agents/vault-template/CLAUDE.md" "$HOME/Code/vault/"
-    cp "$DOTFILES_DIR/agents/vault-template/scratch.md" "$HOME/Code/vault/"
-    success "~/Code/vault"
-else
-    success_dim "~/Code/vault" "(exists)"
-fi
-
 # ─────────────────────────────────────────────────────────────
 # Cleanup old backups (keep last 10)
 # ─────────────────────────────────────────────────────────────

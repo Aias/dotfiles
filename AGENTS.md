@@ -4,7 +4,7 @@ Personal dotfiles repo — shell config, git, editor settings, and AI agent conf
 
 ## Structure
 
-- `agents/GLOBAL.md` — Global agent instructions (symlinked to `~/.claude/CLAUDE.md`, `~/.codex/AGENTS.md`, Cursor rules)
+- `agents/GLOBAL.md` — Global agent instructions + compiled `@>` skill index (symlinked to `~/.claude/CLAUDE.md`, `~/.codex/AGENTS.md`, Cursor rules). Conductor-specific detail lives in the `/conductor` skill; GLOBAL keeps a short pointer and compiled reminders.
 - `agents/skills/` — Personal agent skills (tracked)
 - `agents/skills.local/` — Machine-specific skills (gitignored)
 - `agents/compile-global.ts` — Compiles `@>` annotations from skills into GLOBAL.md's dense index
@@ -18,7 +18,7 @@ Personal dotfiles repo — shell config, git, editor settings, and AI agent conf
 - `setup.sh` — Repo-local setup (git hooks)
 - `git-hooks/pre-commit` — Auto-compiles GLOBAL.md annotations before each commit
 - `local/` — Templates for machine-specific env vars and secrets (not tracked)
-- `Makefile` — Common tasks (`make install`, `make link`, `make check`, `make compile`, `make setup`, `make update-skills`)
+- `Makefile` — Common tasks (`make install`, `make link`, `make check`, `make compile`, `make setup`, `make update`, `make update-skills`). Shell alias **`dotup`** (in `zsh/.zshrc`) runs `make update` from `~/Code/dotfiles`. There's also `dotcheck` and `dotlink` for checking for config drift and linking the config to `~/`.
 
 ## Conventions
 
@@ -26,6 +26,7 @@ Personal dotfiles repo — shell config, git, editor settings, and AI agent conf
 - This repo is public. Never commit private information, credentials, machine-specific secrets, personal data, or internal-only notes here, even temporarily. Use ignored local files or tracked templates instead.
 - For agent config, dotfiles is source of truth; check symlink mapping before editing
 - Skills: personal in `agents/skills/`, machine-specific in `agents/skills.local/` (gitignored), external in `.agents/skills/`
+- Skill deploy **does not prune** `~/.claude/skills/` or `~/.codex/skills/`: removing or renaming a skill in the repo leaves old directories in home until you delete them (see README _Managing Skills_ / `/skills-manager`)
 
 ## Annotation Compilation
 

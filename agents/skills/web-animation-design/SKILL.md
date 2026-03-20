@@ -1,6 +1,10 @@
 ---
 name: web-animation-design
-description: Design and implement web animations that feel natural and purposeful. Use this skill proactively whenever the user asks questions about animations, motion, easing, timing, duration, springs, transitions, or animation performance. This includes questions about how to animate specific UI elements, which easing to use, animation best practices, or accessibility considerations for motion. Triggers on questions about easing, ease-out, ease-in, ease-in-out, cubic-bezier, bounce, spring physics, keyframes, transform, opacity, fade, slide, scale, hover effects, microinteractions, Framer Motion, React Spring, GSAP, CSS transitions, entrance/exit animations, page transitions, stagger, will-change, GPU acceleration, prefers-reduced-motion, modal/dropdown/tooltip/popover/drawer animations, gesture animations, drag interactions, button press feel, "feels janky", "make it smooth".
+description: >
+  Use whenever motion questions arise—easing, duration, springs, entrance/exit, hover, scroll-linked
+  animation, stagger, reduced motion, or "janky"/"make it smooth". Triggers on Framer Motion, GSAP,
+  CSS keyframes/transitions, cubic-bezier, modal/drawer/tooltip motion, drag/gesture feel, GPU-safe
+  properties. Design and implement purposeful web animation.
 global_category: Animation
 ---
 
@@ -41,6 +45,7 @@ Correct format: A single markdown table with | Before | After | columns, one row
 ## Quick Start
 
 <!-- @> Entering/exiting → ease-out. On-screen movement → ease-in-out. Hover → ease. 100+ daily → don't animate -->
+
 Every animation decision starts with these questions:
 
 1. **Is this element entering or exiting?** → Use `ease-out`
@@ -201,6 +206,7 @@ Springs maintain velocity when interrupted—CSS animations restart from zero. T
 ### The Golden Rule
 
 <!-- @> GPU only: animate transform and opacity. Never padding/margin/height/width -->
+
 Only animate `transform` and `opacity`. These skip layout and paint stages, running entirely on the GPU.
 
 **Avoid animating:**
@@ -248,6 +254,7 @@ Animations can cause motion sickness or distraction for some users.
 ### prefers-reduced-motion
 
 <!-- @> prefers-reduced-motion on every animation. No exceptions for opacity or color -->
+
 Whenever you add an animation, also add a media query to disable it:
 
 ```css

@@ -27,16 +27,17 @@ dotfiles/
 │   ├── cli-config.json  # Cursor CLI config
 │   └── mcp.json         # MCP server config
 ├── agents/
-│   ├── GLOBAL.md      # Shared AI assistant guidelines
+│   ├── GLOBAL.md      # Shared AI guidelines + compiled @> skill index block
 │   ├── claude.settings.json     # Claude Code settings
 │   ├── codex.config.toml        # Codex settings
 │   ├── claude.statusline-command.sh
 │   ├── hooks/         # Claude Code hooks (e.g. PR guideline check)
 │   ├── compile-global.ts        # Annotation compiler
-│   ├── vault-template/          # Template for ~/Code/vault
 │   ├── .build/skills/ # Cleaned skill files (annotations stripped, gitignored)
 │   ├── skills/        # [P] Personal skills (hand-written)
+│   │   ├── conductor/       # Conductor worktrees / CONDUCTOR_* / target branch
 │   │   ├── git-workflows/
+│   │   ├── code-quality/
 │   │   ├── write/
 │   │   ├── skills-manager/
 │   │   └── .../
@@ -66,7 +67,11 @@ dotfiles/
 ```bash
 make install    # Full install (compile annotations + symlink + sync skills)
 make setup      # Repo-local setup (git hooks) — run once per clone/worktree
+make link       # Same as install but skip brew/mise dependency install (faster iteration)
+make update     # git pull + brew bundle + full install (refresh from remote)
 ```
+
+After this repo is on your machine and zsh is sourced, the **`dotup`** alias runs `make update` from `~/Code/dotfiles` (see `zsh/.zshrc`).
 
 `make install` will:
 
@@ -77,7 +82,7 @@ make setup      # Repo-local setup (git hooks) — run once per clone/worktree
 5. Sync all skills (personal, external, local) to `~/.claude/skills/` and `~/.codex/skills/`
 6. Discover and symlink MCP server configs across Claude, Codex, and Cursor
 
-Use `make link` to skip dependency installation (brew). Use `make update` to pull, install brew deps, and reinstall.
+`make link` sets `SKIP_DEPENDENCY_INSTALL=1` so Homebrew/mise steps are skipped; use it when deps are already satisfied. `make update` is for pulling latest dotfiles and re-running a full install.
 
 ## Usage
 
@@ -95,17 +100,20 @@ source ~/.zshrc
 
 ## Managing Skills
 
+Authoring details: [agents/skills/README.md](agents/skills/README.md).
+
 Skills come in three types:
+
 - **[P] Personal** — Hand-written, tracked in `agents/skills/`
 - **[L] Local** — Machine-specific, gitignored in `agents/skills.local/`
 - **[E] External** — Installed from GitHub via [skills.sh](https://skills.sh) in `.agents/skills/`
 
-All types are synced to `~/.claude/skills/` and `~/.codex/skills/` by `make link`.
+`make link` / `install.sh` **rsync each skill folder into** `~/.claude/skills/` and `~/.codex/skills/` — they **do not delete** directories you removed or renamed in the repo. After dropping or renaming a skill, remove the stale folder from those home paths too (compare `ls agents/skills` / `.agents/skills` / `agents/skills.local` with `ls ~/.claude/skills`). See the **skills-manager** skill (`agents/skills/skills-manager/`) for the full cleanup checklist.
 
 ### Adding a Personal Skill
 
 1. Create `agents/skills/<skill-name>/SKILL.md`
-2. Run `make link`
+2. Run `make link` (and `make compile` if the skill uses `global_category` + `@>` annotations)
 
 ### Adding an External Skill
 
@@ -128,7 +136,9 @@ make update-skills
 
 ### Removing a Skill
 
-Delete the folder from the appropriate directory, remove any `skills-lock.json` entry, then clean up orphaned deployments from `~/.claude/skills/` and `~/.codex/skills/`.
+1. Delete the skill directory under `agents/skills/`, `agents/skills.local/`, or `.agents/skills/`
+2. Remove any matching entry from `skills-lock.json` (external skills)
+3. Delete the same skill name under `~/.claude/skills/` and `~/.codex/skills/` (not done automatically)
 
 ### Verifying Sync Status
 
@@ -137,6 +147,7 @@ make check
 ```
 
 Shows a table of all skills with sync status for each agent:
+
 ```
 skill                        type  claude  codex
 changelog                    [P]   ✓       ✓

@@ -1,9 +1,14 @@
 ---
 name: rcr
-description: Use the Red Cliff Record CLI (rcr) to manage the personal knowledge base. Use when the user asks to create, search, or manage records, links, or run integrations syncs. Trigger on mentions of "rcr", "red cliff record", "knowledge base", or record/link operations.
+description: >
+  Use when the user mentions rcr, Red Cliff Record, personal knowledge base, records, links,
+  graph-style queries, or sync/integration runs for that KB—even if they omit the tool name.
+  Runs and interprets the `rcr` CLI.
 ---
 
 # Red Cliff Record CLI
+
+Directory name is `red-cliff-record`; frontmatter `name` remains `rcr` — cross-link as `/rcr`.
 
 The `rcr` CLI provides direct access to Red Cliff Record, a highly networked, manually curated knowledge base.
 
@@ -37,7 +42,7 @@ The `rcr` CLI provides direct access to Red Cliff Record, a highly networked, ma
 - Error output (stderr, exit code 1):
 
 ```json
-{"error":{"code":"ERROR_CODE","message":"..."}}
+{ "error": { "code": "ERROR_CODE", "message": "..." } }
 ```
 
 - `--raw` outputs just `data` without `{data,meta}` wrapper.

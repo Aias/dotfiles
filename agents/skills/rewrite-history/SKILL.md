@@ -1,6 +1,10 @@
 ---
 name: rewrite-history
-description: Rewrite the current branch's git history with clean, narrative-quality commits while preserving the exact same final diff. Use when the user wants to clean up messy commit history, squash and reorganize commits, rewrite history for review, restructure commits into a logical story, or prepare a branch for force-push with better commits. Triggers on "rewrite history", "clean up commits", "rewrite commits", "reorganize history", "restructure commits", "redo the history", "make the commits cleaner", "narrative commits".
+description: >
+  Use when rewriting git history while keeping the same tree—squash, reword, reorder commits, narrative
+  commits, or cleanup before review/force-push. Triggers on "rewrite history", "clean up commits",
+  "reorganize commits", "redo the history", "narrative commits". Destructive; follow `/git-workflows`
+  for permission gates.
 argument-hint: [base-branch]
 allowed-tools: Bash(git:*), Read, Glob, Grep, Edit, Write
 model: opus
@@ -51,7 +55,7 @@ This is a destructive rewrite of the current branch. The user will force-push th
      - Introduce a single coherent idea
      - Leave the codebase in a functional state — each commit should stand on its own as a reasonable checkpoint
      - Have a clear commit message (short summary line + description body when warranted)
-   - Use `git commit --no-verify` for intermediate commits. Pre-commit hooks may check things like tests or type coverage that depend on the full implementation being present. Each commit should still be *intended* to be functional — `--no-verify` is a pragmatic escape hatch, not a license to commit broken states.
+   - Use `git commit --no-verify` for intermediate commits. Pre-commit hooks may check things like tests or type coverage that depend on the full implementation being present. Each commit should still be _intended_ to be functional — `--no-verify` is a pragmatic escape hatch, not a license to commit broken states.
 
 6. **Verify byte-for-byte equivalence**
    - After the final commit, compare the tree SHA against the one recorded in step 2:

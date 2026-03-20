@@ -1,15 +1,14 @@
 ---
 name: debugger
 description: >
-  Hypothesis-driven debugging workflow with instrumented logging and a local
-  log-collection server. Use when the user has a bug to systematically debug,
-  wants structured debug logging, or invokes /debugger. Triggers on: "debug
-  this", "help me debug", "can't figure out why", "add debug logging",
-  "instrument the code", "hypothesis". JS/TS projects only.
+  Use when debugging JS/TS—"debug this", "can't figure out why", structured logging, `/debugger`,
+  hypothesis-driven investigation, or "instrument the code". Triggers on repro steps, flaky behavior,
+  root-cause analysis before guessing fixes. Hypothesis-led instrumentation and log review.
 global_category: Debugging
 ---
 
 <!-- @> Evidence over intuition: no fixes until logs confirm root cause. Minimal instrumentation -->
+
 # Debugger
 
 Systematic debugging through hypothesis generation, targeted instrumentation, and runtime log analysis. Never guess at fixes — gather evidence first.
@@ -26,6 +25,7 @@ Systematic debugging through hypothesis generation, targeted instrumentation, an
 ### Step 0: Receive Bug Report
 
 Gather from the user (skip anything already provided):
+
 1. What happens (observed behavior)
 2. What should happen (expected behavior)
 3. How to reproduce (steps, commands, URL)
@@ -36,6 +36,7 @@ Gather from the user (skip anything already provided):
 Read relevant source files. Trace the code path from entry point to observed behavior.
 
 Generate **3-5 hypotheses**. Each must be:
+
 - **Specific** — names a file, function, or code path
 - **Falsifiable** — describes what logs would show if correct vs incorrect
 - **Ranked** — by likelihood based on code reading
@@ -78,6 +79,7 @@ curl -s http://127.0.0.1:8765/health
 Add debug logging to the codebase. Rules:
 
 1. **Region markers.** Wrap every debug block in:
+
    ```js
    // #region DEBUG
    <debug code>
@@ -89,9 +91,12 @@ Add debug logging to the codebase. Rules:
 3. **Multiple regions per file.** Add as many `#region DEBUG` blocks as needed throughout a file — one per instrumentation point.
 
 4. **Hypothesis tagging.** Each debug call includes the hypothesis number:
+
    ```js
    // #region DEBUG
-   __debug(1, "token at validation entry", { tokenPrefix: token.substring(0, 8) });
+   __debug(1, "token at validation entry", {
+     tokenPrefix: token.substring(0, 8),
+   });
    // #endregion DEBUG
    ```
 
@@ -118,6 +123,7 @@ curl -s http://127.0.0.1:{port}/logs/{round}
 Or read directly from the path printed at server startup.
 
 For each hypothesis, determine:
+
 - **CONFIRMED** — logs show the predicted pattern. State the evidence.
 - **REJECTED** — logs contradict the prediction. State expected vs observed.
 - **INCONCLUSIVE** — not enough data. State what additional instrumentation is needed.
@@ -139,6 +145,7 @@ H3 [INCONCLUSIVE]: Code path not hit during reproduction. Need to add
 ### Step 6: Fix or Refine
 
 **If a hypothesis is confirmed:**
+
 1. Propose a targeted fix. Explain root cause and fix concretely.
 2. Wait for user approval before applying.
 3. Ask user to verify: "Fix applied. Reproduce the original scenario — is the bug resolved?"
@@ -146,6 +153,7 @@ H3 [INCONCLUSIVE]: Code path not hit during reproduction. Need to add
 5. User says **"not fixed"** → treat as inconclusive, refine hypotheses, back to Step 1.
 
 **If inconclusive:**
+
 1. Generate refined hypotheses based on log evidence.
 2. Increment round number. Restart server with `--round {N+1}` or start fresh.
 3. Add new instrumentation; remove statements for rejected hypotheses.
@@ -158,20 +166,25 @@ H3 [INCONCLUSIVE]: Code path not hit during reproduction. Need to add
 When the user confirms the bug is fixed:
 
 1. **Remove all instrumentation.** Find files with debug regions:
+
    ```bash
    rg -l "#region DEBUG" .
    ```
+
    Delete every block between `// #region DEBUG` and `// #endregion DEBUG` (inclusive).
 
 2. **Stop the debug server:**
+
    ```bash
    kill $(lsof -ti:8765) 2>/dev/null
    ```
 
 3. **Verify cleanup:**
+
    ```bash
    rg "#region DEBUG" .
    ```
+
    Must return zero results.
 
 4. **Present summary:**
@@ -197,7 +210,9 @@ async function __debug(hypothesis, message, data) {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        hypothesis, message, data,
+        hypothesis,
+        message,
+        data,
         file: new URL(import.meta.url).pathname,
       }),
     });
@@ -215,12 +230,20 @@ function __debug(hypothesis, message, data) {
   try {
     const http = require("http");
     const payload = JSON.stringify({
-      hypothesis, message, data, file: __filename,
+      hypothesis,
+      message,
+      data,
+      file: __filename,
     });
     const req = http.request({
-      hostname: "127.0.0.1", port: __DEBUG_PORT,
-      path: "/log", method: "POST",
-      headers: { "Content-Type": "application/json", "Content-Length": Buffer.byteLength(payload) },
+      hostname: "127.0.0.1",
+      port: __DEBUG_PORT,
+      path: "/log",
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Content-Length": Buffer.byteLength(payload),
+      },
     });
     req.on("error", () => {});
     req.end(payload);
@@ -237,7 +260,12 @@ function __debug(hypothesis, message, data) {
   fetch("http://127.0.0.1:8765/log", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ hypothesis, message, data, file: location.pathname }),
+    body: JSON.stringify({
+      hypothesis,
+      message,
+      data,
+      file: location.pathname,
+    }),
   }).catch(() => {});
 }
 // #endregion DEBUG
@@ -252,9 +280,16 @@ For environments without localhost HTTP (sandboxed workers, edge runtimes):
 const __fs = require("fs");
 function __debug(hypothesis, message, data) {
   try {
-    __fs.appendFileSync("/tmp/debug-logs/round-1.log", JSON.stringify({
-      ts: Date.now(), hypothesis, message, data, file: __filename,
-    }) + "\n");
+    __fs.appendFileSync(
+      "/tmp/debug-logs/round-1.log",
+      JSON.stringify({
+        ts: Date.now(),
+        hypothesis,
+        message,
+        data,
+        file: __filename,
+      }) + "\n",
+    );
   } catch {}
 }
 // #endregion DEBUG
@@ -269,7 +304,9 @@ import { validateToken } from "./auth";
 
 // #region DEBUG
 const __DEBUG_PORT = process.env.DEBUG_PORT || 8765;
-async function __debug(hypothesis, message, data) { /* ... */ }
+async function __debug(hypothesis, message, data) {
+  /* ... */
+}
 // #endregion DEBUG
 
 export async function handleRequest(req) {
@@ -283,7 +320,9 @@ export async function handleRequest(req) {
 
   // #region DEBUG
   await __debug(1, "validation result", { valid: result.valid });
-  await __debug(2, "cache state after validation", { cached: result.fromCache });
+  await __debug(2, "cache state after validation", {
+    cached: result.fromCache,
+  });
   // #endregion DEBUG
 
   return result;

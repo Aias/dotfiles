@@ -1,6 +1,9 @@
 ---
 name: skills-manager
-description: Manage external skills in the dotfiles repo. Use when asked to add, update, or clean up skills.
+description: >
+  Use when adding, updating, removing, or cleaning external skills in dotfiles; `skills.sh`,
+  `make update-skills`, `.agents/skills/`, `skills-lock.json`, or syncing skills into install paths.
+  Manages the external-skill pipeline for this repo.
 ---
 
 # Skills Manager

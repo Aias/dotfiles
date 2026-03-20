@@ -1,6 +1,10 @@
 ---
 name: dogfood
-description: Systematically explore and test a web application to find bugs, UX issues, and other problems. Use when asked to "dogfood", "QA", "exploratory test", "find issues", "bug hunt", "test this app/site/platform", or review the quality of a web application. Produces a structured report with full reproduction evidence -- step-by-step screenshots, repro videos, and detailed repro steps for every issue -- so findings can be handed directly to the responsible teams.
+description: >
+  Use when dogfooding, QA, exploratory testing, bug hunt, UX pass, or "test this app/site" for
+  quality issues—even vague asks like "click around and see what's broken". Triggers on platform
+  review, pre-release sweep, accessibility/flow concerns. Produces structured findings with repro
+  evidence (screenshots, video, steps) for handoff.
 allowed-tools: Bash(agent-browser:*), Bash(npx agent-browser:*)
 ---
 
@@ -12,13 +16,13 @@ Systematically explore a web application, find issues, and produce a report with
 
 Only the **Target URL** is required. Everything else has sensible defaults -- use them unless the user explicitly provides an override.
 
-| Parameter | Default | Example override |
-|-----------|---------|-----------------|
-| **Target URL** | _(required)_ | `vercel.com`, `http://localhost:3000` |
-| **Session name** | Slugified domain (e.g., `vercel.com` -> `vercel-com`) | `--session my-session` |
-| **Output directory** | `./dogfood-output/` | `Output directory: /tmp/qa` |
-| **Scope** | Full app | `Focus on the billing page` |
-| **Authentication** | None | `Sign in to user@example.com` |
+| Parameter            | Default                                               | Example override                      |
+| -------------------- | ----------------------------------------------------- | ------------------------------------- |
+| **Target URL**       | _(required)_                                          | `vercel.com`, `http://localhost:3000` |
+| **Session name**     | Slugified domain (e.g., `vercel.com` -> `vercel-com`) | `--session my-session`                |
+| **Output directory** | `./dogfood-output/`                                   | `Output directory: /tmp/qa`           |
+| **Scope**            | Full app                                              | `Focus on the billing page`           |
+| **Authentication**   | None                                                  | `Sign in to user@example.com`         |
 
 If the user says something like "dogfood vercel.com", start immediately with defaults. Do not ask clarifying questions unless authentication is mentioned but credentials are missing.
 
@@ -205,12 +209,12 @@ agent-browser --session {SESSION} close
 
 ## References
 
-| Reference | When to Read |
-|-----------|--------------|
+| Reference                                                    | When to Read                                                                           |
+| ------------------------------------------------------------ | -------------------------------------------------------------------------------------- |
 | [references/issue-taxonomy.md](references/issue-taxonomy.md) | Start of session -- calibrate what to look for, severity levels, exploration checklist |
 
 ## Templates
 
-| Template | Purpose |
-|----------|---------|
+| Template                                                                     | Purpose                                       |
+| ---------------------------------------------------------------------------- | --------------------------------------------- |
 | [templates/dogfood-report-template.md](templates/dogfood-report-template.md) | Copy into output directory as the report file |

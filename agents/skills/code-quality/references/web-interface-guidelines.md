@@ -8,7 +8,7 @@ https://raw.githubusercontent.com/vercel-labs/web-interface-guidelines/main/comm
 
 ## Forms
 
-- Inputs need `autocomplete`, `name`, and appropriate `type` (`email`, `tel`, `url`, `number`).
+- Inputs need `autocomplete`, `name`, and appropriate `type` (`email`, `tel`, `url`, `number`) and/or `inputmode` (`email`, `tel`, `url`, `numeric`).
 - Never block paste.
 - Labels must be clickable via `htmlFor`.
 - `spellCheck={false}` on emails/codes.

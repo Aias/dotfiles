@@ -1,6 +1,9 @@
 ---
 name: pr-guidelines
-description: Review a pull request PR. Use when creating or updating a PR, writing PR descriptions, or running gh pr commands. Triggers on "open a PR", "create PR", "update PR description", "gh pr create", "gh pr edit".
+description: >
+  Use when opening or updating a GitHub PR—`gh pr create`/`gh pr edit`, drafting title/body, choosing
+  base branch, or refreshing description after new pushes. Triggers on "create PR", "PR description",
+  "update the PR". For line-by-line code review artifacts, use `/pr-review`. Requires `gh`.
 compatibility: Requires GitHub CLI (gh).
 global_category: Git
 ---
@@ -46,9 +49,10 @@ EOF
 ## Parameters
 
 <!-- @> Verify base branch first: Conductor target → existing PR → repo convention → ask. Wrong base = wrong diff -->
+
 **Base branch:** Determine the correct base before doing anything else — a wrong base makes the entire diff meaningless.
 
-1. **Conductor workspace:** If a target branch is specified in the system instruction, use that.
+1. **Conductor workspace:** If a target branch is specified in the system instruction, use that (see `/conductor` for how Conductor sets workspace context).
 2. **Existing PR:** Run `gh pr view --json baseRefName -q .baseRefName` — the PR already knows its base.
 3. **Convention:** Check the repo's default branch and branching model:
    - `dev` — most feature work in repos that use a dev branch
@@ -92,7 +96,7 @@ No opening `##` header. Start directly with a paragraph explaining the problem, 
 - Direct — every sentence adds information. No preamble, hedging, or filler.
 - Mention edge cases as asides or parentheticals, not dedicated sections.
 - Group small related changes at the end with "Also:" or "A couple other semi-related changes:".
-- Reference related work inline — link to tickets, Slack threads, Figma files, related PRs naturally in the text.
+- Reference related work inline — link to tickets, Slack threads, Figma files, related PRs naturally in the text. When opening multiple dependent PRs, cross-link them with full URLs at creation time.
 
 ### Scale to PR Size
 
@@ -112,7 +116,7 @@ When included, use a bulleted list for independent things to check, or an ordere
 
 ### Visual Evidence
 
-Embed screenshots inline near the text they illustrate, not in a separate "Screenshots" section. Leave `[screenshot placeholder: <description of what to capture>]` markers for visual changes so the author can fill them in before merging.
+Many PRs would benefit from screenshots or videos to illustrate changes, but unfortunately these can't be uploaded via Github's CLI or MCP. Consider using the `/agent-browser` skill to document relevant visual evidence and provide the user with the files to upload manually. Don't leave placeholder text in the PR body, but ask the user if they would like a follow-up to capture screenshots.
 
 ### Ticket References
 
@@ -123,7 +127,7 @@ Place `Fixes <ticket>` or `Closes <ticket>` on its own line, near the top (after
 ## What to Avoid
 
 - File-by-file change listings or mechanical inventories (unless the refactoring is the point)
-- LOC counts (unless the PR's purpose is reducing complexity or simplifying)
+- LOC counts or diff stats — GitHub already shows these
 - **Never include status information** ("all tests pass", "ran typecheck", "type checks and linting pass") — CI results are assumed
 - AI vocabulary ("defense-in-depth", "leveraging", "ensuring robustness")
 - Decision narration ("Rather than X, I extracted Y") — state facts, not justifications. Use the "Considered Alternatives" section instead when rejection context is genuinely useful.
