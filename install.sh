@@ -67,24 +67,12 @@ install_bun() {
     fi
 }
 
-install_cursor_agent() {
-    if ! command -v cursor-agent >/dev/null 2>&1; then
-        info "Installing cursor-agent..."
+install_cursor() {
+    # cursor.com/install sets up both the `cursor` shim and `agent` binary
+    # in ~/.local/bin, with versioned agent bundles in ~/.local/share/cursor-agent/
+    if [[ ! -x "$HOME/.local/bin/agent" ]]; then
+        info "Installing Cursor CLI + agent..."
         curl -fsSL https://cursor.com/install | bash
-    fi
-}
-
-install_cursor_cli() {
-    # Official method: Cursor > Cmd+Shift+P > "Shell Command: Install 'cursor' command in PATH"
-    # This creates /usr/local/bin/cursor. As fallback, symlink to ~/.local/bin
-    local cursor_bin="/Applications/Cursor.app/Contents/Resources/app/bin/cursor"
-    if ! command -v cursor >/dev/null 2>&1; then
-        if [[ -x "$cursor_bin" ]]; then
-            info "Linking cursor CLI to ~/.local/bin/cursor"
-            ln -sf "$cursor_bin" "$HOME/.local/bin/cursor"
-        else
-            warn "Cursor.app not found. Install from https://cursor.com"
-        fi
     fi
 }
 
@@ -93,8 +81,7 @@ install_dependencies() {
     ensure_homebrew
     brew bundle install --file="$DOTFILES_DIR/Brewfile" 2>&1 | grep -E "^(Using|Installing|Upgrading)" | sed 's/^/  /'
     install_bun
-    install_cursor_agent
-    install_cursor_cli
+    install_cursor
     success "Dependencies installed"
 }
 
