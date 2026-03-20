@@ -30,11 +30,13 @@ Extract durable learnings from conversation context and persist them appropriate
    | Project-specific    | `./AGENTS.md` in project root (symlink `./CLAUDE.md → ./AGENTS.md`)                     | Patterns specific to this codebase, local conventions                                                              |
    | Workflow/technology | New or existing skill in `~/Code/dotfiles/agents/skills/` or local `.claude/skills`     | Detailed procedures for specific tools, frameworks, or workflows                                                   |
    | Enforcement         | Hook script in `~/Code/dotfiles/agents/hooks/` + registration in `claude.settings.json` | When a skill or rule must be loaded before certain tool calls (e.g. read `/pr-guidelines` before `gh pr` commands) |
+   | Skill-session preference | Skill's `skill.feedback.md` (e.g. `~/Code/dotfiles/agents/skills/write/skill.feedback.md`) | Correction during a skill session that applies to future invocations of that specific skill |
 
    **Decision heuristics:**
    - "Every conversation" → global GLOBAL.md (direct or via skill annotation)
    - "Every conversation in this project" → project root `AGENTS.md` (create `CLAUDE.md` symlink if missing)
    - "When working with X technology/workflow" → skill
+   - "Preference within a skill session" → skill's `skill.feedback.md` (lightweight, no confirmation needed)
    - "Must not forget to do X before Y" → companion hook that reminds or blocks. Hook matchers filter by tool name only (regex); command-content filtering happens inside the script.
 
    **Global via skill annotation:** When a learning falls within a skill that has `global_category` in its frontmatter (e.g. `/git-workflows`, `/react-best-practices`, `/code-quality`), prefer editing/expanding the skill content AND adding a `<!-- @> token-dense summary -->` annotation above the relevant section. Then run `make compile` to regenerate the compiled GLOBAL.md index. This keeps the full context in the skill while surfacing a dense summary in always-loaded context.
@@ -72,6 +74,14 @@ Extract durable learnings from conversation context and persist them appropriate
 **User feedback:** "When reviewing PRs, always check for console.log statements"
 **Extract:** PR review should flag debug statements
 **Location:** `/pr-review` (workflow-specific)
+
+**User correction during `/write` session:** "Too formal, drop the semicolons"
+**Extract:** Prefer shorter sentences, casual punctuation
+**Location:** `~/Code/dotfiles/agents/skills/write/skill.feedback.md` (skill-session preference — lightweight, immediate)
+
+## Distilling Feedback
+
+When a skill's `skill.feedback.md` has accumulated enough entries (~10+), use `/refine-skills` to promote patterns into permanent SKILL.md instructions and clean up the feedback file. This is the mechanism that turns raw accumulation into compounding improvement.
 
 ## Anti-patterns
 

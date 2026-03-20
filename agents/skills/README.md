@@ -77,6 +77,27 @@ Annotations are extracted by `bun agents/compile-global.ts` (or `make compile`) 
 
 See the [Annotation Compilation](/CLAUDE.md#annotation-compilation) section in CLAUDE.md for full details.
 
+### Feedback Loops
+
+Every personal skill gets a feedback preamble injected into its deployed SKILL.md (via the `.build/` overlay). The preamble tells agents to read and write a `skill.feedback.md` file in the skill's **source** directory.
+
+```
+agents/skills/write/
+├── SKILL.md              # Instructions (source of truth)
+├── skill.feedback.md     # Accumulated corrections (gitignored)
+├── references/
+```
+
+**How it works:**
+- `make compile` injects a feedback preamble after the frontmatter in each skill's `.build/` copy
+- When a skill triggers, the agent reads `skill.feedback.md` from source and applies accumulated preferences
+- When the user corrects output during a session, the agent appends a dated line to that file
+- `install.sh` excludes `skill.feedback.md` from rsync — the preamble points agents to the source path directly
+
+**Distillation:** Over time, repeated corrections in `skill.feedback.md` should be promoted into the actual SKILL.md as proper instructions, then cleared from the feedback file. Use `/remember-that` to trigger this, or ask the agent to "refine" or "distill" a skill's feedback.
+
+**Opt-out:** Add `feedback: false` to a skill's SKILL.md frontmatter to skip preamble injection.
+
 ## Resource Directories
 
 Per the [Agent Skills spec](https://agentskills.io/specification), skills use three optional directories:

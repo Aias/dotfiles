@@ -1,7 +1,8 @@
 #!/usr/bin/env bun
 
 /**
- * Compiles @> annotations from skill .md files into a dense index in GLOBAL.md.
+ * Compiles @> annotations from skill .md files into a dense index in GLOBAL.md,
+ * and injects feedback-loop preambles into all personal skills.
  *
  * Source syntax:
  *   - SKILL.md frontmatter: `global_category: CategoryName`
@@ -12,6 +13,7 @@
  *   (subpath omitted for SKILL.md — it's the default)
  *
  * Cleaned .md files (annotations stripped) written to agents/.build/skills/.
+ * All personal skills get a feedback preamble injected into their .build/ SKILL.md.
  *
  * Usage:
  *   bun agents/compile-global.ts          # compile
@@ -218,6 +220,70 @@ function updateGlobalMd(
 }
 
 // ---------------------------------------------------------------------------
+// Feedback preamble injection
+// ---------------------------------------------------------------------------
+
+const FRONTMATTER_RE = /^---\n[\s\S]*?\n---\n/;
+
+function buildFeedbackPreamble(skillName: string): string {
+  return [
+    "",
+    `> **Feedback loop** — Read \`~/Code/dotfiles/agents/skills/${skillName}/skill.feedback.md\` before producing output (if it exists). When the user corrects your output or states a preference that would apply to future sessions, append a dated line to that file. Skip task-specific details.`,
+    "",
+  ].join("\n");
+}
+
+async function injectFeedbackPreambles(
+  repoDir: string,
+  buildDir: string,
+): Promise<number> {
+  const personalDir = join(repoDir, "agents/skills");
+  let entries;
+  try {
+    entries = await readdir(personalDir, { withFileTypes: true });
+  } catch {
+    return 0;
+  }
+
+  let count = 0;
+  for (const entry of entries) {
+    if (!entry.isDirectory()) continue;
+
+    const sourceSkillMd = join(personalDir, entry.name, "SKILL.md");
+    const sourceFile = Bun.file(sourceSkillMd);
+    if (!(await sourceFile.exists())) continue;
+
+    // Check for opt-out
+    const sourceContent = await sourceFile.text();
+    const frontmatter = parseFrontmatter(sourceContent);
+    if (frontmatter.feedback === "false") continue;
+
+    // Prefer .build/ copy (already annotation-cleaned) over source
+    const buildSkillMd = join(buildDir, entry.name, "SKILL.md");
+    const buildFile = Bun.file(buildSkillMd);
+    const content = (await buildFile.exists())
+      ? await buildFile.text()
+      : sourceContent;
+
+    // Inject preamble after frontmatter
+    const fmMatch = content.match(FRONTMATTER_RE);
+    const preamble = buildFeedbackPreamble(entry.name);
+    const injected = fmMatch
+      ? content.slice(0, fmMatch[0].length) +
+        preamble +
+        content.slice(fmMatch[0].length)
+      : preamble + content;
+
+    const outPath = join(buildDir, entry.name, "SKILL.md");
+    await mkdir(dirname(outPath), { recursive: true });
+    await Bun.write(outPath, injected);
+    count++;
+  }
+
+  return count;
+}
+
+// ---------------------------------------------------------------------------
 // Main
 // ---------------------------------------------------------------------------
 
@@ -266,6 +332,12 @@ async function main() {
 
   console.log(
     `Cleaned ${fileCount} file(s) across ${processed.length} skill(s) → agents/.build/skills/`,
+  );
+
+  // Inject feedback preambles into all personal skills
+  const feedbackCount = await injectFeedbackPreambles(repoDir, buildDir);
+  console.log(
+    `Injected feedback preambles into ${feedbackCount} skill(s)`,
   );
 }
 
