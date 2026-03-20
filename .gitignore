@@ -17,3 +17,4 @@
 agents/skills.local/*
 !agents/skills.local/.gitkeep
 agents/.build/
+**/skill.feedback.md

@@ -241,7 +241,7 @@ install_skills() {
                 rm "$skill_target"
             fi
             mkdir -p "$skill_target"
-            rsync -a --delete "$skill_source" "$skill_target/"
+            rsync -a --delete --exclude='skill.feedback.md' "$skill_source" "$skill_target/"
             # Overwrite with cleaned version (annotations stripped)
             if [[ -d "$build_dir/$skill_name" ]]; then
                 rsync -a "$build_dir/$skill_name/" "$skill_target/"
