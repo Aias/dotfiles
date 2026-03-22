@@ -53,6 +53,10 @@ url = "https://mcp.sentry.dev/mcp"
 [mcp_servers.figma]
 url = "http://127.0.0.1:3845/mcp"
 
+[mcp_servers.chrome-devtools]
+command = "npx"
+args = ["-y", "chrome-devtools-mcp@latest", "--autoConnect"]
+
 [notice]
 hide_gpt5_1_migration_prompt = true
 "hide_gpt-5.1-codex-max_migration_prompt" = true

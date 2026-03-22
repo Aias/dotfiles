@@ -18,7 +18,7 @@ link: compile
 
 # Pull latest and reinstall
 update:
-	git pull
+	git pull --rebase --autostash
 	brew bundle install --file=Brewfile
 	./install.sh
 

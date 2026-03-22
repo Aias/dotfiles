@@ -298,18 +298,22 @@ install_claude_mcp_servers() {
     # Clean up old names
     claude mcp remove --scope user figma-desktop 2>/dev/null || true
 
-    local servers=(
+    local http_servers=(
         "linear|https://mcp.linear.app/mcp"
         "sentry|https://mcp.sentry.dev/mcp"
         "figma|http://127.0.0.1:3845/mcp"
     )
 
-    for entry in "${servers[@]}"; do
+    for entry in "${http_servers[@]}"; do
         local name="${entry%%|*}"
         local url="${entry#*|}"
-        claude mcp add --scope user --transport http "$name" "$url" 2>/dev/null || true
+        claude mcp add --scope user --transport http "$name" "$url" &>/dev/null || true
         success "$name"
     done
+
+    # stdio-based MCP servers
+    claude mcp add --scope user chrome-devtools -- npx -y chrome-devtools-mcp@latest --autoConnect &>/dev/null || true
+    success "chrome-devtools"
 }
 
 install_claude_mcp_servers
