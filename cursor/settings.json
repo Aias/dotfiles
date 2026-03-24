@@ -79,4 +79,5 @@
   "security.promptForLocalFileProtocolHandling": false,
   "cursor.composer.queueMessageDefaultBehavior": "stop-and-send",
   "typescript.experimental.useTsgo": true,
+  "diffEditor.hideUnchangedRegions.enabled": true,
 }

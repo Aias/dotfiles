@@ -1,6 +1,8 @@
 {
   "cleanupPeriodDays": 90,
   "env": {
+    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1",
+    "CLAUDE_CODE_NEW_INIT": "1",
     "ENABLE_TOOL_SEARCH": "1"
   },
   "attribution": {
@@ -83,9 +85,7 @@
   "alwaysThinkingEnabled": true,
   "effortLevel": "high",
   "skipDangerousModePermissionPrompt": true,
-  "additionalDirectories": [
-    "/Users/nicktrombley/Code/dotfiles"
-  ],
+  "additionalDirectories": ["/Users/nicktrombley/Code/dotfiles"],
   "feedbackSurveyState": {
     "lastShownTime": 1753980901020
   }

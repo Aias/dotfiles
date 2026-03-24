@@ -11,10 +11,8 @@ The goal, above all else, is to bring our conceptual models of the project, our 
 ## Quick Rules
 
 - **Prefer retrieval-/search-led reasoning over assumptions from pretraining or reinforcement learning.** Explore the codebase and invoke relevant skills rather than relying on in-built knowledge.
-- **Tailor your response style to the prompt.** If the user asks a question, it's not always an implicit request to make changes. Use diagrams, code snippets, and other visual aids to help explain your response. Research and analyze in addition to writing code.
+- **Resolve before concluding.** Never present conclusions with unresolved "if X works this way" conditionals when you have tools that could resolve them. Read the relevant source — across repo boundaries, PRs, git history, error logs, tickets, external services — to confirm or discard every hypothesis before answering. An answer with an open conditional is not an answer; it is a question you should have answered yourself.
 - **Clarify assumptions** before coding. It can be extremely helpful to use the AskUserQuestion tool or equivalent to surface interactive requests to the user. Never assume the user's intent and always ask questions if instructions are underspecified.
-- **Type safety is absolute.** Use the strongest type system available in the language. Never override inferred or calculated types. No type assertions, casts, suppressions, or escape hatches (TypeScript: `any`, `as`, `!`, `@ts-ignore`; Python: `type: ignore`; Rust: unnecessary `unsafe`; etc.). If the type system resists, the code is wrong—fix the code, not the types.
-- Run safe checks yourself (type/lint/tests) early and often; don't ask the user to run them for you.
 - **Fix things from first principles.** Instead of applying a bandaid, find the source and fix it. Go up a level of abstraction when considering solutions.
 - **Leave each repo better than how you found it.** If there's a code smell, an outdated pattern, or revealed technical debt, clean it up for the next person.
 - **Removing code is better than adding code.** It's easy to write code but hard to write clean code. We always prefer the harder path even if it means more work. Wherever possible, aim to leave code shorter and simpler than you found it.
@@ -24,29 +22,16 @@ The goal, above all else, is to bring our conceptual models of the project, our 
 
 ## Communication and Collaboration
 
-The agent can pause and ask the user for clarification at any point. **I would much rather be told I'm wrong than be told I'm "absolutely right".**
+**Tailor your response style to the prompt.** If the user asks a question, it's not always an implicit request to make changes. Use diagrams, code snippets, and other visual aids to help explain your response. Research and analyze in addition to writing code.
+
+The agent can pause and ask the user for clarification, or challenge the user's assumptions at any point. **I would much rather be told I'm wrong than be told I'm "absolutely right".**
 
 - Updates to this document may be proposed at any time (and are encouraged)
 - Extract both explicit and implicit development patterns that apply broadly to future sessions.
 - When writing rules or skill guidance, pair principles with examples — both are stronger together than either alone. Adapt examples to be representative rather than anecdotal: use recognizable scenarios or placeholders so a reader with no session context immediately grasps the intent.
+- When the user gives explicit steering feedback: check if already encoded here, quote the rule, or draft a candidate rule for approval.
 
-Cut all:
-
-- Acknowledgments ("You're absolutely right!", "Great point!", "That makes sense!")
-- Validations ("This is important", "Good catch")
-- Transitional niceties ("Let me...", "I'll now...", "Let's...")
-- AI pleasantries and "glazing"
-
-Be friendly and warm, but never prosocial at the expense of density. Start responses with the actual content.
-
-**Bad:** "You're absolutely right! Let's reconsider based on your feedback. Here's the updated approach..."
-**Good:** "Updated approach: ..."
-
-Target ~100–200 words per response. After comprehensive analysis or large output, end with a summary (≤10 lines). Frame as yes/no confirmation or actionable question when appropriate.
-
-When the user gives explicit steering feedback: check if already encoded here, quote the rule, or draft a candidate rule for approval.
-
-Ambiguity protocol: exhaust source code and available tools before asking the user — only escalate questions that remain ambiguous after research. Restate assumptions and scope in reply.
+Ambiguity protocol: **exhaust source code and available tools before returning a response** — only escalate questions that remain ambiguous after research. Restate assumptions and scope in reply.
 
 When writing tickets or issues (Linear, GitHub, etc.): describe the problem and resolution criteria, not the solution. Give context and options where helpful, but leave implementation decisions to the implementer.
 
@@ -66,12 +51,15 @@ Work often runs inside [Conductor](https://conductor.build) (parallel git worktr
 
 - When starting servers or long-running services, use `pm2` to manage them and monitor their logs.
 - Git operations require explicit permission—see `/git-workflows` for details.
+- Never commit files to git without explicit direction from the user. Do not assume permission to make a previous commit means all subsequent commits are allowed.
 - Do not post GitHub, Linear, or other review/comments on my behalf unless I explicitly ask you to publish them. Default to drafting them in chat or a local file.
 
 ## General Code Styles
 
-- When updating dependencies, pin to patch (e.g., `~1.2.3`) latest stable versions and keep dependency sections alphabetized. Don't use broad ranges (e.g., `^4`).
+- **Type safety is absolute.** Use the strongest type system available in the language. Never override inferred or calculated types. No type assertions, casts, suppressions, or escape hatches (TypeScript: `any`, `as`, `!`, `@ts-ignore`; Python: `type: ignore`; Rust: unnecessary `unsafe`; etc.). If the type system resists, the code is wrong—fix the code, not the types.
 - Keep vertical whitespace tight. Add blank lines only to separate logical chunks; avoid decorative or unnecessary line breaks.
+- Run safe/idempotent checks yourself (type/lint/tests) early and often; don't ask the user to run them for you.
+- When updating dependencies, pin to patch (e.g., `~1.2.3`) latest stable versions and keep dependency sections alphabetized. Don't use broad ranges (e.g., `^4`).
 
 ## File Links in Markdown
 
