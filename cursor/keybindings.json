@@ -29,10 +29,5 @@
     "key": "ctrl+tab",
     "command": "-workbench.action.quickOpenPreviousRecentlyUsedEditorInGroup",
     "when": "editorFocus && !activeEditorGroupEmpty && !terminalFocus || !activeEditorGroupEmpty && !terminalFocus && activeEditor == 'workbench.editor.reviewchanges'"
-  },
-  {
-    "key": "alt+cmd+s",
-    "command": "workbench.action.toggleUnifiedSidebarFromKeyboard",
-    "when": "!isAuxiliaryWindowFocusedContext"
   }
 ]

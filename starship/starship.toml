@@ -93,7 +93,7 @@ number_threshold = 1
 [custom.conductor]
 description = "Conductor workspace"
 when = 'test -n "${CONDUCTOR_WORKSPACE_NAME:-}"'
-command = 'printf %s "$CONDUCTOR_WORKSPACE_NAME"; test -n "${CONDUCTOR_PORT:-}" && printf " ·%s" "$CONDUCTOR_PORT"'
+command = 'printf %s "$CONDUCTOR_WORKSPACE_NAME"'
 format = "[$output]($style) "
 style = "bright-black"
 
