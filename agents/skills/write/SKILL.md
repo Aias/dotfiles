@@ -26,7 +26,7 @@ Sentence-level prose craft, grounded in canonical sources and working writers:
 
 **Omit needless words.** Every word must tell. When a sentence is made stronger, it usually becomes shorter. This does not mean all sentences should be short; it means every word earns its place.
 
-**Clarity over style.** Pursue clarity; style reveals itself in that pursuit. Style is not a garnish; it is nondetachable, unfilterable. The approach to style is by way of plainness, simplicity, orderliness, sincerity.
+**Clarity over style.** Pursue clarity; style reveals itself in that pursuit. Style is not a garnish; it is nondetachable, unfilterable.
 
 **Classic style: prose as a window.** Orient the reader's gaze so they can see for themselves. Assume equality between writer and reader. Good writing makes the reader feel like a genius; bad writing makes the reader feel like a dunce.
 
@@ -54,15 +54,7 @@ Sentence-level prose craft, grounded in canonical sources and working writers:
 
 **Kill darlings without guilt.** Don't protect sentences because you remember the excitement of writing them. The piece won't come together until they're removed or revised.
 
-**Squander material.** Don't ration, saving the best for last. You don't know what the best is. Or the last.
-
-**Distrust "flow."** Flow is often a synonym for ignorance and laziness. It's the urge to be done.
-
-**Composition and revision are the same act.** Revise at the point of composition. Every word is a decision: this word or that, here or there, now or later.
-
-**Look at the thing, not the words.** Spend more time looking at what you're trying to capture than at your draft. Bad writing comes from moving words on the page instead of staring at the real thing and adjusting words to fit.
-
-**Sound is a heuristic for correctness.** Good prose rhythm matches the shape of the ideas. If a sentence sounds wrong, the ideas are probably wrong too. Read at speaking speed; the ear catches what the eye forgives.
+**Sound is a heuristic for correctness.** Good prose rhythm matches the shape of the ideas. If a sentence sounds wrong, the ideas are probably wrong too.
 
 **Write for both logic and vibe.** Logic: is it coherent and true? Vibe: what associations does a skimming reader absorb? Both channels must work. Avoid "not X" where X is vivid — readers absorb the vivid word and skip "not."
 
@@ -136,6 +128,42 @@ LLMs produce recognizable tics. Hunt and eliminate these during every editing pa
 **Vary semantic density.** AI treats every sentence as independently self-contained. Human writing varies — some sentences carry heavy freight, others breathe, and meaning accumulates non-linearly. Let some sentences depend on their neighbors.
 
 **Sentence case in headings.** Title Case Is An AI Tell.
+
+## Personal Register
+
+The voice sits between spoken and written: conversational erudition. Closer to how a well-read person talks over coffee than how they'd write an academic paper. Tone model: Christopher Alexander. Thoughtful, calm, erudite, probing, curious. Observational rather than confrontational.
+
+### Sentence feel
+
+Longer, varied sentences with internal complexity. Commas and semicolons over periods. Sentences wind and breathe. Spoken connective tissue ('sort of', 'sure, but') alongside elevated vocabulary ('cathexis', 'autopoiesis', 'cultivate') in the same breath. The contrast between conversational cadence and erudite diction is a signature trait; do not smooth it out. But fillers must match the register of the sentence they're in: natural in conversational moments, forced in expository ones.
+
+### Subject and stance
+
+Minimize first person 'I'. The subject should be the thing, not the writer. No coarse or crass language in public writing, even if present in drafts. No aggressive or angry register.
+
+### Openings
+
+Lead with the thing itself. 'I've been thinking about' and 'I keep thinking about' are not hooks; if the thing is interesting, say it. Don't open with a person's credentials or field as the first sentence ('The metallurgist X observed that...') — establish the idea first, then introduce the person. Examples or anecdotes work when a direct statement isn't enough.
+
+### Closings
+
+Land on a statement. Don't end on a rhetorical question.
+
+### References and specificity
+
+References and allusions need room to land. In short form, an unexplained name or concrete example (a particular color, a particular UI convention) feels like it came from nowhere. Either establish context (who, why it matters, how you encountered it) or prefer the broader framing. In longer form, weaving in the backstory is a strength. When introducing a person, lead with their descriptor: 'the metallurgist Cyril Stanley Smith', not 'Cyril Stanley Smith, a metallurgist'. Specific examples need the same room as references to people; in short form, general is often more honest than specific-without-context.
+
+### Punctuation and mechanics
+
+No CAPS for emphasis; use sentence structure and word positioning instead. Logical punctuation: period/comma goes inside quotes only when the quoted text is a standalone sentence. Single quotes for terms, phrases, or concepts used qua themselves: 'working in public', 'phatic comedy'. Double quotes for actual speech or direct quotation: Alexander wrote that "the timeless way of building is beyond the reach of formal methods."
+
+### Word choice
+
+Prefer the more precise or elevated synonym when the register supports it: 'choose' over 'pick', 'a bit' over 'a little'. No 'if we're being honest', no performed casualness.
+
+### Additional anti-patterns
+
+'Y, not X' is the same negate-then-reframe in reverse: 'you're cultivating, not constructing' is as much an AI tell as 'not X, but Y'. State the positive. Watch for adjacent triplets: once per paragraph can work, twice in adjacent sentences reads like a stuck pattern. Vary list lengths.
 
 ## Context-Specific Guidance
 
