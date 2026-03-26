@@ -1,7 +1,9 @@
 ---
 name: remember-that
-description: |
-  Use when the user asks to remember something, change standing rules, or stop a repeated mistake—even if they never say "skill". Phrases: "remember that", "add this to the rules", "update GLOBAL.md", "save this preference", "add a hook", "enforce this", "never forget", "always do X". Also corrections and interruptions ("wait", "stop", "no", "undo that", "that's wrong", "you keep doing X"). Chooses where to persist: GLOBAL.md, a skill, AGENTS.md, or hooks.
+description: >
+  Use when the user asks to remember something, change standing rules, or stop a repeated mistake—even
+  without saying "skill". Also corrections and interruptions ("wait", "stop", "no", "undo that",
+  "you keep doing X"). Persists to GLOBAL.md, a skill, AGENTS.md, or hooks as appropriate.
 ---
 
 # Remember That
@@ -70,10 +72,6 @@ Extract durable learnings from conversation context and persist them appropriate
 **User feedback:** "In this repo we use pnpm, not npm"
 **Extract:** Use pnpm as package manager
 **Location:** Project AGENTS.md (project-specific)
-
-**User feedback:** "When reviewing PRs, always check for console.log statements"
-**Extract:** PR review should flag debug statements
-**Location:** `/pr-review` (workflow-specific)
 
 **User correction during `/write` session:** "Too formal, drop the semicolons"
 **Extract:** Prefer shorter sentences, casual punctuation

@@ -7,10 +7,12 @@ description: >-
   "figure this out", "root cause", or expresses frustration that a previous
   investigation was too shallow. Forces exhaustive, evidence-backed investigation
   using every available tool before returning an answer.
+global_category: Investigation
 ---
 
 # Dig
 
+<!-- @> Verified answer, not plausible hypothesis. Every claim must cite a specific line, commit, log entry, or data point you read -->
 Exhaustive, read-only investigation mode. The goal is a **verified answer**, not a plausible hypothesis. Every claim in your conclusion must point to a specific line of code, commit, log entry, or data point that you personally read during this investigation.
 
 ## Mindset
@@ -19,6 +21,7 @@ You are an investigator, not a consultant. Consultants offer possibilities; inve
 
 - **Assume the answer is findable.** If you have tools that could resolve an uncertainty, use them before speaking. The user invoked `/dig` because they want depth, not speed.
 - **Follow the trail wherever it goes.** Cross repo boundaries. Read into `node_modules`. Open the backend. Check the database schema. Read the PR that introduced the code. The answer is often one hop past where a normal investigation would stop.
+<!-- @> No open conditionals — resolve every "if X" before concluding. Cross repo boundaries; read node_modules, backend, schema, PRs, git blame -->
 - **No open conditionals.** If your conclusion would contain "if X works this way" or "depending on whether Y", that conditional is your next research task, not something to present to the user. Resolve it, then conclude.
 
 ## Scope: read-only, but resourceful

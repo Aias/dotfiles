@@ -1,7 +1,9 @@
 ---
 name: refine-skills
-description: |
-  Use when distilling, refining, or reviewing accumulated skill feedback — "refine skills", "distill feedback", "promote feedback", "review skill feedback", "what feedback has accumulated", "compound my skills". Also when the user asks to clean up, consolidate, or review skill.feedback.md files. Reads feedback files across personal skills, identifies patterns, and promotes repeated corrections into permanent SKILL.md instructions.
+description: >
+  Use when distilling, refining, or reviewing accumulated skill feedback — "refine skills",
+  "distill feedback", "promote feedback", "compound my skills". Reads skill.feedback.md files,
+  identifies patterns, and promotes repeated corrections into permanent SKILL.md instructions.
 ---
 
 # Refine Skills

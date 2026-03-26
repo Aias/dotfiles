@@ -4,6 +4,7 @@ description: >
   Use when drafting or revising prose—PR descriptions, docs, READMEs, commit messages, agent rules,
   comments, tickets, or `/write`. Triggers on "revise", "edit this", "how does this read", "wordsmith",
   "tighten", "draft". Sentence-level craft and clarity.
+global_category: Writing
 ---
 
 # Write
@@ -20,6 +21,7 @@ Sentence-level prose craft, grounded in canonical sources and working writers:
 
 ## Principles
 
+<!-- @> The sentence is the unit of work. Omit needless words. Clarity over style. Active voice, positive form -->
 **The sentence is the unit of work.** Know what each sentence says, what it doesn't say, and what it implies. If something feels off (the internal quaver), find the cause and fix it.
 
 **Omit needless words.** Every word must tell. When a sentence is made stronger, it usually becomes shorter. This does not mean all sentences should be short; it means every word earns its place.
@@ -100,6 +102,7 @@ Sentence-level prose craft, grounded in canonical sources and working writers:
 
 LLMs produce recognizable tics. Hunt and eliminate these during every editing pass. For the full catalog with before/after examples: [references/ai-tells.md](references/ai-tells.md)
 
+<!-- @> No negate-then-reframe, no em dashes, no -ing tails, no dead AI vocabulary, no hedging stacks, no throat-clearing, no sycophancy -->
 **Never negate-then-reframe.** "This isn't X. This is Y." / "Not X. Y." / "Forget X. This is Y." / "Less X, more Y." Any sentence that negates one framing then asserts a corrected one. Delete the negation; state the positive claim. This is the single most fatal AI marker.
 
 **No em dashes.** Use commas, periods, colons, semicolons, or parentheses.
@@ -138,6 +141,7 @@ LLMs produce recognizable tics. Hunt and eliminate these during every editing pa
 
 ### PR descriptions and commit messages
 
+<!-- @> PR/commit: problem before solution, present tense, no throat-clearing. Docs: significant everywhere, prefer examples. Rules: maximum density, imperative, no hedging -->
 Problem before solution. Direct, no filler. Present tense. Every sentence carries information. No throat-clearing ("This PR adds..."), no status narration, no file listings.
 
 ### Documentation and READMEs

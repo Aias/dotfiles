@@ -3,7 +3,7 @@ name: pr-guidelines
 description: >
   Use when opening or updating a GitHub PR—`gh pr create`/`gh pr edit`, drafting title/body, choosing
   base branch, or refreshing description after new pushes. Triggers on "create PR", "PR description",
-  "update the PR". For line-by-line code review artifacts, use `/pr-review`. Requires `gh`.
+  "update the PR". Requires `gh`.
 compatibility: Requires GitHub CLI (gh).
 global_category: Git
 ---
