@@ -59,7 +59,7 @@ agent-browser forward                 # Go forward in history
 agent-browser reload                  # Reload current page
 agent-browser close                   # Close browser
 
-# Snapshot (auto-traverses iframes)
+# Snapshot (auto-traverses iframes, including cross-origin)
 agent-browser snapshot -i             # Interactive elements with refs (recommended; includes cursor-interactive elements)
 agent-browser snapshot -s "#selector" # Scope to CSS selector
 
@@ -74,6 +74,7 @@ agent-browser check @e1               # Check checkbox
 agent-browser hover @e1               # Hover (for dropdowns, menus, tooltips)
 agent-browser press Enter             # Press key (also: Control+a, Shift, etc.)
 agent-browser keyboard type "text"    # Type at current focus (no selector)
+agent-browser keyboard inserttext "text" # Insert text at focus (no key events)
 agent-browser clipboard read          # Read clipboard content
 agent-browser clipboard write "text"  # Write text to clipboard
 agent-browser clipboard copy          # Trigger Ctrl+C
@@ -115,6 +116,7 @@ agent-browser tab close [index]       # Close tab (current if no index)
 # Dialogs
 agent-browser dialog accept [text]    # Accept alert/confirm/prompt
 agent-browser dialog dismiss          # Dismiss/cancel dialog
+agent-browser dialog status           # Check if a dialog is currently open
 
 # Downloads
 agent-browser download @e1 ./file.pdf          # Click element to trigger download
@@ -130,6 +132,7 @@ agent-browser pdf output.pdf          # Save as PDF
 
 # Debugging
 agent-browser console                 # View browser console output
+agent-browser console --clear         # Clear console output
 agent-browser errors                  # View JavaScript errors
 agent-browser highlight @e1           # Highlight element visually
 agent-browser inspect                 # Open Chrome DevTools for active page
@@ -138,6 +141,11 @@ agent-browser get cdp-url             # Get CDP WebSocket URL for external tools
 # Network capture
 agent-browser network har start                      # Start capturing network traffic (HAR 1.2)
 agent-browser network har stop [output.har]          # Stop and save HAR (temp dir if no path)
+agent-browser network requests                       # View tracked requests
+agent-browser network requests --type xhr,fetch      # Filter by type
+agent-browser network requests --method POST         # Filter by method
+agent-browser network requests --status 2xx          # Filter by status (2xx, 400-499, etc.)
+agent-browser network request <requestId>            # View full request/response detail
 
 # Batch execution
 agent-browser batch --json < commands.json           # Execute commands from stdin (JSON array of string arrays)
@@ -372,4 +380,10 @@ agent-browser --engine lightpanda open example.com
 # Or: export AGENT_BROWSER_ENGINE=lightpanda
 ```
 
-Supported engines: Chrome/Chromium/Brave (auto-discovered), Safari (via WebDriver), and Lightpanda.
+Supported engines: Chrome/Chromium/Brave (auto-discovered on macOS/Linux/Windows), Safari (via WebDriver), and Lightpanda.
+
+## Self-Update
+
+```bash
+agent-browser upgrade              # Auto-detects install method (npm, Homebrew, Cargo)
+```

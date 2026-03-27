@@ -166,7 +166,11 @@ agent-browser network route <url> --abort      # Block requests
 agent-browser network route <url> --body '{}'  # Mock response
 agent-browser network unroute [url]            # Remove routes
 agent-browser network requests                 # View tracked requests
-agent-browser network requests --filter api    # Filter requests
+agent-browser network requests --filter api    # Filter by URL pattern
+agent-browser network requests --type xhr,fetch  # Filter by type
+agent-browser network requests --method POST   # Filter by method
+agent-browser network requests --status 2xx    # Filter by status (2xx, 400-499, etc.)
+agent-browser network request <requestId>      # View full request/response detail
 agent-browser network har start                # Start HAR capture (HAR 1.2)
 agent-browser network har stop [output.har]    # Stop and save (temp dir if no path)
 ```
@@ -201,7 +205,7 @@ agent-browser batch --json < commands.json    # Structured JSON output
 
 ## Frames
 
-Snapshots and interactions auto-traverse iframes (0.21.0+). Explicit frame switching is still available:
+Snapshots and interactions auto-traverse iframes, including cross-origin (0.22.0+). Explicit frame switching is still available:
 
 ```bash
 agent-browser frame "#iframe"     # Switch to iframe
@@ -213,6 +217,7 @@ agent-browser frame main          # Back to main frame
 ```bash
 agent-browser dialog accept [text]  # Accept dialog
 agent-browser dialog dismiss        # Dismiss dialog
+agent-browser dialog status         # Check if a dialog is currently open
 ```
 
 ## JavaScript
@@ -266,6 +271,7 @@ agent-browser --ignore-https-errors   # Ignore SSL certificate errors
 agent-browser --help                  # Show help (-h)
 agent-browser --version               # Show version (-V)
 agent-browser <command> --help        # Show detailed help for a command
+agent-browser upgrade                 # Self-update (detects npm/Homebrew/Cargo)
 ```
 
 ## Debugging
@@ -303,4 +309,5 @@ AGENT_BROWSER_STREAM_PORT="9223"             # WebSocket streaming port
 AGENT_BROWSER_HOME="/path/to/agent-browser"  # Custom install location
 BROWSERLESS_API_KEY="..."                    # Browserless.io API key (--provider browserless)
 BROWSERLESS_API_URL="..."                    # Browserless.io API URL
+# Proxy: also falls back to HTTP_PROXY, HTTPS_PROXY, ALL_PROXY (and lowercase variants)
 ```
