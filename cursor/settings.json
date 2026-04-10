@@ -11,7 +11,7 @@
     "sss",
     "stylus",
     "xml",
-    "svg",
+    "svg"
   ],
   "cursor.cpp.disabledLanguages": ["plaintext"],
   "diffEditor.experimental.showMoves": true,
@@ -27,7 +27,7 @@
     "rush.json": "jsonc",
     "**/config/rush/*.json": "jsonc",
     "*.svg": "html",
-    ".secrets": "shellscript",
+    ".secrets": "shellscript"
   },
   "git.allowForcePush": true,
   "git.autofetch": true,
@@ -41,7 +41,7 @@
     "**/.ck": true,
     "**/.next": true,
     "**/dist": true,
-    "**/styled-system": true,
+    "**/styled-system": true
   },
   "terminal.integrated.defaultProfile.osx": "zsh",
   "terminal.integrated.env.osx": {},
@@ -54,7 +54,7 @@
   "workbench.editor.enablePreview": false,
   "workbench.editorAssociations": {
     "*.svg": "default",
-    "*.md": "default",
+    "*.md": "default"
   },
   "workbench.iconTheme": "vscode-icons",
   "githubPullRequests.fileListLayout": "tree",
@@ -66,7 +66,7 @@
   "extensions.ignoreRecommendations": true,
   "svelte.enable-ts-plugin": true,
   "files.exclude": {
-    "**/.ck": true,
+    "**/.ck": true
   },
   "git.openRepositoryInParentFolders": "never",
   "editor.fontFamily": "Berkeley Mono Variable, Menlo, Monaco, 'Courier New', monospace",
@@ -78,6 +78,5 @@
   "window.newWindowDimensions": "inherit",
   "security.promptForLocalFileProtocolHandling": false,
   "cursor.composer.queueMessageDefaultBehavior": "stop-and-send",
-  "typescript.experimental.useTsgo": true,
-  "diffEditor.hideUnchangedRegions.enabled": true,
+  "typescript.experimental.useTsgo": true
 }

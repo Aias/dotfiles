@@ -20,6 +20,10 @@
           {
             "type": "command",
             "command": "~/.claude/hooks/check-pr-guidelines.sh"
+          },
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/block-force-push.sh"
           }
         ]
       }
@@ -85,7 +89,9 @@
   "alwaysThinkingEnabled": true,
   "effortLevel": "high",
   "skipDangerousModePermissionPrompt": true,
-  "additionalDirectories": ["/Users/nicktrombley/Code/dotfiles"],
+  "additionalDirectories": [
+    "/Users/nicktrombley/Code/dotfiles"
+  ],
   "feedbackSurveyState": {
     "lastShownTime": 1753980901020
   }

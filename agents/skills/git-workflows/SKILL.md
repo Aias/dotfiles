@@ -28,6 +28,8 @@ A collection of git-related workflows and guidelines. Use this skill for any git
 
 **Explicit permission required:** Do not run `git commit`, `git push`, `git reset`, or similar without explicit user permission. Treat commit and push as separate permission gates — "commit these changes" does not imply "and push." Wait for explicit push permission.
 
+**Never force push.** Do not run `git push --force`, `--force-with-lease`, or any force-push variant under any circumstances. If remote history needs rewriting, the user will do it manually.
+
 **Pre-commit checks are mandatory:** Always run the project's standard lint, typecheck, format, and aggregate check scripts before any commit — not only before PRs. Fix any failures before committing.
 
 **Commit scope awareness:** Before committing, review what's staged. Never commit temporary debugging instrumentation, one-off migration scripts, or exploratory code unless the user explicitly asks. If you added `console.log` or debug logging during investigation, clean it up before committing.
