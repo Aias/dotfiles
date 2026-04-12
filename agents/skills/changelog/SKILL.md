@@ -9,6 +9,11 @@ compatibility: Requires npm, pnpm, yarn, or bun, plus network access.
 
 You are helping me review outdated dependencies and understand what has changed. Follow this workflow:
 
+### Current Project
+
+- Lockfiles present: !`ls package.json pnpm-lock.yaml yarn.lock bun.lockb package-lock.json rush.json 2>/dev/null | tr '\n' ' '`
+- `packageManager` field: !`jq -r '.packageManager // "(not set)"' package.json 2>/dev/null || echo "(no package.json)"`
+
 ### Step 1: Detect Package Manager and Check Outdated Dependencies
 
 Run the helper script to detect the package manager and list outdated

@@ -78,5 +78,6 @@
   "window.newWindowDimensions": "inherit",
   "security.promptForLocalFileProtocolHandling": false,
   "cursor.composer.queueMessageDefaultBehavior": "stop-and-send",
-  "typescript.experimental.useTsgo": true
+  "typescript.experimental.useTsgo": true,
+  "typescript.preferences.includePackageJsonAutoImports": "on"
 }

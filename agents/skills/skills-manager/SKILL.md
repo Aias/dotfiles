@@ -12,6 +12,21 @@ Manages external skills within the dotfiles setup. External skills live in `.age
 
 **When invoked with no additional user context**, use `AskUserQuestion` to present the available actions (install/update, delete, cleanup, find) as interactive prompts rather than listing them as plain text.
 
+## Current State
+
+Sources:
+
+- `agents/skills/`: !`ls ~/Code/dotfiles/agents/skills/ 2>/dev/null | tr '\n' ' '`
+- `.agents/skills/`: !`ls ~/Code/dotfiles/.agents/skills/ 2>/dev/null | tr '\n' ' '`
+- `agents/skills.local/`: !`ls ~/Code/dotfiles/agents/skills.local/ 2>/dev/null | tr '\n' ' ' || echo "(none)"`
+
+Deploy targets:
+
+- `~/.claude/skills/`: !`ls ~/.claude/skills/ 2>/dev/null | tr '\n' ' '`
+- `~/.codex/skills/`: !`ls ~/.codex/skills/ 2>/dev/null | tr '\n' ' '`
+
+Orphans (deployed but no source): !`comm -23 <(ls ~/.claude/skills/ 2>/dev/null | sort -u) <({ ls ~/Code/dotfiles/agents/skills/ 2>/dev/null; ls ~/Code/dotfiles/.agents/skills/ 2>/dev/null; ls ~/Code/dotfiles/agents/skills.local/ 2>/dev/null; } | sort -u) | tr '\n' ' '`
+
 ## Directory Structure
 
 ```

@@ -14,9 +14,12 @@ The `rcr` CLI provides direct access to Red Cliff Record, a highly networked, ma
 
 ## Source Of Truth
 
-- Always run `rcr --help` before non-trivial usage.
 - Trust live CLI help and errors over this document if they diverge.
 - The command surface is implemented in `src/server/cli/rcr/`.
+
+## Live CLI Help
+
+!`rcr --help 2>&1 || echo "(rcr CLI not available on this machine)"`
 
 ## Safety Defaults
 

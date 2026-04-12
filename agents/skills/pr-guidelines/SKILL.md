@@ -10,6 +10,13 @@ global_category: Git
 
 # PR Guidelines
 
+## Context
+
+- Branch: !`git branch --show-current 2>/dev/null`
+- Status: !`git status --short 2>/dev/null`
+- Existing PR: !`gh pr view --json number,baseRefName,title,url 2>/dev/null || echo "none"`
+- Recent commits (for style): !`git log --oneline -10 2>/dev/null`
+
 ## Procedure
 
 1. Run `git status` to see changes

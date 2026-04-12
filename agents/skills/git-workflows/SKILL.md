@@ -13,6 +13,12 @@ global_category: Git
 
 A collection of git-related workflows and guidelines. Use this skill for any git or version control task. In **Conductor**, worktrees share `origin` with other workspaces — pair with `/conductor` for layout, env vars, and target-branch context.
 
+## Context
+
+- Branch: !`git branch -vv 2>/dev/null | grep '^\*' || echo "not in a git repo"`
+- Status: !`git status --short 2>/dev/null`
+- Recent commits: !`git log --oneline -5 2>/dev/null`
+
 ## When to Use
 
 | Situation                             | Workflow                                                 |
