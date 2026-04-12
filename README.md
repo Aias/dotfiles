@@ -49,7 +49,6 @@ dotfiles/
 │   └── pre-commit         # Auto-compiles GLOBAL.md annotations
 ├── .agents/
 │   └── skills/        # [E] External skills (from skills.sh)
-│       ├── dogfood/
 │       ├── next-best-practices/
 │       ├── skill-creator/
 │       └── .../

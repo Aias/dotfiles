@@ -12,17 +12,16 @@ The goal, above all else, is to bring our conceptual models of the project, our 
 
 - **Prefer retrieval-/search-led reasoning over assumptions from pretraining or reinforcement learning.** Explore the codebase and invoke relevant skills rather than relying on in-built knowledge.
 - **Resolve before concluding.** Never present conclusions with unresolved "if X works this way" conditionals when you have tools that could resolve them. Read the relevant source — across repo boundaries, PRs, git history, error logs, tickets, external services — to confirm or discard every hypothesis before answering. An answer with an open conditional is not an answer; it is a question you should have answered yourself.
-- **Clarify assumptions** before coding. It can be extremely helpful to use the AskUserQuestion tool or equivalent to surface interactive requests to the user. Never assume the user's intent and always ask questions if instructions are underspecified.
-- **Fix things from first principles.** Instead of applying a bandaid, find the source and fix it. Go up a level of abstraction when considering solutions.
-- **Leave each repo better than how you found it.** If there's a code smell, an outdated pattern, or revealed technical debt, clean it up for the next person.
+- **Research first, then ask.** Exhaust source code, git history, and available tools before escalating ambiguity. When you do ask, restate assumptions and scope in your reply. Never assume the user's intent for instructions you cannot resolve by reading.
+- **Fix root causes, not symptoms.** Find the source of a bug and fix it in place. Do not introduce a new layer of indirection to work around it.
+- **Scope cleanup narrowly.** When modifying a function, you may clean obvious decay within it. Do not expand scope to sibling files or unrelated modules without asking.
 - **Removing code is better than adding code.** It's easy to write code but hard to write clean code. We always prefer the harder path even if it means more work. Wherever possible, aim to leave code shorter and simpler than you found it.
-- **Old code is not precious.** If a function no longer needs a parameter or a helper is dead, delete it and update the callers instead of letting the junk linger.
-- **Code must be timeless.** No "now", "previously", "used to" references in documentation or comments. Unless otherwise specified, do not maintain code purely for backwards compatibility. Do not assume we need to keep legacy code "just in case". Delete dead code.
+- **Code must be timeless.** No "now", "previously", "used to" references in documentation or comments.
 - **Search before pivoting.** If you are stuck or uncertain, do a quick web search for official docs or specs, then continue with the current approach. Do not change direction unless asked.
 
 ## Communication and Collaboration
 
-**Tailor your response style to the prompt.** If the user asks a question, it's not always an implicit request to make changes. Use diagrams, code snippets, and other visual aids to help explain your response. Research and analyze in addition to writing code.
+**A question is not always a request for changes.** Research and analyze in addition to writing code. For explanatory answers to non-trivial questions, use diagrams or code snippets; for small questions, answer in prose.
 
 The agent can pause and ask the user for clarification, or challenge the user's assumptions at any point. **I would much rather be told I'm wrong than be told I'm "absolutely right".**
 
@@ -30,8 +29,6 @@ The agent can pause and ask the user for clarification, or challenge the user's 
 - Extract both explicit and implicit development patterns that apply broadly to future sessions.
 - When writing rules or skill guidance, pair principles with examples — both are stronger together than either alone. Adapt examples to be representative rather than anecdotal: use recognizable scenarios or placeholders so a reader with no session context immediately grasps the intent.
 - When the user gives explicit steering feedback: check if already encoded here, quote the rule, or draft a candidate rule for approval.
-
-Ambiguity protocol: **exhaust source code and available tools before returning a response** — only escalate questions that remain ambiguous after research. Restate assumptions and scope in reply.
 
 When writing tickets or issues (Linear, GitHub, etc.): describe the problem and resolution criteria, not the solution. Give context and options where helpful, but leave implementation decisions to the implementer.
 
@@ -51,7 +48,6 @@ Work often runs inside [Conductor](https://conductor.build) (parallel git worktr
 
 - When starting servers or long-running services, use `pm2` to manage them and monitor their logs.
 - Git operations require explicit permission—see `/git-workflows` for details.
-- Never commit files to git without explicit direction from the user. Do not assume permission to make a previous commit means all subsequent commits are allowed.
 - Do not post GitHub, Linear, or other review/comments on my behalf unless I explicitly ask you to publish them. Default to drafting them in chat or a local file.
 
 ## General Code Styles
@@ -75,7 +71,7 @@ When linking to local files from markdown documents (review docs, `.context/` fi
 
 Prefer reading source code (locally in `node_modules` or on GitHub) over fetching documentation—it's guaranteed to match the installed version and often provides deeper insight. Use all tools at your disposal: source code, official docs, web search, non-destructive local commands, and temporary logging.
 
-Prefer built-in agent tools (Grep, Glob, Read) over shell commands. When falling back to the shell, **use modern CLI tools:** `rg`, `fd`, `jq`, `bat`, `sd`, `eza`, `yq`, `delta`, `fzf`, `gh`.
+When falling back to the shell, **use modern CLI tools:** `rg`, `fd`, `jq`, `bat`, `sd`, `eza`, `yq`, `delta`, `fzf`, `gh`.
 
 Use existing infrastructure over adding new dependencies when both work equally well.
 
@@ -99,6 +95,7 @@ Conductor|skills/conductor|Worktree clone at ~/conductor/workspaces/<project>/<c
 Git|skills/git-workflows|Read-only on git status/diff. Explicit permission for commit/push/reset:L26|Always fetch and diff against origin/<base>, never local branches. Local branches go stale silently:L48
 Git|skills/pr-guidelines|After pushing to an existing PR, review and update title/description to reflect current changes:L26|Verify base branch first: Conductor target → existing PR → repo convention → ask. Wrong base = wrong diff:L51|PR titles: plain language, no fix:/feat: prefixes:L74|No headers in PR body. Max 3-4 bullets per group; break longer lists with prose paragraphs. Problem before solution, direct, no filler:L81|Present tense ("Adds", not "Added"). Drop subject pronouns. "we" for team decisions, "I" for first-person only:L88|No file listings, LOC counts, status info, AI vocabulary, decision narration, checkboxes, or "smoke test":L123
 Investigation|skills/dig|Verified answer, not plausible hypothesis. Every claim must cite a specific line, commit, log entry, or data point you read:L15|No open conditionals — resolve every "if X" before concluding. Cross repo boundaries; read node_modules, backend, schema, PRs, git blame:L23
+Investigation|skills/debug-agent|Never fix without runtime evidence. Every fix needs log-cited proof; code-only reasoning is forbidden:L13|3-5 hypotheses before instrumenting. Each log carries hypothesisId; cap at 10 logs, typical 2-6. No setTimeout/sleep as fix:L98|Keep instrumentation active through post-fix verification. Wrap every log in #region debug log/#endregion for deterministic cleanup:L169
 React|skills/react-best-practices|v19+: no forwardRef. No useEffect for transforms/events/state — calculate in render/handlers:L11|Read `/avoid-effects` before adding Effects. rAF > setTimeout. Iterate to repeat:L11
 React|skills/avoid-effects|Effects only for external sync; derive in render; events for interactions; useSyncExternalStore for stores; fetch Effects need stale cleanup:L74
 Writing|skills/write|The sentence is the unit of work. Omit needless words. Clarity over style. Active voice, positive form:L24|No negate-then-reframe, no em dashes, no -ing tails, no dead AI vocabulary, no hedging stacks, no throat-clearing, no sycophancy:L96|PR/commit: problem before solution, present tense, no throat-clearing. Docs: significant everywhere, prefer examples. Rules: maximum density, imperative, no hedging:L170

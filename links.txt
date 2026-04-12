@@ -21,6 +21,7 @@ Claude | agents/GLOBAL.md | .claude/CLAUDE.md | .claude/CLAUDE.md
 Claude | agents/claude.settings.json | .claude/settings.json | .claude/settings.json
 Claude | agents/claude.statusline-command.sh | .claude/statusline-command.sh | .claude/statusline-command.sh
 Claude | agents/hooks/check-pr-guidelines.sh | .claude/hooks/check-pr-guidelines.sh | .claude/hooks/check-pr-guidelines.sh
+Claude | agents/hooks/block-force-push.sh | .claude/hooks/block-force-push.sh | .claude/hooks/block-force-push.sh
 
 # Codex
 Codex | agents/GLOBAL.md | .codex/AGENTS.md | .codex/AGENTS.md
