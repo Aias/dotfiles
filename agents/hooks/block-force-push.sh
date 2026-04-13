@@ -5,8 +5,8 @@ if echo "$COMMAND" | grep -qE '\bgit\s+push\b.*--force'; then
   jq -n '{
     hookSpecificOutput: {
       hookEventName: "PreToolUse",
-      decision: "block",
-      reason: "Force push is never allowed by the agent. If remote history needs rewriting, the user will do it manually."
+      permissionDecision: "deny",
+      permissionDecisionReason: "Force push is never allowed by the agent. If remote history needs rewriting, the user will do it manually."
     }
   }'
 fi

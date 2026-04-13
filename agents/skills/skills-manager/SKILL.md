@@ -84,16 +84,19 @@ git add -A && git commit -m "Remove SKILL-NAME skill"
 
 `make link` only adds/updates—it doesn't delete from target directories.
 
-After deleting or renaming skills, ask:
+Three source directories, not two: `agents/skills/`, `.agents/skills/`, **and** `agents/skills.local/` (gitignored). All three deploy to `~/.claude/skills/` and `~/.codex/skills/`.
 
-> "Analyze my skills and propose cleanup for any orphaned directories"
+Run this exact command to list orphans (deployed directories with no source):
 
-The agent should:
+```bash
+comm -23 \
+  <({ ls ~/.claude/skills/ 2>/dev/null; ls ~/.codex/skills/ 2>/dev/null; } | sort -u) \
+  <({ ls ~/Code/dotfiles/agents/skills/ 2>/dev/null; ls ~/Code/dotfiles/.agents/skills/ 2>/dev/null; ls ~/Code/dotfiles/agents/skills.local/ 2>/dev/null; } | sort -u)
+```
 
-1. Compare `agents/skills/` and `.agents/skills/` with `~/.claude/skills/` and `~/.codex/skills/`
-2. Identify skills in targets that don't exist in sources
-3. Check git history for context on why they're orphaned
-4. Propose deletions and ask for confirmation
+Do **not** substitute `Glob` — it returns files only and misses directory-only entries in `skills.local/`, which will produce false-positive orphans for valid local skills. Use `ls` (or `fd --type d --max-depth 1`).
+
+For each orphan: check `git log` for context, then propose `rm -rf ~/.claude/skills/NAME ~/.codex/skills/NAME` and ask for confirmation.
 
 ## Finding Skills
 
