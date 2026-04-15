@@ -1,8 +1,9 @@
 {
   "cleanupPeriodDays": 90,
   "env": {
-    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1",
     "CLAUDE_CODE_NEW_INIT": "1",
+    "CLAUDE_CODE_DISABLE_ADAPTIVE_THINKING": "1",
+    "CLAUDE_CODE_EFFORT_LEVEL": "max",
     "ENABLE_TOOL_SEARCH": "1"
   },
   "attribution": {
@@ -75,13 +76,20 @@
       "Orchestrating",
       "Ossifying",
       "Perforating",
+      "Phosphorescing",
       "Pullulating",
       "Raking",
       "Refracting",
+      "Riming",
+      "Seaming",
       "Shivering",
+      "Shoaling",
+      "Siphoning",
       "Sounding",
       "Spooling",
       "Tessellating",
+      "Torquing",
+      "Veiling",
       "Winnowing",
       "Writhing"
     ]
@@ -89,9 +97,7 @@
   "alwaysThinkingEnabled": true,
   "effortLevel": "high",
   "skipDangerousModePermissionPrompt": true,
-  "additionalDirectories": [
-    "/Users/nicktrombley/Code/dotfiles"
-  ],
+  "additionalDirectories": ["/Users/nicktrombley/Code/dotfiles"],
   "feedbackSurveyState": {
     "lastShownTime": 1753980901020
   }
