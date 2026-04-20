@@ -89,8 +89,8 @@ alias ored="cd ~/Code/red-cliff-record && cursor ."
 # ─────────────────────────────────────────────────────────────
 alias tailscale="/Applications/Tailscale.app/Contents/MacOS/Tailscale"
 alias resource="source ~/.zshrc && source ~/.secrets"
-alias claude="claude --effort=max"
-alias yolo="claude --dangerously-skip-permissions --effort=max"
+alias c="claude"
+alias yolo="claude --dangerously-skip-permissions"
 alias ca="cursor-agent --approve-mcps --force"
 alias code="cursor"
 alias dotup="make -C ~/Code/dotfiles update"
@@ -177,3 +177,6 @@ fi
 # Starship prompt (keep at the end)
 # ─────────────────────────────────────────────────────────────
 eval "$(starship init zsh)"
+
+# bun completions
+[ -s "/Users/nicktrombley/.bun/_bun" ] && source "/Users/nicktrombley/.bun/_bun"
