@@ -27,6 +27,9 @@ Claude | agents/hooks/block-force-push.sh | .claude/hooks/block-force-push.sh | 
 Codex | agents/GLOBAL.md | .codex/AGENTS.md | .codex/AGENTS.md
 Codex | agents/codex.config.toml | .codex/config.toml | .codex/config.toml
 
+# Conductor
+Conductor | agents/conductor.settings.json | .conductor/settings.json | .conductor/settings.json
+
 # Cursor (symlinks only - global.mdc uses copy with frontmatter, handled separately)
 # cli-config.json is Cursor-managed (agent CLI writes to it); not symlinked
 Cursor | cursor/mcp.json | .cursor/mcp.json | .cursor/mcp.json

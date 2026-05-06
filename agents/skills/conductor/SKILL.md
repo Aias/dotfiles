@@ -80,6 +80,10 @@ Per [Workspaces and branches](https://docs.conductor.build/tips/workspaces-and-b
 - **Permission and safety:** `/git-workflows` (commit/push gates, fetch-before-diff, SSH, etc.).
 - **Base branch and PR prose:** `/pr-guidelines` — first step when choosing base is still **Conductor target branch** when present.
 
+## Managed settings
+
+`~/.conductor/settings.json` (schema: `https://conductor.build/schemas/settings.json`) holds machine-wide overrides Conductor enforces — `defaultModel`, `enterpriseDataPrivacy`, `claudeExecutablePath`. In this dotfiles setup it is symlinked from `agents/conductor.settings.json`; edit there.
+
 ## Official documentation
 
 Full index: [docs.conductor.build/llms.txt](https://docs.conductor.build/llms.txt). Starting points:

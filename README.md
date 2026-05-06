@@ -30,6 +30,7 @@ dotfiles/
 │   ├── GLOBAL.md      # Shared AI guidelines + compiled @> skill index block
 │   ├── claude.settings.json     # Claude Code settings
 │   ├── codex.config.toml        # Codex settings
+│   ├── conductor.settings.json  # Conductor managed settings
 │   ├── claude.statusline-command.sh
 │   ├── hooks/         # Claude Code hooks (e.g. PR guideline check)
 │   ├── compile-global.ts        # Annotation compiler
