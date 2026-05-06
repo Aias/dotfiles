@@ -79,5 +79,6 @@
   "security.promptForLocalFileProtocolHandling": false,
   "cursor.composer.queueMessageDefaultBehavior": "stop-and-send",
   "typescript.experimental.useTsgo": true,
-  "typescript.preferences.includePackageJsonAutoImports": "on"
+  "typescript.preferences.includePackageJsonAutoImports": "on",
+  "window.autoDetectColorScheme": false
 }
