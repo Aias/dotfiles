@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
-# PreToolUse hook: remind model to read pr-guidelines skill before gh pr commands
+# PreToolUse hook: remind model to read pr-guidelines skill before mutative gh pr commands
 COMMAND=$(jq -r '.tool_input.command // empty')
-if echo "$COMMAND" | grep -qE '\bgh\s+pr\b'; then
+if echo "$COMMAND" | grep -qE '\bgh\s+pr\s+(create|edit|merge|close|reopen|comment|review|ready|update-branch|lock|unlock)\b'; then
   jq -n '{
     hookSpecificOutput: {
       hookEventName: "PreToolUse",

@@ -14,7 +14,7 @@ model: opus
 
 - Current branch: !`git branch --show-current`
 - Git status: !`git status --short`
-- Commits on branch: !`git log --oneline HEAD ^$(git rev-parse --abbrev-ref HEAD@{upstream} 2>/dev/null | sed 's|origin/||' | xargs -I{} git merge-base HEAD origin/{} 2>/dev/null || git merge-base HEAD origin/main 2>/dev/null || git merge-base HEAD origin/dev 2>/dev/null || echo HEAD~10)`
+- Commits on branch: !`git log --oneline $(git merge-base HEAD origin/main 2>/dev/null || git merge-base HEAD origin/dev 2>/dev/null || echo HEAD~10)..HEAD`
 - Diff stat: !`git diff $(git merge-base HEAD origin/main 2>/dev/null || git merge-base HEAD origin/dev 2>/dev/null || echo HEAD~10)...HEAD --stat`
 
 ## Task
