@@ -3,13 +3,30 @@ name: agent-browser
 description: >
   Use when programmatic browser work—navigate, fill forms, click, screenshots, scrape/extract data,
   login flows, or E2E-style checks without manual driving. Triggers on "open this site", "automate
-  the browser", "take a screenshot", "test in the browser", headless UI verification. Uses agent-browser.
+  the browser", "take a screenshot", "test in the browser", headless UI verification. Also covers
+  Electron desktop apps (VS Code, Slack, Discord, Figma, Notion), Slack workspace automation,
+  exploratory testing / dogfooding / QA / bug hunts, running inside Vercel Sandbox microVMs, and
+  AWS Bedrock AgentCore cloud browsers. Uses agent-browser.
 allowed-tools: Bash(npx agent-browser:*), Bash(agent-browser:*)
 ---
 
 # Browser Automation with agent-browser
 
 agent-browser is an open-source CLI by Vercel Labs ([vercel-labs/agent-browser](https://github.com/vercel-labs/agent-browser)).
+
+## Specialized Capabilities
+
+For tasks outside standard web automation, fetch the matching specialized skill from the installed CLI — these are served on demand and always match the installed version:
+
+```bash
+agent-browser skills get electron          # Electron desktop apps (VS Code, Slack, Discord, Figma, Notion, Spotify)
+agent-browser skills get slack             # Slack workspace automation (unreads, search, send messages)
+agent-browser skills get dogfood           # Exploratory testing / QA / bug hunts
+agent-browser skills get vercel-sandbox    # Running inside Vercel Sandbox microVMs
+agent-browser skills get agentcore         # AWS Bedrock AgentCore cloud browsers
+agent-browser skills list                  # Discover everything available
+agent-browser skills get core              # Upstream's own quickstart (alternative to this skill)
+```
 
 ## Core Workflow
 
