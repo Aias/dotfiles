@@ -74,6 +74,7 @@ When a bug might involve library behavior:
 - Check the library's changelog, release notes, or migration guide for the installed version.
 - Search the library's GitHub issues for similar reports.
 
+<!-- @> Verify premises of every option before presenting (no false dichotomies). Sanity-check counts/percentages from subagent or tool output before reporting; reconcile against a second source -->
 ### 7. Verify, don't speculate
 
 Before presenting a conclusion:
@@ -81,6 +82,8 @@ Before presenting a conclusion:
 - **Can you point to the exact line(s) of code?** If not, keep looking.
 - **Have you confirmed your theory against the actual data flow?** Walk through the code path with concrete values.
 - **Have you ruled out the obvious alternatives?** The first plausible theory is often wrong. Spend time on the second and third most likely causes before committing to one.
+- **Is the premise of every option you're about to present actually true?** A false dichotomy is worse than no recommendation. If two options reduce to the same thing, say so. If an option assumes a capability the library/API/schema doesn't have, drop it. Confirm against primary sources before framing the choice.
+- **Have you sanity-checked counts, totals, and percentages?** Numbers passed through from subagent reports or tool output are routinely off (double-counted, decimal misplaced, scoped to the wrong directory). Reconcile against a second source — or scan the underlying data directly — before reporting. If a count looks implausibly high or low for the size of the system, flag the implausibility as part of the answer.
 
 ## Questions: when to ask, when not to
 

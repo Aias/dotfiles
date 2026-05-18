@@ -48,6 +48,8 @@ This is a destructive rewrite of the current branch. The user will force-push th
    - Aim for the smallest number of commits that are each independently valid but maximally separable — each commit should compile and work on its own, but no commit should mix unrelated concerns. New infrastructure before migration, migration before removal. Never delete code that is still referenced in a later commit.
    - Consider: what would a reviewer want to see first? What context do they need before the next piece makes sense?
 
+   **Stop here. Present the proposed commit list — ordered, each with a one-line summary of intent — and wait for explicit confirmation before moving on.** Do not create `_rewrite-temp` or run any tree-mutating command until the user has approved the storyline. This is a destructive rewrite; the gate matters more than the time it costs.
+
 5. **Rewrite the history**
    - Create a temporary branch from the base: `git checkout -b _rewrite-temp <base>`
    - Recreate changes commit by commit following the planned storyline

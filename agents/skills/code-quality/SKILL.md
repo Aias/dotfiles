@@ -47,6 +47,29 @@ If the user doesn't specify, infer from context: post-AI-generation → light, p
 - Do not remove `useCallback`, `useMemo`, or `memo` automatically during cleanup.
 - Only change memoization with clear evidence (profiling, measurable impact) or explicit user direction.
 
+<!-- @> No shipped stubs, mocks, hardcoded fixtures, or "temporary" literals. Replace stand-ins with real sources before handoff. While a stub must exist mid-stream (debug/prototype), mark every one with `// TODO: remove` so it stays greppable -->
+
+### No shipped stubs, mocks, or temporary values
+
+Stubs, mocks, hardcoded fixtures, "temporary" literals, debug values, and inline test data **do not ship**. If you wired a UI, query, or branch to a stand-in during development, replace it with the real source before declaring the work done. The risk isn't sloppiness — it's that a forgotten stub silently shapes behavior, and when the feature misbehaves weeks later, the cause is invisible and the debugging trail leads in the wrong direction.
+
+If a stub or mock must exist mid-stream (active debugging, intentional prototyping), mark every one with a `// TODO: remove` comment (or language-equivalent) so it stays greppable. Before handoff, search the touched feature for `TODO: remove`, `MOCK`, `STUB`, fixture arrays, and hardcoded values that mirror enum or option labels, and remove them. The TODO comment is a load-bearing safety net, not a substitute for cleanup.
+
+<!-- @> List ordering: every list has an intrinsic best order — alphabetical, dependency, frequency, numeric — match the list's purpose. Place new entries in position; never just append. Encode deviations from tool defaults, not the defaults themselves -->
+
+### List ordering
+
+Every list has an intrinsic best order. Match the list's purpose rather than defaulting to alphabetical:
+
+- **Alphabetical** for catalogs read like a glossary (dependency blocks, env keys, allowlists, enum members consumed by humans).
+- **Dependency/logical** when earlier entries set up later ones (import groupings, CSS declaration order, pipeline stages).
+- **Frequency or salience** for lookup tables where readers scan for common cases first.
+- **Numeric/temporal** for sequence-bearing data (versioned migrations, dated entries).
+
+When adding an entry, place it in the correct position rather than appending. The only reason to break the intrinsic order is a hard syntactic or logical constraint (a config schema that pins order, a list whose semantics depend on position).
+
+For config files that combine tool defaults with project overrides, encode only the **deviations**: a short config that diverges meaningfully is more readable than a long one that mostly restates the defaults. Before adding an option, check whether it matches the default; if so, omit it.
+
 <!-- @> Comments explain WHY not WHAT. If explaining WHAT, refactor to be self-documenting -->
 
 ### Comment Policy

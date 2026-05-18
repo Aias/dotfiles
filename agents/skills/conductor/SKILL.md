@@ -18,7 +18,7 @@ global_category: Conductor
 <!-- @> Worktree clone at ~/conductor/workspaces/<project>/<city>; CONDUCTOR_ROOT_PATH = repo root; .context/ gitignored for inter-agent files -->
 
 - Each workspace is a full repo checkout, typically `~/conductor/workspaces/<project>/<city>` (the `city` name is the workspace directory label; the **branch** is the primary identifier for what you're building).
-- **`CONDUCTOR_ROOT_PATH`** points at the repository root inside that workspace. Use it in setup scripts (e.g. symlinking `.env` files): `ln -sf "$CONDUCTOR_ROOT_PATH/apps/admin/.env.local" apps/admin/.env.local`.
+- **`CONDUCTOR_ROOT_PATH`** points at the repository root inside that workspace. Use it in setup scripts (e.g. symlinking `.env` files): `ln -sf "$CONDUCTOR_ROOT_PATH/<path>/.env.local" <path>/.env.local`.
 - **`.context/`** in the workspace is for inter-agent collaboration and is gitignored — don't treat it as durable repo state.
 
 <!-- @> Conductor target branch in system instruction → PR base, rebase, diff — not the checked-out branch name alone -->

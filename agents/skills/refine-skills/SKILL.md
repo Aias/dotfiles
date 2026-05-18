@@ -56,29 +56,29 @@ Summarize what was promoted, what remains in feedback, and which skills were upd
 
 ## Example
 
-**Input** (`~/Code/dotfiles/agents/skills/write/skill.feedback.md`):
+**Input** (`~/Code/dotfiles/agents/skills/foo/skill.feedback.md`):
 ```
-- 2026-03-10: Too many em dashes
-- 2026-03-12: Shorter paragraphs in PR descriptions
-- 2026-03-14: Stop using em dashes for asides — use commas or parentheses
-- 2026-03-15: PR descriptions should open with the problem, not "This PR..."
-- 2026-03-18: Again with the em dashes, seriously
-- 2026-03-19: Don't start sentences with "Additionally" or "Furthermore"
+- (week 1, mon): Procedural steps should be ordered (numbered) lists, not bullets
+- (week 1, wed): Add a blank line between top-level sections
+- (week 2, tue): Procedure as bullets again — these are sequential, use a numbered list
+- (week 2, thu): Cross-link `/bar` when the topic touches bar's domain
+- (week 3, mon): Still seeing bulleted steps where order matters
+- (week 3, fri): Mention `/bar` for any task that crosses repo boundaries
 ```
 
 **Analysis:**
-- Em dashes: 3 entries → strong pattern, promote
-- PR description opening: 1 entry → but overlaps with `/pr-guidelines`, route there instead
-- Paragraph length: 1 entry → leave in feedback, not yet a pattern
-- Transition words: 1 entry → leave in feedback
+- Ordered lists for sequential steps: 3 entries → strong pattern, promote
+- `/bar` cross-links: 2 entries → consistent pattern, promote (route check first: does this belong in `/bar` or in `/foo`? if it's about *when /foo should defer to /bar*, it lives in /foo)
+- Section spacing: 1 entry → leave in feedback, not yet a pattern
 
-**Promotion to `/write` SKILL.md:**
-> Avoid em dashes for parenthetical asides — use commas, parentheses, or restructure the sentence.
+**Promotion to `/foo` SKILL.md:**
+> Use ordered (numbered) lists for sequential procedures. Bullets are for sets where order doesn't matter.
+>
+> When a task touches `/bar`'s domain (placeholder for cross-cutting concerns), cross-link to `/bar` and defer to it on the overlapping mechanics.
 
 **After cleanup** (`skill.feedback.md`):
 ```
-- 2026-03-12: Shorter paragraphs in PR descriptions
-- 2026-03-19: Don't start sentences with "Additionally" or "Furthermore"
+- (week 1, wed): Add a blank line between top-level sections
 ```
 
 ## Principles

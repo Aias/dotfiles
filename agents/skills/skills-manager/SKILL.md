@@ -60,15 +60,15 @@ make link
 ### Examples
 
 ```bash
-# Anthropic skills
-npx skills add anthropics/skills --skill frontend-design -a claude-code -y
-rm .claude/skills/frontend-design
-
-# Vercel skills (note: vercel-react-best-practices has been adopted as react-best-practices in agents/skills/)
+# Install a skill from an external source
+npx skills add <org>/<repo> --skill <skill-name> -a claude-code -y
+rm .claude/skills/<skill-name>
 
 make link
 rm -rf .claude/skills # Remove the whole subfolder, it's not needed
 ```
+
+If an external skill has been adopted into `agents/skills/` (vendored as a personal skill), don't reinstall it — remove its entry from `skills-lock.json` so the install pipeline skips it.
 
 ## Delete a Skill
 

@@ -151,7 +151,7 @@ Land on a statement. Don't end on a rhetorical question.
 
 ### References and specificity
 
-References and allusions need room to land. In short form, an unexplained name or concrete example (a particular color, a particular UI convention) feels like it came from nowhere. Either establish context (who, why it matters, how you encountered it) or prefer the broader framing. In longer form, weaving in the backstory is a strength. When introducing a person, lead with their descriptor: 'the metallurgist Cyril Stanley Smith', not 'Cyril Stanley Smith, a metallurgist'. Specific examples need the same room as references to people; in short form, general is often more honest than specific-without-context.
+References and allusions need room to land. In short form, an unexplained name or concrete example (a particular color, a particular UI convention) feels like it came from nowhere. Either establish context (who, why it matters, how you encountered it) or prefer the broader framing. In longer form, weaving in the backstory is a strength. When introducing a person, lead with their descriptor: 'the [field] [Name]', not '[Name], a [field]'. Specific examples need the same room as references to people; in short form, general is often more honest than specific-without-context.
 
 ### Punctuation and mechanics
 

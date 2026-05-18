@@ -7,6 +7,14 @@ description: >
   into the existing plan/spec or creates one.
 ---
 
-Using the available context from our conversation – this might be a formal spec in a plan document we're working on, or a less formal set of messages from the current chat – interview me in detail using the AskUserQuestionTool about literally anything: technical implementation, UI & UX, concerns, tradeoffs, etc. but make sure the questions are not obvious. If the AskUserQuestionTool isn't available, or an equivalent doesn't exist, then simply ask questions one by one. Questions can either be multiple choice, or freeform, but freeform questions should not require a response longer than a sentence or two.
+Using the available context from our conversation – a formal spec in a plan document, or a less formal set of messages from the current chat – interview me in detail about anything that matters: technical implementation, UI & UX, concerns, tradeoffs, edge cases, scope. Surface what isn't obvious; skip what is.
 
-Be _very in-depth_ and interview me continually until all potential questions have been resolved, then write the spec to the existing plan document or spec file, or create a new one if one doesn't exist.
+Rules:
+
+- **Resolve from the codebase first.** If a question can be answered by reading source, git history, tests, or types, do that instead of asking. Only ask what the code cannot tell you.
+- **Walk the design tree branch by branch.** Sequence questions so earlier answers narrow or eliminate later ones. Don't ask in parallel about decisions that depend on each other.
+- **One question at a time.** Use AskUserQuestion when available; fall back to plain prose questions one per turn.
+- **Recommend an answer for every question.** State your pick and why in one line, then ask. For AskUserQuestion, put your recommendation first and append "(Recommended)" to the label. Freeform questions: lead with "I'd suggest X because Y — does that hold, or are you thinking differently?"
+- **Keep freeform answers cheap.** A sentence or two max. If the answer would be longer, restructure as multiple choice.
+
+Continue until the open branches are resolved, then write the findings into the existing plan or spec document. If none exists, create one.

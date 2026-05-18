@@ -39,6 +39,8 @@ They guess based on code alone. You **cannot** and **must NOT** fix bugs this wa
 - ALWAYS rely on runtime information + code (never code alone)
 - Do NOT remove instrumentation before post-fix verification logs prove success and user confirms that there are no more issues
 - Fixes often fail; iteration is expected and preferred. Taking longer with more data yields better, more precise fixes
+<!-- @> Never instrument or mutate production. Debug locally, in staging, or in a reproducible environment — never add log lines to or write data into production services, even temporarily -->
+- **NEVER instrument or mutate production.** Debug locally, in staging, or in another reproducible environment. Adding log lines to production services or writing to production data to "see what's happening" is forbidden — even temporarily, even with the intent to revert. A bug observed in production is still a code issue; reproduce the conditions in a safe environment and instrument there.
 
 ---
 

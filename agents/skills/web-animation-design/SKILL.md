@@ -141,7 +141,7 @@ Determine how often users will see the animation:
 - **Occasional use** → Standard animation
 - **Rare/first-time** → Can add delight
 
-**Example:** Raycast never animates its menu toggle because users open it hundreds of times daily.
+**Example:** A keyboard launcher or command palette that opens hundreds of times daily shouldn't animate its toggle — even a 150ms ease feels like drag on the hundredth invocation.
 
 ## When to Animate
 

@@ -115,7 +115,7 @@ For each package:
 
 **Recommended Update Order**
 
-If there are dependencies between packages (e.g., @trpc/\* packages), recommend the order to update them.
+If packages share a release cadence or depend on each other (a scoped family like `@scope/core` plus `@scope/plugin-*`, or peer-deps that pin to a single major), recommend the order to update them.
 
 ### Output Format
 

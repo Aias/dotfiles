@@ -47,7 +47,7 @@ The title and description should always describe the PR as a whole, not just the
 Use HEREDOC for the PR body to preserve formatting:
 
 ```bash
-gh pr create --draft --title "Fix login crash on empty session" --body "$(cat <<'EOF'
+gh pr create --draft --title "Restore focus after closing dialogs" --body "$(cat <<'EOF'
 PR body here...
 EOF
 )"
@@ -75,7 +75,7 @@ Always `git fetch origin <base>` before diffing. Diff against `origin/<base>`, n
 - Staged changes only (`git diff --cached`)
 - Specific files
 
-**Branch naming:** If the user mentions a ticket number (e.g., RMRK-1234), use it in the branch name from the start: `<handle>/rmrk-1234`. This ensures Linear auto-linking works and avoids renaming branches after PR creation.
+**Branch naming:** If the user mentions a ticket number (e.g., `PROJ-1234` — use your tracker's actual prefix), use it in the branch name from the start: `<handle>/proj-1234`. This ensures the tracker's PR auto-linking works and avoids renaming branches after PR creation.
 
 If any of these are unclear, ask before proceeding.
 

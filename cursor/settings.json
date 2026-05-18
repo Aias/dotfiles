@@ -61,7 +61,6 @@
   "comments.thread.confirmOnCollapse": "never",
   "claudeCode.useCtrlEnterToSend": true,
   "githubPullRequests.pullBranch": "never",
-  "update.releaseTrack": "dev",
   "update.mode": "silentlyApplyOnQuit",
   "extensions.ignoreRecommendations": true,
   "svelte.enable-ts-plugin": true,
