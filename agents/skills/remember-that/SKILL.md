@@ -10,6 +10,8 @@ description: >
 
 Extract durable learnings from conversation context and persist them appropriately. This skill is the decision point for _how and where_ context gets injected — whether passively (always-loaded rules in GLOBAL.md), on-demand (skills invoked by trigger), or enforced (hooks that remind or block before certain tool calls).
 
+**Default: edit the relevant skill, GLOBAL.md, AGENTS.md, or hook directly.** When the user invokes `/remember-that`, they are giving explicit feedback — it almost always belongs in the canonical instructions, not in a `skill.feedback.md` scratch file. `skill.feedback.md` is reserved for the _agent's_ proactive recording of subtle preferences the user did not explicitly ask to be saved (see the feedback-loop note at the top of every skill).
+
 ## Process
 
 1. **Analyze recent context** — Review the last few user messages and the conversation thread to identify what the user wants remembered. Look for:
@@ -32,13 +34,13 @@ Extract durable learnings from conversation context and persist them appropriate
    | Project-specific    | `./AGENTS.md` in project root (symlink `./CLAUDE.md → ./AGENTS.md`)                     | Patterns specific to this codebase, local conventions                                                              |
    | Workflow/technology | New or existing skill in `~/Code/dotfiles/agents/skills/` or local `.claude/skills`     | Detailed procedures for specific tools, frameworks, or workflows                                                   |
    | Enforcement         | Hook script in `~/Code/dotfiles/agents/hooks/` + registration in `claude.settings.json` | When a skill or rule must be loaded before certain tool calls (e.g. read `/pr-guidelines` before `gh pr` commands) |
-   | Skill-session preference | Skill's `skill.feedback.md` (e.g. `~/Code/dotfiles/agents/skills/write/skill.feedback.md`) | Correction during a skill session that applies to future invocations of that specific skill |
+   | Agent-proactive note | Skill's `skill.feedback.md` (e.g. `~/Code/dotfiles/agents/skills/write/skill.feedback.md`) | Agent-initiated only: subtle preference inferred during a skill session that the user did not explicitly ask to be saved. Not for `/remember-that` invocations. |
 
    **Decision heuristics:**
    - "Every conversation" → global GLOBAL.md (direct or via skill annotation)
    - "Every conversation in this project" → project root `AGENTS.md` (create `CLAUDE.md` symlink if missing)
-   - "When working with X technology/workflow" → skill
-   - "Preference within a skill session" → skill's `skill.feedback.md` (lightweight, no confirmation needed)
+   - "When working with X technology/workflow" → skill SKILL.md (edit directly)
+   - Agent noticed a subtle pattern the user did not explicitly flag → skill's `skill.feedback.md` (lightweight, no confirmation needed). Never route a `/remember-that` invocation here.
    - "Must not forget to do X before Y" → companion hook that reminds or blocks. Hook matchers filter by tool name only (regex); command-content filtering happens inside the script.
 
    **Global via skill annotation:** When a learning falls within a skill that has `global_category` in its frontmatter (e.g. `/git-workflows`, `/react-best-practices`, `/code-quality`), prefer editing/expanding the skill content AND adding a `<!-- @> token-dense summary -->` annotation above the relevant section. Then run `make compile` to regenerate the compiled GLOBAL.md index. This keeps the full context in the skill while surfacing a dense summary in always-loaded context.
@@ -73,9 +75,13 @@ Extract durable learnings from conversation context and persist them appropriate
 **Extract:** Use pnpm as package manager
 **Location:** Project AGENTS.md (project-specific)
 
-**User correction during `/write` session:** "Too formal, drop the semicolons"
+**User correction during `/write` session, invoked via `/remember-that`:** "Too formal, drop the semicolons"
 **Extract:** Prefer shorter sentences, casual punctuation
-**Location:** `~/Code/dotfiles/agents/skills/write/skill.feedback.md` (skill-session preference — lightweight, immediate)
+**Location:** `~/Code/dotfiles/agents/skills/write/SKILL.md` (explicit feedback → edit the skill directly)
+
+**Agent notices mid-session, no `/remember-that` invocation:** user rephrased a sentence to drop a hedging "perhaps" three times in a row
+**Extract:** This user prefers direct phrasing over hedged
+**Location:** `~/Code/dotfiles/agents/skills/write/skill.feedback.md` (agent-proactive note — never promoted without confirmation; eventually distilled via `/refine-skills`)
 
 ## Distilling Feedback
 

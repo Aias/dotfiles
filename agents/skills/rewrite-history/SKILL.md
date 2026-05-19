@@ -51,7 +51,7 @@ This is a destructive rewrite of the current branch. The user will force-push th
    **Stop here. Present the proposed commit list — ordered, each with a one-line summary of intent — and wait for explicit confirmation before moving on.** Do not create `_rewrite-temp` or run any tree-mutating command until the user has approved the storyline. This is a destructive rewrite; the gate matters more than the time it costs.
 
 5. **Rewrite the history**
-   - Create a temporary branch from the base: `git checkout -b _rewrite-temp <base>`
+   - Create a temporary branch from the branch's original merge-base, **not** from the current tip of `<base>`: `git checkout -b _rewrite-temp $(git merge-base origin/<base> <branch>)`. The tree-match check in step 6 fails if the base has advanced since the branch was created, because files outside the branch's own diff will differ. Rebasing onto the current base is a separate step you will typically perform after the history is clean. Offer to do so after the history rewrite is complete.
    - Recreate changes commit by commit following the planned storyline
    - Each commit must:
      - Introduce a single coherent idea

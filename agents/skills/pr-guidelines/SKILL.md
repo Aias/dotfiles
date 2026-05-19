@@ -131,12 +131,13 @@ Many PRs would benefit from screenshots or videos to illustrate changes, but unf
 
 Place `Fixes <ticket>` or `Closes <ticket>` on its own line, near the top (after opening context) or at the bottom. For related-but-not-closed tickets, use inline links.
 
-<!-- @> No file listings, LOC counts, status info, AI vocabulary, decision narration, checkboxes, or "smoke test" -->
+<!-- @> No file listings, counts/magnitudes/diff stats, diff-restating bullets, status info, AI vocabulary, decision narration, checkboxes, or "smoke test" -->
 
 ## What to Avoid
 
 - File-by-file change listings or mechanical inventories (unless the refactoring is the point)
-- LOC counts or diff stats — GitHub already shows these
+- Counts, magnitudes, or diff stats ("~75 instances", "~1600 usages", "+200 lines") — GitHub already shows these
+- Restating what's obvious from the diff ("migrates all shorthand usages to their longhand equivalents") — describe what changed and why, not the mechanical operation
 - **Never include status information** ("all tests pass", "ran typecheck", "type checks and linting pass") — CI results are assumed
 - AI vocabulary ("defense-in-depth", "leveraging", "ensuring robustness")
 - Decision narration ("Rather than X, I extracted Y") — state facts, not justifications. Use the "Considered Alternatives" section instead when rejection context is genuinely useful.
