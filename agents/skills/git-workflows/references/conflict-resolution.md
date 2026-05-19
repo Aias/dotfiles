@@ -27,6 +27,7 @@ For each conflicted region (or file, if the whole file is in dispute):
 
 ### 3. Propose, then apply
 
+- **Name branches explicitly:** When describing each side, use the actual branch names (and short commit subjects if helpful) rather than pronouns like "ours / theirs / yours / HEAD side". Especially during rebase, where ours/theirs are reversed vs. merge, branch names remove ambiguity. If you do use a pronoun, pair it with the branch name (e.g. "HEAD (origin/dev)").
 - Present path, a short description of each side, and the **proposed** resolved content (or a clear preview/summary).
 - **Checkpoint:** user approval required before editing the file.
 - After applying an approved resolution, confirm that conflict markers are gone and the file is internally consistent before moving to the next conflict.

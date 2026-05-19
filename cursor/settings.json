@@ -15,7 +15,7 @@
   ],
   "cursor.cpp.disabledLanguages": ["plaintext"],
   "diffEditor.experimental.showMoves": true,
-  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.defaultFormatter": "oxc.oxc-vscode",
   "editor.formatOnSave": true,
   "editor.tabSize": 2,
   "editor.wordWrap": "on",

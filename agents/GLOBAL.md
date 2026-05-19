@@ -42,6 +42,8 @@ When asked whether behavior is known or documented, include direct links to the 
 
 **Don't offer to stop unless the user signals it.** When work reaches a natural pause (clean commit, green typecheck, ticket landed), continue with the next obvious step — don't ask "wrap up?" or "call it for the session?" or otherwise put stopping on the table. The user will say when they're done. Offering an exit they didn't ask for nudges them toward stopping and reads as wanting to be done myself. If genuinely unsure what comes next, ask about *direction* ("D first or E first?") rather than *whether* to continue.
 
+**Don't offer browser verification after UI work.** Frontend changes don't warrant a "want me to spin up the dev server / grab a screenshot / verify in the browser?" prompt at the end. If the user wants browser verification, they'll ask. Same principle as not offering to stop — unsolicited options nudge the user toward picking one when they didn't ask for any.
+
 ## Writing Quality
 
 Any user-facing prose — PR descriptions, help text, READMEs, commit messages, documentation, ticket descriptions — must be written by the strongest available model. Never delegate writing tasks to a less capable subagent; use background agents only for research, then write the prose yourself. Refer to `/write` for guidance on writing quality.
