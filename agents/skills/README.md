@@ -105,7 +105,7 @@ Per the [Agent Skills spec](https://agentskills.io/specification), skills use th
 **references/** — Documentation loaded into context on demand
 
 - Workflows, library patterns, API docs, schema references
-- Example: `code-quality/references/deslop.md`, `code-quality/references/web-interface-guidelines.md`
+- Example: `change-review/references/apply.md`, `change-review/references/web-interface-guidelines.md`
 
 **scripts/** — Executable code run directly without loading into context
 

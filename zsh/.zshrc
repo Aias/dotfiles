@@ -151,7 +151,17 @@ if command -v zoxide &> /dev/null; then
   zd() {
     if [ $# -eq 0 ]; then
       builtin cd ~ && return
-    elif [ -d "$1" ]; then
+    fi
+    # Path-shaped args (absolute, dotted, tilde, or containing /) always go through
+    # builtin cd. Falling back to zoxide here would silently jump to a frecency
+    # match in a different worktree when the literal path doesn't resolve.
+    case "$1" in
+      /*|./*|../*|~*|*/*)
+        builtin cd "$@"
+        return
+        ;;
+    esac
+    if [ -d "$1" ]; then
       builtin cd "$1"
     else
       z "$@" && printf "📁 " && pwd || echo "Error: Directory not found"

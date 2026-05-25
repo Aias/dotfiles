@@ -58,6 +58,10 @@ A collection of git-related workflows and guidelines. Use this skill for any git
 - Always `git fetch origin <base>` before diffing or rebasing. Diff against `origin/<base>`, never a local branch — local branches go stale silently and produce inaccurate diffs. The remote ref is the source of truth.
 - Before creating a branch or PR, verify the correct base — see `/pr-guidelines` for the resolution order. Getting the base wrong is the single most common git mistake.
 
+<!-- @> Present commits chronologically (oldest first) when summarizing for the user — `git log`'s default reverse order makes review awkward -->
+
+**Presenting commits to the user:** When summarizing a series of commits — branch state, PR breakdown, work recap — list them in the order they were authored (oldest first), not in the reverse-chronological order `git log` shows by default. The user reviews work in the order it actually happened.
+
 ## Conflict markers
 
 Conflict regions (`<<<<<<<`, `=======`, `>>>>>>>`) sometimes fail naive search-and-replace or line-based edits. Use whatever approach reliably reads and writes the exact file content. Follow [conflict-resolution](references/conflict-resolution.md) for checkpoints, user approval, and completion rules.

@@ -12,6 +12,8 @@ Extract durable learnings from conversation context and persist them appropriate
 
 **Default: edit the relevant skill, GLOBAL.md, AGENTS.md, or hook directly.** When the user invokes `/remember-that`, they are giving explicit feedback — it almost always belongs in the canonical instructions, not in a `skill.feedback.md` scratch file. `skill.feedback.md` is reserved for the _agent's_ proactive recording of subtle preferences the user did not explicitly ask to be saved (see the feedback-loop note at the top of every skill).
 
+> **Not Claude's built-in memory tool.** `/remember-that` always means: **edit a tracked file** — GLOBAL.md, a skill SKILL.md, project AGENTS.md/CLAUDE.md, or a hook. It never means: write to Claude's cross-conversation memory system (auto-memory, the `memory` tool, file-based memory under `~/.claude/projects/.../memory/`). Those systems are private to a single agent and invisible to other agents, other machines, and the user's git history. Anything the user says to remember belongs in the dotfiles repo so it's versioned, reviewable, and shared across every agent that reads these instructions. If you find yourself reaching for a memory tool in response to `/remember-that`, stop — the right answer is always a file edit in this repo.
+
 ## Process
 
 1. **Analyze recent context** — Review the last few user messages and the conversation thread to identify what the user wants remembered. Look for:
@@ -43,7 +45,7 @@ Extract durable learnings from conversation context and persist them appropriate
    - Agent noticed a subtle pattern the user did not explicitly flag → skill's `skill.feedback.md` (lightweight, no confirmation needed). Never route a `/remember-that` invocation here.
    - "Must not forget to do X before Y" → companion hook that reminds or blocks. Hook matchers filter by tool name only (regex); command-content filtering happens inside the script.
 
-   **Global via skill annotation:** When a learning falls within a skill that has `global_category` in its frontmatter (e.g. `/git-workflows`, `/react-best-practices`, `/code-quality`), prefer editing/expanding the skill content AND adding a `<!-- @> token-dense summary -->` annotation above the relevant section. Then run `make compile` to regenerate the compiled GLOBAL.md index. This keeps the full context in the skill while surfacing a dense summary in always-loaded context.
+   **Global via skill annotation:** When a learning falls within a skill that has `global_category` in its frontmatter (e.g. `/git-workflows`, `/react-best-practices`, `/change-review`), prefer editing/expanding the skill content AND adding a `<!-- @> token-dense summary -->` annotation above the relevant section. Then run `make compile` to regenerate the compiled GLOBAL.md index. This keeps the full context in the skill while surfacing a dense summary in always-loaded context.
 
    This only applies to the dotfiles-source GLOBAL.md — project-level AGENTS.md and CLAUDE.md have no compilation step.
 
