@@ -96,6 +96,9 @@ alias code="cursor"
 alias dotup="make -C ~/Code/dotfiles update"
 alias dotcheck="make -C ~/Code/dotfiles check"
 alias dotlink="make -C ~/Code/dotfiles link && resource"
+alias gpf="git push --force-with-lease"
+alias gpl="git pull --rebase --autostash"
+
 function up() {
   local dim=$'\e[2m' bold=$'\e[1m' reset=$'\e[0m' blue=$'\e[34m'
   local all=false

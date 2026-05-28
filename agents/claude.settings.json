@@ -8,7 +8,6 @@
   "permissions": {
     "defaultMode": "auto"
   },
-  "additionalDirectories": ["/Users/nicktrombley/Code/dotfiles"],
   "hooks": {
     "PreToolUse": [
       {
@@ -92,6 +91,9 @@
   },
   "skipDangerousModePermissionPrompt": true,
   "skipAutoPermissionPrompt": true,
+  "additionalDirectories": [
+    "/Users/nicktrombley/Code/dotfiles"
+  ],
   "feedbackSurveyState": {
     "lastShownTime": 1753980901020
   }
