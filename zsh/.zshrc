@@ -96,6 +96,8 @@ alias code="cursor"
 alias dotup="make -C ~/Code/dotfiles update"
 alias dotcheck="make -C ~/Code/dotfiles check"
 alias dotlink="make -C ~/Code/dotfiles link && resource"
+
+alias gp="git push"
 alias gpf="git push --force-with-lease"
 alias gpl="git pull --rebase --autostash"
 
