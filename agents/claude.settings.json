@@ -1,6 +1,5 @@
 {
   "cleanupPeriodDays": 180,
-  "effortLevel": "xhigh",
   "skillListingBudgetFraction": 0.02,
   "attribution": {
     "commit": "",
@@ -90,6 +89,7 @@
       "Writhing"
     ]
   },
+  "effortLevel": "high",
   "skipDangerousModePermissionPrompt": true,
   "skipAutoPermissionPrompt": true,
   "additionalDirectories": [
