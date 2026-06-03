@@ -1,5 +1,8 @@
 [settings]
 pin = true
+# Auto-trust project mise configs under these roots (no `mise trust` prompt).
+# mise tilde-expands these paths; it does NOT render Tera templates here, so `~` is correct.
+trusted_config_paths = ["~/Code", "~/conductor"]
 
 [tools]
 node = "24"
