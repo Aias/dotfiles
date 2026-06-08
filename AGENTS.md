@@ -11,7 +11,7 @@ Personal dotfiles repo — shell config, git, editor settings, and AI agent conf
 - `agents/.build/skills/` — Cleaned skill files (annotations stripped), gitignored
 - `agents/claude.settings.json` — Claude Code settings
 - `agents/codex.config.toml` — Codex settings
-- `agents/conductor.settings.json` — Conductor managed settings (schema: `https://conductor.build/schemas/settings.json`)
+- `agents/conductor.settings.toml` — Conductor user settings (schema: `https://conductor.build/schemas/settings.schema.json`)
 - `agents/hooks/` — Claude Code hooks (e.g. PR guideline checks)
 - `.agents/skills/` — External skills (from skills.sh)
 - `skills-lock.json` — External skill version tracking

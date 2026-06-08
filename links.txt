@@ -28,7 +28,7 @@ Codex | agents/GLOBAL.md | .codex/AGENTS.md | .codex/AGENTS.md
 Codex | agents/codex.config.toml | .codex/config.toml | .codex/config.toml
 
 # Conductor
-Conductor | agents/conductor.settings.json | .conductor/settings.json | .conductor/settings.json
+Conductor | agents/conductor.settings.toml | .conductor/settings.toml | .conductor/settings.toml
 
 # Cursor (symlinks only - global.mdc uses copy with frontmatter, handled separately)
 # cli-config.json is Cursor-managed (agent CLI writes to it); not symlinked

@@ -1,0 +1,23 @@
+"$schema" = "https://conductor.build/schemas/settings.schema.json"
+
+[git]
+branch_prefix = "trombley/"
+branch_prefix_type = "custom"
+
+[models]
+default = "opus-4-8-1m"
+review = "opus-4-8-1m"
+
+[models.claude_code]
+default_effort_level = "high"
+review_effort_level = "xhigh"
+
+[models.codex]
+default_thinking_level = "high"
+review_thinking_level = "high"
+
+[prompts]
+code_review = "Never create github comments without explicit instruction from the user. Return your review only as text within the chat. Never change or modify the code, the PR, or any related document. Consider the review a read-only operation aside from the conversation with the user.\n\nInvoke /orient skill before reviewing, and use the /change-review skill to deeply review the code along all axes we care about, even for small-seeming changes."
+create_pr = "Invoke the /git-workflows and /pr-guidelines skills before creating or updating PRs and read the PR guidelines"
+rename_branch = "Name branches as trombley/rmrk-<id> for branches that have associated Linear issues. For branches without associated linear issues, name them as trombley/<branch-title> with a very short and descriptive title. If there is no associated Linear ticket, ask the user if we should create one.\n\nONLY RENAME BRANCHES if this is the first message and first session for a particular feature. If there have already been commits (/orient), do not re-rename a branch.\n\nDo not include `aias` as the branch prefix, it should be `trombley/*`, not `aias/trombley/*`."
+resolve_merge_conflicts = "When resolving conflicts, prefer rebasing rather than a merge commits unless there are many commits in the git history that would make a rebase prohibitively difficult. Do *not* automatically resolve conflicts without checking with the user. For each conflict, review it thoroughly and figure out the intention and how to resolve it, then propose your resolution to the user before continuing.\n\nInvoke /orient skill before starting on any rebase, so you understand the context of the existing set of changes as well as their relationship to the base branch and overall project.\n\n**Never under any circumstances push the resolved conflicts or rebased branch to origin.** The user will do that manually, even if the user has already accepted the resolution proposal. Finalize the merge and then turn it back over to the user to review."
