@@ -1,8 +1,8 @@
 [settings]
 pin = true
-# Auto-trust project mise configs under these roots (no `mise trust` prompt).
-# mise tilde-expands these paths; it does NOT render Tera templates here, so `~` is correct.
-trusted_config_paths = ["~/Code", "~/conductor"]
+# trusted_config_paths is set via MISE_TRUSTED_CONFIG_PATHS in zsh/.zshenv, not here:
+# mise resolves this symlinked global config to its dotfiles path, treats it as
+# non-global, and ignores the setting for security reasons.
 
 [tools]
 node = "24"
