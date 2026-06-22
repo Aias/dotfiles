@@ -91,6 +91,7 @@
   },
   "effortLevel": "high",
   "skipDangerousModePermissionPrompt": true,
+  "skipWorkflowUsageWarning": true,
   "skipAutoPermissionPrompt": true,
   "additionalDirectories": [
     "/Users/nicktrombley/Code/dotfiles"
@@ -98,5 +99,5 @@
   "feedbackSurveyState": {
     "lastShownTime": 1753980901020
   },
-  "skipWorkflowUsageWarning": true
+  "tui": "fullscreen"
 }
