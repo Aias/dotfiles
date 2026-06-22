@@ -51,6 +51,10 @@ A collection of git-related workflows and guidelines. Use this skill for any git
 - No "Generated with Claude" footers, no co-authored-by AI attribution, no "I helped implement" phrasing
 - Strip non-essential information from commit/PR messages—focus on what changed, not how it was written
 
+<!-- @> Never edit on a long-lived branch (dev, main) — branch first, or use a dedicated worktree for cross-repo work. Catch work that landed on the wrong branch and move it (stash/cherry-pick) before committing -->
+
+**Work on a feature branch, never a long-lived one:** Don't make feature edits directly on a shared long-lived branch (`dev`, `main`). Branch first; for cross-repo work, each repo gets its own worktree on a ticket-named branch (see `/conductor`). If edits already landed on the wrong branch, move them to the right one before committing — stash and pop onto a fresh branch, or cherry-pick — rather than committing in place.
+
 <!-- @> Always fetch and diff against origin/<base>, never local branches. Local branches go stale silently -->
 
 **PR context:**

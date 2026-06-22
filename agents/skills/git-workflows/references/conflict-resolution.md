@@ -46,15 +46,18 @@ How you edit (patch tool, structured replace, shell, etc.) is up to you; the req
 
 **Generated artifacts** (GraphQL types, codegen output, etc.): Prefer consistency with the chosen source side, then regenerate if the repo has a standard codegen step.
 
+<!-- @> Rebase: run /orient first to map the change-set vs the base. A rebased branch needs a force-push, which the agent never runs (see /git-workflows) — hand it back for the user to push, even after they approve the resolution. Regenerate codegen after the rebase lands -->
 ## Rebasing (workflow)
 
-**Before starting:** Understand branch intent (PR context, review feedback). Fetch the remote base you will rebase onto (`origin/<target>` or equivalent) so comparisons aren't stale.
+**Before starting:** Run `/orient` first to map the change-set and how far the base has moved — what the branch is doing and its relationship to the base. Fetch the remote base you will rebase onto (`origin/<target>` or equivalent) so comparisons aren't stale.
 
 **During:** Resolve conflicts using the same propose → approve → apply loop. After conflicts for the current stopped commit are fixed and staged, **checkpoint** before `git rebase --continue` — the user must explicitly agree to continue the rebase.
 
 **Abort / skip:** If the user wants to abandon the rebase, use `git rebase --abort`. `git rebase --skip` only when a commit is truly obsolete — confirm with the user.
 
-**Push:** Rebased history usually needs a force push. Use `--force-with-lease` when pushing, only on branches where that's appropriate, and **only** after explicit user permission (see `/git-workflows`).
+**Regenerate at the end:** Rebasing onto a moved base can drift generated artifacts even where no file conflicted (e.g. the base advanced a schema). After the rebase lands, rerun the project's codegen and verify a clean tree before handoff.
+
+**Push:** A rebased branch needs a force push, and per `/git-workflows` the agent never force-pushes under any circumstances. Hand the branch back for the user to push manually — show the force-push command if helpful, but do not run it, even after the user has approved the resolution.
 
 ## Principles
 

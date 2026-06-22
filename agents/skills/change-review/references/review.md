@@ -64,8 +64,11 @@ Look for obvious bugs in the diff itself — incorrect logic, broken control flo
 **Axis 2: AGENTS.md / CLAUDE.md compliance.**
 Audit the diff for compliance with AGENTS.md / CLAUDE.md rules. When evaluating compliance for a file, only consider AGENTS.md / CLAUDE.md files that share a path with the file or its parents. Quote the exact rule being broken; if you can't quote it, don't flag it.
 
-**Axis 3: Dead code & duplication.**
+<!-- @> Axis 3 also flags unexplained scope creep: net-new functionality with no traceable origin (not on the base, not in the PR description, not tied to the task) and no deliberate reason. Reachable code is still suspect — recommend reverting it, don't assume intent -->
+**Axis 3: Dead code, duplication & unexplained scope.**
 Look for code introduced by the diff that is unused, unreachable, or duplicates existing code. Also look for **uncovered dead code** — code elsewhere that became unused because of this diff (utilities only the removed feature called, design tokens it used, GraphQL fields it queried, fixtures it referenced). Cross repo boundaries when relevant (acorn ↔ chestnut for full-stack work).
+
+Flag **unexplained scope creep** even when the code is reachable: a behavior, flag, or branch the diff adds that isn't on the base, isn't called for by the PR description or the task, and has no deliberate reason you can trace. A query gaining an extra filter parameter, or a handler sprouting a mode nobody asked for, reads as accidental — recommend reverting it rather than assuming the author meant it. Unrelated cosmetic churn dragged in by a focused edit (an import reorder, a sweeping reformat) belongs in the same bucket: recommend excluding it from the diff, leaving the split-into-its-own-commit alternative to prose. Read the PR description and `git blame` the surrounding lines before flagging — if the addition traces to stated intent, it's in scope.
 
 Don't flag intentional scaffolding: re-export barrels, design-system primitives, framework-required exports. If unsure whether something is dead vs. scaffolding, ask in the open-questions section.
 

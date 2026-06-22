@@ -48,7 +48,7 @@ Brief — full workflow in [references/review.md](references/review.md).
 
 <!-- @> REVIEW defaults to read-only: no edits, no commits, no GitHub comments unless explicitly authorized. Output is chat text only. Codified in user's standing Conductor `Review request.md` preference -->
 
-- **Read-only.** No edits, no commits, no GitHub/Linear comments unless explicitly authorized. Output is chat text only.
+- **Read-only.** No edits, no commits, no GitHub/Linear comments unless explicitly authorized. Output is chat text only. When posting is authorized, attribute each agent-authored comment per `/pr-guidelines` (lead with a `> **Claude <model> <effort>**` blockquote).
 - **Fan out across parallel subagents** for any non-trivial diff. The dominant correction across hundreds of past sessions is "there's no way you reviewed all that code" — single-pass skim is not acceptable. Standard axes: bug scan, AGENTS.md/CLAUDE.md compliance, dead code & duplication, LOC & complexity.
 - **Validate each finding** with a second-pass subagent before reporting. False positives erode trust faster than missed issues.
 - **Cite file path + line range** on every finding. Never restate the diff.
@@ -172,15 +172,28 @@ Acceptable comments:
 
 When a tool reports something you've already accepted as correct, run it and let downstream state settle — don't reach for `ignore` / `exclude` / `skip` config to silence it. When the upstream maintainers publish an official migration path (codemod, preset, framework-provided helper), prefer it over a handwritten substitute, even when the resulting diff is larger. A 20k-line maintainer codemod is more trustworthy than a 2k-line homegrown one. Parallel subagents > scripted refactors when no official codemod exists.
 
+<!-- @> A lint rule targets a behavior not a token: a sibling construct emitting the same flagged output still dodges it. Fix at root, or write a real standard and disable the rule deliberately. Inline-suppress only as last resort when no compliant alternative exists (stable id over array-index key); offer the simpler path first -->
+
+A lint rule targets a behavior, not a token. Switching to a sibling construct that produces the same flagged output — a wrapper or alternate API that emits exactly what a `no-X` rule forbids — dodges the rule without honoring it, and is still a workaround. Two honest paths: fix at the root so the rule passes on its merits, or, when the rule genuinely doesn't fit the case, write a real standard for the codebase and disable the rule deliberately. An off-the-cuff sibling swap is neither.
+
+Inline suppression is a last resort, valid only when a rule blocks the sole viable approach and no compliant alternative exists. Exhaust the alternative first and offer the simpler-code path before suppressing: a rule against array-index list keys is satisfied by a stable id from the data, not a disable comment. Type-safety escape hatches (`any`, `as`, `!`, `ts-ignore`) are never the last resort — see [Type safety](#type-safety).
+
 ## Types, imports & tooling (`.ts`, `.tsx`)
 
 Applies when writing or reviewing TypeScript: typecheck failures, strictness, generics, barrels, module layout — not only during cleanup passes.
 
-<!-- @> No any/as/!/ts-ignore — fix code, not types -->
+<!-- @> No any/as/!/ts-ignore/lint-disable — frontend and backend alike. A cast signals a too-wide upstream type: tighten the source so the cast and its guard both vanish; invert call sites instead of widen-then-cast; parse boundaries with zod, narrow with instanceof. Don't assert type-system behavior without an empirical repro -->
 
 ### Type safety
 
-**Never compromise type safety**: No `any`, no type assertions (`as Type`), no non-null assertions (`!`), no `ts-ignore`/`eslint-disable`. Avoid `unknown` unless narrowed immediately. If TypeScript resists, fix the code — don't override the types.
+**Never compromise type safety**: No `any`, no type assertions (`as Type`), no non-null assertions (`!`), no `ts-ignore`/`eslint-disable`/lint-disable. Avoid `unknown` unless narrowed immediately. This holds equally in backend resolvers and services — a cast in a query layer is no more acceptable than one in a component.
+
+A cast is a symptom: the type is too wide somewhere upstream. Fix the source, not the call site.
+
+- **Tighten the upstream type so the cast and its guard both disappear.** When a parameter is declared wider than its only callers supply — `string` where the caller already hands over the source's union or enum — narrow the parameter to the real type. The cast and the runtime guard that defended it both fall away.
+- **Invert, don't widen-then-cast.** When a value doesn't fit a consumer, the fix is rarely to broaden the consumer's type and cast at the boundary. Broaden in the wrong direction and every caller inherits the looser contract. Instead, make the real type flow through from where it originates.
+- **Parse at the boundary, narrow within it.** Validate untrusted input with a schema (zod or equivalent) at the edge so a typed value flows inward; narrow runtime variants with `instanceof` or a discriminant. Both replace the assertion with a check the compiler trusts.
+- **Don't assert how the type system behaves.** A claim that "TS widens this" or "the inference fails here" is a verification step — confirm it with a minimal repro before designing around it, never from intuition.
 
 <!-- @> Prop intersections: specific before generic. Inline single-use variables -->
 
@@ -234,6 +247,22 @@ Prefer built-in semantics over generic containers: structure (`article`, `header
 ### Declaration order
 
 Order by concern, outside-in (not alphabetically): position & display → flex/grid container & child → sizing & spacing → overflow → typography → visual (color, background, border, shadow) → transform & animation → interaction (`cursor`, `pointer-events`, `user-select`). Applies to CSS-in-JS objects too.
+
+<!-- @> Drive selected/active state with a data attribute (`data-state="active"`) and an attribute selector, not a conditional className/`cx()` merge -->
+
+### State styling
+
+Drive selected/active/expanded state with a data attribute and an attribute selector (`[data-state="active"] {…}`, `[aria-pressed="true"]`), not a conditional className or `cx()` merge in the component. The DOM stays declarative, the styling lives with the rest of the component's CSS, and the state is inspectable in devtools without reading render logic.
+
+<!-- @> Avoid CLS: container queries (not viewport) when available width comes from a sibling panel/layout; keep controls present and in-order across variants; convert a height-affecting border to inset box-shadow or keep equal transparent borders across states -->
+
+### Layout stability
+
+Avoid layout shift (CLS) by holding geometry constant across state and breakpoint:
+
+- **Container queries, not viewport queries, when the available width is set by a sibling.** If a region's space is driven by a collapsible panel, resizable sidebar, or split pane rather than the viewport, set `container-type: inline-size` on the layout that owns the width and query it (`@container`). Viewport queries respond to the wrong axis and break when the surrounding layout changes. Audit existing `@media` width queries for this case when touching responsive layout.
+- **Keep controls present and in the same order across every variant.** A control that appears in one state should occupy the same slot in the others rather than appearing, disappearing, or reordering. Consistent placement prevents both the UX surprise of a moving target and the reflow when an element pops into the flow.
+- **A border that must not change box height becomes an `inset box-shadow`.** A `1px` border adds to height; toggling it between states shifts everything below by a pixel. Use `box-shadow: inset 0 0 0 1px …` instead, or keep an equal transparent border (`border: 1px solid transparent`) in every state so the box height never changes.
 
 <!-- @> Colors: tokens/custom properties, then oklch or hex (not rgb) -->
 

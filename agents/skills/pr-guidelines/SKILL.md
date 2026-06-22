@@ -105,7 +105,15 @@ Never list more than 3–4 bullets in a row. Break longer lists into conceptual 
 - Direct — every sentence adds information. No preamble, hedging, or filler.
 - Mention edge cases as asides or parentheticals, not dedicated sections.
 - Group small related changes at the end with "Also:" or "A couple other semi-related changes:".
-- Reference related work inline — link to tickets, Slack threads, Figma files, related PRs naturally in the text. When opening multiple dependent PRs, cross-link them with full URLs at creation time.
+- Reference related work inline — link to tickets, Slack threads, Figma files, related PRs naturally in the text. For dependent PRs, see [Dependent and Cross-Repo PRs](#dependent-and-cross-repo-prs).
+
+<!-- @> Dependent/cross-repo PRs (e.g. frontend+backend): one PR per repo, share a ticket-named branch, cross-link with full URLs stating what each provides/depends on, name non-obvious causes. Ship order matters → block the downstream PR loudly: CHANGES_REQUESTED + all-caps "DO NOT MERGE UNTIL <linked PR> IS DEPLOYED" -->
+
+### Dependent and Cross-Repo PRs
+
+A change spanning two repos (e.g. a frontend and the backend it calls) gets one PR per repo, each on a branch named for the shared ticket. Cross-link them in both descriptions with full URLs, stating what each side provides and what it depends on. Name non-obvious causes a reviewer can't infer from the diff — a transitive dependency bump forcing a direct-dependency version, an API contract the other side must ship first.
+
+When ship order matters, block the downstream PR loudly so it can't merge early: set it to CHANGES_REQUESTED and add an all-caps note linking the blocker — `DO NOT MERGE UNTIL <linked PR> IS DEPLOYED TO PRODUCTION`. Remove the block once the dependency lands. Cross-repo edits belong in dedicated worktrees, not a shared local branch — see `/git-workflows`.
 
 ### Scale to PR Size
 
@@ -148,6 +156,16 @@ Place `Fixes <ticket>` or `Closes <ticket>` on its own line, near the top (after
 - The phrase "smoke test"
 - "Generated with Claude Code" or similar AI footers / co-authorship
 
+<!-- @> Posting a GitHub comment/review is a publish action: only when asked, never unprompted. Attribute every agent-authored comment by leading with a blockquote whose first line is bold "Claude <model> <effort>" — the agent posts under the user's account, so the body is the only signal. Not for PR titles/descriptions -->
+
 ## PR Comments and Interactions
 
-Never post comments, replies, or reviews on GitHub PRs without explicit user permission. When asked to "get" or "check" PR comments, present them in the conversation — do not reply on GitHub. The user decides what gets posted.
+Posting a comment, reply, or review on GitHub is a publish action. Do it when the user asks — including replying to their inline feedback on an agent's first-pass PR — but never unprompted. When asked only to "get" or "check" comments, present them in the conversation; don't reply on GitHub.
+
+The agent posts through the user's own GitHub account, so author metadata can't tell an agent comment apart from the user's own — the attribution has to live in the body. Lead every agent-authored comment with a bold model-and-effort line inside a blockquote, with the comment in the same quote:
+
+> **Claude <model> <effort>**
+>
+> <comment body>
+
+Fill in the model and effort actually running (`Claude Opus 4.8 Max`, `Claude Sonnet 4.6`). Keeping the whole agent voice inside one blockquote makes it read as a single offset unit, never confusable with the user's plain-text comments. This covers every agent-authored GitHub comment — inline review replies, review summaries, conversation comments — including those posted via `/code-review --comment`. It does not apply to PR titles or descriptions, which are written in the user's voice and still carry no AI footer.

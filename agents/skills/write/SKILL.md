@@ -176,9 +176,12 @@ Problem before solution. Direct, no filler. Present tense. Every sentence carrie
 
 Significant everywhere. Each section useful on its own, not a waypoint to the next. Prefer examples over explanation — show, then name. Do not explain too much: it is seldom advisable to tell all.
 
-### Agent instructions and CLAUDE.md rules
+<!-- @> Docs: match the codebase's existing altitude and scope. Don't document internals (payloads, data attributes) nothing else documents, or present non-public surface as public. Keep feature docs durable (concepts, synonyms, product placement), not pinned to fast-changing UI. Ground claims against code across the whole stack -->
+**Match the surrounding altitude and scope.** Document at the level the codebase already documents: don't introduce internals (wire payloads, data attributes, private helpers) that nothing else documents, and don't describe a non-public surface as if it were public API. Keep feature docs durable — name the concept and its synonyms, where the feature lives in the product, and how users reach it; omit fast-changing specifics (exact layout, control labels, copy) that drift. Ground every claim against the actual code on each side of the stack the feature touches, not just the repo you are editing.
 
-Maximum density. Each rule one sentence if possible. Pair principles with examples. Imperative mood. No hedging ("should probably", "might want to").
+### Agent instructions, rules, and prompts
+
+Maximum density. Each rule one sentence if possible. Imperative mood. No hedging ("should probably", "might want to"). Pair principles with examples, and generalize every example — never the case that prompted the rule (see GLOBAL.md, "Examples teach the principle, not the incident"). This holds for LLM and image prompts too: abstract the one vendor, brand, or customer the prompt was written against into a representative form. For prompt-specific craft (affirmative framing, caching, length), see `/llm-prompt-authoring`.
 
 ### Comments in code
 

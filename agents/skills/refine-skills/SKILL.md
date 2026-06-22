@@ -84,6 +84,8 @@ Summarize what was promoted, what remains in feedback, and which skills were upd
 ## Principles
 
 - **Consolidate, don't accumulate.** A promoted instruction should replace multiple feedback entries, not paraphrase them individually.
+- **Keep promotions proportionate.** Match the weight of the rule to its home: a simple preference is one or two sentences inline in the existing section, never a fresh `references/*.md` file. Reserve a new reference file for a genuinely large, self-contained body of guidance. When in doubt, the smaller home wins.
+- **Condense, don't only grow.** Every refinement pass is also a trim pass. Before adding, audit the skill for redundancy, stale guidance, and examples that can do more work, then reorganize toward the skill's current best shape. Leave the file shorter and tighter than you found it; if it grew, the new material must earn more than it costs.
 - **Route correctly.** If a correction belongs in a different skill or in GLOBAL.md, route it there via `/remember-that` logic rather than forcing it into the current skill.
 - **Preserve the skill's voice.** Promoted instructions should read as natural parts of the skill, not as appended afterthoughts.
 - **Don't over-promote.** A single correction isn't a pattern. Leave one-offs in the feedback file — they may accumulate into a pattern later, or they may turn out to be task-specific noise.

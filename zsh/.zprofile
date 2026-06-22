@@ -31,6 +31,7 @@ export PATH="$HOME/go/bin:$PATH"
 # Environment variables
 # ─────────────────────────────────────────────────────────────
 export HOMEBREW_NO_ENV_HINTS=1
+export HOMEBREW_NO_ASK=1
 export HOMEBREW_FORBIDDEN_FORMULAE=node
 export COREPACK_ENABLE_DOWNLOAD_PROMPT=0
 export EDITOR="${EDITOR:-cursor --wait}"

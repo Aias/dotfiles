@@ -137,12 +137,13 @@ fetch('ENDPOINT',{method:'POST',headers:{'Content-Type':'application/json'},body
 - Clearing the log file is NOT the same as removing instrumentation; do not remove any debug logs from code here.
 - **CRITICAL:** Only clear YOUR session's logs (via your endpoint from Step 0). NEVER delete, modify, or overwrite log files belonging to other debug sessions.
 
+<!-- @> Empty/missing log != broken instrumentation: a lazy-mounted/gated path (deferred import, click/route/flag) emits nothing on a plain reload. Confirm the path ran (drive the trigger, re-read) before treating it as a failed reproduction -->
 ### STEP 4: Read logs after user runs the program
 
 - After the user runs the program and confirms completion in their interface, do NOT ask them to type "done"; then use the file-read tool to read the file at the **log path**.
 - The log file will contain NDJSON entries (one JSON object per line) from your instrumentation.
 - Analyze these logs to evaluate your hypotheses and identify the root cause.
-- If log file is empty or missing: tell user the reproduction may have failed and ask them to try again.
+- If the log file is empty or missing, do not conclude the instrumentation is broken. First confirm the instrumented path actually executed: a path behind a lazy-mounted component, a deferred import, or an interaction gate (click, route change, feature flag) never runs on a plain reload, so correct instrumentation still emits nothing. Drive the trigger, then re-read. Only after confirming the path ran should you treat an empty log as a failed reproduction and ask the user to try again.
 - **For frontend bugs**, supplement the NDJSON log with the `chrome-devtools` MCP — console messages, network requests, and performance traces are runtime evidence too. Cite MCP findings with the same specificity as log lines (exact message, request URL, stack frame) rather than paraphrasing.
 
 ### STEP 5: Keep logs during fixes
