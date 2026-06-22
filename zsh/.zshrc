@@ -88,7 +88,7 @@ alias ored="cd ~/Code/red-cliff-record && cursor ."
 # Aliases - Tools & Utilities
 # ─────────────────────────────────────────────────────────────
 alias tailscale="/Applications/Tailscale.app/Contents/MacOS/Tailscale"
-alias resource="source ~/.zshrc && source ~/.secrets"
+alias resource="source ~/.zshenv && source ~/.zshrc && source ~/.secrets"
 alias c="claude"
 alias yolo="claude --dangerously-skip-permissions"
 alias ca="cursor-agent --approve-mcps --force"
