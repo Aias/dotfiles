@@ -156,16 +156,16 @@ Place `Fixes <ticket>` or `Closes <ticket>` on its own line, near the top (after
 - The phrase "smoke test"
 - "Generated with Claude Code" or similar AI footers / co-authorship
 
-<!-- @> Posting a GitHub comment/review is a publish action: only when asked, never unprompted. Attribute every agent-authored comment by leading with a blockquote whose first line is bold "Claude <model> <effort>" — the agent posts under the user's account, so the body is the only signal. Not for PR titles/descriptions -->
+<!-- @> Posting a GitHub comment/review is a publish action: only when asked, never unprompted. Attribute every agent-authored comment by leading with an italicized "<provider> <model> (<effort>)" line, followed by a blockquote with the comment — the agent posts under the user's account, so the body is the only signal. Not for PR titles/descriptions -->
 
 ## PR Comments and Interactions
 
 Posting a comment, reply, or review on GitHub is a publish action. Do it when the user asks — including replying to their inline feedback on an agent's first-pass PR — but never unprompted. When asked only to "get" or "check" comments, present them in the conversation; don't reply on GitHub.
 
-The agent posts through the user's own GitHub account, so author metadata can't tell an agent comment apart from the user's own — the attribution has to live in the body. Lead every agent-authored comment with a bold model-and-effort line inside a blockquote, with the comment in the same quote:
+The agent posts through the user's own GitHub account, so author metadata can't tell an agent comment apart from the user's own — the attribution has to live in the body. Lead every agent-authored comment with an italicized provider-model-and-effort line, followed by a blockquote with the comment:
 
-> **Claude <model> <effort>**
->
+*<provider> <model> (<effort>)*:
+
 > <comment body>
 
-Fill in the model and effort actually running (`Claude Opus 4.8 Max`, `Claude Sonnet 4.6`). Keeping the whole agent voice inside one blockquote makes it read as a single offset unit, never confusable with the user's plain-text comments. This covers every agent-authored GitHub comment — inline review replies, review summaries, conversation comments — including those posted via `/code-review --comment`. It does not apply to PR titles or descriptions, which are written in the user's voice and still carry no AI footer.
+Fill in the model and effort actually running (`Claude Opus 4.8 (Max)`, `Codex 5.5 (Extra High)`). Keeping the whole agent voice inside one blockquote makes it read as a single offset unit, never confusable with the user's plain-text comments. This covers every agent-authored GitHub comment — inline review replies, review summaries, conversation comments — including those posted via `/code-review --comment`. It does not apply to PR titles or descriptions, which are written in the user's voice and still carry no AI footer.
