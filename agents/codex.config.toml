@@ -1,6 +1,6 @@
 file_opener = "cursor"
-model = "gpt-5.4"
-model_reasoning_effort = "high"
+model = "gpt-5.5"
+model_reasoning_effort = "xhigh"
 suppress_unstable_features_warning = true
 web_search = "live"
 
@@ -74,3 +74,6 @@ hide_rate_limit_model_nudge = true
 
 [tui]
 status_line = ["model-with-reasoning", "current-dir", "git-branch", "context-used", "five-hour-limit", "weekly-limit"]
+
+[tui.model_availability_nux]
+"gpt-5.5" = 3
