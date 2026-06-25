@@ -24,6 +24,8 @@ These are non-negotiable. The user has codified them repeatedly across hundreds 
   Before suggesting *removal* of incomplete code, read the diff's intent. **Broken-because-unfinished** is not the same as **broken-because-buggy**: a not-yet-wired feature should be wired up, not amputated. The fix has to come from what the author was trying to do, not from the assumption that the broken piece should go away.
 - **Numbered list with stable IDs** (`#1`, `#2`, ...). The user replies with positional refs ("fix 2, 3, 5", "walk me through #1"). Aggregated prose loses this affordance.
 - **HIGH SIGNAL ONLY.** False positives erode trust faster than missed issues. See [Explicit false positives](#explicit-false-positives).
+<!-- @> Confidence-gated reporting: default-drop anything you can't confirm; the lone exception is the high-impact tail (data loss/security/silent corruption) — surface it tagged with what's unverified, never inflate its priority to compensate -->
+- **Confidence-gated reporting.** Default to dropping anything you can't confirm is real. The single exception is the high-impact tail: a finding you couldn't fully verify but whose potential cost is severe — data loss, a security hole, silent corruption — is worth surfacing, explicitly tagged with what remains unverified and why you couldn't resolve it in this pass. Never inflate such a finding's priority to compensate for the uncertainty; report it at its true confidence with the gap named. Low-confidence *and* low-impact: drop without mention.
 
 ## Phase 1: Establish scope
 
@@ -45,6 +47,8 @@ For any non-trivial diff, **always fan out across parallel subagents.** Single-p
 
 Launch agents in a single message so they run concurrently. Each agent gets the full diff (or its bucket) plus the PR title and description for author intent.
 
+**Model tier: every review and validator subagent runs on the latest Opus at high or extra-high effort** — a judgment call per axis (reach for extra-high on the densest buckets, high is fine for the rest); max is never needed. The analysis quality is the constraint, not tokens or latency — a weaker model that misses the bug or the simplification costs more than it saved. Reserve faster models only for narrow retrieval fan-out (collecting files, grepping call sites) whose raw output an Opus agent then reasons over.
+
 ### Code-judo lens
 
 Frame every axis around **deleting complexity, not rearranging it.** A clean review doesn't just spot bugs — it looks for restructurings that preserve behavior while making the implementation dramatically simpler, smaller, more direct.
@@ -56,7 +60,9 @@ Frame every axis around **deleting complexity, not rearranging it.** A clean rev
 
 This is the lens, not an axis. Apply it inside each subagent below.
 
-### Standard axes (default to all four)
+### Standard axes (default to all four; add Axis 5 when an originating spec exists)
+
+All axes — including spec conformance — launch together in one message and run **in parallel**. Spec conformance is special only at synthesis: its findings are read *first* and used to set the disposition of every other axis's findings (see [Synthesis](#synthesis-let-spec-conformance-set-disposition)), not to gate the other agents.
 
 **Axis 1: Bug scan.**
 Look for obvious bugs in the diff itself — incorrect logic, broken control flow, off-by-ones, missing awaits, mishandled errors. Focus on the diff; don't reach outside it for context unless the finding requires it. Flag only significant bugs that will cause incorrect behavior at runtime.
@@ -67,6 +73,9 @@ Audit the diff for compliance with AGENTS.md / CLAUDE.md rules. When evaluating 
 <!-- @> Axis 3 also flags unexplained scope creep: net-new functionality with no traceable origin (not on the base, not in the PR description, not tied to the task) and no deliberate reason. Reachable code is still suspect — recommend reverting it, don't assume intent -->
 **Axis 3: Dead code, duplication & unexplained scope.**
 Look for code introduced by the diff that is unused, unreachable, or duplicates existing code. Also look for **uncovered dead code** — code elsewhere that became unused because of this diff (utilities only the removed feature called, design tokens it used, GraphQL fields it queried, fixtures it referenced). Cross repo boundaries when relevant (acorn ↔ chestnut for full-stack work).
+
+<!-- @> Dedup/dead-code: search scope is broader than finding scope. Scan the whole module (jscpd/similarity-ts), not just changed files — a new helper re-implementing an existing util is diff-introduced duplication even though its twin is untouched. Keep only findings where the diff is one side; drop pre-existing dup between two untouched files -->
+**Search scope is broader than finding scope.** To catch a new helper that re-implements an existing utility — or existing code the diff just orphaned — detection must range over the whole module/package, not only the changed files. A function the diff adds that already exists elsewhere is diff-**introduced** duplication even though its twin sits in an untouched file, so it's in scope; pre-existing duplication between two files the diff never touched is a [pre-existing issue](#explicit-false-positives), not a finding. Run `jscpd` / `similarity-ts` against the package, then keep only findings where the diff is one side of the duplication. `knip` is already whole-project, so it covers the dead-code-elsewhere direction on its own.
 
 Flag **unexplained scope creep** even when the code is reachable: a behavior, flag, or branch the diff adds that isn't on the base, isn't called for by the PR description or the task, and has no deliberate reason you can trace. A query gaining an extra filter parameter, or a handler sprouting a mode nobody asked for, reads as accidental — recommend reverting it rather than assuming the author meant it. Unrelated cosmetic churn dragged in by a focused edit (an import reorder, a sweeping reformat) belongs in the same bucket: recommend excluding it from the diff, leaving the split-into-its-own-commit alternative to prose. Read the PR description and `git blame` the surrounding lines before flagging — if the addition traces to stated intent, it's in scope.
 
@@ -110,6 +119,17 @@ Duplicated work & orchestration:
 - Sequential async flow where obviously independent work could run in parallel.
 - Partial-update logic that leaves state less atomic than necessary.
 
+<!-- @> Axis 5 (spec conformance, only when a ticket/PRD/RFC exists): report missing/partial, wrong, and unrequested behavior vs the spec. Runs in parallel but is consumed first at synthesis to set disposition — unrequested code gets removed, not polished. Skip and note "no spec available" rather than inventing requirements -->
+**Axis 5: Spec conformance (only when an originating spec exists).**
+Runs only when the change traces to a written spec — a Linear/GitHub issue, a PRD, an RFC, a kickoff or design doc. Resolve the spec in this order: issue references in the commit messages or PR description (`PROJ-123`, `Closes #45`) → a spec path the user named → a PRD/RFC under `docs/`, `specs/`, or the ticket linked on the PR. If none of these resolve, **skip this axis and note "no spec available"** — never invent requirements to grade against.
+
+Give the agent the resolved spec plus the diff, and have it report three finding classes, quoting the spec line for each:
+- **Missing / partial** — a requirement the spec asks for that the diff doesn't implement, or implements only partway.
+- **Wrong** — a requirement the diff appears to implement, but the implementation doesn't satisfy what the spec actually asked for.
+- **Unrequested** — behavior the diff adds that the spec never called for. This overlaps Axis 3's scope-creep detection, approached from the requirements side rather than the structural side; let synthesis dedup (Axis 5 holds the authoritative spec; Axis 3 still catches creep when there's no spec to check against).
+
+This axis is **load-bearing for disposition, not just another finding source** — its output reframes how every other finding is judged at synthesis.
+
 ### The 1000-line ceiling
 
 <!-- @> Hard rule: don't let a PR push any file from below 1000 lines to above. Only waivable when the file is extremely repetitive/uniform (a data table, generated code, a flat enum) where any split would hurt readability. Default: decompose first -->
@@ -126,11 +146,22 @@ Add or substitute axes when the user names a concern: *"focus on app router patt
 
 ## Phase 3: Validation
 
-For each finding from Phase 2, launch a validator subagent that **confirms with code citation** before the finding goes into the report. Single-axis agents over-flag; the validator's only job is to refute or confirm.
+<!-- @> Phase 3 validator is adversarial: its job is to REFUTE each finding (defaulting to refuted when unsure), so a finding survives only if it can't be broken with a code citation. Exception: a refuted-but-high-impact finding carries forward tagged with the doubt -->
+For each finding from Phase 2, launch a validator subagent whose job is to **refute the finding**, not to confirm it. Single-axis agents over-flag, so the validator starts adversarial: assume the finding is a false positive and try to break it by reading the cited code and the surrounding context the original agent didn't see. A finding survives only if the validator *cannot* refute it with a code citation; when the validator is unsure, it defaults to refuted.
 
-Pass the validator: the PR title/description, the finding description, and the rule (if compliance). Its job is to read the cited code and answer: *is this actually a problem, given the surrounding context the original agent didn't see?*
+Pass the validator: the PR title/description, the finding description, and the rule (if compliance). It reads the cited code and answers: *can I show this is not actually a problem here?*
 
-Filter out anything the validator didn't confirm. Track confirmation count per axis — if Axis N had 12 findings but only 2 survived validation, the axis prompt likely needs tightening (this is signal for skill iteration, not for the report).
+Filter out everything the validator refuted, **with one exception**: a refuted-but-high-impact finding (data loss, security, silent corruption) carries forward into the report tagged with the validator's doubt, per [confidence-gated reporting](#standing-rules-override-all-defaults). Don't silently drop a severe finding just because it couldn't be fully nailed down. Track refutation count per axis — if Axis N produced 12 findings but only 2 survived, the axis prompt likely needs tightening (signal for skill iteration, not for the report).
+
+## Synthesis: let spec conformance set disposition
+
+Before writing the report, reconcile the axes against each other — this is where parallel findings become a coherent verdict, and where Axis 5 earns its keep. Read the spec-conformance findings *first*, then re-judge every other finding through them:
+
+- A finding on code the spec axis marks **unrequested** flips from *"fix / simplify it"* to *"remove it, or justify why it stays"* — don't recommend polishing code that hasn't earned its place.
+- A **missing / partial** spec finding outranks cosmetic findings on code that *is* present; a diff that's clean but incomplete still fails.
+- A **wrong** spec finding and a bug-scan finding on the same code are the same problem from two angles — merge them, don't double-report.
+
+When no spec axis ran, synthesis is just cross-axis dedup. The disposition reframing only applies when there's a spec to judge against.
 
 ## Phase 4: Report
 
@@ -213,8 +244,10 @@ Do not flag any of these. They erode the signal-to-noise ratio.
 - **Specific semantic intent** — `<dialog>` for top-layer behavior, `<a download>` for download semantics, `useId` for SSR-stable IDs. Read the intent before flattening.
 - **Test files when the diff is non-test** unless the test file itself has a bug.
 - **Style suggestions** not explicitly required by AGENTS.md / CLAUDE.md.
+<!-- @> Don't flag behavior the diff deliberately changes: a removed gate or broadened value chosen on purpose is not a regression. Confirm intent against the PR description/spec; flag only an unweighed blast radius the author plausibly missed -->
+- **Behavior the diff deliberately changes.** When the PR's stated purpose is to remove, loosen, or replace a behavior, don't flag that removal as a regression — it's the point of the change. Confirm the intent against the PR description or the originating spec, then flag only if the deliberate change has a blast radius the author plausibly didn't weigh (e.g. dropping a guard also exposes an unrelated path). A hardcoded-broad value or removed gate chosen on purpose is an intentional change, not a bug.
 
-If you're not certain an issue is real, drop it.
+If you're not certain an issue is real, drop it — unless its potential impact is high (data loss, security, silent corruption), in which case surface it tagged with what's unverified, per [confidence-gated reporting](#standing-rules-override-all-defaults).
 
 ## When the diff is for someone else's branch
 
@@ -251,8 +284,16 @@ In rough order of how often they appear in past sessions:
 - **`gh pr diff`, `gh pr view --json files,baseRefName`** — PR-context REVIEW.
 - **`git diff origin/<base>...HEAD`** (three-dot, after fetch) — branch-vs-base REVIEW.
 - **`mcp__conductor__GetWorkspaceDiff`** — Conductor REVIEW.
-- **`knip`** — sometimes invoked by name for dead-code discovery. Useful post-migration ("leftover from migration X to Y"). Don't trust it blindly — scaffolding files are common false positives.
-- **`similarity-ts`** — mentioned for duplicate detection beyond knip. Same caveat.
+**Static-analysis seeds — leads, never findings.** These surface candidates fast; none is authoritative. Every hit is confirmed by reading the actual code and call sites before it becomes a finding — the verify-don't-punt and [confidence-gated reporting](#standing-rules-override-all-defaults) rules apply to tool output too. Newer tools (deslop, react-doctor) over-flag; lean on the verification step.
+
+Run them with **`bunx`** (fast, and confirmed to leave the reviewed repo's lockfile / `package.json` / working tree untouched — it caches globally, not in cwd); `npx` is the fallback where bun isn't installed.
+
+Point the duplication/dead-code scanners at the **whole package the diff touches, not just the changed files** — a new helper that duplicates an existing utility, or code the diff orphaned, lives outside the diff. Then filter findings to those the diff caused (Axis 3's search-broad-report-narrow rule).
+
+- **`bunx deslop-cli --json`** — the **broad first pass for JS/TS.** One scan covers dead code, redundant types/exports/constants, identity wrappers, simplifiable expressions, copy-paste blocks, unnecessary type assertions / `@ts-ignore`, circular imports, and cyclomatic/cognitive complexity — seeding Axes 3, 4, and type-safety together. It tags each finding high/medium/low; map those straight onto confidence-gated reporting (default-drop low unless the impact is high).
+- **`bunx react-doctor@latest`** — React-specific audit (state & effects, performance, architecture, security, a11y) across Next/Vite/RN/Expo. Read-only; can report only newly-introduced issues against a PR. Seeds the React/frontend slice of a review and pairs with [`/react-best-practices`](../react-best-practices/SKILL.md), [`/avoid-effects`](../avoid-effects/SKILL.md), and the HTML/CSS section.
+- **Focused supplements when one axis needs depth:** `bunx knip` (dead files/exports/deps — strong post-migration, but scaffolding is a common false positive), `similarity-ts` (AST-based duplication), `bunx jscpd` (token-based, language-agnostic duplication).
+- **`rg` / `fd` / `git grep`** — the verification workhorses: confirm a symbol is truly unused, trace call sites, check for orphaned utilities/tokens/fixtures. Reach for these to *confirm* every lead above rather than trusting any tool's report.
 - **`/orient`** — often precedes a review when the user hasn't said what branch/base they're on.
 - **`/dig`** — for "why does this happen" style questions buried inside a review.
 

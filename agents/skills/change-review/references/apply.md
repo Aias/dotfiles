@@ -49,7 +49,7 @@ See also: `/pr-guidelines` (prose in PR descriptions), `/write` (prose style).
 
 1. Review the changes just made and identify simplification opportunities:
    - Dead code and dead paths.
-   - Uncovered dead code — utilities, tokens, fixtures, GraphQL fields no longer referenced after a deletion.
+   - Uncovered dead code — utilities, tokens, fixtures, GraphQL fields no longer referenced after a deletion. Use `bunx knip` / `bunx deslop-cli` to surface leads and `rg` / `git grep` to confirm a symbol is truly orphaned before removing it; a tool hit is a lead, not a license to delete.
    - Logic flows that can be straightened.
    - Excessive parameters or "parameter sprawl" — adding a new parameter when generalizing/restructuring would be cleaner.
    - Premature optimization.
