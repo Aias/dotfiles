@@ -119,16 +119,18 @@ Duplicated work & orchestration:
 - Sequential async flow where obviously independent work could run in parallel.
 - Partial-update logic that leaves state less atomic than necessary.
 
-<!-- @> Axis 5 (spec conformance, only when a ticket/PRD/RFC exists): report missing/partial, wrong, and unrequested behavior vs the spec. Runs in parallel but is consumed first at synthesis to set disposition — unrequested code gets removed, not polished. Skip and note "no spec available" rather than inventing requirements -->
+<!-- @> Axis 5 (spec conformance, only when a ticket/PRD/RFC exists): report missing/partial, diverges, unrequested vs the spec — but the spec is an input, not ground truth; the doc/PR/ticket is often the stale side, not the code. Frame divergences bidirectionally as reconciliation items for the author, resolving from PR comments/commits where the trail exists; don't assert the code is wrong. Skip and note "no spec available" rather than inventing requirements -->
 **Axis 5: Spec conformance (only when an originating spec exists).**
 Runs only when the change traces to a written spec — a Linear/GitHub issue, a PRD, an RFC, a kickoff or design doc. Resolve the spec in this order: issue references in the commit messages or PR description (`PROJ-123`, `Closes #45`) → a spec path the user named → a PRD/RFC under `docs/`, `specs/`, or the ticket linked on the PR. If none of these resolve, **skip this axis and note "no spec available"** — never invent requirements to grade against.
 
-Give the agent the resolved spec plus the diff, and have it report three finding classes, quoting the spec line for each:
-- **Missing / partial** — a requirement the spec asks for that the diff doesn't implement, or implements only partway.
-- **Wrong** — a requirement the diff appears to implement, but the implementation doesn't satisfy what the spec actually asked for.
-- **Unrequested** — behavior the diff adds that the spec never called for. This overlaps Axis 3's scope-creep detection, approached from the requirements side rather than the structural side; let synthesis dedup (Axis 5 holds the authoritative spec; Axis 3 still catches creep when there's no spec to check against).
+**The spec is an input, not ground truth.** The reviewer wasn't present for the build, and decisions made during implementation routinely supersede the written spec — so a code↔spec divergence means the doc/PR/ticket is stale at least as often as it means the code is wrong. Don't assume the code is the side that's off. Each divergence resolves one of three ways: the code is wrong, the spec is behind, or a deliberate call split the difference. Settle which from PR comments, commit messages, and linked discussion where the trail exists; when the deciding context lives only in someone's head, surface the divergence as a **reconciliation item for the author**, not a defect.
 
-This axis is **load-bearing for disposition, not just another finding source** — its output reframes how every other finding is judged at synthesis.
+Give the agent the resolved spec plus the diff, and have it report three finding classes, quoting the spec line for each:
+- **Missing / partial** — the spec asks for something the diff doesn't implement, or implements partway. Could be a genuine gap or a deliberate descope; frame it as *"spec asks X, diff omits it — intended?"* rather than asserting failure.
+- **Diverges** — the diff implements the requirement differently than the spec describes. Frame bidirectionally — *"code does X, spec says Y — which is current?"* — not as *"the code is wrong."*
+- **Unrequested** — behavior the diff adds that the spec never mentions. Overlaps Axis 3's scope-creep detection from the requirements side; let synthesis dedup. The spec's silence doesn't make it wrong — the spec may simply be behind.
+
+This axis surfaces **reconciliation items the author resolves**, and it informs disposition at synthesis — but because the spec may be the stale side, it steers disposition only on a *confirmed* divergence, never on the spec's word alone.
 
 ### The 1000-line ceiling
 
@@ -155,13 +157,13 @@ Filter out everything the validator refuted, **with one exception**: a refuted-b
 
 ## Synthesis: let spec conformance set disposition
 
-Before writing the report, reconcile the axes against each other — this is where parallel findings become a coherent verdict, and where Axis 5 earns its keep. Read the spec-conformance findings *first*, then re-judge every other finding through them:
+Before writing the report, reconcile the axes against each other — this is where parallel findings become a coherent verdict. Read the spec-conformance findings *first*, then re-judge the others through them — but the spec may be the outdated side (see Axis 5), so let it inform disposition without treating it as the last word:
 
-- A finding on code the spec axis marks **unrequested** flips from *"fix / simplify it"* to *"remove it, or justify why it stays"* — don't recommend polishing code that hasn't earned its place.
-- A **missing / partial** spec finding outranks cosmetic findings on code that *is* present; a diff that's clean but incomplete still fails.
-- A **wrong** spec finding and a bug-scan finding on the same code are the same problem from two angles — merge them, don't double-report.
+- Code the spec marks **unrequested** isn't automatically wrong. Only once you confirm it's genuinely out of scope — the PR, ticket, and discussion don't account for it — do its other findings shift from *"fix / simplify"* to *"remove, or justify it."* If the spec is plausibly just behind, present it as a reconciliation question instead of recommending removal.
+- A **missing / partial** spec finding outranks cosmetic findings on code that *is* present — a clean but incomplete diff still warrants a flag, framed as *"intended descope?"* when you can't confirm.
+- A **divergence** that coincides with a bug-scan finding on the same code is the strongest signal that the code, not the spec, is the wrong side — merge them and treat it as a defect. A divergence with nothing else attached is more likely a stale spec; keep it a reconciliation item.
 
-When no spec axis ran, synthesis is just cross-axis dedup. The disposition reframing only applies when there's a spec to judge against.
+When no spec axis ran, synthesis is just cross-axis dedup.
 
 ## Phase 4: Report
 
