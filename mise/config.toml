@@ -6,3 +6,7 @@ pin = true
 
 [tools]
 node = "24"
+pnpm = "10"
+# pm2 via the npm backend so it lives in a node-version-independent prefix —
+# a node upgrade can't prune the install out from under the running daemon.
+"npm:pm2" = "7"
