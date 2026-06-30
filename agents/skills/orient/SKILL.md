@@ -47,6 +47,10 @@ Use the resolution order from `/pr-guidelines`: `CONDUCTOR_DEFAULT_BRANCH` → e
 
 Note that the dot semantics **flip** between `log` and `diff`: `A..B` for `log` means "commits in B not in A" (what you want); `A...B` for `diff` means "merge-base to B" (what you want). If the `--stat` output is large, summarize by top-level directory rather than listing every file.
 
+<!-- @> Report change size as +added/−removed from `--shortstat` or the PR's additions/deletions, never `wc -l` of a raw diff — a unified diff's line count includes context and @@/+++ headers, overstating the change ~2×; reconcile against the PR's number -->
+
+Report change size from the `--shortstat` summary's insertions/deletions, or the PR's own `additions`/`deletions` when one exists — never `wc -l` of a saved diff. A unified diff's line count includes unchanged context plus `@@`/`+++`/`---` headers, so it overstates the change, often by roughly 2×; if your figure is about double the PR view, that's the cause.
+
 ### 3. Open PR (if present)
 
 When `gh pr view` returned a PR, read it in layers, cheapest first:

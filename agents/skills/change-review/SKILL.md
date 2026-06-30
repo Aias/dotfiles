@@ -42,6 +42,10 @@ Never diff the full range between two long-lived branches (`dev...main`) — tha
 
 State which scope you used in the report's first line. The answer to "how many files changed?" differs by tool, and the user will ask.
 
+<!-- @> Report change size as +added/−removed from `git diff --shortstat` (or the PR's additions/deletions), never `wc -l` of a raw diff — a unified diff's line count includes context plus @@/+++/--- headers, overstating the change (often ~2×); reconcile against the PR's own number -->
+
+Report change size by insertions/deletions, not raw diff length. State it as `+added / −removed` from `git diff --shortstat origin/<base>...HEAD` — or, when a PR exists, the PR's own counts (`gh pr view --json additions,deletions`) — and reconcile the two. Never report `wc -l` of a saved diff as the size: a unified diff's line count includes unchanged context plus the `@@`/`+++`/`---` headers, so it overstates the change, often by roughly 2×. If your size figure is about double what the PR view shows, this is why.
+
 ## REVIEW Mode (default)
 
 Brief — full workflow in [references/review.md](references/review.md).
