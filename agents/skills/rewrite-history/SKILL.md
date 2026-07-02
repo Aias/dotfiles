@@ -56,7 +56,7 @@ This is a destructive rewrite of the current branch. The user will force-push th
      - Introduce a single coherent idea
      - Leave the codebase in a functional state — each commit should stand on its own as a reasonable checkpoint
      - Have a clear commit message (short summary line + description body when warranted)
-   - Use `git commit --no-verify` for intermediate commits. Pre-commit hooks may check things like tests or type coverage that depend on the full implementation being present. Each commit should still be _intended_ to be functional — `--no-verify` is a pragmatic escape hatch, not a license to commit broken states.
+   - Use `git commit --no-verify` for intermediate commits. Pre-commit hooks may check things like tests or type coverage that depend on the full implementation being present. `--no-verify` skips the hooks, not step 4's bar: every intermediate commit still compiles and works on its own.
 
 6. **Verify byte-for-byte equivalence**
    - After the final commit, compare the tree SHA against the one recorded in step 2:

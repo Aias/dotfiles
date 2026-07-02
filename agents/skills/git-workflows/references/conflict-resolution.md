@@ -63,8 +63,8 @@ How you edit (patch tool, structured replace, shell, etc.) is up to you; the req
 
 - Default assumption: the branch you're rebasing onto often has newer shared conventions; preserve the **intent** of replayed commits rather than blindly keeping old text.
 - Prefer combining independent changes; watch cross-file dependencies (imports, configs).
-- If resolutions are large or risky, split into smaller review steps.
-- Repeated conflicts across commits: consider squashing or `git rerere` after user discussion.
+- Split the review when one resolution bundles unrelated decisions (a logic change plus formatting-only churn) — one approval per coherent decision, not per file.
+- The same region conflicting across 3+ commits is a signal, not a chore: propose squashing the offending commits or `git rerere` instead of re-resolving the identical conflict each time.
 - If conflict volume is unmanageable, discuss merge vs rebase or selective cherry-picks with the user before proceeding.
 
 ## Recovery

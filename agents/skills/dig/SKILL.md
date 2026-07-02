@@ -55,7 +55,7 @@ When the bug could be a data issue rather than a code issue, look at the actual 
 
 - **Database**: If you have read access (local dev database, read replica, database MCP), query for the specific records involved. Check whether the data matches what the code expects — missing foreign keys, null columns that shouldn't be null, stale values, failed migrations.
 - **GraphQL / APIs**: Run read-only queries against available endpoints to see what the application actually returns for the inputs in question.
-- **Write throwaway scripts** if needed — a quick SQL query, a Node one-liner to decode a value, a script to check the shape of an API response. These are investigation tools, not production code.
+- **Write throwaway scripts** whenever a claim would otherwise rest on memory or eyeballing — a quick SQL query, a Node one-liner to decode a value, a script to check the shape of an API response. These are investigation tools, not production code.
 
 ### 5. Check external systems
 
@@ -81,7 +81,8 @@ Before presenting a conclusion:
 
 - **Can you point to the exact line(s) of code?** If not, keep looking.
 - **Have you confirmed your theory against the actual data flow?** Walk through the code path with concrete values.
-- **Have you ruled out the obvious alternatives?** The first plausible theory is often wrong. Spend time on the second and third most likely causes before committing to one.
+- **Would the evidence look the same under a competing theory?** A line consistent with your theory confirms correlation, not mechanism — find the data point only your theory predicts.
+- **Have you ruled out the obvious alternatives?** The first plausible theory is often wrong. For each competing cause, name the evidence that would differ if it were true — then check it. "X seems less likely" without a checked, differentiating data point is rationalizing the first theory, not ruling anything out.
 - **Is the premise of every option you're about to present actually true?** A false dichotomy is worse than no recommendation. If two options reduce to the same thing, say so. If an option assumes a capability the library/API/schema doesn't have, drop it. Confirm against primary sources before framing the choice.
 - **Have you sanity-checked counts, totals, and percentages?** Numbers passed through from subagent reports or tool output are routinely off (double-counted, decimal misplaced, scoped to the wrong directory). Reconcile against a second source — or scan the underlying data directly — before reporting. If a count looks implausibly high or low for the size of the system, flag the implausibility as part of the answer.
 <!-- @> Suspected regression: reproduce against the baseline (origin/<base>) before blaming the diff. Verify the real artifact, not a proxy — built bundle over source listing, rendered DOM over component tree, resolved path over import string. Re-run an implausible "nothing found" before trusting it. Report impact at true severity; data loss is not a display issue -->

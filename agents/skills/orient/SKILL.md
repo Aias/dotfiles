@@ -61,7 +61,7 @@ When `gh pr view` returned a PR, read it in layers, cheapest first:
 
 ### 5. Repo basics (when unfamiliar)
 
-If the agent already knows this repo, skip this step. Otherwise:
+Skip this step only with prior knowledge of this specific repo — from earlier in the session or past work on its architecture. Recognizing the framework or a generic-looking README is not knowing the repo. Otherwise:
 
 - Top-level `README.md`, `AGENTS.md`/`CLAUDE.md`, and package manifests (`package.json`, `pyproject.toml`, `go.mod`, `Cargo.toml`) to identify stack and entry points.
 - For a genuinely unknown repo with real history, consult [references/fresh-repo-diagnostics.md](references/fresh-repo-diagnostics.md) for the churn / team / bug-cluster commands — run those before picking files to read.

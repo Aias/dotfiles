@@ -26,7 +26,7 @@ For bundle, RSC, memo, and waterfall rules, use `/react-best-practices`. **Read 
 | Effect resets form when `userId` / `savedContact` changes           | Prefer `key={id}` on inner subtree to reset state                          |
 | Effect adjusts selection when `items` array identity changes        | Prefer derived selection (e.g. selected id → find item) or keyed reset     |
 | Effect calls parent `setState` / `onFetched` to pass data up        | Data should flow down; lift data source to parent                          |
-| Effect wraps subscribe + `setState` for browser/store API           | Prefer `useSyncExternalStore`                                              |
+| Effect wraps subscribe + `setState` for browser/store API           | Prefer `useSyncExternalStore` — the test: the value can change without a React event firing (another tab, timer, matchMedia) |
 | Effect sends mutation only after user action but deps are “wrong”   | POST/PUT belongs in the handler that knows **why** it ran                  |
 | `useEffect(..., [])` for “run once per app” without remount safety  | Strict Mode runs twice in dev; use module scope / root patterns from docs  |
 
@@ -42,7 +42,7 @@ For bundle, RSC, memo, and waterfall rules, use `/react-best-practices`. **Read 
 | Child fetched data only for parent         | No                              | Parent fetches, passes props down                                                                                       |
 | Subscribe to `online` / external store     | Yes (or `useSyncExternalStore`) | Built-in hook preferred over manual Effect                                                                              |
 | Keep jQuery widget in sync with React      | Yes                             | Effect + cleanup                                                                                                        |
-| Search results track `query` while visible | Yes, with cleanup               | Consider framework fetch; fix races                                                                                     |
+| Search results track `query` while visible | Yes, with cleanup               | Framework fetch (SWR/RSC) first; a raw Effect fetch ships races unless cleanup ignores stale responses                  |
 | Mount-only analytics                       | Yes, with dev caveats           | See [synchronizing with effects](https://react.dev/learn/synchronizing-with-effects)                                    |
 
 ## Decision shortcut

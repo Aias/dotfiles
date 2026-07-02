@@ -56,7 +56,7 @@ See also: `/pr-guidelines` (prose in PR descriptions), `/write` (prose style).
    - Copy-paste with slight variation — near-duplicate blocks that should be unified.
    - Stringly-typed code where enums/branded types already exist.
    - [Shared Principles](../SKILL.md#shared-principles) violations (stubs, comment policy, list ordering).
-   - **Rule of Three:** three or more copies of a pattern is a signal to extract a shared abstraction — *only if* the abstraction is clearer than the repetition.
+   - **Rule of Three:** three or more copies of a pattern is a signal to extract a shared abstraction — *only if* the copies share both shape and reason-for-change (they'd be edited together for the same future request). Copies that look alike today but answer different questions stay separate.
 2. Present a numbered plan, largest-to-smallest. Each item: description, file(s), scope.
 3. Approve all / select by number / deny.
 4. Apply only approved refactors.

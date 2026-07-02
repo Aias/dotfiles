@@ -9,6 +9,8 @@ tags: bundle, conditional-loading, lazy-loading
 
 Load large data or modules only when a feature is activated.
 
+Prefer loading in the event handler that activates the feature; use the Effect form below only when the flag can also arrive from props, URL, or persisted state rather than a user interaction (see `/avoid-effects`).
+
 **Example (lazy-load animation frames):**
 
 ```tsx

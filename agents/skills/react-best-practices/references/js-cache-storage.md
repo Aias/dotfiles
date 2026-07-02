@@ -36,7 +36,7 @@ function setLocalStorage(key: string, value: string) {
 }
 ```
 
-Use a Map (not a hook) so it works everywhere: utilities, event handlers, not just React components.
+Use a Map (not a hook) so it works everywhere: utilities, event handlers, not just React components. Client-only — these APIs don't exist on the server; keep the helper out of server modules or guard with `typeof window`.
 
 **Cookie caching:**
 

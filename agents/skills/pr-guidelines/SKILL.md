@@ -75,7 +75,7 @@ Always `git fetch origin <base>` before diffing. Diff against `origin/<base>`, n
 - Staged changes only (`git diff --cached`)
 - Specific files
 
-**Branch naming:** If the user mentions a ticket number (e.g., `PROJ-1234` — use your tracker's actual prefix), use it in the branch name from the start: `<handle>/proj-1234`. This ensures the tracker's PR auto-linking works and avoids renaming branches after PR creation.
+**Branch naming:** If the user mentions a ticket number (e.g., `PROJ-1234` — use your tracker's actual prefix), use it in the branch name from the start: `<handle>/proj-1234`. This ensures the tracker's PR auto-linking works and avoids renaming branches after PR creation. Without a ticket, name the branch for the change itself (`<handle>/checkout-retry-backoff`) — never invent a plausible-looking ticket number.
 
 If any of these are unclear, ask before proceeding.
 
@@ -123,7 +123,7 @@ When ship order matters, block the downstream PR loudly so it can't merge early:
 
 ### Considered Alternatives
 
-When alternatives were explored during development and intentionally rejected, include a brief note — either inline or in a short `## Considered but not done` section. Useful when a reviewer might naturally suggest the rejected approach. Infer when to include this from commit history or conversation context.
+When alternatives were explored during development and intentionally rejected, include a brief note — inline or as a short closing paragraph (no header). Include it only when a reviewer seeing just the diff would plausibly ask "why not X", evidenced by a reverted commit, an abandoned approach in the history, or an explicit rejection in conversation. Skip alternatives that were never seriously attempted.
 
 ### Testing / Validation
 
@@ -133,7 +133,7 @@ When included, use a bulleted list for independent things to check, or an ordere
 
 ### Visual Evidence
 
-Many PRs would benefit from screenshots or videos to illustrate changes, but unfortunately these can't be uploaded via Github's CLI or MCP. Consider using the `/agent-browser` skill to document relevant visual evidence and provide the user with the files to upload manually. Don't leave placeholder text in the PR body, but ask the user if they would like a follow-up to capture screenshots.
+Many PRs would benefit from screenshots or videos to illustrate changes, but these can't be uploaded via GitHub's CLI or MCP. When the change is visual, capture the evidence with `/agent-browser` and hand the user the files to upload manually — don't defer it to an offered follow-up, and don't leave placeholder text in the PR body.
 
 ### Ticket References
 
