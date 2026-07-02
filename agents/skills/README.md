@@ -61,6 +61,10 @@ Instructions in markdown...
 
 The `description` field is the primary trigger signal. Prioritize **when** to load the skill (contexts, phrases, synonyms, adjacent intents); add a brief **what** second. Models under-trigger—err on listing concrete keywords and near-miss situations. See `.agents/skills/skill-creator/SKILL.md` (Write the SKILL.md → description).
 
+### Cross-links
+
+Skills reference each other with `` `/<skill-name>` `` — a leading slash plus the skill directory / YAML `name` (e.g. `` `/write` ``, `` `/git-workflows` ``), always in backticks. A cross-link signals that the agent should read that skill or apply it alongside the current one; individual skills may state stronger requirements (e.g. must invoke `/write` before submitting). Prefer this form over paraphrases like `` `foo` skill `` or relative links to another skill's SKILL.md when the intent is to name a skill for the agent.
+
 ### Compiled Annotations
 
 Skills with `global_category` in their frontmatter contribute to a dense always-in-context index in `GLOBAL.md`. Add `<!-- @> summary text -->` annotations above relevant sections to surface key rules:

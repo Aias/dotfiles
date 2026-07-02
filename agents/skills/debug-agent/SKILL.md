@@ -10,11 +10,9 @@ global_category: Investigation
 
 # Debug Mode
 
-<!-- @> Never fix without runtime evidence. Every fix needs log-cited proof; code-only reasoning is forbidden -->
 You are now in **DEBUG MODE**. You must debug with **runtime evidence**.
 
-**Why this approach:** Traditional AI agents jump to fixes claiming 100% confidence, but fail due to lacking runtime information.
-They guess based on code alone. You **cannot** and **must NOT** fix bugs this way — you need actual runtime data.
+**Why this approach:** Fixes reasoned from code alone routinely miss the actual runtime cause. Debug from runtime evidence, and fix only what the logs prove.
 
 **When to use `/dig` instead:** `/dig` is read-only investigation — no code mutations, no instrumentation. Use `/dig` when you only need to understand behavior or when the environment forbids modifying source. Use `/debug-agent` when you can modify code and need runtime evidence to support a fix.
 
@@ -28,7 +26,7 @@ They guess based on code alone. You **cannot** and **must NOT** fix bugs this wa
    - **Otherwise**: ask the user to reproduce it. Provide clear, numbered steps. Remind them to restart apps/services if instrumented files are cached or bundled. Offer: "If you'd like me to write a reproduction script instead, let me know."
    - Once the user confirms a reproduction pathway (manual or automated), reuse it for all subsequent iterations without re-asking.
 4. **Analyze logs**: evaluate each hypothesis (CONFIRMED/REJECTED/INCONCLUSIVE) with cited log line evidence
-5. **Fix only with 100% confidence** and log proof; do NOT remove instrumentation yet
+5. **Fix only with cited log proof**; do NOT remove instrumentation yet
 6. **Verify with logs**: ask user to run again, compare before/after logs with cited entries
 7. **If logs prove success** and user confirms: remove all instrumentation by searching for `#region debug log` / `#endregion` markers and deleting those blocks (see Cleanup section). **If failed**: FIRST remove any code changes from rejected hypotheses (keep only instrumentation and proven fixes), THEN generate NEW hypotheses from different subsystems and add more instrumentation
 8. **After confirmed success**: explain the problem and provide a concise summary of the fix (1-2 lines)
@@ -98,7 +96,6 @@ Example log entry:
 }
 ```
 
-<!-- @> 3-5 hypotheses before instrumenting. Each log carries hypothesisId; cap at 10 logs, typical 2-6. No setTimeout/sleep as fix -->
 ### STEP 2: Insert instrumentation logs
 
 - In **JavaScript/TypeScript files**, use this one-line fetch template (replace `ENDPOINT` and `SESSION_ID` with values from Step 0), even if filesystem access is available:
@@ -137,7 +134,6 @@ fetch('ENDPOINT',{method:'POST',headers:{'Content-Type':'application/json'},body
 - Clearing the log file is NOT the same as removing instrumentation; do not remove any debug logs from code here.
 - **CRITICAL:** Only clear YOUR session's logs (via your endpoint from Step 0). NEVER delete, modify, or overwrite log files belonging to other debug sessions.
 
-<!-- @> Empty/missing log != broken instrumentation: a lazy-mounted/gated path (deferred import, click/route/flag) emits nothing on a plain reload. Confirm the path ran (drive the trigger, re-read) before treating it as a failed reproduction -->
 ### STEP 4: Read logs after user runs the program
 
 - After the user runs the program and confirms completion in their interface, do NOT ask them to type "done"; then use the file-read tool to read the file at the **log path**.
@@ -156,6 +152,7 @@ fetch('ENDPOINT',{method:'POST',headers:{'Content-Type':'application/json'},body
 
 ---
 
+<!-- @> No setTimeout/sleep/artificial delays as a "fix" — use proper reactivity, events, and lifecycles -->
 ## Critical Reminders (must follow)
 
 - Keep instrumentation active during fixes; do not remove or modify logs until verification succeeds or the user explicitly confirms.
@@ -171,7 +168,6 @@ fetch('ENDPOINT',{method:'POST',headers:{'Content-Type':'application/json'},body
 - **Remove code changes from rejected hypotheses:** When logs prove a hypothesis wrong, revert the code changes made for that hypothesis. Do not let defensive guards, speculative fixes, or unproven changes accumulate. Only keep modifications that are supported by runtime evidence.
 - Prefer reusing existing architecture, patterns, and utilities; avoid overengineering. Make fixes precise, targeted, and as small as possible while maximizing impact.
 
-<!-- @> Keep instrumentation active through post-fix verification. Wrap every log in #region debug log/#endregion for deterministic cleanup -->
 ## Cleanup
 
 When it is time to remove instrumentation (after verified fix or user request):

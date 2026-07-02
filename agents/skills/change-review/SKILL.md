@@ -13,7 +13,7 @@ global_category: Code Quality
 
 Review and cleanup at the scope of a change-set — what's on this branch, in this PR, in the workspace diff, or in recently modified files. Type-safety and imports for `.ts`/`.tsx`, and HTML/CSS/markup conventions, all live here.
 
-<!-- @> Two modes: REVIEW (read-only, numbered findings, cite file:line, never restate the diff) and APPLY (execute picks from prior review, or run cleanup intensity). Default to REVIEW unless the verb is execute-shaped -->
+<!-- @> Two modes: REVIEW (read-only — numbered findings citing file:line, no edits/commits/GitHub comments unless authorized) and APPLY (execute picks from a prior review, or run cleanup intensity). Default to REVIEW unless the verb is execute-shaped -->
 
 ## Modes
 
@@ -42,24 +42,20 @@ Never diff the full range between two long-lived branches (`dev...main`) — tha
 
 State which scope you used in the report's first line. The answer to "how many files changed?" differs by tool, and the user will ask.
 
-<!-- @> Report change size as +added/−removed from `git diff --shortstat` (or the PR's additions/deletions), never `wc -l` of a raw diff — a unified diff's line count includes context plus @@/+++/--- headers, overstating the change (often ~2×); reconcile against the PR's own number -->
-
-Report change size by insertions/deletions, not raw diff length. State it as `+added / −removed` from `git diff --shortstat origin/<base>...HEAD` — or, when a PR exists, the PR's own counts (`gh pr view --json additions,deletions`) — and reconcile the two. Never report `wc -l` of a saved diff as the size: a unified diff's line count includes unchanged context plus the `@@`/`+++`/`---` headers, so it overstates the change, often by roughly 2×. If your size figure is about double what the PR view shows, this is why.
+Report change size as `+added / −removed` from `git diff --shortstat` or the PR's own counts (`gh pr view --json additions,deletions`), never `wc -l` of a raw diff — see `/git-workflows`.
 
 ## REVIEW Mode (default)
 
 Brief — full workflow in [references/review.md](references/review.md).
 
-<!-- @> REVIEW defaults to read-only: no edits, no commits, no GitHub comments unless explicitly authorized. Output is chat text only. Codified in user's standing Conductor `Review request.md` preference -->
-
 - **Read-only.** No edits, no commits, no GitHub/Linear comments unless explicitly authorized. Output is chat text only. When posting is authorized, attribute each agent-authored comment per `/pr-guidelines` (lead with a `> **Claude <model> <effort>**` blockquote).
-- **Fan out across parallel subagents** for any non-trivial diff. The dominant correction across hundreds of past sessions is "there's no way you reviewed all that code" — single-pass skim is not acceptable. Standard axes: bug scan, AGENTS.md/CLAUDE.md compliance, dead code & duplication, LOC & complexity. Add a **spec-conformance** axis whenever the change traces to a ticket/PRD/RFC — it runs in parallel and reframes the other findings, but the spec is an input, not ground truth (the doc/ticket is often the stale side, not the code), so divergences are reconciliation items for the author, not automatic code defects. See [references/review.md](references/review.md#synthesis-let-spec-conformance-set-disposition).
-- **Spawn every review and validator subagent on the latest Opus at high or extra-high effort.** Review quality is the constraint, not latency or tokens — a cheaper model that misses the bug or the simplification costs more than it saved. Drop to a faster model only for pure retrieval (gathering files, grepping call sites) that an Opus agent then reasons over.
+- **Fan out across parallel subagents** for any non-trivial diff — a single-pass skim cannot cover a real change-set. Standard axes: bug scan, AGENTS.md/CLAUDE.md compliance, dead code & duplication, LOC & complexity. Add a **spec-conformance** axis whenever the change traces to a ticket/PRD/RFC — it runs in parallel and reframes the other findings, but the spec is an input, not ground truth (the doc/ticket is often the stale side, not the code), so divergences are reconciliation items for the author, not automatic code defects. See [references/review.md](references/review.md#synthesis-let-spec-conformance-set-disposition).
+- **Model tier per GLOBAL.md:** review and validator subagents run on the Sonnet tier at high or extra-high effort; drop to a faster model only for pure retrieval (gathering files, grepping call sites) that an analysis agent then reasons over.
 - **Validate each finding** with a second-pass subagent before reporting. False positives erode trust faster than missed issues.
 - **Cite file path + line range** on every finding. Never restate the diff.
 - **Numbered list** with stable IDs (`#1`, `#2`, ...) so the user can reply "fix 2, 3, 5".
 - **High signal only.** See [references/review.md](references/review.md#explicit-false-positives) for the explicit false-positives list (pre-existing issues, linter-catchable, pedantic nits, etc.).
-- **End with a handoff suggestion:** APPLY a subset, run `/pr-guidelines` to refresh the description, defer to a follow-up PR, or stop.
+- **End with a handoff suggestion:** APPLY a subset, run `/pr-guidelines` to refresh the description, or defer to a follow-up PR.
 
 ## APPLY Mode
 
@@ -82,7 +78,7 @@ Phased over big-bang. The user repeatedly steers toward "in stages, dead code fi
 
 These apply to both modes — they shape what counts as a finding (REVIEW) and what counts as a clean diff (APPLY).
 
-<!-- @> Primary outcome: cleanup passes should generally end with net fewer lines than before; if LOC increases, justify why complexity decreased. "10k+ lines is unacceptable from a reviewer perspective" — diff size itself is a finding -->
+<!-- @> Cleanup should net fewer lines; if LOC increases, justify the complexity reduction. Diff size itself is a finding — flag 10k+ line diffs and look for the codemod, idiomatic API, or generated content to exclude -->
 
 ### Primary outcome: net LOC reduction
 
@@ -171,8 +167,6 @@ Acceptable comments:
 - Justifying an inconsistency or deviation.
 - Translating symbols/phrases otherwise unintelligible.
 
-<!-- @> Don't reach for ignore/exclude/skip config to silence tool output you've accepted as correct. Don't write a throwaway codemod — prefer the maintainer's official path even if the diff is larger -->
-
 ### Don't silence the tool; don't roll your own codemod
 
 When a tool reports something you've already accepted as correct, run it and let downstream state settle — don't reach for `ignore` / `exclude` / `skip` config to silence it. When the upstream maintainers publish an official migration path (codemod, preset, framework-provided helper), prefer it over a handwritten substitute, even when the resulting diff is larger. A 20k-line maintainer codemod is more trustworthy than a 2k-line homegrown one. Parallel subagents > scripted refactors when no official codemod exists.
@@ -187,7 +181,7 @@ Inline suppression is a last resort, valid only when a rule blocks the sole viab
 
 Applies when writing or reviewing TypeScript: typecheck failures, strictness, generics, barrels, module layout — not only during cleanup passes.
 
-<!-- @> No any/as/!/ts-ignore/lint-disable — frontend and backend alike. A cast signals a too-wide upstream type: tighten the source so the cast and its guard both vanish; invert call sites instead of widen-then-cast; parse boundaries with zod, narrow with instanceof. Don't assert type-system behavior without an empirical repro -->
+<!-- @> A cast signals a too-wide upstream type: tighten the source so the cast and its guard both vanish; invert call sites instead of widen-then-cast; parse boundaries with zod, narrow with instanceof. Don't assert type-system behavior without an empirical repro -->
 
 ### Type safety
 
@@ -259,7 +253,7 @@ Order by concern, outside-in (not alphabetically): position & display → flex/g
 
 Drive selected/active/expanded state with a data attribute and an attribute selector (`[data-state="active"] {…}`, `[aria-pressed="true"]`), not a conditional className or `cx()` merge in the component. The DOM stays declarative, the styling lives with the rest of the component's CSS, and the state is inspectable in devtools without reading render logic.
 
-<!-- @> Avoid CLS: container queries (not viewport) when available width comes from a sibling panel/layout; keep controls present and in-order across variants; convert a height-affecting border to inset box-shadow or keep equal transparent borders across states -->
+<!-- @> Avoid CLS: hold geometry constant across states and breakpoints; container queries (not viewport) when available width comes from a sibling panel -->
 
 ### Layout stability
 

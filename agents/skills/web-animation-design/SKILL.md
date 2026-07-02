@@ -12,35 +12,15 @@ global_category: Animation
 
 A comprehensive guide for creating animations that feel right, based on Emil Kowalski's "Animations on the Web" course.
 
-## Initial Response
+## Review Format
 
-When this skill is first invoked without a specific question, respond only with:
-
-> I'm ready to help you with animations based on Emil Kowalski's animations.dev course.
-
-Do not provide any other information until the user asks a question.
-
-## Review Format (Required)
-
-When reviewing animations, you MUST use a markdown table. Do NOT use a list with "Before:" and "After:" on separate lines. Always output an actual markdown table like this:
+When reviewing animations, present findings as a single markdown table with Before / After columns, one row per issue:
 
 | Before                            | After                                           |
 | --------------------------------- | ----------------------------------------------- |
 | `transform: scale(0)`             | `transform: scale(0.95)`                        |
 | `animation: fadeIn 400ms ease-in` | `animation: fadeIn 200ms ease-out`              |
 | No reduced motion support         | `@media (prefers-reduced-motion: reduce) {...}` |
-
-Wrong format (never do this):
-
-```
-Before: transform: scale(0)
-After: transform: scale(0.95)
-────────────────────────────
-Before: 400ms duration
-After: 200ms
-```
-
-Correct format: A single markdown table with | Before | After | columns, one row per issue.
 
 ## Quick Start
 

@@ -29,8 +29,6 @@ Pairs with `/conductor` (worktree layout, target branch, `.context/`), `/git-wor
 
 Read-only throughout. Run steps in order, skip ones that don't apply, and stop early if the branch is obviously a no-op (zero ahead commits, no PR, no `.context/`).
 
-<!-- @> Resolve base via Conductor target → existing PR baseRefName → repo convention → ask. Then `git fetch origin <base>` before any diff — local refs go stale silently -->
-
 ### 1. Resolve the base and fetch
 
 Use the resolution order from `/pr-guidelines`: `CONDUCTOR_DEFAULT_BRANCH` → existing PR's `baseRefName` → repo convention (usually `main`) → ask. Then `git fetch origin <base>` so every later diff is against the current remote, not a stale local ref.
@@ -41,15 +39,9 @@ Use the resolution order from `/pr-guidelines`: `CONDUCTOR_DEFAULT_BRANCH` → e
 - `git log -1 --format='%cr — %s'` — how stale the branch is and the last thing done
 - `git status --short` and `git stash list` — in-flight and shelved work
 
-<!-- @> Diff against base uses three dots (`origin/<base>...HEAD`), not two. `..` is symmetric and includes changes the base has absorbed since the branch point, inflating the file list with work that isn't yours. `...` diffs from the merge-base and matches what GitHub shows. Prefer `gh pr view --json files` when a PR exists -->
+- `git diff --stat origin/<base>...HEAD` — scope at a glance. **Three dots for `diff`, not two** (semantics and the `log`/`diff` flip are in `/git-workflows`). When a PR exists, skip this and read files via `gh pr view --json files` in step 3 instead — the `gh` path can't be typo'd into the wrong form. If the `--stat` output is large, summarize by top-level directory rather than listing every file.
 
-- `git diff --stat origin/<base>...HEAD` — scope at a glance. **Three dots for `diff`, not two.** Two-dot is symmetric — it includes changes the base has absorbed since the branch point, inflating the file list with work that isn't yours. Three-dot diffs from the merge-base and matches what GitHub's PR view shows. When a PR exists, skip this and read files via `gh pr view --json files` in step 3 instead — the `gh` path can't be typo'd into the wrong form.
-
-Note that the dot semantics **flip** between `log` and `diff`: `A..B` for `log` means "commits in B not in A" (what you want); `A...B` for `diff` means "merge-base to B" (what you want). If the `--stat` output is large, summarize by top-level directory rather than listing every file.
-
-<!-- @> Report change size as +added/−removed from `--shortstat` or the PR's additions/deletions, never `wc -l` of a raw diff — a unified diff's line count includes context and @@/+++ headers, overstating the change ~2×; reconcile against the PR's number -->
-
-Report change size from the `--shortstat` summary's insertions/deletions, or the PR's own `additions`/`deletions` when one exists — never `wc -l` of a saved diff. A unified diff's line count includes unchanged context plus `@@`/`+++`/`---` headers, so it overstates the change, often by roughly 2×; if your figure is about double the PR view, that's the cause.
+Report change size from the `--shortstat` insertions/deletions, or the PR's own `additions`/`deletions` when one exists — never `wc -l` of a saved diff (see `/git-workflows`).
 
 ### 3. Open PR (if present)
 
@@ -63,8 +55,6 @@ When `gh pr view` returned a PR, read it in layers, cheapest first:
 
 ### 4. Session state
 
-<!-- @> `.context/` is gitignored inter-agent scratch; list it, read only files that look like active plans or recent notes (plan*.md, notes*.md, dated within a week). Some files are stale -->
-
 - **`.context/`** (Conductor workspaces, gitignored): list with `ls -la .context/` rather than reading every file. Users drop plan docs, handoff notes, and inter-agent scratch here; some of it is stale. Read files that look active — `plan*.md`, `notes*.md`, anything dated within the last week — and surface the rest by filename so the user can point at specific ones.
 - **Repo-level plan/spec files** on the branch: `plan.md`, `spec.md`, `TODO.md`, `.notes/` — surface them if they exist on the branch but not on the base.
 - **Changed agent instructions**: if the branch modifies `AGENTS.md`, `CLAUDE.md`, or nested equivalents, read the diff. Agent-instruction changes are almost always load-bearing for what the branch is trying to do.
@@ -77,8 +67,6 @@ If the agent already knows this repo, skip this step. Otherwise:
 - For a genuinely unknown repo with real history, consult [references/fresh-repo-diagnostics.md](references/fresh-repo-diagnostics.md) for the churn / team / bug-cluster commands — run those before picking files to read.
 
 ## Output format
-
-<!-- @> Synthesize into one structured summary, omit empty sections, end with a single "continue or redirect?" question. Never paste raw command output wholesale -->
 
 Produce one summary. Omit sections that don't apply rather than showing them empty. Each line is one fact.
 
@@ -96,7 +84,7 @@ Produce one summary. Omit sections that don't apply rather than showing them emp
 **Where to pick up** <one or two sentences synthesized from PR body, recent commits, and session notes — the concrete next step, not a paraphrase of the description>
 ```
 
-Finish with one question: *"Continue from here, or is there something specific you want to tackle first?"* This gives the user a chance to redirect before the agent acts on stale assumptions about which task is active.
+On a cold start, finish with one question: *"Continue from here, or is there something specific you want to tackle first?"* This gives the user a chance to redirect before the agent acts on stale assumptions about which task is active. When the user already gave a resume instruction ("continue", "pick up where we left off"), skip the question — the summary flows straight into the synthesized next step.
 
 ## Principles
 
@@ -104,5 +92,5 @@ Finish with one question: *"Continue from here, or is there something specific y
 - **Cheap before expensive.** Branch metadata and PR JSON are instant; diffs, comments, and full file reads cost. Stop early when there's clearly nothing to orient to.
 - **Synthesize, don't paste.** The value is in the short summary, not a transcript.
 - **Trust cross-linked skills.** `/conductor`, `/git-workflows`, and `/pr-guidelines` already cover their domains; re-deriving their rules here just drifts out of sync.
-<!-- @> Resume signals (continue, pick up, resume) trigger a full re-orient: re-fetch, re-status, re-read recent commits, check agent-started background processes. Don't claim work is undone before reading git log/status -->
+<!-- @> Resume signals (continue, pick up, resume) trigger a full /orient re-run — then proceed without re-asking. Don't claim work is undone before reading git log/status -->
 - **Resume signals trigger a full re-orient.** "Continue", "resume", "pick up where we left off", or any prompt that follows a pause is a signal that time has passed and side effects may have accumulated. Run the procedure from the top — re-fetch, re-status, re-check the PR, re-read recent commits. Don't claim any piece of work is undone before running `git log` and `git status`; the user can see committed history, and contradicting it costs trust. Also check any background processes the agent itself started (dev servers, watchers, `pm2` jobs) — they may be dangling, holding ports, or running against stale code.

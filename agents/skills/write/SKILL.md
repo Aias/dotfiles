@@ -179,6 +179,13 @@ Significant everywhere. Each section useful on its own, not a waypoint to the ne
 <!-- @> Docs: match the codebase's existing altitude and scope. Don't document internals (payloads, data attributes) nothing else documents, or present non-public surface as public. Keep feature docs durable (concepts, synonyms, product placement), not pinned to fast-changing UI. Ground claims against code across the whole stack -->
 **Match the surrounding altitude and scope.** Document at the level the codebase already documents: don't introduce internals (wire payloads, data attributes, private helpers) that nothing else documents, and don't describe a non-public surface as if it were public API. Keep feature docs durable — name the concept and its synonyms, where the feature lives in the product, and how users reach it; omit fast-changing specifics (exact layout, control labels, copy) that drift. Ground every claim against the actual code on each side of the stack the feature touches, not just the repo you are editing.
 
+**File links in markdown docs** (review docs, `.context/` files, etc.):
+
+- **Relative paths** resolve from the containing file's directory; **workspace-root paths** start with `/` and resolve from the project root (resilient to restructuring).
+- **Line numbers** use `#L<number>` fragment syntax: `[link](/path/to/file.ts#L21)`. The `:line` suffix does **not** work in editor markdown preview.
+- **Display text** can use the familiar `file.ts:21-45` format — only the link target needs `#L` syntax.
+- **Cursor-specific:** `cursor://file/<absolute-path>:line:col` opens a file at a line but requires absolute paths; use only in machine-local documents.
+
 ### Agent instructions, rules, and prompts
 
 Maximum density. Each rule one sentence if possible. Imperative mood. No hedging ("should probably", "might want to"). Pair principles with examples, and generalize every example — never the case that prompted the rule (see GLOBAL.md, "Examples teach the principle, not the incident"). This holds for LLM and image prompts too: abstract the one vendor, brand, or customer the prompt was written against into a representative form. For prompt-specific craft (affirmative framing, caching, length), see `/llm-prompt-authoring`.

@@ -107,7 +107,7 @@ Never list more than 3–4 bullets in a row. Break longer lists into conceptual 
 - Group small related changes at the end with "Also:" or "A couple other semi-related changes:".
 - Reference related work inline — link to tickets, Slack threads, Figma files, related PRs naturally in the text. For dependent PRs, see [Dependent and Cross-Repo PRs](#dependent-and-cross-repo-prs).
 
-<!-- @> Dependent/cross-repo PRs (e.g. frontend+backend): one PR per repo, share a ticket-named branch, cross-link with full URLs stating what each provides/depends on, name non-obvious causes. Ship order matters → block the downstream PR loudly: CHANGES_REQUESTED + all-caps "DO NOT MERGE UNTIL <linked PR> IS DEPLOYED" -->
+<!-- @> Cross-repo change: one PR per repo on a shared ticket-named branch, cross-linked with full URLs; when ship order matters, block the downstream PR loudly (CHANGES_REQUESTED + DO NOT MERGE note) -->
 
 ### Dependent and Cross-Repo PRs
 
@@ -156,7 +156,7 @@ Place `Fixes <ticket>` or `Closes <ticket>` on its own line, near the top (after
 - The phrase "smoke test"
 - "Generated with Claude Code" or similar AI footers / co-authorship
 
-<!-- @> Posting a GitHub comment/review is a publish action: only when asked, never unprompted. Attribute every agent-authored comment by leading with an italicized "<provider> <model> (<effort>)" line, followed by a blockquote with the comment — the agent posts under the user's account, so the body is the only signal. Not for PR titles/descriptions -->
+<!-- @> Attribute agent-authored GitHub comments: italic "<provider> <model> (<effort>)" line, then blockquote body — the agent posts under the user's account. Not for PR titles/descriptions -->
 
 ## PR Comments and Interactions
 
