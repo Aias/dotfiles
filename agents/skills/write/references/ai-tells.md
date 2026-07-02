@@ -88,6 +88,8 @@ Never use these words. They have been statistically drained of meaning:
 
 "delve", "dive into", "unpack", "leverage", "harness", "utilize", "ensure", "robust", "seamless", "comprehensive", "streamline", "foster", "empower", "bolster", "facilitate", "spearhead", "supercharge", "unlock", "future-proof"
 
+The ban targets the filler use. A domain term used in its literal sense — financial "leverage", "robust to noise" in statistics — is the precise word; cutting it leaves a vaguer one.
+
 Also: "straightforward", "I'd be happy to help", "10x"
 
 ### Inflated significance
@@ -179,7 +181,7 @@ Multiple qualifiers in one sentence: "It could potentially possibly be argued th
 
 The deepest tell. Human writing varies in density — some sentences carry heavy freight, others breathe, and meaning accumulates non-linearly across the piece. AI treats every sentence as independently evaluated, self-contained, comprehensible without surrounding context. This produces the "nutrition paste" quality recognizable on sight even without specific vocabulary tells.
 
-To counter: let some sentences depend on others. Let some carry less. Vary density deliberately.
+To counter: let some sentences depend on others (a pronoun that only resolves from the prior sentence), let some carry less (a short beat between two dense claims). The variation must track where the idea genuinely thins or thickens — alternating long and short sentences on a fixed pattern is a second, more obvious uniformity.
 
 ### Rhythmic triplets
 

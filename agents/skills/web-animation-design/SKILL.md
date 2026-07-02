@@ -86,6 +86,8 @@ Linear feels robotic and unnatural for interactive elements.
 
 **Avoid for UI animations.** Makes interfaces feel sluggish because the slow start delays visual feedback.
 
+<!-- @> Elements that animate together (modal+overlay, tooltip+arrow) share exact easing and duration — mismatched timings look broken even when each looks fine alone -->
+
 ### Paired Elements Rule
 
 Elements that animate together must use the same easing and duration. Modal + overlay, tooltip + arrow, drawer + backdrop—if they move as a unit, they should feel like a unit.
@@ -111,7 +113,7 @@ Elements that animate together must use the same easing and duration. Modal + ov
 | Modals, drawers                   | 200-300ms |
 | Page transitions                  | 300-400ms |
 
-**Rule:** UI animations should stay under 300ms. Larger elements animate slower than smaller ones.
+**Rule:** UI animations stay under 300ms (page transitions are the table's lone exception). Larger elements animate slower than smaller ones — scale within that ceiling (tooltip ~120ms, full-screen drawer ~280ms), never past it.
 
 ### The Frequency Principle
 
@@ -141,8 +143,8 @@ Determine how often users will see the animation:
 
 **Marketing vs. Product:**
 
-- Marketing: More elaborate, longer durations allowed
-- Product: Fast, purposeful, never frivolous
+- Marketing (landing pages, one-shot hero moments): more elaborate, longer durations allowed
+- Product (anything used repeatedly, including in-app onboarding): fast, purposeful, never frivolous — the frequency principle above decides borderline cases
 
 ## Spring Animations
 
@@ -151,9 +153,9 @@ Springs feel more natural because they don't have fixed durations—they simulat
 ### When to Use Springs
 
 - Drag interactions with momentum
-- Elements that should feel "alive" (Dynamic Island)
-- Gestures that can be interrupted mid-animation
-- Organic, playful interfaces
+- Gestures that can be interrupted mid-animation (springs retarget smoothly from current velocity; curves jump)
+
+An interaction that is neither a gesture nor interruptible takes the easing curves above by default — "it should feel alive/organic" is a wish, not a trigger.
 
 ### Configuration
 
@@ -299,7 +301,7 @@ Quick reference for common scenarios. See [PRACTICAL-TIPS.md](references/PRACTIC
 | Popover scales from wrong point | Set `transform-origin` to trigger location      |
 | Sequential tooltips feel slow   | Skip delay/animation after first tooltip        |
 | Small buttons hard to tap       | Use 44px minimum hit area (pseudo-element)      |
-| Something still feels off       | Add subtle blur (under 20px) to mask it         |
+| Something still feels off       | Last resort after checking easing, duration, and transform-origin: subtle blur (under 20px) to mask it |
 | Hover triggers on mobile        | Use `@media (hover: hover) and (pointer: fine)` |
 
 ## Easing Decision Flowchart

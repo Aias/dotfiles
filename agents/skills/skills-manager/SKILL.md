@@ -96,7 +96,7 @@ comm -23 \
 
 Do **not** substitute `Glob` — it returns files only and misses directory-only entries in `skills.local/`, which will produce false-positive orphans for valid local skills. Use `ls` (or `fd --type d --max-depth 1`).
 
-For each orphan: check `git log` for context, then propose `rm -rf ~/.claude/skills/NAME ~/.codex/skills/NAME` and ask for confirmation.
+For each orphan: check `git log` for context — a skill mid-rename looks identical to an orphan until the log shows the new path. Then propose `rm -rf ~/.claude/skills/NAME ~/.codex/skills/NAME` and ask for confirmation.
 
 ## Finding Skills
 

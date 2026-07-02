@@ -75,6 +75,8 @@ Reference these guidelines when:
 
 ### 5. Re-render Optimization (MEDIUM)
 
+These rules answer a *measured* re-render cost — don't add `memo`/`useMemo`/`useCallback` defensively; `/change-review` treats profiling-free memoization as churn, not optimization.
+
 - [`rerender-defer-reads`](references/rerender-defer-reads.md) — Don't subscribe to state only used in callbacks
 - [`rerender-memo`](references/rerender-memo.md) — Extract expensive work into memoized components
 - [`rerender-memo-with-default-value`](references/rerender-memo-with-default-value.md) — Hoist default non-primitive props

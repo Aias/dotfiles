@@ -27,6 +27,8 @@ Extract durable learnings from conversation context and persist them appropriate
    - Applicable across multiple sessions
    - Not already captured in existing rules
 
+   The test: would the rule have changed your behavior on a *different* task in the same domain? If it only fits this exact task or file, it's a one-off — decline to persist it and say so.
+
 3. **Determine storage location(s)** — A learning may require edits to multiple files:
 
    | Scope               | Location                                                                                | When to use                                                                                                        |
@@ -39,13 +41,14 @@ Extract durable learnings from conversation context and persist them appropriate
    | Agent-proactive note | Skill's `skill.feedback.md` (e.g. `~/Code/dotfiles/agents/skills/write/skill.feedback.md`) | Agent-initiated only: subtle preference inferred during a skill session that the user did not explicitly ask to be saved. Not for `/remember-that` invocations. |
 
    **Decision heuristics:**
+   - Global vs skill-scoped: a rule that holds regardless of tool or domain ("confirm before destructive actions") is GLOBAL.md; a rule that only binds while using a specific tool or workflow ("confirm before `rebase --continue`") belongs in that tool's skill. A rule with a tool name in it almost always belongs in the tool's skill.
    - "Every conversation" → global GLOBAL.md (direct or via skill annotation)
    - "Every conversation in this project" → project root `AGENTS.md` (create `CLAUDE.md` symlink if missing)
    - "When working with X technology/workflow" → skill SKILL.md (edit directly)
    - Agent noticed a subtle pattern the user did not explicitly flag → skill's `skill.feedback.md` (lightweight, no confirmation needed). Never route a `/remember-that` invocation here.
    - "Must not forget to do X before Y" → companion hook that reminds or blocks. Hook matchers filter by tool name only (regex); command-content filtering happens inside the script.
 
-   **Global via skill annotation:** When a learning falls within a skill that has `global_category` in its frontmatter (e.g. `/git-workflows`, `/react-best-practices`, `/change-review`), prefer editing/expanding the skill content AND adding a `<!-- @> token-dense summary -->` annotation above the relevant section. Then run `make compile` to regenerate the compiled GLOBAL.md index. This keeps the full context in the skill while surfacing a dense summary in always-loaded context.
+   **Global via skill annotation:** When a learning falls within a skill that has `global_category` in its frontmatter (e.g. `/git-workflows`, `/react-best-practices`, `/change-review`), prefer editing/expanding the skill content AND adding a `<!-- @> token-dense summary -->` annotation above the relevant section. Then run `make compile` to regenerate the compiled GLOBAL.md index. This keeps the full context in the skill while surfacing a dense summary in always-loaded context. Annotate only rules that change behavior in most invocations of the skill; edge cases and rare-branch guidance stay in the skill body unannotated — the always-loaded index has no room for caveats.
 
    This only applies to the dotfiles-source GLOBAL.md — project-level AGENTS.md and CLAUDE.md have no compilation step.
 

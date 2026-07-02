@@ -18,7 +18,7 @@ Craft for prompts that a downstream model reads, distinct from prose a human rea
 <!-- @> Prompt the model toward the target, never away from a distractor: "not X" anchors it on X. Affirmative instructions; describe the wanted output, not the banned one -->
 **Prefer affirmative instructions.** State what the output should be, not what it should avoid. A negative instruction injects the excluded concept into the context, and the model anchors on it: image and language models alike sample toward salient tokens and weight `not` weakly. "Render an empty room" beats "render a room with no people"; "extract only verifiable claims" beats "don't extract opinions." This is the bag-of-words skim from `/write`, sharpened. Here the reader literally conditions on every token you write, so a banned concept you name becomes a concept you summoned.
 
-**When you must exclude, name the positive alternative.** If a constraint is unavoidable, pair it with the wanted target so the model has something to move toward: "use a neutral gray background" rather than "avoid colored backgrounds."
+**When you must exclude, name the positive alternative.** If a constraint is unavoidable, pair it with the wanted target so the model has something to move toward: "use a neutral gray background" rather than "avoid colored backgrounds." First try collapsing the pair into the positive half alone — if the wanted description already implies the exclusion, keep only it; retain an explicit negative only when no positive phrasing covers the constraint.
 
 **Keep examples on-target.** Few-shot examples and counter-examples both teach by demonstration; a vivid counter-example can be imitated as readily as a positive one. Lead with examples of the output you want.
 

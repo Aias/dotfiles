@@ -7,13 +7,16 @@ Read-only fan-out across a change-set. Output: numbered findings in chat.
 These are non-negotiable.
 
 - **Read-only.** No code edits, no commits, no GitHub or Linear comments unless explicitly authorized in this turn. Output is chat text only.
-- **No `AskUserQuestion` during the review.** Complete the review without user intervention; questions go in the report's "open questions" section.- **Verify, don't punt — and verify the invariant, not just the symptom.** Anything verifiable during the review must be verified by the reviewer — not asked back to the user. That includes reading library source code (locally in `node_modules` or upstream on GitHub), official docs, framework release notes, RFCs, GitHub issues/PRs, and the project's own git history. Web search and validation against public documentation are first-class tools for every subagent in the fan-out. Findings of the form *"this might be wrong, can you confirm?"* are not findings — they're questions the reviewer was supposed to resolve.
+- **No `AskUserQuestion` during the review.** Complete the review without user intervention; questions go in the report's "open questions" section.
+- **Verify, don't punt — and verify the invariant, not just the symptom.** Anything verifiable during the review must be verified by the reviewer — not asked back to the user. That includes reading library source code (locally in `node_modules` or upstream on GitHub), official docs, framework release notes, RFCs, GitHub issues/PRs, and the project's own git history. Web search and validation against public documentation are first-class tools for every subagent in the fan-out. Findings of the form *"this might be wrong, can you confirm?"* are not findings — they're questions the reviewer was supposed to resolve.
 
   Extend the same rule to the invariant a finding rests on. If your claim is *"X is the case today,"* X is itself a verification step — confirm it by reading the code, not by intuition. A dedup proposal that assumes *"selected always equals the most recent"* must read the path that produces "selected." A nullability claim must read the schema. For compliance findings across multiple call sites, enumerate which sites already comply and which don't, in the finding itself — don't lump them.
 - **Cite file path + line range on every finding.** A claim without a citation is a question you should have answered yourself. For claims grounded in external sources, cite the URL (docs page, library file, release note) too.
-- **Never restate the diff.** Don't include lines of code or states already obvious from the GitHub UI. Findings only.- **Name the impact, not just the mechanism.** A finding that says *"this Bull queue retries the failure notification"* is half a finding. The other half is what the operator or end-user observes: *"three persistent ChatEvent rows in conversation history, three response cycles, customer sees 'I'm having trouble' turns before the retry succeeds."* Without the impact line, the reader can't tell whether to block.
+- **Never restate the diff.** Don't include lines of code or states already obvious from the GitHub UI. Findings only.
+- **Name the impact, not just the mechanism.** A finding that says *"this Bull queue retries the failure notification"* is half a finding. The other half is what the operator or end-user observes: *"three persistent ChatEvent rows in conversation history, three response cycles, customer sees 'I'm having trouble' turns before the retry succeeds."* Without the impact line, the reader can't tell whether to block.
 
-  For security findings specifically: include a concrete attack walkthrough — the API call, the inputs, the caller's permissions, and **what the attacker accomplishes beyond what their legitimate access already grants them.** Tag the finding `blocker` (the attacker gains capability they don't have) or `defense-in-depth` (the attacker can already do the equivalent legitimately; the fix is hygiene/audit-trail integrity). A `defense-in-depth` security finding is Medium, not High.- **Recommend the fix, don't menu it.** GLOBAL.md's *"recommend, don't menu"* rule applies inside findings too. One recommended fix per finding. Alternatives belong in prose (*"if the queue API exposes an exhausted-retries hook, prefer that; otherwise gate on `attemptsMade`"*), not in bulleted A/B options that push the choice back to the reader.
+  For security findings specifically: include a concrete attack walkthrough — the API call, the inputs, the caller's permissions, and **what the attacker accomplishes beyond what their legitimate access already grants them.** Tag the finding `blocker` (the attacker gains capability they don't have) or `defense-in-depth` (the attacker can already do the equivalent legitimately; the fix is hygiene/audit-trail integrity). A `defense-in-depth` security finding is Medium, not High.
+- **Recommend the fix, don't menu it.** GLOBAL.md's *"recommend, don't menu"* rule applies inside findings too. One recommended fix per finding. Alternatives belong in prose (*"if the queue API exposes an exhausted-retries hook, prefer that; otherwise gate on `attemptsMade`"*), not in bulleted A/B options that push the choice back to the reader.
 
   Before suggesting *removal* of incomplete code, read the diff's intent. **Broken-because-unfinished** is not the same as **broken-because-buggy**: a not-yet-wired feature should be wired up, not amputated. The fix has to come from what the author was trying to do, not from the assumption that the broken piece should go away.
 - **Numbered list with stable IDs** (`#1`, `#2`, ...). The user replies with positional refs ("fix 2, 3, 5", "walk me through #1"). Aggregated prose loses this affordance.
@@ -37,11 +40,11 @@ Never diff `dev...main` or any other long-lived-base-to-base range. It pulls in 
 
 ## Phase 2: Fan-out
 
-For any non-trivial diff, **always fan out across parallel subagents.** Single-pass review is the dominant failure mode the user pushes back on (*"there's no way you reviewed all 17k lines of that code"*). Parallel agents are also strongly preferred over hand-written codemods or scripted refactors.
+For any non-trivial diff, **always fan out across parallel subagents.** Non-trivial means the diff touches logic or spans multiple files; a single-file config, typo, or lockfile change reads in one pass — don't spin up subagents to review a two-line fix. Single-pass review is the dominant failure mode the user pushes back on (*"there's no way you reviewed all 17k lines of that code"*). Parallel agents are also strongly preferred over hand-written codemods or scripted refactors.
 
 Launch agents in a single message so they run concurrently. Each agent gets the full diff (or its bucket) plus the PR title and description for author intent.
 
-**Model tier: every review and validator subagent runs on the latest Opus at high or extra-high effort** — a judgment call per axis (reach for extra-high on the densest buckets, high is fine for the rest); max is never needed. The analysis quality is the constraint, not tokens or latency — a weaker model that misses the bug or the simplification costs more than it saved. Reserve faster models only for narrow retrieval fan-out (collecting files, grepping call sites) whose raw output an Opus agent then reasons over.
+**Model tier: every review and validator subagent runs on the Sonnet tier at high or extra-high effort** (per GLOBAL.md) — a judgment call per axis (reach for extra-high on the densest buckets, high is fine for the rest); max is never needed. The analysis quality is the constraint, not tokens or latency — a subagent that misses the bug or the simplification costs more than it saved. Reserve faster models only for narrow retrieval fan-out (collecting files, grepping call sites) whose raw output a stronger agent then reasons over.
 
 ### Code-judo lens
 
@@ -59,12 +62,14 @@ This is the lens, not an axis. Apply it inside each subagent below.
 All axes — including spec conformance — launch together in one message and run **in parallel**. Spec conformance is special only at synthesis: its findings are read *first* and used to set the disposition of every other axis's findings (see [Synthesis](#synthesis-let-spec-conformance-set-disposition)), not to gate the other agents.
 
 **Axis 1: Bug scan.**
-Look for obvious bugs in the diff itself — incorrect logic, broken control flow, off-by-ones, missing awaits, mishandled errors. Focus on the diff; don't reach outside it for context unless the finding requires it. Flag only significant bugs that will cause incorrect behavior at runtime.
+Look for obvious bugs in the diff itself — incorrect logic, broken control flow, off-by-ones, missing awaits, mishandled errors. Focus on the diff; don't reach outside it for context unless the finding requires it. Flag only bugs that fire on a plausible real input or state and change observable behavior (wrong output, crash, hang, data loss) — not edge cases the type system or an upstream guard already rules out.
 
 **Axis 2: AGENTS.md / CLAUDE.md compliance.**
 Audit the diff for compliance with AGENTS.md / CLAUDE.md rules. When evaluating compliance for a file, only consider AGENTS.md / CLAUDE.md files that share a path with the file or its parents. Quote the exact rule being broken; if you can't quote it, don't flag it.
+
 **Axis 3: Dead code, duplication & unexplained scope.**
 Look for code introduced by the diff that is unused, unreachable, or duplicates existing code. Also look for **uncovered dead code** — code elsewhere that became unused because of this diff (utilities only the removed feature called, design tokens it used, GraphQL fields it queried, fixtures it referenced). Cross repo boundaries when relevant (acorn ↔ chestnut for full-stack work).
+
 **Search scope is broader than finding scope.** To catch a new helper that re-implements an existing utility — or existing code the diff just orphaned — detection must range over the whole module/package, not only the changed files. A function the diff adds that already exists elsewhere is diff-**introduced** duplication even though its twin sits in an untouched file, so it's in scope; pre-existing duplication between two files the diff never touched is a [pre-existing issue](#explicit-false-positives), not a finding. Run `jscpd` / `similarity-ts` against the package, then keep only findings where the diff is one side of the duplication. `knip` is already whole-project, so it covers the dead-code-elsewhere direction on its own.
 
 Flag **unexplained scope creep** even when the code is reachable: a behavior, flag, or branch the diff adds that isn't on the base, isn't called for by the PR description or the task, and has no deliberate reason you can trace. A query gaining an extra filter parameter, or a handler sprouting a mode nobody asked for, reads as accidental — recommend reverting it rather than assuming the author meant it. Unrelated cosmetic churn dragged in by a focused edit (an import reorder, a sweeping reformat) belongs in the same bucket: recommend excluding it from the diff, leaving the split-into-its-own-commit alternative to prose. Read the PR description and `git blame` the surrounding lines before flagging — if the addition traces to stated intent, it's in scope.
@@ -108,6 +113,7 @@ Duplicated work & orchestration:
 - Unnecessary work: redundant computation, N+1, repeated file reads.
 - Sequential async flow where obviously independent work could run in parallel.
 - Partial-update logic that leaves state less atomic than necessary.
+
 **Axis 5: Spec conformance (only when an originating spec exists).**
 Runs only when the change traces to a written spec — a Linear/GitHub issue, a PRD, an RFC, a kickoff or design doc. Resolve the spec in this order: issue references in the commit messages or PR description (`PROJ-123`, `Closes #45`) → a spec path the user named → a PRD/RFC under `docs/`, `specs/`, or the ticket linked on the PR. If none of these resolve, **skip this axis and note "no spec available"** — never invent requirements to grade against.
 
@@ -117,6 +123,8 @@ Give the agent the resolved spec plus the diff, and have it report three finding
 - **Missing / partial** — the spec asks for something the diff doesn't implement, or implements partway. Could be a genuine gap or a deliberate descope; frame it as *"spec asks X, diff omits it — intended?"* rather than asserting failure.
 - **Diverges** — the diff implements the requirement differently than the spec describes. Frame bidirectionally — *"code does X, spec says Y — which is current?"* — not as *"the code is wrong."*
 - **Unrequested** — behavior the diff adds that the spec never mentions. Overlaps Axis 3's scope-creep detection from the requirements side; let synthesis dedup. The spec's silence doesn't make it wrong — the spec may simply be behind.
+
+When the same divergence pattern repeats across several findings, name it once as a systemic note rather than a run of separately-hedged reconciliation items — one design decision applied N times is one finding.
 
 This axis surfaces **reconciliation items the author resolves**, and it informs disposition at synthesis — but because the spec may be the stale side, it steers disposition only on a *confirmed* divergence, never on the spec's word alone.
 
@@ -224,14 +232,15 @@ Do not flag any of these. They erode the signal-to-noise ratio.
 
 - **Pre-existing issues** — only flag what the diff introduced or worsened.
 - **Linter-catchable issues** — assume the linter runs; don't duplicate it. (Do not run the linter yourself to verify.)
-- **Pedantic nitpicks** a senior engineer wouldn't flag.
+- **Pedantic nitpicks** — a naming preference with no ambiguity cost, formatting a linter would catch, or a style choice with no behavioral or readability difference from the alternative.
 - **General code-quality concerns** (test coverage, generic security worries) unless explicitly required by AGENTS.md / CLAUDE.md.
 - **Issues silenced explicitly in code** (lint-ignore comments, `// known issue`) — the author already decided.
 - **Intentional scaffolding** — design-system primitives, re-export barrels, framework-required exports.
 - **Repetition that serves an argument** — callbacks, deliberate restatement, layered comments. Only flag *fully duplicated / redundant* sections.
 - **Specific semantic intent** — `<dialog>` for top-layer behavior, `<a download>` for download semantics, `useId` for SSR-stable IDs. Read the intent before flattening.
 - **Test files when the diff is non-test** unless the test file itself has a bug.
-- **Style suggestions** not explicitly required by AGENTS.md / CLAUDE.md.- **Behavior the diff deliberately changes.** When the PR's stated purpose is to remove, loosen, or replace a behavior, don't flag that removal as a regression — it's the point of the change. Confirm the intent against the PR description or the originating spec, then flag only if the deliberate change has a blast radius the author plausibly didn't weigh (e.g. dropping a guard also exposes an unrelated path). A hardcoded-broad value or removed gate chosen on purpose is an intentional change, not a bug.
+- **Style suggestions** not explicitly required by AGENTS.md / CLAUDE.md.
+- **Behavior the diff deliberately changes.** When the PR's stated purpose is to remove, loosen, or replace a behavior, don't flag that removal as a regression — it's the point of the change. Confirm the intent against the PR description or the originating spec, then flag only if the deliberate change has a blast radius the author plausibly didn't weigh (e.g. dropping a guard also exposes an unrelated path). A hardcoded-broad value or removed gate chosen on purpose is an intentional change, not a bug.
 
 If you're not certain an issue is real, drop it — unless its potential impact is high (data loss, security, silent corruption), in which case surface it tagged with what's unverified, per [confidence-gated reporting](#standing-rules-override-all-defaults).
 
@@ -270,6 +279,7 @@ In rough order of how often they appear in past sessions:
 - **`gh pr diff`, `gh pr view --json files,baseRefName`** — PR-context REVIEW.
 - **`git diff origin/<base>...HEAD`** (three-dot, after fetch) — branch-vs-base REVIEW.
 - **`mcp__conductor__GetWorkspaceDiff`** — Conductor REVIEW.
+
 **Static-analysis seeds — leads, never findings.** These surface candidates fast; none is authoritative. Every hit is confirmed by reading the actual code and call sites before it becomes a finding — the verify-don't-punt and [confidence-gated reporting](#standing-rules-override-all-defaults) rules apply to tool output too. Newer tools (deslop, react-doctor) over-flag; lean on the verification step.
 
 Run them with **`bunx`** (fast, and confirmed to leave the reviewed repo's lockfile / `package.json` / working tree untouched — it caches globally, not in cwd); `npx` is the fallback where bun isn't installed.

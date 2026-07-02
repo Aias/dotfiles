@@ -26,7 +26,7 @@ Scan `~/Code/dotfiles/agents/skills/*/skill.feedback.md` for files with content.
 
 For each skill with feedback, read both the feedback file and the skill's source SKILL.md. Look for:
 
-- **Repeated corrections** — The same preference stated 2+ times (possibly in different words). These are the highest-signal patterns.
+- **Repeated corrections** — The same preference stated 2+ times (possibly in different words). These are the highest-signal patterns. Recognize sameness by the underlying preference, not surface phrasing — "too verbose", "cut the throat-clearing", and "get to the point faster" are one pattern, not three one-offs.
 - **Clusters** — Related corrections that point to a missing or weak section in the skill (e.g., several tone corrections suggest a missing voice/style section).
 - **One-offs** — Single corrections that may be task-specific rather than generalizable. Leave these in the feedback file for now.
 
@@ -34,7 +34,7 @@ For each skill with feedback, read both the feedback file and the skill's source
 
 For each pattern identified, draft a concrete SKILL.md edit:
 
-- Write the correction as a proper instruction in the skill's voice
+- Write the correction as a proper instruction in the skill's voice — distill the principle behind the feedback, never lift the user's correction phrasing verbatim (it reads as a complaint and won't generalize past the case that prompted it)
 - Identify where in SKILL.md it belongs (existing section, new section, or inline with related content)
 - If the skill has `global_category` in frontmatter and the correction is important enough for always-in-context, draft a `<!-- @> summary -->` annotation too
 - Show the user the before/after for each proposed edit
@@ -84,7 +84,7 @@ Summarize what was promoted, what remains in feedback, and which skills were upd
 ## Principles
 
 - **Consolidate, don't accumulate.** A promoted instruction should replace multiple feedback entries, not paraphrase them individually.
-- **Keep promotions proportionate.** Match the weight of the rule to its home: a simple preference is one or two sentences inline in the existing section, never a fresh `references/*.md` file. Reserve a new reference file for a genuinely large, self-contained body of guidance. When in doubt, the smaller home wins.
+- **Keep promotions proportionate.** Match the weight of the rule to its home: a simple preference is one or two sentences inline in the existing section, never a fresh `references/*.md` file. Reserve a new reference file for a genuinely large, self-contained body of guidance — a source text, a lookup table, or a procedure long enough that inlining would double SKILL.md. When in doubt, the smaller home wins.
 - **Condense, don't only grow.** Every refinement pass is also a trim pass. Before adding, audit the skill for redundancy, stale guidance, and examples that can do more work, then reorganize toward the skill's current best shape. Leave the file shorter and tighter than you found it; if it grew, the new material must earn more than it costs.
 - **Route correctly.** If a correction belongs in a different skill or in GLOBAL.md, route it there via `/remember-that` logic rather than forcing it into the current skill.
 - **Preserve the skill's voice.** Promoted instructions should read as natural parts of the skill, not as appended afterthoughts.

@@ -84,7 +84,7 @@ Sentence-level prose craft, grounded in canonical sources and working writers:
 
 1. **Read the whole piece first.** Understand its shape before touching anything.
 2. **Sentence by sentence.** Read with a P/N meter. Thousands of small intuitive choices — this word or that, here or there. Each makes the piece more distinctly yours. What does each sentence actually say? Is that what it should say? Can it be shorter?
-3. **Hunt clichés, nominalizations, weasel words, and filler.** Phrases that arrive pre-assembled ("in order to", "it should be noted that", "at the end of the day"): replace or remove. Verbs turned into nouns: turn them back. Three kinds of weasel words: (a) salt-and-pepper — sound technical, convey nothing ("various", "a number of", "fairly", "quite"); (b) beholder — meaning depends on reader ("interestingly", "surprisingly", "remarkably", "clearly"); (c) lazy — avoid quantification ("very", "extremely", "several", "many", "most", "few", "vast").
+3. **Hunt clichés, nominalizations, weasel words, and filler.** Phrases that arrive pre-assembled ("in order to", "it should be noted that", "at the end of the day"): replace or remove. Verbs turned into nouns: turn them back. Three kinds of weasel words: (a) salt-and-pepper — sound technical, convey nothing ("various", "a number of", "fairly", "quite"); (b) beholder — meaning depends on reader ("interestingly", "surprisingly", "remarkably", "clearly"); (c) lazy — avoid quantification ("very", "extremely", "several", "many", "most", "few", "vast"). A flagged word carrying the sentence's only quantification isn't filler — replace it with the real figure or keep it; a deletion that turns a partial claim absolute is a miscorrection.
 4. **Check transitions.** Earned by the sentences themselves, or scaffolding ("However", "Additionally", "Furthermore") hiding weak connections?
 5. **Apply constraint.** Arbitrary constraints (shorten by one line, cut 10%) shake the bin of ideas. Any change must be a change for the better. If you write "in other words...", delete everything before it.
 6. **The boxing method.** In later drafts, bracket uncertain words. Then hunt for replacements systematically.
@@ -94,7 +94,7 @@ Sentence-level prose craft, grounded in canonical sources and working writers:
 
 LLMs produce recognizable tics. Hunt and eliminate these during every editing pass. For the full catalog with before/after examples: [references/ai-tells.md](references/ai-tells.md)
 
-<!-- @> No negate-then-reframe, no em dashes, no -ing tails, no dead AI vocabulary, no hedging stacks, no throat-clearing, no sycophancy -->
+<!-- @> No negate-then-reframe, no em dashes, no -ing tails, no dead AI vocabulary, no hedging stacks, no throat-clearing, no sycophancy. Tells are the filler use, not literal domain use -->
 **Never negate-then-reframe.** "This isn't X. This is Y." / "Not X. Y." / "Forget X. This is Y." / "Less X, more Y." Any sentence that negates one framing then asserts a corrected one. Delete the negation; state the positive claim. This is the single most fatal AI marker.
 
 **No em dashes.** Use commas, periods, colons, semicolons, or parentheses.
@@ -103,7 +103,7 @@ LLMs produce recognizable tics. Hunt and eliminate these during every editing pa
 
 **No -ing phrase tails.** Cut participial phrases tacked onto sentences for fake depth: "ensuring better maintainability", "showcasing the team's commitment."
 
-**No dead AI vocabulary.** "Delve", "dive into", "unpack", "leverage", "harness", "utilize", "ensure", "robust", "seamless", "comprehensive", "streamline", "foster", "empower", "supercharge", "unlock", "future-proof", "straightforward." If it sounds like a press release, cut it.
+**No dead AI vocabulary.** "Delve", "dive into", "unpack", "leverage", "harness", "utilize", "ensure", "robust", "seamless", "comprehensive", "streamline", "foster", "empower", "supercharge", "unlock", "future-proof", "straightforward." If it sounds like a press release, cut it. The ban is on the filler use — a domain term used literally ("ensure the lock is held", "robust to noise") stays.
 
 **No abstract place-words.** "Landscape", "realm", "tapestry", "journey" (figurative). AI uses spatial metaphors for everything because it can't experience the world.
 
@@ -135,7 +135,7 @@ The voice sits between spoken and written: conversational erudition. Closer to h
 
 ### Sentence feel
 
-Longer, varied sentences with internal complexity. Commas and semicolons over periods. Sentences wind and breathe. Spoken connective tissue ('sort of', 'sure, but') alongside elevated vocabulary ('cathexis', 'autopoiesis', 'cultivate') in the same breath. The contrast between conversational cadence and erudite diction is a signature trait; do not smooth it out. But fillers must match the register of the sentence they're in: natural in conversational moments, forced in expository ones.
+Longer, varied sentences with internal complexity. Commas and semicolons over periods. Sentences wind and breathe. Spoken connective tissue ('sort of', 'sure, but') alongside elevated vocabulary ('cathexis', 'autopoiesis', 'cultivate') in the same breath. The contrast between conversational cadence and erudite diction is a signature trait; do not smooth it out. But fillers must match the register of the sentence they're in: natural in conversational moments, forced in expository ones. The mix works at paragraph grain — a register shift in every sentence reads as noise, not voice.
 
 ### Subject and stance
 
@@ -143,7 +143,7 @@ Minimize first person 'I'. The subject should be the thing, not the writer. No c
 
 ### Openings
 
-Lead with the thing itself. 'I've been thinking about' and 'I keep thinking about' are not hooks; if the thing is interesting, say it. Don't open with a person's credentials or field as the first sentence ('The metallurgist X observed that...') — establish the idea first, then introduce the person. Examples or anecdotes work when a direct statement isn't enough.
+Lead with the thing itself. 'I've been thinking about' and 'I keep thinking about' are not hooks; if the thing is interesting, say it. Don't open with a person's credentials or field as the first sentence ('The metallurgist X observed that...') — establish the idea first, then introduce the person. Examples or anecdotes work when the claim is too abstract to land without an instance; don't append one to a claim that's already self-evident.
 
 ### Closings
 
@@ -188,7 +188,7 @@ Significant everywhere. Each section useful on its own, not a waypoint to the ne
 
 ### Agent instructions, rules, and prompts
 
-Maximum density. Each rule one sentence if possible. Imperative mood. No hedging ("should probably", "might want to"). Pair principles with examples, and generalize every example — never the case that prompted the rule (see GLOBAL.md, "Examples teach the principle, not the incident"). This holds for LLM and image prompts too: abstract the one vendor, brand, or customer the prompt was written against into a representative form. For prompt-specific craft (affirmative framing, caching, length), see `/llm-prompt-authoring`.
+Maximum density. Each rule one sentence if possible. Imperative mood. No hedging ("should probably", "might want to"). Pair principles with examples, and generalize every example — never the case that prompted the rule (see GLOBAL.md, "Examples teach the principle, not the incident"). Generalize without sanding to a truism: the example must keep a real decision point — showing where the rule does *not* apply — or it teaches nothing. This holds for LLM and image prompts too: abstract the one vendor, brand, or customer the prompt was written against into a representative form. For prompt-specific craft (affirmative framing, caching, length), see `/llm-prompt-authoring`.
 
 ### Comments in code
 

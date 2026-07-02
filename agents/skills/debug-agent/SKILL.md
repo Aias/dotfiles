@@ -25,11 +25,13 @@ You are now in **DEBUG MODE**. You must debug with **runtime evidence**.
    - **If reproduction is straightforward** (e.g., a single CLI command, a curl request, a simple script): write and run an ad hoc reproduction script yourself. Tailor it to the runtime — drive the browser via `/agent-browser` for frontend bugs, a Node/Python/shell script for backend bugs, etc.
    - **Otherwise**: ask the user to reproduce it. Provide clear, numbered steps. Remind them to restart apps/services if instrumented files are cached or bundled. Offer: "If you'd like me to write a reproduction script instead, let me know."
    - Once the user confirms a reproduction pathway (manual or automated), reuse it for all subsequent iterations without re-asking.
-4. **Analyze logs**: evaluate each hypothesis (CONFIRMED/REJECTED/INCONCLUSIVE) with cited log line evidence
+4. **Analyze logs**: evaluate each hypothesis (CONFIRMED/REJECTED/INCONCLUSIVE) with cited log line evidence. CONFIRMED requires a log value only that hypothesis predicts — if a competing hypothesis would produce the same line, mark INCONCLUSIVE and add a discriminating log
 5. **Fix only with cited log proof**; do NOT remove instrumentation yet
 6. **Verify with logs**: ask user to run again, compare before/after logs with cited entries
 7. **If logs prove success** and user confirms: remove all instrumentation by searching for `#region debug log` / `#endregion` markers and deleting those blocks (see Cleanup section). **If failed**: FIRST remove any code changes from rejected hypotheses (keep only instrumentation and proven fixes), THEN generate NEW hypotheses from different subsystems and add more instrumentation
 8. **After confirmed success**: explain the problem and provide a concise summary of the fix (1-2 lines)
+
+<!-- @> Debug from runtime evidence, never code reasoning alone: instrument, reproduce, cite log lines to confirm/reject each hypothesis, and fix only what the logs prove -->
 
 **Critical constraints:**
 

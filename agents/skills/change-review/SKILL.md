@@ -101,7 +101,7 @@ When categorizing a large diff, split into: **generated / boilerplate / moved / 
 ### What NOT to remove
 
 - `useCallback`, `useMemo`, `memo`, or other performance primitives — only change with profiling evidence or explicit user direction.
-- **Intentional scaffolding.** Re-export barrels, design-system primitives (`*.primitives.tsx`), and framework-required exports may look "unused" to knip but exist for a reason. Ask before pruning.
+- **Intentional scaffolding.** Re-export barrels, design-system primitives (`*.primitives.tsx`), and framework-required exports may look "unused" to knip but exist for a reason. Ask before pruning. (No tension with [Barrel files](#barrel-files): never *create* new barrels; don't *delete* existing ones without asking.)
 - **Repetition that serves an argument.** Callbacks, deliberate restatement, or layered comments that reinforce intent are not duplication. Only flag *fully duplicated / redundant* sections.
 - **Specific semantic intent.** A `<dialog>` wrapper exists for top-layer semantics; a button-styled-as-link exists for download behavior. Read the intent before flattening.
 

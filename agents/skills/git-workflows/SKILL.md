@@ -36,9 +36,11 @@ A collection of git-related workflows and guidelines. Use this skill for any git
 
 **Never force push.** Do not run `git push --force`, `--force-with-lease`, or any force-push variant under any circumstances. If remote history needs rewriting, the user will do it manually.
 
-**Pre-commit checks are mandatory:** Always run the project's standard lint, typecheck, format, and aggregate check scripts before any commit — not only before PRs. Fix any failures before committing.
+<!-- @> Pre-commit checks are mandatory: run the project's lint/typecheck/format scripts before every commit, not just before PRs — fix failures, never commit past a red check to "save progress" -->
 
-**Commit scope awareness:** Before committing, review what's staged. Never commit temporary debugging instrumentation, one-off migration scripts, or exploratory code unless the user explicitly asks. If you added `console.log` or debug logging during investigation, clean it up before committing.
+**Pre-commit checks are mandatory:** Always run the project's standard lint, typecheck, format, and aggregate check scripts before any commit — not only before PRs. Fix any failures before committing; never commit past a red check to "save progress".
+
+**Commit scope awareness:** Before committing, review every staged hunk, not just the file list — debug leftovers hide inside legitimately-changed files. Never commit temporary debugging instrumentation, one-off migration scripts, or exploratory code unless the user explicitly asks. If you added `console.log`, debug logging, or commented-out code during investigation, remove it before committing.
 
 **Repository operations:**
 
