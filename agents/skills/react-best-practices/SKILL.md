@@ -7,8 +7,7 @@ description: >
 global_category: React
 ---
 
-<!-- @> v19+: no forwardRef. No useEffect for transforms/events/state — calculate in render/handlers -->
-<!-- @> Read `/avoid-effects` before adding Effects. rAF > setTimeout. Iterate to repeat -->
+<!-- @> v19+: no forwardRef (ref is a prop). No useEffect for transforms/events/derived state — calculate in render or handlers; read `/avoid-effects` before adding any Effect. rAF over setTimeout for frame work -->
 
 # React Best Practices
 

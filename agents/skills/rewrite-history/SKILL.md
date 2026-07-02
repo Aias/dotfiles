@@ -7,7 +7,6 @@ description: >
   for permission gates.
 argument-hint: [base-branch]
 allowed-tools: Bash(git:*), Read, Glob, Grep, Edit, Write
-model: opus
 ---
 
 ## Context
@@ -85,8 +84,7 @@ This is a destructive rewrite of the current branch. The user will force-push th
 
 ### Rules
 
-- Never add yourself as an author or contributor
-- Never include "Generated with Claude Code" or "Co-Authored-By" lines in commits
+- Commit authorship follows GLOBAL.md: single authorial point of view, no AI attribution or `Co-Authored-By` lines
 - The final tree SHA must exactly match the original — this is the only correctness check that matters
 - Do not open a pull request — that is a separate workflow
 - Do not force-push — only the user does that

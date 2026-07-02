@@ -4,27 +4,21 @@ Read-only fan-out across a change-set. Output: numbered findings in chat.
 
 ## Standing rules (override all defaults)
 
-These are non-negotiable. The user has codified them repeatedly across hundreds of sessions, including as standing preferences attached to Conductor review requests.
+These are non-negotiable.
 
 - **Read-only.** No code edits, no commits, no GitHub or Linear comments unless explicitly authorized in this turn. Output is chat text only.
-- **No `AskUserQuestion` during the review.** Complete the review without user intervention; questions go in the report's "open questions" section.
-<!-- @> Verify, don't punt — and verify the invariant, not just the symptom. Anything verifiable must be resolved by the reviewer using library source, docs, web search, RFCs, git history, issues/PRs. If a finding rests on "X is true today," confirm X. For multi-site compliance, enumerate per-site status in the finding -->
-- **Verify, don't punt — and verify the invariant, not just the symptom.** Anything verifiable during the review must be verified by the reviewer — not asked back to the user. That includes reading library source code (locally in `node_modules` or upstream on GitHub), official docs, framework release notes, RFCs, GitHub issues/PRs, and the project's own git history. Web search and validation against public documentation are first-class tools for every subagent in the fan-out. Findings of the form *"this might be wrong, can you confirm?"* are not findings — they're questions the reviewer was supposed to resolve.
+- **No `AskUserQuestion` during the review.** Complete the review without user intervention; questions go in the report's "open questions" section.- **Verify, don't punt — and verify the invariant, not just the symptom.** Anything verifiable during the review must be verified by the reviewer — not asked back to the user. That includes reading library source code (locally in `node_modules` or upstream on GitHub), official docs, framework release notes, RFCs, GitHub issues/PRs, and the project's own git history. Web search and validation against public documentation are first-class tools for every subagent in the fan-out. Findings of the form *"this might be wrong, can you confirm?"* are not findings — they're questions the reviewer was supposed to resolve.
 
   Extend the same rule to the invariant a finding rests on. If your claim is *"X is the case today,"* X is itself a verification step — confirm it by reading the code, not by intuition. A dedup proposal that assumes *"selected always equals the most recent"* must read the path that produces "selected." A nullability claim must read the schema. For compliance findings across multiple call sites, enumerate which sites already comply and which don't, in the finding itself — don't lump them.
 - **Cite file path + line range on every finding.** A claim without a citation is a question you should have answered yourself. For claims grounded in external sources, cite the URL (docs page, library file, release note) too.
-- **Never restate the diff.** Don't include lines of code or states already obvious from the GitHub UI. Findings only.
-<!-- @> Name the impact, not just the mechanism. Every bug finding states what the operator/end-user observes. Security findings include a concrete attack walkthrough (API call + inputs + what the attacker gains beyond legitimate access) and a `blocker` vs `defense-in-depth` tag -->
-- **Name the impact, not just the mechanism.** A finding that says *"this Bull queue retries the failure notification"* is half a finding. The other half is what the operator or end-user observes: *"three persistent ChatEvent rows in conversation history, three response cycles, customer sees 'I'm having trouble' turns before the retry succeeds."* Without the impact line, the reader can't tell whether to block.
+- **Never restate the diff.** Don't include lines of code or states already obvious from the GitHub UI. Findings only.- **Name the impact, not just the mechanism.** A finding that says *"this Bull queue retries the failure notification"* is half a finding. The other half is what the operator or end-user observes: *"three persistent ChatEvent rows in conversation history, three response cycles, customer sees 'I'm having trouble' turns before the retry succeeds."* Without the impact line, the reader can't tell whether to block.
 
-  For security findings specifically: include a concrete attack walkthrough — the API call, the inputs, the caller's permissions, and **what the attacker accomplishes beyond what their legitimate access already grants them.** Tag the finding `blocker` (the attacker gains capability they don't have) or `defense-in-depth` (the attacker can already do the equivalent legitimately; the fix is hygiene/audit-trail integrity). A `defense-in-depth` security finding is Medium, not High.
-<!-- @> Recommend the fix, don't menu it. One recommended fix per finding; alternatives go in prose. Before suggesting removal of incomplete code, read the diff's intent — broken-because-unfinished is not the same as broken-because-buggy -->
-- **Recommend the fix, don't menu it.** GLOBAL.md's *"recommend, don't menu"* rule applies inside findings too. One recommended fix per finding. Alternatives belong in prose (*"if the queue API exposes an exhausted-retries hook, prefer that; otherwise gate on `attemptsMade`"*), not in bulleted A/B options that push the choice back to the reader.
+  For security findings specifically: include a concrete attack walkthrough — the API call, the inputs, the caller's permissions, and **what the attacker accomplishes beyond what their legitimate access already grants them.** Tag the finding `blocker` (the attacker gains capability they don't have) or `defense-in-depth` (the attacker can already do the equivalent legitimately; the fix is hygiene/audit-trail integrity). A `defense-in-depth` security finding is Medium, not High.- **Recommend the fix, don't menu it.** GLOBAL.md's *"recommend, don't menu"* rule applies inside findings too. One recommended fix per finding. Alternatives belong in prose (*"if the queue API exposes an exhausted-retries hook, prefer that; otherwise gate on `attemptsMade`"*), not in bulleted A/B options that push the choice back to the reader.
 
   Before suggesting *removal* of incomplete code, read the diff's intent. **Broken-because-unfinished** is not the same as **broken-because-buggy**: a not-yet-wired feature should be wired up, not amputated. The fix has to come from what the author was trying to do, not from the assumption that the broken piece should go away.
 - **Numbered list with stable IDs** (`#1`, `#2`, ...). The user replies with positional refs ("fix 2, 3, 5", "walk me through #1"). Aggregated prose loses this affordance.
 - **HIGH SIGNAL ONLY.** False positives erode trust faster than missed issues. See [Explicit false positives](#explicit-false-positives).
-<!-- @> Confidence-gated reporting: default-drop anything you can't confirm; the lone exception is the high-impact tail (data loss/security/silent corruption) — surface it tagged with what's unverified, never inflate its priority to compensate -->
+<!-- @> Confidence-gated reporting: default-drop unconfirmed findings; lone exception is the high-impact tail (data loss/security/silent corruption) — surface it tagged with what's unverified -->
 - **Confidence-gated reporting.** Default to dropping anything you can't confirm is real. The single exception is the high-impact tail: a finding you couldn't fully verify but whose potential cost is severe — data loss, a security hole, silent corruption — is worth surfacing, explicitly tagged with what remains unverified and why you couldn't resolve it in this pass. Never inflate such a finding's priority to compensate for the uncertainty; report it at its true confidence with the gap named. Low-confidence *and* low-impact: drop without mention.
 
 ## Phase 1: Establish scope
@@ -69,12 +63,8 @@ Look for obvious bugs in the diff itself — incorrect logic, broken control flo
 
 **Axis 2: AGENTS.md / CLAUDE.md compliance.**
 Audit the diff for compliance with AGENTS.md / CLAUDE.md rules. When evaluating compliance for a file, only consider AGENTS.md / CLAUDE.md files that share a path with the file or its parents. Quote the exact rule being broken; if you can't quote it, don't flag it.
-
-<!-- @> Axis 3 also flags unexplained scope creep: net-new functionality with no traceable origin (not on the base, not in the PR description, not tied to the task) and no deliberate reason. Reachable code is still suspect — recommend reverting it, don't assume intent -->
 **Axis 3: Dead code, duplication & unexplained scope.**
 Look for code introduced by the diff that is unused, unreachable, or duplicates existing code. Also look for **uncovered dead code** — code elsewhere that became unused because of this diff (utilities only the removed feature called, design tokens it used, GraphQL fields it queried, fixtures it referenced). Cross repo boundaries when relevant (acorn ↔ chestnut for full-stack work).
-
-<!-- @> Dedup/dead-code: search scope is broader than finding scope. Scan the whole module (jscpd/similarity-ts), not just changed files — a new helper re-implementing an existing util is diff-introduced duplication even though its twin is untouched. Keep only findings where the diff is one side; drop pre-existing dup between two untouched files -->
 **Search scope is broader than finding scope.** To catch a new helper that re-implements an existing utility — or existing code the diff just orphaned — detection must range over the whole module/package, not only the changed files. A function the diff adds that already exists elsewhere is diff-**introduced** duplication even though its twin sits in an untouched file, so it's in scope; pre-existing duplication between two files the diff never touched is a [pre-existing issue](#explicit-false-positives), not a finding. Run `jscpd` / `similarity-ts` against the package, then keep only findings where the diff is one side of the duplication. `knip` is already whole-project, so it covers the dead-code-elsewhere direction on its own.
 
 Flag **unexplained scope creep** even when the code is reachable: a behavior, flag, or branch the diff adds that isn't on the base, isn't called for by the PR description or the task, and has no deliberate reason you can trace. A query gaining an extra filter parameter, or a handler sprouting a mode nobody asked for, reads as accidental — recommend reverting it rather than assuming the author meant it. Unrelated cosmetic churn dragged in by a focused edit (an import reorder, a sweeping reformat) belongs in the same bucket: recommend excluding it from the diff, leaving the split-into-its-own-commit alternative to prose. Read the PR description and `git blame` the surrounding lines before flagging — if the addition traces to stated intent, it's in scope.
@@ -118,8 +108,6 @@ Duplicated work & orchestration:
 - Unnecessary work: redundant computation, N+1, repeated file reads.
 - Sequential async flow where obviously independent work could run in parallel.
 - Partial-update logic that leaves state less atomic than necessary.
-
-<!-- @> Axis 5 (spec conformance, only when a ticket/PRD/RFC exists): report missing/partial, diverges, unrequested vs the spec — but the spec is an input, not ground truth; the doc/PR/ticket is often the stale side, not the code. Frame divergences bidirectionally as reconciliation items for the author, resolving from PR comments/commits where the trail exists; don't assert the code is wrong. Skip and note "no spec available" rather than inventing requirements -->
 **Axis 5: Spec conformance (only when an originating spec exists).**
 Runs only when the change traces to a written spec — a Linear/GitHub issue, a PRD, an RFC, a kickoff or design doc. Resolve the spec in this order: issue references in the commit messages or PR description (`PROJ-123`, `Closes #45`) → a spec path the user named → a PRD/RFC under `docs/`, `specs/`, or the ticket linked on the PR. If none of these resolve, **skip this axis and note "no spec available"** — never invent requirements to grade against.
 
@@ -134,8 +122,6 @@ This axis surfaces **reconciliation items the author resolves**, and it informs 
 
 ### The 1000-line ceiling
 
-<!-- @> Hard rule: don't let a PR push any file from below 1000 lines to above. Only waivable when the file is extremely repetitive/uniform (a data table, generated code, a flat enum) where any split would hurt readability. Default: decompose first -->
-
 A PR may not push any file from below 1000 lines to above. This is a hard rule, not a soft signal.
 
 The only valid waiver: the file's content is extremely simple and uniform — a long data table, generated code, a flat enum, a list of route registrations — where any decomposition would hurt readability rather than help it. If the file has meaningful control flow, multiple concerns, or distinct sections, decompose first. Don't waive because "it's a lot of work to split" or "the new code logically belongs here". When in doubt: decompose.
@@ -148,7 +134,7 @@ Add or substitute axes when the user names a concern: *"focus on app router patt
 
 ## Phase 3: Validation
 
-<!-- @> Phase 3 validator is adversarial: its job is to REFUTE each finding (defaulting to refuted when unsure), so a finding survives only if it can't be broken with a code citation. Exception: a refuted-but-high-impact finding carries forward tagged with the doubt -->
+<!-- @> Validate adversarially: try to REFUTE each finding (default refuted when unsure); only findings that survive with a code citation get reported -->
 For each finding from Phase 2, launch a validator subagent whose job is to **refute the finding**, not to confirm it. Single-axis agents over-flag, so the validator starts adversarial: assume the finding is a false positive and try to break it by reading the cited code and the surrounding context the original agent didn't see. A finding survives only if the validator *cannot* refute it with a code citation; when the validator is unsure, it defaults to refuted.
 
 Pass the validator: the PR title/description, the finding description, and the rule (if compliance). It reads the cited code and answers: *can I show this is not actually a problem here?*
@@ -245,9 +231,7 @@ Do not flag any of these. They erode the signal-to-noise ratio.
 - **Repetition that serves an argument** — callbacks, deliberate restatement, layered comments. Only flag *fully duplicated / redundant* sections.
 - **Specific semantic intent** — `<dialog>` for top-layer behavior, `<a download>` for download semantics, `useId` for SSR-stable IDs. Read the intent before flattening.
 - **Test files when the diff is non-test** unless the test file itself has a bug.
-- **Style suggestions** not explicitly required by AGENTS.md / CLAUDE.md.
-<!-- @> Don't flag behavior the diff deliberately changes: a removed gate or broadened value chosen on purpose is not a regression. Confirm intent against the PR description/spec; flag only an unweighed blast radius the author plausibly missed -->
-- **Behavior the diff deliberately changes.** When the PR's stated purpose is to remove, loosen, or replace a behavior, don't flag that removal as a regression — it's the point of the change. Confirm the intent against the PR description or the originating spec, then flag only if the deliberate change has a blast radius the author plausibly didn't weigh (e.g. dropping a guard also exposes an unrelated path). A hardcoded-broad value or removed gate chosen on purpose is an intentional change, not a bug.
+- **Style suggestions** not explicitly required by AGENTS.md / CLAUDE.md.- **Behavior the diff deliberately changes.** When the PR's stated purpose is to remove, loosen, or replace a behavior, don't flag that removal as a regression — it's the point of the change. Confirm the intent against the PR description or the originating spec, then flag only if the deliberate change has a blast radius the author plausibly didn't weigh (e.g. dropping a guard also exposes an unrelated path). A hardcoded-broad value or removed gate chosen on purpose is an intentional change, not a bug.
 
 If you're not certain an issue is real, drop it — unless its potential impact is high (data loss, security, silent corruption), in which case surface it tagged with what's unverified, per [confidence-gated reporting](#standing-rules-override-all-defaults).
 

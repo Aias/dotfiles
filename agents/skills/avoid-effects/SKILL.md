@@ -14,6 +14,7 @@ Effects are for **synchronizing with an external system** (non-React UI, network
 
 For bundle, RSC, memo, and waterfall rules, use `/react-best-practices`. **Read this skill or the full article before adding `useEffect`.**
 
+<!-- @> Effects only for external sync; derive in render; events for interactions; useSyncExternalStore for stores; fetch Effects need stale cleanup -->
 ## Code smells (often wrong)
 
 | Smell                                                               | Why it’s suspicious                                                        |
@@ -28,22 +29,6 @@ For bundle, RSC, memo, and waterfall rules, use `/react-best-practices`. **Read 
 | Effect wraps subscribe + `setState` for browser/store API           | Prefer `useSyncExternalStore`                                              |
 | Effect sends mutation only after user action but deps are “wrong”   | POST/PUT belongs in the handler that knows **why** it ran                  |
 | `useEffect(..., [])` for “run once per app” without remount safety  | Strict Mode runs twice in dev; use module scope / root patterns from docs  |
-
-## Do / don’t (Effects)
-
-**Don’t**
-
-- Use Effects to **transform data for rendering** (filter, map, merge strings, etc.).
-- Use Effects to **handle user events** (buy, submit, navigate on click).
-- Chain Effects purely to **propagate derived state** through multiple `setState`s.
-- Use Effects to **keep two pieces of state in sync** when one can be derived or lifted.
-
-**Do**
-
-- Use Effects when the reason to run is **“this appeared on screen”** (e.g. analytics beacons, logging views)—and handle Strict Mode / double mount if needed.
-- Use Effects to **subscribe** to external stores or browser APIs, with **cleanup** on unmount.
-- Use Effects for **fetching** only when you need results **synchronized** with props/query while the component is shown—and always add **cancellation / ignore stale responses**.
-- Prefer **framework data APIs** (Next.js, Remix, etc.) over ad-hoc fetch Effects when available.
 
 ## When an Effect is appropriate vs not
 
@@ -70,5 +55,3 @@ Ask: **Did this run because the user did something specific, or because the comp
 ## Full article (offline)
 
 Progressive disclosure: examples, Sandpack, challenges, and edge cases live in [references/react-dev-full-article.md](references/react-dev-full-article.md) (snapshot from [react.dev source](https://github.com/reactjs/react.dev/blob/main/src/content/learn/you-might-not-need-an-effect.md)).
-
-<!-- @> Effects only for external sync; derive in render; events for interactions; useSyncExternalStore for stores; fetch Effects need stale cleanup -->

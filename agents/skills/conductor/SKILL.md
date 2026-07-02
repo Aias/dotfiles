@@ -25,7 +25,7 @@ global_category: Conductor
 
 - Conductor injects a **target branch** in the workspace system instruction. Use it for **PR base selection**, **rebase targets**, and **diff range** — not merely "whatever branch is currently checked out" without confirming it matches that target.
 
-<!-- @> Same origin across workspaces; git fetch before diff/rebase; other workspaces may push the same base -->
+<!-- @> origin is shared across all workspaces — another workspace may advance the base between your fetches -->
 
 - **`origin` is shared** with every other clone of the repo. **`git fetch`** (especially `origin` and the relevant base) before diffing or rebasing — another workspace may have advanced the base branch.
 
