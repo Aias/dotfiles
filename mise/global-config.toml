@@ -1,0 +1,13 @@
+[settings]
+pin = true
+# Installed to ~/.config/mise/config.toml by install.sh (copied, not symlinked).
+# Source name avoids mise/config.toml — that path is auto-discovered as a local config.
+# Copy (not symlink) lets GUI git clients honor trusted_config_paths without shell env.
+trusted_config_paths = ["~/Code", "~/conductor"]
+
+[tools]
+node = "24"
+pnpm = "10"
+# pm2 via the npm backend so it lives in a node-version-independent prefix —
+# a node upgrade can't prune the install out from under the running daemon.
+"npm:pm2" = "7"

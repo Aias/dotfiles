@@ -10,7 +10,6 @@ Shell | ghostty/config | .config/ghostty/config | .config/ghostty/config
 
 # Node
 Node | node/.default-npm-packages | .default-npm-packages | .default-npm-packages
-Node | mise/config.toml | .config/mise/config.toml | .config/mise/config.toml
 
 # Git
 Git | git/.gitconfig | .gitconfig | .gitconfig

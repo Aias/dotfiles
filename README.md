@@ -16,7 +16,7 @@ dotfiles/
 ├── node/
 │   └── .default-npm-packages  # Global npm packages (installed by mise)
 ├── mise/
-│   └── config.toml   # mise version manager config
+│   └── global-config.toml   # mise global config (copied to ~/.config/mise/config.toml)
 ├── starship/
 │   └── starship.toml  # Starship prompt configuration
 ├── ghostty/
@@ -78,7 +78,7 @@ After this repo is on your machine and zsh is sourced, the **`dotup`** alias run
 1. Compile `@>` annotations from skills into GLOBAL.md
 2. Back up any existing files to `~/.dotfiles-backup/`
 3. Create symlinks from this repo to `~/` (based on `links.txt`)
-4. Copy Cursor global rule with `.mdc` frontmatter
+4. Copy mise global config and Cursor global rule (not symlinked — see `install.sh`)
 5. Sync all skills (personal, external, local) to `~/.claude/skills/` and `~/.codex/skills/`
 6. Discover and symlink MCP server configs across Claude, Codex, and Cursor
 
@@ -86,7 +86,7 @@ After this repo is on your machine and zsh is sourced, the **`dotup`** alias run
 
 ## Usage
 
-Edit files in this repo, changes apply immediately via symlinks. After pulling:
+Edit symlinked files in this repo; changes apply immediately. Copied files (`mise/global-config.toml`, Cursor global rules) need `make link` after edits. After pulling:
 
 ```bash
 source ~/.zshrc

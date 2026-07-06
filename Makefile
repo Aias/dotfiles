@@ -46,6 +46,7 @@ diff:
 	@diff -q ~/.zshrc zsh/.zshrc 2>/dev/null || echo "  zshrc differs"
 	@diff -q ~/.zprofile zsh/.zprofile 2>/dev/null || echo "  zprofile differs"
 	@diff -q ~/.gitconfig git/.gitconfig 2>/dev/null || echo "  gitconfig differs"
+	@diff -q ~/.config/mise/config.toml mise/global-config.toml 2>/dev/null || echo "  mise config differs"
 
 # Check symlink health
 check:
@@ -80,6 +81,19 @@ check:
 	else \
 		printf "  $${YELLOW}-$${RESET} %s $${DIM}(missing)$${RESET}\n" ".cursor/rules/global.mdc"; \
 		issues="$$issues .cursor/rules/global.mdc"; \
+	fi; \
+	echo ""; \
+	printf "$${BOLD}Node (special)$${RESET}\n"; \
+	if [ -f ~/.config/mise/config.toml ] && ! [ -L ~/.config/mise/config.toml ]; then \
+		diff -q mise/global-config.toml ~/.config/mise/config.toml >/dev/null 2>&1 && \
+			printf "  $${GREEN}✓$${RESET} %s\n" ".config/mise/config.toml" || \
+			{ printf "  $${RED}✗$${RESET} %s $${DIM}(out of sync)$${RESET}\n" ".config/mise/config.toml"; issues="$$issues .config/mise/config.toml"; }; \
+	elif [ -L ~/.config/mise/config.toml ]; then \
+		printf "  $${RED}✗$${RESET} %s $${DIM}(symlink — run make link)$${RESET}\n" ".config/mise/config.toml"; \
+		issues="$$issues .config/mise/config.toml"; \
+	else \
+		printf "  $${YELLOW}-$${RESET} %s $${DIM}(missing)$${RESET}\n" ".config/mise/config.toml"; \
+		issues="$$issues .config/mise/config.toml"; \
 	fi; \
 	echo ""; \
 	printf "$${BOLD}Skills$${RESET} $${DIM}(✓=synced, ✗=out of sync, -=missing)$${RESET}\n"; \

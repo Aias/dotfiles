@@ -5,11 +5,11 @@ branch_prefix = "trombley/"
 branch_prefix_type = "custom"
 
 [models]
-default = "opus-4-8-1m"
+default = "fable-5"
 review = "opus-4-8-1m"
 
 [models.claude_code]
-default_effort_level = "xhigh"
+default_effort_level = "high"
 review_effort_level = "xhigh"
 
 [models.codex]

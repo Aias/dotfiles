@@ -116,6 +116,29 @@ backup_and_link() {
     success "$label"
 }
 
+backup_and_copy() {
+    local source="$1"
+    local target="$2"
+    local label="$3"
+
+    if [[ -e "$target" && ! -L "$target" ]]; then
+        if [[ "$BACKUP_CREATED" == "false" ]]; then
+            mkdir -p "$BACKUP_DIR"
+            BACKUP_CREATED=true
+        fi
+        mv "$target" "$BACKUP_DIR/"
+        info "Backed up existing $label"
+    fi
+
+    if [[ -L "$target" ]]; then
+        rm "$target"
+    fi
+
+    mkdir -p "$(dirname "$target")"
+    cp "$source" "$target"
+    success_dim "$label" "(copied)"
+}
+
 # ─────────────────────────────────────────────────────────────
 # Symlinks from links.txt
 # ─────────────────────────────────────────────────────────────
@@ -144,6 +167,17 @@ install_links() {
 }
 
 install_links
+
+# ─────────────────────────────────────────────────────────────
+# mise global config (copy, not symlink — trusted_config_paths must live in a
+# real ~/.config/mise/config.toml for GUI git clients to honor project trust)
+# ─────────────────────────────────────────────────────────────
+
+install_mise_config() {
+    section "Node"
+    backup_and_copy "$DOTFILES_DIR/mise/global-config.toml" "$HOME/.config/mise/config.toml" ".config/mise/config.toml"
+}
+install_mise_config
 
 # ─────────────────────────────────────────────────────────────
 # Cursor global rules (copy with frontmatter, not symlink)
