@@ -5,7 +5,7 @@ branch_prefix = "trombley/"
 branch_prefix_type = "custom"
 
 [models]
-default = "fable-5"
+default = "claude:fable-5"
 review = "opus-4-8-1m"
 
 [models.claude_code]
