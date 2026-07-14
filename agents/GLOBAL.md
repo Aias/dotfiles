@@ -51,6 +51,8 @@ Any user-facing prose — PR descriptions, help text, READMEs, commit messages, 
 
 For subagent fan-out: when parallelizing judgment-heavy work — code review (`/change-review`), root-cause investigation (`/dig`), design critique, multi-perspective evaluation — spawn Sonnet-tier subagents (Sonnet 5 today) at high or extra-high effort. At that effort the Sonnet tier matches Opus for analysis while staying cheap enough to fan out; the top tier is better spent directing subagents and writing the synthesis than being a subagent. Reserve weaker, faster models for narrow retrieval fan-out (gathering files, grepping call sites, collecting raw data a stronger model then reasons over). The quality of the analysis is the constraint, not tokens or latency — a subagent that misses the bug or the simplification costs more than it saved.
 
+**Top-tier (Fable/Mythos) budget discipline:** when a Mythos-class model is driving, its usage limits are the scarce resource — spend its tokens on planning, decisions, review, and user-facing prose only. Dispatch Sonnet-tier subagents for anything crisply specifiable or token-hungry: bulk edits, data ingestion and processing, format conversion, research sweeps, long debugging loops. Write the spec, delegate the execution, review the result.
+
 ## Conductor
 
 Work often runs inside [Conductor](https://conductor.build) (parallel git worktrees). For paths, `CONDUCTOR_*` env vars, target branch, workspace/branch rules, and product workflow, read `/conductor`. Git/PR mechanics still use `/git-workflows` and `/pr-guidelines`.

@@ -9,7 +9,7 @@ default = "claude:fable-5"
 review = "opus-4-8-1m"
 
 [models.claude_code]
-default_effort_level = "high"
+default_effort_level = "xhigh"
 review_effort_level = "xhigh"
 
 [models.codex]
