@@ -11,10 +11,9 @@ Using the available context from our conversation – a formal spec in a plan do
 
 Rules:
 
-- **Resolve from the codebase first.** If a question can be answered by reading source, git history, tests, or types, do that instead of asking. Only ask what the code cannot tell you.
-- **Walk the design tree branch by branch.** Sketch the dependency order before the first question — which decisions gate which — then sequence so earlier answers narrow or eliminate later ones. Asking in the order topics appear in the spec leads to re-asking and contradicting earlier answers. Don't ask in parallel about decisions that depend on each other.
-- **One question at a time.** Use AskUserQuestion when available; fall back to plain prose questions one per turn.
+- **Work the design tree in frontier rounds.** Sketch the dependency order before the first question — which decisions gate which. The frontier is every question whose prerequisites are settled; ask the whole frontier each round, and hold back any question that depends on another still open this round. Use AskUserQuestion, up to 4 questions per call (multiple calls when the frontier is bigger); fall back to numbered prose questions in one message. After each round, recompute the frontier — answers prune branches and unblock new ones.
+- **Resolve facts yourself, off the user's turn.** If a question can be answered by reading source, git history, tests, or types, do that instead of asking — only ask what the code cannot tell you. Dispatch lookups as background subagents and ask the rest of the frontier meanwhile: a running lookup is an unsettled prerequisite, so only its downstream questions wait for it.
 - **Recommend an answer for every question.** State your pick and why in one line, then ask. For AskUserQuestion, put your recommendation first and append "(Recommended)" to the label. Freeform questions: lead with "I'd suggest X because Y — does that hold, or are you thinking differently?"
 - **Keep freeform answers cheap.** A sentence or two max. If the answer would be longer, restructure as multiple choice.
 
-Continue until the open branches are resolved, then write the findings into the existing plan or spec document. If none exists, create one.
+The interview is done when the frontier is empty — nothing left silently assumed. Then write the findings into the existing plan or spec document; if none exists, create one.
