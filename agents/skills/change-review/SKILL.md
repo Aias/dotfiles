@@ -48,7 +48,7 @@ Report change size as `+added / −removed` from `git diff --shortstat` or the P
 
 Brief — full workflow in [references/review.md](references/review.md).
 
-- **Read-only.** No edits, no commits, no GitHub/Linear comments unless explicitly authorized. Output is chat text only. When posting is authorized, attribute each agent-authored comment per `/pr-guidelines` (lead with a `> **Claude <model> <effort>**` blockquote).
+- **Read-only.** No edits, no commits, no GitHub/Linear comments unless explicitly authorized. Output is chat text only. When posting is authorized, attribute each agent-authored comment per `/pr-guidelines` (open with an italic `*<model> (<effort>):*` prefix).
 - **Fan out across parallel subagents** for any non-trivial diff — a single-pass skim cannot cover a real change-set. Standard axes: bug scan, AGENTS.md/CLAUDE.md compliance, dead code & duplication, LOC & complexity. Add a **spec-conformance** axis whenever the change traces to a ticket/PRD/RFC — it runs in parallel and reframes the other findings, but the spec is an input, not ground truth (the doc/ticket is often the stale side, not the code), so divergences are reconciliation items for the author, not automatic code defects. See [references/review.md](references/review.md#synthesis-let-spec-conformance-set-disposition).
 - **Model tier per GLOBAL.md:** review and validator subagents run on the Sonnet tier at high or extra-high effort; drop to a faster model only for pure retrieval (gathering files, grepping call sites) that an analysis agent then reasons over.
 - **Validate each finding** with a second-pass subagent before reporting. False positives erode trust faster than missed issues.

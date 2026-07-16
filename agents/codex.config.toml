@@ -51,6 +51,9 @@ trust_level = "trusted"
 [projects."/Users/nicktrombley/Library/Application Support/com.conductor.app/bin"]
 trust_level = "trusted"
 
+[projects."/Users/nicktrombley/conductor/repos/wedding-planning"]
+trust_level = "trusted"
+
 [mcp_servers.linear]
 url = "https://mcp.linear.app/mcp"
 
