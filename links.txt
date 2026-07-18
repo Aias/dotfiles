@@ -8,12 +8,10 @@ Shell | zsh/.zprofile | .zprofile | .zprofile
 Shell | starship/starship.toml | .config/starship.toml | .config/starship.toml
 Shell | ghostty/config | .config/ghostty/config | .config/ghostty/config
 
-# Node
-Node | node/.default-npm-packages | .default-npm-packages | .default-npm-packages
-
 # Git
 Git | git/.gitconfig | .gitconfig | .gitconfig
-Git | git/.gitignore_global | .gitignore_global | .gitignore_global
+Git | git/ignore | .config/git/ignore | .config/git/ignore
+Git | git/allowed_signers | .config/git/allowed_signers | .config/git/allowed_signers
 
 # Claude
 Claude | agents/GLOBAL.md | .claude/CLAUDE.md | .claude/CLAUDE.md

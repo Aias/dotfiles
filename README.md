@@ -12,9 +12,8 @@ dotfiles/
 │   └── .zprofile      # Login shell config (PATH, env vars)
 ├── git/
 │   ├── .gitconfig     # Git configuration
-│   └── .gitignore_global
-├── node/
-│   └── .default-npm-packages  # Global npm packages (installed by mise)
+│   ├── ignore         # Global ignore rules (→ ~/.config/git/ignore)
+│   └── allowed_signers  # SSH signing key for signature verification
 ├── mise/
 │   └── global-config.toml   # mise global config (copied to ~/.config/mise/config.toml)
 ├── starship/
@@ -68,7 +67,7 @@ dotfiles/
 make install    # Full install (compile annotations + symlink + sync skills)
 make setup      # Repo-local setup (git hooks) — run once per clone/worktree
 make link       # Same as install but skip brew/mise dependency install (faster iteration)
-make update     # git pull + brew bundle + full install (refresh from remote)
+make update     # git pull + full install (refresh from remote)
 ```
 
 After this repo is on your machine and zsh is sourced, the **`dotup`** alias runs `make update` from `~/Code/dotfiles` (see `zsh/.zshrc`).
@@ -80,7 +79,7 @@ After this repo is on your machine and zsh is sourced, the **`dotup`** alias run
 3. Create symlinks from this repo to `~/` (based on `links.txt`)
 4. Copy mise global config and Cursor global rule (not symlinked — see `install.sh`)
 5. Sync all skills (personal, external, local) to `~/.claude/skills/` and `~/.codex/skills/`
-6. Discover and symlink MCP server configs across Claude, Codex, and Cursor
+6. Register MCP servers with Claude Code (user scope)
 
 `make link` sets `SKIP_DEPENDENCY_INSTALL=1` so Homebrew/mise steps are skipped; use it when deps are already satisfied. `make update` is for pulling latest dotfiles and re-running a full install.
 

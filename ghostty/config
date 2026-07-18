@@ -1,5 +1,6 @@
-# This is the configuration file for Ghostty.
-# See the end of the file for config and syntax notes. Read those before making updates.
+# Ghostty terminal configuration
+# Run `ghostty +show-config --default --docs` for all options and defaults,
+# or see https://ghostty.org/docs/config.
 
 shell-integration = zsh
 window-padding-x = 12
@@ -8,7 +9,7 @@ window-width = 125
 window-height = 35
 window-padding-balance = true
 window-colorspace = display-p3
-background-opacity= 0.9
+background-opacity = 0.9
 background-blur = 30
 background = #1B1D21
 foreground = #E8EAED
@@ -21,40 +22,3 @@ unfocused-split-opacity = 0.9
 unfocused-split-fill = #3D2B1F
 # window-decoration = none
 window-save-state = always
-
-# The template does not set any default options, since Ghostty ships
-# with sensible defaults for all options. Users should only need to set
-# options that they want to change from the default.
-#
-# Run `ghostty +show-config --default --docs` to view a list of
-# all available config options and their default values.
-#
-# Additionally, each config option is also explained in detail
-# on Ghostty's website, at https://ghostty.org/docs/config.
-
-# Config syntax crash course
-# ==========================
-# # The config file consists of simple key-value pairs,
-# # separated by equals signs.
-# font-family = Iosevka
-# window-padding-x = 2
-#
-# # Spacing around the equals sign does not matter.
-# # All of these are identical:
-# key=value
-# key= value
-# key =value
-# key = value
-#
-# # Any line beginning with a # is a comment. It's not possible to put
-# # a comment after a config option, since it would be interpreted as a
-# # part of the value. For example, this will have a value of "#123abc":
-# background = #123abc
-#
-# # Empty values are used to reset config keys to default.
-# key =
-#
-# # Some config options have unique syntaxes for their value,
-# # which is explained in the docs for that config option.
-# # Just for example:
-# resize-overlay-duration = 4s 200ms

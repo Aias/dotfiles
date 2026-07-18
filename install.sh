@@ -76,11 +76,18 @@ install_cursor() {
     fi
 }
 
+install_bun_globals() {
+    # Global CLIs live in bun's install prefix (node-version independent)
+    [[ -x "$HOME/.bun/bin/gemini" ]] || bun install -g @google/gemini-cli
+    [[ -x "$HOME/.bun/bin/agent-browser" ]] || bun install -g agent-browser
+}
+
 install_dependencies() {
     section "Dependencies"
     ensure_homebrew
     brew bundle install --file="$DOTFILES_DIR/Brewfile" 2>&1 | grep -E "^(Using|Installing|Upgrading)" | sed 's/^/  /'
     install_bun
+    install_bun_globals
     install_cursor
     success "Dependencies installed"
 }
@@ -318,6 +325,18 @@ create_from_template "$HOME/.local/bin/env" "$DOTFILES_DIR/local/env.template" "
 # Cleanup old backups (keep last 10)
 # ─────────────────────────────────────────────────────────────
 
+cleanup_old_backups() {
+    local backup_root="$HOME/.dotfiles-backup"
+    local keep=10
+    local count=$(ls -1d "$backup_root"/*/ 2>/dev/null | wc -l | tr -d ' ')
+    if [[ "$count" -gt "$keep" ]]; then
+        local to_delete=$((count - keep))
+        ls -1d "$backup_root"/*/ | head -n "$to_delete" | xargs rm -rf
+    fi
+}
+
+cleanup_old_backups
+
 # ─────────────────────────────────────────────────────────────
 # MCP servers (Claude Code — user scope)
 # ─────────────────────────────────────────────────────────────
@@ -328,9 +347,6 @@ install_claude_mcp_servers() {
         warn "claude CLI not found, skipping MCP setup"
         return
     fi
-
-    # Clean up old names
-    claude mcp remove --scope user figma-desktop 2>/dev/null || true
 
     local http_servers=(
         "linear|https://mcp.linear.app/mcp"
@@ -351,18 +367,6 @@ install_claude_mcp_servers() {
 }
 
 install_claude_mcp_servers
-
-cleanup_old_backups() {
-    local backup_root="$HOME/.dotfiles-backup"
-    local keep=10
-    local count=$(ls -1d "$backup_root"/*/ 2>/dev/null | wc -l | tr -d ' ')
-    if [[ "$count" -gt "$keep" ]]; then
-        local to_delete=$((count - keep))
-        ls -1d "$backup_root"/*/ | head -n "$to_delete" | xargs rm -rf
-    fi
-}
-
-cleanup_old_backups
 
 # ─────────────────────────────────────────────────────────────
 # Repo-local setup (git hooks, etc.)

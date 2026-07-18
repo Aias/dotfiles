@@ -1,4 +1,4 @@
-.PHONY: compile install setup link update update-skills backup diff check
+.PHONY: compile install setup link update update-skills check
 
 # Compile @> annotations from skills into GLOBAL.md + cleaned .build/ copies
 compile:
@@ -19,8 +19,7 @@ link: compile
 # Pull latest and reinstall
 update:
 	git pull --rebase --autostash
-	brew bundle install --file=Brewfile
-	./install.sh
+	$(MAKE) install
 
 # Update external skills from skills.sh
 update-skills:
@@ -28,25 +27,6 @@ update-skills:
 	@make link
 	@echo ""
 	@echo "External skills updated. Review changes and commit if needed."
-
-# Backup current configs
-backup:
-	@ts=$$(date +%Y%m%d_%H%M%S); \
-	mkdir -p ~/.dotfiles-backup/$$ts; \
-	cp ~/.zshenv ~/.dotfiles-backup/$$ts/ 2>/dev/null || true; \
-	cp ~/.zshrc ~/.dotfiles-backup/$$ts/ 2>/dev/null || true; \
-	cp ~/.zprofile ~/.dotfiles-backup/$$ts/ 2>/dev/null || true; \
-	cp ~/.gitconfig ~/.dotfiles-backup/$$ts/ 2>/dev/null || true; \
-	echo "Backup saved to ~/.dotfiles-backup/$$ts/"
-
-# Check for config drift
-diff:
-	@echo "Checking for drift between repo and live configs..."
-	@diff -q ~/.zshenv zsh/.zshenv 2>/dev/null || echo "  zshenv differs"
-	@diff -q ~/.zshrc zsh/.zshrc 2>/dev/null || echo "  zshrc differs"
-	@diff -q ~/.zprofile zsh/.zprofile 2>/dev/null || echo "  zprofile differs"
-	@diff -q ~/.gitconfig git/.gitconfig 2>/dev/null || echo "  gitconfig differs"
-	@diff -q ~/.config/mise/config.toml mise/global-config.toml 2>/dev/null || echo "  mise config differs"
 
 # Check symlink health
 check:

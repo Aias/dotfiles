@@ -35,19 +35,23 @@ setopt INTERACTIVE_COMMENTS   # Allow comments in interactive shell
 # ─────────────────────────────────────────────────────────────
 # Completion system (cached - only rebuilds once per day)
 # ─────────────────────────────────────────────────────────────
+[[ -d "$HOME/.cache/zsh" ]] || mkdir -p "$HOME/.cache/zsh"
 autoload -Uz compinit
-if [[ -n ${ZDOTDIR:-$HOME}/.zcompdump(#qN.mh+24) ]]; then
-  compinit
+if [[ -n $HOME/.cache/zsh/zcompdump(#qN.mh+24) ]]; then
+  compinit -d "$HOME/.cache/zsh/zcompdump"
 else
-  compinit -C
+  compinit -C -d "$HOME/.cache/zsh/zcompdump"
 fi
 zstyle ':completion:*' menu select
 zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'  # Case-insensitive
 zstyle ':completion:*' use-cache yes
 zstyle ':completion:*' cache-path "$HOME/.cache/zsh"
-[[ -d "$HOME/.cache/zsh" ]] || mkdir -p "$HOME/.cache/zsh"
 
 # fzf (fuzzy finder) — Ctrl-T files, Ctrl-R history, Alt-C dirs
+export FZF_DEFAULT_COMMAND="fd --type f --hidden --follow --exclude .git"
+export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+export FZF_CTRL_T_OPTS="--preview 'bat --color=always --style=numbers --line-range=:200 {}'"
+export FZF_ALT_C_COMMAND="fd --type d --hidden --follow --exclude .git"
 if [[ -x /opt/homebrew/bin/brew ]]; then
   _fzf_base="$(/opt/homebrew/bin/brew --prefix fzf 2>/dev/null)/shell"
   [[ -r "$_fzf_base/completion.zsh" ]] && source "$_fzf_base/completion.zsh"
@@ -88,7 +92,7 @@ alias ored="cd ~/Code/red-cliff-record && cursor ."
 # Aliases - Tools & Utilities
 # ─────────────────────────────────────────────────────────────
 alias tailscale="/Applications/Tailscale.app/Contents/MacOS/Tailscale"
-alias resource="source ~/.zshenv && source ~/.zshrc && source ~/.secrets"
+alias resource="exec zsh"
 alias c="claude"
 alias yolo="claude --dangerously-skip-permissions"
 alias ca="cursor-agent --approve-mcps --force"
@@ -104,9 +108,7 @@ alias gpl="git pull --rebase --autostash"
 
 function up() {
   local dim=$'\e[2m' bold=$'\e[1m' reset=$'\e[0m' blue=$'\e[34m'
-  local all=false
-  [[ "$1" == "--all" ]] && all=true
-  local total=$($all && echo 7 || echo 6) step=0
+  local total=7 step=0
   _up_step() { step=$((step + 1)); echo "\n${blue}${bold}[${step}/${total}]${reset} ${bold}$1${reset}\n${dim}─────────────────────────────────────${reset}"; }
 
   _up_step "brew update"
@@ -115,23 +117,17 @@ function up() {
   _up_step "brew upgrade"
   brew upgrade
 
-  _up_step "npm update -g"
-  npm update -g
-
-  if $all; then
-    _up_step "npm update -g (other node versions)"
-    for dir in ~/.local/share/mise/installs/node/*/; do
-      [[ "$(basename "$dir")" == "$(node -v | sed 's/^v//')"* ]] && continue
-      echo "${dim}node $(basename "$dir")${reset}"
-      "$dir/bin/npm" update -g
-    done
-  fi
+  _up_step "brew autoremove"
+  brew autoremove
 
   _up_step "claude update"
   claude update
 
   _up_step "bun upgrade"
   bun upgrade
+
+  _up_step "bun globals"
+  bun install -g @google/gemini-cli@latest agent-browser@latest
 
   _up_step "mise upgrade"
   mise upgrade
