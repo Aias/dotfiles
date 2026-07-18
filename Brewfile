@@ -1,6 +1,9 @@
 # Brewfile - Declarative Homebrew dependencies
 # Install with: brew bundle install
 
+# Apps
+cask "araxis-merge"
+
 # CLI Tools
 brew "bat"
 brew "coreutils"

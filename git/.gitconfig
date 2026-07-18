@@ -1,6 +1,5 @@
 [core]
 	pager = delta
-	excludesfile = ~/.gitignore_global
 [interactive]
 	diffFilter = delta --color-only
 [delta]
@@ -9,30 +8,46 @@
 	side-by-side = false
 	syntax-theme = base16
 [diff]
+	algorithm = histogram
 	colorMoved = default
 [gpg]
 	format = ssh
 [gpg "ssh"]
 	program = /Applications/1Password.app/Contents/MacOS/op-ssh-sign
+	allowedSignersFile = ~/.config/git/allowed_signers
 [commit]
 	gpgsign = true
+	verbose = true
 [user]
 	name = Nick Trombley
 	email = trombley.nick@gmail.com
 	signingkey = ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFp4f8Dr581sbnlCM7k0QsP/iv+q5IfIXUDgGeNQ2hqL
 [init]
 	defaultBranch = main
+[branch]
+	sort = -committerdate
+[tag]
+	sort = version:refname
+[column]
+	ui = auto
+[help]
+	autocorrect = prompt
 [pull]
 	rebase = true
+[rebase]
+	autostash = true
+	autosquash = true
+	updateRefs = true
 [push]
 	autoSetupRemote = true
+	useForceIfIncludes = true
 [fetch]
 	prune = true
 [rerere]
 	enabled = true
 [merge]
 	tool = araxis
-	conflictstyle = diff3
+	conflictstyle = zdiff3
 [mergetool "araxis"]
 	path = /Applications/Araxis Merge.app/Contents/Utilities/compare
 [mergetool]
