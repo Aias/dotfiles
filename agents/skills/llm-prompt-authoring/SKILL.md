@@ -20,6 +20,9 @@ Craft for prompts that a downstream model reads, distinct from prose a human rea
 
 **When you must exclude, name the positive alternative.** If a constraint is unavoidable, pair it with the wanted target so the model has something to move toward: "use a neutral gray background" rather than "avoid colored backgrounds." First try collapsing the pair into the positive half alone — if the wanted description already implies the exclusion, keep only it; retain an explicit negative only when no positive phrasing covers the constraint.
 
+<!-- @> Audit absolutes for edge cases: a standing rule that's 90% true is wrong 10% of the time — state the condition instead of "always/never"; reserve bare absolutes for genuine invariants -->
+**Audit absolutes for edge cases.** A standing instruction ships with every request, so a rule that's 90% true is wrong 10% of the time. Before committing "always X" or "never Y" to a prompt, ask how a well-intentioned reader following it literally would misfire; if real exceptions exist, state the condition instead of the absolute — "update the changelog when behavior changes," not "always update the changelog." Reserve bare absolutes for genuine invariants.
+
 **Keep examples on-target.** Few-shot examples and counter-examples both teach by demonstration; a vivid counter-example can be imitated as readily as a positive one. Lead with examples of the output you want.
 
 ## Cost and Caching
