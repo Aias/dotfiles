@@ -142,7 +142,7 @@ fetch('ENDPOINT',{method:'POST',headers:{'Content-Type':'application/json'},body
 - The log file will contain NDJSON entries (one JSON object per line) from your instrumentation.
 - Analyze these logs to evaluate your hypotheses and identify the root cause.
 - If the log file is empty or missing, do not conclude the instrumentation is broken. First confirm the instrumented path actually executed: a path behind a lazy-mounted component, a deferred import, or an interaction gate (click, route change, feature flag) never runs on a plain reload, so correct instrumentation still emits nothing. Drive the trigger, then re-read. Only after confirming the path ran should you treat an empty log as a failed reproduction and ask the user to try again.
-- **For frontend bugs**, supplement the NDJSON log with the `chrome-devtools` MCP — console messages, network requests, and performance traces are runtime evidence too. Cite MCP findings with the same specificity as log lines (exact message, request URL, stack frame) rather than paraphrasing.
+- **For frontend bugs**, supplement the NDJSON log with a browser MCP — console messages, network requests, and performance traces are runtime evidence too. Prefer `claude-in-chrome` (it attaches to the already-running browser and its signed-in session); reach for `chrome-devtools` only when a DevTools-protocol Chrome is what's available. Cite MCP findings with the same specificity as log lines (exact message, request URL, stack frame) rather than paraphrasing.
 
 ### STEP 5: Keep logs during fixes
 
