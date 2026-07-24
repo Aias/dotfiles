@@ -50,11 +50,11 @@ Brief — full workflow in [references/review.md](references/review.md).
 
 - **Read-only.** No edits, no commits, no GitHub/Linear comments unless explicitly authorized. Output is chat text only. When posting is authorized, attribute each agent-authored comment per `/pr-guidelines` (open with an italic `*<model> (<effort>):*` prefix).
 - **Fan out across parallel subagents** for any non-trivial diff — a single-pass skim cannot cover a real change-set. Standard axes: bug scan, AGENTS.md/CLAUDE.md compliance, dead code & duplication, LOC & complexity. Add a **spec-conformance** axis whenever the change traces to a ticket/PRD/RFC — it runs in parallel and reframes the other findings, but the spec is an input, not ground truth (the doc/ticket is often the stale side, not the code), so divergences are reconciliation items for the author, not automatic code defects. See [references/review.md](references/review.md#synthesis-let-spec-conformance-set-disposition).
-- **Model tier per GLOBAL.md:** review and validator subagents run on the Sonnet tier at high or extra-high effort; drop to a faster model only for pure retrieval (gathering files, grepping call sites) that an analysis agent then reasons over.
-- **Validate each finding** with a second-pass subagent before reporting. False positives erode trust faster than missed issues.
+- **Model tier per GLOBAL.md:** review and validator subagents run on the Opus tier at high or extra-high effort; drop to a faster model only for pure retrieval (gathering files, grepping call sites) that an analysis agent then reasons over.
+- **Validate each finding** with a second-pass subagent before reporting — a fresh context adversarially refuting *another* agent's finding, never an agent re-checking its own work. Validation is where filtering happens, which is what lets the finders stay open.
 - **Cite file path + line range** on every finding. Never restate the diff.
 - **Numbered list** with stable IDs (`#1`, `#2`, ...) so the user can reply "fix 2, 3, 5".
-- **High signal only.** See [references/review.md](references/review.md#explicit-false-positives) for the explicit false-positives list (pre-existing issues, linter-catchable, pedantic nits, etc.).
+- **High signal in the report, not in the finders.** Finders report everything with confidence and severity; validation filters. The [explicit false-positives list](references/review.md#explicit-false-positives) (pre-existing issues, linter-catchable, pedantic nits) is a category exclusion that binds every stage.
 - **End with a handoff suggestion:** APPLY a subset, run `/pr-guidelines` to refresh the description, or defer to a follow-up PR.
 
 ## APPLY Mode
