@@ -20,9 +20,9 @@ These are non-negotiable.
 
   Before suggesting *removal* of incomplete code, read the diff's intent. **Broken-because-unfinished** is not the same as **broken-because-buggy**: a not-yet-wired feature should be wired up, not amputated. The fix has to come from what the author was trying to do, not from the assumption that the broken piece should go away.
 - **Numbered list with stable IDs** (`#1`, `#2`, ...). The user replies with positional refs ("fix 2, 3, 5", "walk me through #1"). Aggregated prose loses this affordance.
-- **HIGH SIGNAL ONLY.** False positives erode trust faster than missed issues. See [Explicit false positives](#explicit-false-positives).
-<!-- @> Confidence-gated reporting: default-drop unconfirmed findings; lone exception is the high-impact tail (data loss/security/silent corruption) — surface it tagged with what's unverified -->
-- **Confidence-gated reporting.** Default to dropping anything you can't confirm is real. The single exception is the high-impact tail: a finding you couldn't fully verify but whose potential cost is severe — data loss, a security hole, silent corruption — is worth surfacing, explicitly tagged with what remains unverified and why you couldn't resolve it in this pass. Never inflate such a finding's priority to compensate for the uncertainty; report it at its true confidence with the gap named. Low-confidence *and* low-impact: drop without mention.
+- **HIGH SIGNAL IN THE REPORT.** What reaches the user is high-signal; getting it there is [validation](#phase-3-validation)'s job, not self-censorship while finding. The [explicit false positives](#explicit-false-positives) bind every stage — pre-existing issues, linter-catchable nits, and pedantry are the wrong *category*, not merely uncertain, so no agent raises them at any point.
+<!-- @> Confidence-gate the report, not the finders: finders report everything tagged with confidence + severity, validation does the dropping — a finding filtered a step later costs less than one never raised. Keep the unverified high-impact tail (data loss/security/silent corruption), tagged, at true confidence -->
+- **Confidence-gate the report, not the finders.** Finder agents report everything they see, each tagged with confidence and severity; [Phase 3](#phase-3-validation) and synthesis do the dropping. A finding filtered one step later costs far less than one never raised, and the validator judges it against surrounding code the finder never read. Two things survive that handoff: the high-impact tail — a finding you couldn't fully verify but whose potential cost is severe (data loss, a security hole, silent corruption) — reaches the report tagged with what remains unverified and why this pass couldn't resolve it; and priority is never inflated to compensate for uncertainty, so report at true confidence with the gap named. Synthesis drops the low-confidence *and* low-impact residue without mention.
 
 ## Phase 1: Establish scope
 
@@ -44,7 +44,7 @@ For any non-trivial diff, **always fan out across parallel subagents.** Non-triv
 
 Launch agents in a single message so they run concurrently. Each agent gets the full diff (or its bucket) plus the PR title and description for author intent.
 
-**Model tier: every review and validator subagent runs on the Sonnet tier at high or extra-high effort** (per GLOBAL.md) — a judgment call per axis (reach for extra-high on the densest buckets, high is fine for the rest); max is never needed. The analysis quality is the constraint, not tokens or latency — a subagent that misses the bug or the simplification costs more than it saved. Reserve faster models only for narrow retrieval fan-out (collecting files, grepping call sites) whose raw output a stronger agent then reasons over.
+**Model tier: every review and validator subagent runs on the Opus tier at high or extra-high effort** (per GLOBAL.md) — a judgment call per axis (reach for extra-high on the densest buckets, high is fine for the rest); max is never needed. The analysis quality is the constraint, not tokens or latency — a subagent that misses the bug or the simplification costs more than it saved. Reserve faster models only for narrow retrieval fan-out (collecting files, grepping call sites) whose raw output a stronger agent then reasons over.
 
 ### Code-judo lens
 
@@ -147,7 +147,7 @@ For each finding from Phase 2, launch a validator subagent whose job is to **ref
 
 Pass the validator: the PR title/description, the finding description, and the rule (if compliance). It reads the cited code and answers: *can I show this is not actually a problem here?*
 
-Filter out everything the validator refuted, **with one exception**: a refuted-but-high-impact finding (data loss, security, silent corruption) carries forward into the report tagged with the validator's doubt, per [confidence-gated reporting](#standing-rules-override-all-defaults). Don't silently drop a severe finding just because it couldn't be fully nailed down. Track refutation count per axis — if Axis N produced 12 findings but only 2 survived, the axis prompt likely needs tightening (signal for skill iteration, not for the report).
+Filter out everything the validator refuted, **with one exception**: a refuted-but-high-impact finding (data loss, security, silent corruption) carries forward into the report tagged with the validator's doubt, per [confidence-gate the report, not the finders](#standing-rules-override-all-defaults). Don't silently drop a severe finding just because it couldn't be fully nailed down. Track refutation count per axis — if Axis N produced 12 findings but only 2 survived, the axis prompt likely needs tightening (signal for skill iteration, not for the report).
 
 ## Synthesis: let spec conformance set disposition
 
@@ -242,7 +242,7 @@ Do not flag any of these. They erode the signal-to-noise ratio.
 - **Style suggestions** not explicitly required by AGENTS.md / CLAUDE.md.
 - **Behavior the diff deliberately changes.** When the PR's stated purpose is to remove, loosen, or replace a behavior, don't flag that removal as a regression — it's the point of the change. Confirm the intent against the PR description or the originating spec, then flag only if the deliberate change has a blast radius the author plausibly didn't weigh (e.g. dropping a guard also exposes an unrelated path). A hardcoded-broad value or removed gate chosen on purpose is an intentional change, not a bug.
 
-If you're not certain an issue is real, drop it — unless its potential impact is high (data loss, security, silent corruption), in which case surface it tagged with what's unverified, per [confidence-gated reporting](#standing-rules-override-all-defaults).
+Uncertainty is not on this list. Everything above is excluded by *category*; an unconfirmed finding is instead a job for [validation](#phase-3-validation), so raise it tagged with your confidence rather than staying quiet — see [confidence-gate the report, not the finders](#standing-rules-override-all-defaults).
 
 ## When the diff is for someone else's branch
 
@@ -280,13 +280,13 @@ In rough order of how often they appear in past sessions:
 - **`git diff origin/<base>...HEAD`** (three-dot, after fetch) — branch-vs-base REVIEW.
 - **`mcp__conductor__GetWorkspaceDiff`** — Conductor REVIEW.
 
-**Static-analysis seeds — leads, never findings.** These surface candidates fast; none is authoritative. Every hit is confirmed by reading the actual code and call sites before it becomes a finding — the verify-don't-punt and [confidence-gated reporting](#standing-rules-override-all-defaults) rules apply to tool output too. Newer tools (deslop, react-doctor) over-flag; lean on the verification step.
+**Static-analysis seeds — leads, never findings.** These surface candidates fast; none is authoritative. Every hit is confirmed by reading the actual code and call sites before it becomes a finding — the verify-don't-punt and [confidence-gate the report, not the finders](#standing-rules-override-all-defaults) rules apply to tool output too. Newer tools (deslop, react-doctor) over-flag; lean on the verification step.
 
 Run them with **`bunx`** (fast, and confirmed to leave the reviewed repo's lockfile / `package.json` / working tree untouched — it caches globally, not in cwd); `npx` is the fallback where bun isn't installed.
 
 Point the duplication/dead-code scanners at the **whole package the diff touches, not just the changed files** — a new helper that duplicates an existing utility, or code the diff orphaned, lives outside the diff. Then filter findings to those the diff caused (Axis 3's search-broad-report-narrow rule).
 
-- **`bunx deslop-cli --json`** — the **broad first pass for JS/TS.** One scan covers dead code, redundant types/exports/constants, identity wrappers, simplifiable expressions, copy-paste blocks, unnecessary type assertions / `@ts-ignore`, circular imports, and cyclomatic/cognitive complexity — seeding Axes 3, 4, and type-safety together. It tags each finding high/medium/low; map those straight onto confidence-gated reporting (default-drop low unless the impact is high).
+- **`bunx deslop-cli --json`** — the **broad first pass for JS/TS.** One scan covers dead code, redundant types/exports/constants, identity wrappers, simplifiable expressions, copy-paste blocks, unnecessary type assertions / `@ts-ignore`, circular imports, and cyclomatic/cognitive complexity — seeding Axes 3, 4, and type-safety together. It tags each hit high/medium/low; treat those as lead triage, not finding confidence — chase high and medium first, and don't spend a verification pass on a low-severity hit unless its impact would be high.
 - **`bunx react-doctor@latest`** — React-specific audit (state & effects, performance, architecture, security, a11y) across Next/Vite/RN/Expo. Read-only; can report only newly-introduced issues against a PR. Seeds the React/frontend slice of a review and pairs with [`/react-best-practices`](../react-best-practices/SKILL.md), [`/avoid-effects`](../avoid-effects/SKILL.md), and the HTML/CSS section.
 - **Focused supplements when one axis needs depth:** `bunx knip` (dead files/exports/deps — strong post-migration, but scaffolding is a common false positive), `similarity-ts` (AST-based duplication), `bunx jscpd` (token-based, language-agnostic duplication).
 - **`rg` / `fd` / `git grep`** — the verification workhorses: confirm a symbol is truly unused, trace call sites, check for orphaned utilities/tokens/fixtures. Reach for these to *confirm* every lead above rather than trusting any tool's report.
