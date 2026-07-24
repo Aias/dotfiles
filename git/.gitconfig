@@ -52,3 +52,9 @@
 	path = /Applications/Araxis Merge.app/Contents/Utilities/compare
 [mergetool]
 	prompt = false
+[credential "https://github.com"]
+	helper = 
+	helper = !/opt/homebrew/bin/gh auth git-credential
+[credential "https://gist.github.com"]
+	helper = 
+	helper = !/opt/homebrew/bin/gh auth git-credential

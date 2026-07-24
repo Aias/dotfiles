@@ -5,12 +5,12 @@ branch_prefix = "trombley/"
 branch_prefix_type = "custom"
 
 [models]
-default = "claude:fable-5"
-review = "fable-5"
+default = "opus-5-1m"
+review = "opus-5-1m"
 
 [models.claude_code]
-default_effort_level = "high"
-review_effort_level = "high"
+default_effort_level = "xhigh"
+review_effort_level = "xhigh"
 
 [models.codex]
 default_thinking_level = "high"
