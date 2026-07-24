@@ -8,7 +8,7 @@ Skills are modular packages that extend agent capabilities with specialized know
 - **`.agents/skills/`** - [E] External skills installed from [skills.sh](https://skills.sh)
 - **`agents/skills.local/`** - [L] Local-only skills (not committed)
 
-All types are synced to `~/.claude/skills/` and `~/.codex/skills/` by the install script.
+All types are synced to `~/.claude/skills/`, `~/.codex/skills/`, and `~/.cursor/skills/` by the install script.
 
 ## Quick Start
 
@@ -135,6 +135,7 @@ Skills from `agents/skills/` (personal), `.agents/skills/` (external), and `agen
 
 - `~/.claude/skills/` — Claude Code
 - `~/.codex/skills/` — Codex
+- `~/.cursor/skills/` — Cursor
 
 The sync uses `rsync -a --delete` to mirror each skill folder individually. After syncing, cleaned skill files from `agents/.build/skills/` are overlaid to strip `@>` annotations from installed copies.
 

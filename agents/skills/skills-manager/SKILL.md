@@ -24,8 +24,9 @@ Deploy targets:
 
 - `~/.claude/skills/`: !`ls ~/.claude/skills/ 2>/dev/null | tr '\n' ' '`
 - `~/.codex/skills/`: !`ls ~/.codex/skills/ 2>/dev/null | tr '\n' ' '`
+- `~/.cursor/skills/`: !`ls ~/.cursor/skills/ 2>/dev/null | tr '\n' ' '`
 
-Orphans (deployed but no source): !`comm -23 <(ls ~/.claude/skills/ 2>/dev/null | sort -u) <({ ls ~/Code/dotfiles/agents/skills/ 2>/dev/null; ls ~/Code/dotfiles/.agents/skills/ 2>/dev/null; ls ~/Code/dotfiles/agents/skills.local/ 2>/dev/null; } | sort -u) | tr '\n' ' '`
+Orphans (deployed but no source): !`comm -23 <({ ls ~/.claude/skills/ 2>/dev/null; ls ~/.codex/skills/ 2>/dev/null; ls ~/.cursor/skills/ 2>/dev/null; } | sort -u) <({ ls ~/Code/dotfiles/agents/skills/ 2>/dev/null; ls ~/Code/dotfiles/.agents/skills/ 2>/dev/null; ls ~/Code/dotfiles/agents/skills.local/ 2>/dev/null; } | sort -u) | tr '\n' ' '`
 
 ## Directory Structure
 
@@ -38,6 +39,7 @@ dotfiles/
 
 ~/.claude/skills/            # Deployed skills (via make link)
 ~/.codex/skills/             # Deployed skills (via make link)
+~/.cursor/skills/            # Deployed skills (via make link)
 ```
 
 ## Install or Update a Skill
@@ -84,19 +86,19 @@ git add -A && git commit -m "Remove SKILL-NAME skill"
 
 `make link` only adds/updates—it doesn't delete from target directories.
 
-Three source directories, not two: `agents/skills/`, `.agents/skills/`, **and** `agents/skills.local/` (gitignored). All three deploy to `~/.claude/skills/` and `~/.codex/skills/`.
+Three source directories, not two: `agents/skills/`, `.agents/skills/`, **and** `agents/skills.local/` (gitignored). All three deploy to `~/.claude/skills/`, `~/.codex/skills/`, and `~/.cursor/skills/`.
 
 Run this exact command to list orphans (deployed directories with no source):
 
 ```bash
 comm -23 \
-  <({ ls ~/.claude/skills/ 2>/dev/null; ls ~/.codex/skills/ 2>/dev/null; } | sort -u) \
+  <({ ls ~/.claude/skills/ 2>/dev/null; ls ~/.codex/skills/ 2>/dev/null; ls ~/.cursor/skills/ 2>/dev/null; } | sort -u) \
   <({ ls ~/Code/dotfiles/agents/skills/ 2>/dev/null; ls ~/Code/dotfiles/.agents/skills/ 2>/dev/null; ls ~/Code/dotfiles/agents/skills.local/ 2>/dev/null; } | sort -u)
 ```
 
 Do **not** substitute `Glob` — it returns files only and misses directory-only entries in `skills.local/`, which will produce false-positive orphans for valid local skills. Use `ls` (or `fd --type d --max-depth 1`).
 
-For each orphan: check `git log` for context — a skill mid-rename looks identical to an orphan until the log shows the new path. Then propose `rm -rf ~/.claude/skills/NAME ~/.codex/skills/NAME` and ask for confirmation.
+For each orphan: check `git log` for context — a skill mid-rename looks identical to an orphan until the log shows the new path. Then propose `rm -rf ~/.claude/skills/NAME ~/.codex/skills/NAME ~/.cursor/skills/NAME` and ask for confirmation.
 
 ## Finding Skills
 

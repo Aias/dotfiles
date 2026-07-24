@@ -81,10 +81,10 @@ check:
 	for skill in $$(ls -1d agents/skills/*/ .agents/skills/*/ agents/skills.local/*/ 2>/dev/null | xargs -I{} basename {}); do \
 		len=$${#skill}; [ $$len -gt $$max_w ] && max_w=$$len; \
 	done; \
-	printf "  %-$${max_w}s  type  claude  codex\n" "skill"; \
+	printf "  %-$${max_w}s  type  claude  codex  cursor\n" "skill"; \
 	check_skill() { \
 		local skill="$$1" type_label="$$2" src_dir="$$3"; \
-		local claude="$${YELLOW}-$${RESET}" codex="$${YELLOW}-$${RESET}"; \
+		local claude="$${YELLOW}-$${RESET}" codex="$${YELLOW}-$${RESET}" cursor="$${YELLOW}-$${RESET}"; \
 		local src="$$src_dir/$$skill/SKILL.md"; \
 		local built="agents/.build/skills/$$skill/SKILL.md"; \
 		local cmp="$$src"; [ -f "$$built" ] && cmp="$$built"; \
@@ -94,7 +94,10 @@ check:
 		if [ -f ~/.codex/skills/$$skill/SKILL.md ]; then \
 			diff -q "$$cmp" ~/.codex/skills/$$skill/SKILL.md >/dev/null 2>&1 && codex="$${GREEN}✓$${RESET}" || codex="$${RED}✗$${RESET}"; \
 		fi; \
-		printf "  %-$${max_w}s  %b   %b       %b\n" "$$skill" "$$type_label" "$$claude" "$$codex"; \
+		if [ -f ~/.cursor/skills/$$skill/SKILL.md ]; then \
+			diff -q "$$cmp" ~/.cursor/skills/$$skill/SKILL.md >/dev/null 2>&1 && cursor="$${GREEN}✓$${RESET}" || cursor="$${RED}✗$${RESET}"; \
+		fi; \
+		printf "  %-$${max_w}s  %b   %b       %b      %b\n" "$$skill" "$$type_label" "$$claude" "$$codex" "$$cursor"; \
 	}; \
 	for skill in $$(ls -1d agents/skills/*/ 2>/dev/null | xargs -I{} basename {}); do \
 		check_skill "$$skill" "$${DIM}[P]$${RESET}" "agents/skills"; \

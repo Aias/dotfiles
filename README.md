@@ -78,7 +78,7 @@ After this repo is on your machine and zsh is sourced, the **`dotup`** alias run
 2. Back up any existing files to `~/.dotfiles-backup/`
 3. Create symlinks from this repo to `~/` (based on `links.txt`)
 4. Copy mise global config and Cursor global rule (not symlinked — see `install.sh`)
-5. Sync all skills (personal, external, local) to `~/.claude/skills/` and `~/.codex/skills/`
+5. Sync all skills (personal, external, local) to `~/.claude/skills/`, `~/.codex/skills/`, and `~/.cursor/skills/`
 6. Register MCP servers with Claude Code (user scope)
 
 `make link` sets `SKIP_DEPENDENCY_INSTALL=1` so Homebrew/mise steps are skipped; use it when deps are already satisfied. `make update` is for pulling latest dotfiles and re-running a full install.
@@ -107,7 +107,7 @@ Skills come in three types:
 - **[L] Local** — Machine-specific, gitignored in `agents/skills.local/`
 - **[E] External** — Installed from GitHub via [skills.sh](https://skills.sh) in `.agents/skills/`
 
-`make link` / `install.sh` **rsync each skill folder into** `~/.claude/skills/` and `~/.codex/skills/` — they **do not delete** directories you removed or renamed in the repo. After dropping or renaming a skill, remove the stale folder from those home paths too (compare `ls agents/skills` / `.agents/skills` / `agents/skills.local` with `ls ~/.claude/skills`). See the **skills-manager** skill (`agents/skills/skills-manager/`) for the full cleanup checklist.
+`make link` / `install.sh` **rsync each skill folder into** `~/.claude/skills/`, `~/.codex/skills/`, and `~/.cursor/skills/` — they **do not delete** directories you removed or renamed in the repo. After dropping or renaming a skill, remove the stale folder from those home paths too (compare `ls agents/skills` / `.agents/skills` / `agents/skills.local` with `ls ~/.claude/skills`). See the **skills-manager** skill (`agents/skills/skills-manager/`) for the full cleanup checklist.
 
 ### Adding a Personal Skill
 
@@ -137,7 +137,7 @@ make update-skills
 
 1. Delete the skill directory under `agents/skills/`, `agents/skills.local/`, or `.agents/skills/`
 2. Remove any matching entry from `skills-lock.json` (external skills)
-3. Delete the same skill name under `~/.claude/skills/` and `~/.codex/skills/` (not done automatically)
+3. Delete the same skill name under `~/.claude/skills/`, `~/.codex/skills/`, and `~/.cursor/skills/` (not done automatically)
 
 ### Verifying Sync Status
 
@@ -148,8 +148,8 @@ make check
 Shows a table of all skills with sync status for each agent:
 
 ```
-skill                        type  claude  codex
-changelog                    [P]   ✓       ✓
-skill-creator                [E]   ✓       ✓
-react-best-practices         [P]   ✓       ✓
+skill                        type  claude  codex  cursor
+changelog                    [P]   ✓       ✓      ✓
+skill-creator                [E]   ✓       ✓      ✓
+react-best-practices         [P]   ✓       ✓      ✓
 ```

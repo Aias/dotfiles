@@ -27,7 +27,7 @@ Personal dotfiles repo — shell config, git, editor settings, and AI agent conf
 - This repo is public. Never commit private information, credentials, machine-specific secrets, personal data, or internal-only notes here, even temporarily. Use ignored local files or tracked templates instead.
 - For agent config, dotfiles is source of truth; check symlink mapping before editing
 - Skills: personal in `agents/skills/`, machine-specific in `agents/skills.local/` (gitignored), external in `.agents/skills/`
-- Skill deploy **does not prune** `~/.claude/skills/` or `~/.codex/skills/`: removing or renaming a skill in the repo leaves old directories in home until you delete them (see README _Managing Skills_ / `/skills-manager`)
+- Skill deploy **does not prune** `~/.claude/skills/`, `~/.codex/skills/`, or `~/.cursor/skills/`: removing or renaming a skill in the repo leaves old directories in home until you delete them (see README _Managing Skills_ / `/skills-manager`)
 
 ## Annotation Compilation
 
