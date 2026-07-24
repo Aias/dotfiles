@@ -29,6 +29,8 @@ Conductor | agents/conductor.settings.toml | .conductor/settings.toml | .conduct
 
 # Cursor (symlinks only - global.mdc uses copy with frontmatter, handled separately)
 # cli-config.json is Cursor-managed (agent CLI writes to it); not symlinked
+# ~/AGENTS.md: Cursor CLI ancestor walk (and any harness that walks to ~); keep global.mdc for IDE
+Cursor | agents/GLOBAL.md | AGENTS.md | AGENTS.md
 Cursor | cursor/mcp.json | .cursor/mcp.json | .cursor/mcp.json
 Cursor | cursor/settings.json | Library/Application Support/Cursor/User/settings.json | Cursor/User/settings.json
 Cursor | cursor/keybindings.json | Library/Application Support/Cursor/User/keybindings.json | Cursor/User/keybindings.json

@@ -77,7 +77,7 @@ After this repo is on your machine and zsh is sourced, the **`dotup`** alias run
 1. Compile `@>` annotations from skills into GLOBAL.md
 2. Back up any existing files to `~/.dotfiles-backup/`
 3. Create symlinks from this repo to `~/` (based on `links.txt`)
-4. Copy mise global config and Cursor global rule (not symlinked — see `install.sh`)
+4. Copy mise global config and Cursor `global.mdc` (not symlinked — see `install.sh`); symlink `~/AGENTS.md` for Cursor CLI ancestor discovery
 5. Sync all skills (personal, external, local) to `~/.claude/skills/`, `~/.codex/skills/`, and `~/.cursor/skills/`
 6. Register MCP servers with Claude Code (user scope)
 

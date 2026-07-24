@@ -4,7 +4,7 @@ Personal dotfiles repo — shell config, git, editor settings, and AI agent conf
 
 ## Structure
 
-- `agents/GLOBAL.md` — Global agent instructions + compiled `@>` skill index (symlinked to `~/.claude/CLAUDE.md`, `~/.codex/AGENTS.md`, Cursor rules). Conductor-specific detail lives in the `/conductor` skill; GLOBAL keeps a short pointer and compiled reminders.
+- `agents/GLOBAL.md` — Global agent instructions + compiled `@>` skill index (symlinked to `~/.claude/CLAUDE.md`, `~/.codex/AGENTS.md`, `~/AGENTS.md`; copied to Cursor `global.mdc`). Conductor-specific detail lives in the `/conductor` skill; GLOBAL keeps a short pointer and compiled reminders.
 - `agents/skills/` — Personal agent skills (tracked)
 - `agents/skills.local/` — Machine-specific skills (gitignored)
 - `agents/compile-global.ts` — Compiles `@>` annotations from skills into GLOBAL.md's dense index
