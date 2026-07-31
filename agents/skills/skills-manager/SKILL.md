@@ -2,13 +2,16 @@
 name: skills-manager
 description: >
   Use when adding, updating, removing, or cleaning external skills in dotfiles; `skills.sh`,
-  `make update-skills`, `.agents/skills/`, `skills-lock.json`, or syncing skills into install paths.
-  Manages the external-skill pipeline for this repo.
+  `make update-skills`, the dotfiles repo's `.agents/skills/`, `skills-lock.json`, or syncing
+  skills into install paths. Manages the dotfiles external-skill pipeline only — not skills that
+  live in a project repository's own `.agents/skills/` directory.
 ---
 
 # Skills Manager
 
-Manages external skills within the dotfiles setup. External skills live in `.agents/skills/` and deploy via `make link`.
+Manages external skills within the dotfiles setup. External skills live in the dotfiles repo's `.agents/skills/` and deploy via `make link`.
+
+**Scope: the dotfiles pipeline only.** A project repository's own `.agents/skills/` directory (`<repo>/.agents/skills/<name>`) follows the same skills spec but is ordinary project source — edit it in place, commit it with the repo, and keep it out of `skills-lock.json` and the deploy targets. Nothing in this pipeline manages, installs, or syncs project-owned skills.
 
 **When invoked with no additional user context**, use `AskUserQuestion` to present the available actions (install/update, delete, cleanup, find) as interactive prompts rather than listing them as plain text.
 
