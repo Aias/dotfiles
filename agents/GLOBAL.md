@@ -97,7 +97,7 @@ For agent config files, treat dotfiles as source of truth: when both `~/...` and
 
 ### Durable memory
 
-Dotfiles are the durable memory: standing rules, corrections, and preferences belong in tracked files — GLOBAL.md, a skill, or a project's `AGENTS.md` (see `/remember-that`) — where they're versioned and visible to every agent, harness, and machine. Harness-private memory (Claude's auto-memory directory) is fine for a project's own working context, but note that in Conductor each worktree is its own "project", so that memory is feature-scoped and won't follow the repo. Never route a durable rule there.
+Dotfiles are the durable memory: standing rules, corrections, and preferences belong in tracked files — GLOBAL.md, a skill, or a project's `AGENTS.md` (see `/remember-that`) — where they're versioned and visible to every agent, harness, and machine. Harness-private memory (Claude's auto-memory directory) is fine for a project's own working context; it's keyed to the main repo checkout, so it follows the repo across Conductor worktrees — but it stays harness-private and machine-local. Never route a durable rule there.
 
 ### Skill cross-links
 
