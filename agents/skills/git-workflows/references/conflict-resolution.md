@@ -40,11 +40,16 @@ How you edit (patch tool, structured replace, shell, etc.) is up to you; the req
 - After staging, show clean status for those paths and **checkpoint:** remind the user that merge commit, `git rebase --continue`, and push still require explicit permission per `/git-workflows`.
 - **Do not** run `git commit`, `git rebase --continue`, or `git push` unless the user has clearly authorized that step.
 
+<!-- @> Generated artifacts and lockfiles: never hand-merge, conflict or not — a generated file stays a build output regardless of where or when it's edited. Reset the file to one side wholesale, rerun the generator, then diff against the base to confirm only the replayed commit's changes appear -->
 ## Special cases
 
 **Lock files** (`pnpm-lock.yaml`, `package-lock.json`, `yarn.lock`, etc.): Often both modified without inline markers. Typical pattern: align with one side or the other as a starting point, then **regenerate** the lockfile with the project's canonical install/update command so it matches the merged `package.json` (or monorepo equivalent).
 
-**Generated artifacts** (GraphQL types, codegen output, etc.): Prefer consistency with the chosen source side, then regenerate if the repo has a standard codegen step.
+**Generated artifacts** (codegen output, typed API clients, compiled assets): Never hand-merge one. A generated file is a generated file regardless of where or when it is being edited, and a conflict is not an exception — resolving hunks by hand is hand-editing a build output. Reset the whole file to one side (usually the base), then rerun the generator so the output derives from the merged inputs.
+
+Per-hunk resolution is tempting because each hunk looks individually decidable, and it is wrong for a reason the markers hide: the two sides are independent generator runs, so they may order, relocate, or reformat blocks differently even where they agree on content. Choosing per hunk yields a file the generator would never emit, and the next regeneration silently reverts it.
+
+Verify by diffing the regenerated file against the base. The delta should contain only what the replayed commit's source changes imply — anything else is schema or dependency drift that does not belong in this commit.
 
 <!-- @> Rebase: run /orient first to map the change-set vs the base. A rebased branch needs a force-push, which the agent never runs (see /git-workflows) — hand it back for the user to push, even after they approve the resolution. Regenerate codegen after the rebase lands -->
 ## Rebasing (workflow)
