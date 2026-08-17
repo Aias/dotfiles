@@ -75,6 +75,14 @@ Per [Workspaces and branches](https://docs.conductor.build/tips/workspaces-and-b
 
 [Diff viewer](https://docs.conductor.build/core/diff-viewer) shows agent-made changes and aligns with steps toward merge/PR.
 
+## Cursor / Grok in Conductor
+
+<!-- @> Grok/Cursor CLI in Conductor does not inject AGENTS.md or skill catalogs; do not put a bootstrap in prompts.general (that hits Claude and GPT too) -->
+
+Cursor IDE Agent, Claude Code, and Codex inject `AGENTS.md` and skill catalogs. Conductor's Grok / Cursor CLI path does not, even when those files sit in Cursor's documented discovery locations. Do not compensate with `[prompts.general]` — that prompt is appended to every harness.
+
+What this Grok path *does* inject: Cursor User Rules (Customize → Rules) and Conductor action prompts (`create_pr`, `code_review`, …). There is no per-harness prompt in Conductor's settings schema. The durable fix is Conductor/Cursor loading project `AGENTS.md` and `~/.cursor/skills` for Grok the same way Claude does; until then, a short Cursor User Rule is the only auto-load channel that stays off Claude and GPT.
+
 ## Git and PRs
 
 - **Permission and safety:** `/git-workflows` (commit/push gates, fetch-before-diff, SSH, etc.).

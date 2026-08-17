@@ -62,6 +62,17 @@ check:
 		printf "  $${YELLOW}-$${RESET} %s $${DIM}(missing)$${RESET}\n" ".cursor/rules/global.mdc"; \
 		issues="$$issues .cursor/rules/global.mdc"; \
 	fi; \
+	if [ -L ~/.cursor/cli-config.json ]; then \
+		printf "  $${RED}✗$${RESET} %s $${DIM}(symlink — live file must stay a real JSON file)$${RESET}\n" ".cursor/cli-config.json"; \
+		issues="$$issues .cursor/cli-config.json"; \
+	elif [ -f ~/.cursor/cli-config.json ]; then \
+		python3 -c 'import json,pathlib,sys; d=json.loads(pathlib.Path.home().joinpath(".cursor/cli-config.json").read_text()); a=d.get("attribution") or {}; sys.exit(0 if a.get("attributePRsToAgent") is False and a.get("attributeCommitsToAgent") is False else 1)' \
+			&& printf "  $${GREEN}✓$${RESET} %s\n" ".cursor/cli-config.json attribution" \
+			|| { printf "  $${RED}✗$${RESET} %s $${DIM}(attribution not false — run make link)$${RESET}\n" ".cursor/cli-config.json"; issues="$$issues .cursor/cli-config.json"; }; \
+	else \
+		printf "  $${YELLOW}-$${RESET} %s $${DIM}(missing)$${RESET}\n" ".cursor/cli-config.json"; \
+		issues="$$issues .cursor/cli-config.json"; \
+	fi; \
 	echo ""; \
 	printf "$${BOLD}Node (special)$${RESET}\n"; \
 	if [ -f ~/.config/mise/config.toml ] && ! [ -L ~/.config/mise/config.toml ]; then \

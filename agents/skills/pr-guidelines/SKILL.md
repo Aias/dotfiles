@@ -167,3 +167,7 @@ The agent posts through the user's own GitHub account, so author metadata can't 
 *<model> (<effort>):* <comment body>
 
 Name the model and effort actually running (`*Opus 4.8 (Max):*`, `*Codex 5.5 (Extra High):*`). The prefix is a byline, not a wrapper — the body stays plain text in the same paragraph, so the comment reads as prose rather than as a quoted block. This covers every agent-authored GitHub comment — inline review replies, review summaries, conversation comments — including those posted via `/code-review --comment`. It does not apply to PR titles or descriptions, which are written in the user's voice and still carry no AI footer.
+
+<!-- @> Run every PR comment through /what before posting: the reviewer has none of the session's context — restore referents, cut padding, lead with the answer -->
+
+Run every comment through `/what` before posting. The reviewer has none of the session's context: open with the answer, restate referents the conversation coined, name code in the project's own terms, and cut the padding. A comment that reads like a mid-session chat update has not been re-pitched yet.

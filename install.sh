@@ -205,6 +205,34 @@ install_cursor_global_rules() {
 }
 install_cursor_global_rules
 
+# Cursor CLI writes auth, model, and privacy into ~/.cursor/cli-config.json, so
+# the live file cannot be a symlink into this (public) repo. Merge durable keys
+# from the tracked template; leave machine-local fields alone.
+install_cursor_cli_config() {
+    local source="$DOTFILES_DIR/cursor/cli-config.json"
+    local target="$HOME/.cursor/cli-config.json"
+    mkdir -p "$(dirname "$target")"
+    if [[ -L "$target" ]]; then
+        rm "$target"
+    fi
+    python3 - "$source" "$target" <<'PY'
+import json
+import pathlib
+import sys
+
+template_path = pathlib.Path(sys.argv[1])
+live_path = pathlib.Path(sys.argv[2])
+template = json.loads(template_path.read_text())
+live = json.loads(live_path.read_text()) if live_path.exists() else dict(template)
+tracked_attr = template.get("attribution") or {}
+live_attr = live.setdefault("attribution", {})
+live_attr.update(tracked_attr)
+live_path.write_text(json.dumps(live, indent=2) + "\n")
+PY
+    success_dim ".cursor/cli-config.json" "(attribution merged)"
+}
+install_cursor_cli_config
+
 # ─────────────────────────────────────────────────────────────
 # Skills
 # ─────────────────────────────────────────────────────────────

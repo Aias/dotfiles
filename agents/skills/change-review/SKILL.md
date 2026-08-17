@@ -53,9 +53,9 @@ Brief — full workflow in [references/review.md](references/review.md).
 - **Model tier per GLOBAL.md:** review and validator subagents run on the Opus tier at high or extra-high effort; drop to a faster model only for pure retrieval (gathering files, grepping call sites) that an analysis agent then reasons over.
 - **Validate each finding** with a second-pass subagent before reporting — a fresh context adversarially refuting *another* agent's finding, never an agent re-checking its own work. Validation is where filtering happens, which is what lets the finders stay open.
 - **Cite file path + line range** on every finding. Never restate the diff.
-- **Numbered list** with stable IDs (`#1`, `#2`, ...) so the user can reply "fix 2, 3, 5".
+- **Numbered list** with stable IDs (`#1`, `#2`, ...) so the user can reply "fix 2, 3, 5". Findings are grouped into **Clear fixes** (one right solution, all get applied regardless of severity) vs **Decisions needed** (a product/design choice gates the fix — options + one recommendation each); run each finding through `/what` before it reaches the report. See [references/review.md](references/review.md#phase-4-report).
 - **High signal in the report, not in the finders.** Finders report everything with confidence and severity; validation filters. The [explicit false-positives list](references/review.md#explicit-false-positives) (pre-existing issues, linter-catchable, pedantic nits) is a category exclusion that binds every stage.
-- **End with a handoff suggestion:** APPLY a subset, run `/pr-guidelines` to refresh the description, or defer to a follow-up PR.
+- **End with a handoff suggestion:** APPLY the clear fixes, answer the decision items, run `/pr-guidelines` to refresh the description, or defer to a follow-up PR.
 
 ## APPLY Mode
 

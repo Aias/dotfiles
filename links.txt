@@ -28,7 +28,8 @@ Codex | agents/codex.config.toml | .codex/config.toml | .codex/config.toml
 Conductor | agents/conductor.settings.toml | .conductor/settings.toml | .conductor/settings.toml
 
 # Cursor (symlinks only - global.mdc uses copy with frontmatter, handled separately)
-# cli-config.json is Cursor-managed (agent CLI writes to it); not symlinked
+# cli-config.json: Cursor CLI writes auth/model into the live file, so it is not
+# symlinked. install.sh merges tracked durable keys (attribution) into ~/.cursor/cli-config.json.
 # ~/AGENTS.md: Cursor CLI ancestor walk (and any harness that walks to ~); keep global.mdc for IDE
 Cursor | agents/GLOBAL.md | AGENTS.md | AGENTS.md
 Cursor | cursor/mcp.json | .cursor/mcp.json | .cursor/mcp.json

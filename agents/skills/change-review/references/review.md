@@ -161,14 +161,24 @@ When no spec axis ran, synthesis is just cross-axis dedup.
 
 ## Phase 4: Report
 
+<!-- @> Report splits findings into "Clear fixes" (unambiguous solution — ALL get applied regardless of severity; priority orders work, never gates it) vs "Decisions needed" (product/design/API choice gates the fix — options + one recommendation each). Run every finding through /what before reporting: open with what breaks and for whom, plain language, project's own terms -->
+Findings are split into two groups. The split is the load-bearing structure of the report:
+
+- **Clear fixes** — the finding has one right solution and no product/design choice gates it. Every item in this group gets applied — severity ordering exists to sequence the work, never to shrink it. Never present a subset of clear fixes as the bar and leave the rest as optional polish; a confirmed problem with an unambiguous fix is fixed, whether it's a data-corrupting bug or a dead export.
+- **Decisions needed** — the fix depends on a call only the user can make (product behavior, API shape, wait-for-upstream vs. patch locally, scope tradeoffs). For each: state the options with their tradeoffs in prose and give exactly one recommendation with why. A finding lands here only when the *choice* is genuinely open — "I'd have to pick an implementation detail" does not qualify; pick it and put the finding in clear fixes.
+
+Before writing, run every finding through `/what`: open with what breaks and for whom, restore the context a cold reader lacks, and use the project's own terms — a finding that needs the review transcript to parse hasn't been written yet.
+
 Output format — copy this shape exactly.
 
 ```
 Scope: <one line: "this branch vs origin/dev", "PR #1234", "workspace diff (Conductor)", "staged changes">
 
+## Clear fixes (apply all — ordered by impact)
+
 ### #1 <Short title>
 
-<One paragraph: what the issue is, why it matters. Cite the file and line. Don't paste large snippets — short inline excerpts only when needed to make the finding readable.>
+<One paragraph: what the issue is, why it matters. Cite the file and line. Don't paste large snippets — short inline excerpts only when needed to make the finding readable. End with the fix in one sentence.>
 
 File: path/to/file.ts:42-48
 
@@ -176,10 +186,18 @@ File: path/to/file.ts:42-48
 
 ...
 
+## Decisions needed (options + recommendation)
+
+### #N <Short title>
+
+<One paragraph: the open choice, the options and their tradeoffs, then "Recommendation: X because Y.">
+
+File: path/to/file.ts:42-48
+
 ---
 
-Verdict: <one of: "pass", "pass with conditions: <which>", "restructure needed: <why>">
-Next: <one of: "pick items to apply", "run `/pr-guidelines` to refresh the description", "defer to follow-up PR", "no action needed">
+Verdict: <one of: "pass", "apply clear fixes", "apply clear fixes + decide #N…", "restructure needed: <why>">
+Next: <one of: "applying clear fixes now", "answer the decision items", "run `/pr-guidelines` to refresh the description", "no action needed">
 
 Open questions:
 - <Anything that needed a judgment call you couldn't make alone>
@@ -190,8 +208,8 @@ Rules for the format:
 - Titles are short and noun-shaped, not narration. ("Empty input crashes form", not "I found a bug where if the input is empty…")
 - One paragraph per finding. Two only if the issue genuinely needs more.
 - `File:` lines use the workspace-relative path. Line numbers via `:start-end` (rendered display) or `#Lstart` for clickable links — pick whichever the project uses.
-- No headers per finding beyond `### #N`. The user has accepted this format and references findings by number.
-- Group findings by axis only when there are many (>10). Otherwise, a flat numbered list reads better.
+- No headers per finding beyond `### #N`. The user has accepted this format and references findings by number. Numbering runs continuously across both groups so any item can be picked by number.
+- Within each group, order by severity/impact. Group by axis only when there are many (>10) in one group.
 
 ### Finding prioritization
 
@@ -209,10 +227,11 @@ Prefer a smaller number of high-conviction findings over a long list of cosmetic
 
 ### Verdict line
 
-A one-line pass/fail at the bottom, before `Next:`. Pick one:
+A one-line verdict at the bottom, before `Next:`. Pick one:
 
-- **`pass`** — no structural regression, no missed simplification, no boundary leak. APPLY phase is optional cleanup.
-- **`pass with conditions: <which>`** — the diff is acceptable if specific items are addressed. List the item numbers (e.g. *"pass with conditions: fix #1, #3, #5"*).
+- **`pass`** — no findings in either group. APPLY phase is optional cleanup.
+- **`apply clear fixes`** — everything found has an unambiguous solution; all of it gets applied. Never phrase this as "pass with conditions: fix the important ones" — a clear-fix finding is not a condition to negotiate, and severity never turns a finding into optional polish.
+- **`apply clear fixes + decide #N…`** — same, plus named decision items awaiting the user's call.
 - **`restructure needed: <why>`** — the diff has a presumptive blocker. The author needs to reframe before merge. State which blocker triggered it.
 
 Treat these as **presumptive blockers** for `restructure needed`:
