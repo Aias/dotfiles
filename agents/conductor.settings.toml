@@ -1,16 +1,16 @@
 "$schema" = "https://conductor.build/schemas/settings.schema.json"
 
 [git]
-branch_prefix = "trombley/"
+branch_prefix = "aias/"
 branch_prefix_type = "custom"
 
 [models]
-default = "opus-5-1m"
-review = "opus-5-1m"
+default = "fable-5"
+review = "fable-5"
 
 [models.claude_code]
-default_effort_level = "xhigh"
-review_effort_level = "xhigh"
+default_effort_level = "high"
+review_effort_level = "high"
 
 [models.codex]
 default_thinking_level = "high"

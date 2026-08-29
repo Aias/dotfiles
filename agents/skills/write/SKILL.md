@@ -9,7 +9,7 @@ global_category: Writing
 
 # Write
 
-Sentence-level prose craft for explanatory and technical writing: documentation, research, PR and commit prose, agent rules, code comments, and chat explanations. Distilled from Klinkenborg, Pinker, Strunk & White, Graham, Nielsen, Orwell, and working practitioners (Saunders, McPhee, Constantin, Karlsson, Might, Luu).
+Sentence-level prose craft for explanatory and technical writing: documentation, research, PR and commit prose, agent rules, and chat explanations. Distilled from Klinkenborg, Pinker, Strunk & White, Graham, Nielsen, Orwell, and working practitioners (Saunders, McPhee, Constantin, Karlsson, Might, Luu).
 
 These rules apply to this file and to every other rule file: good guidance is self-effacing, in the sense Tufte intends for a well-printed book. Nothing in its presentation may contradict what it teaches.
 

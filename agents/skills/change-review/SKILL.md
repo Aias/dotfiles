@@ -111,7 +111,7 @@ When categorizing a large diff, split into: **generated / boilerplate / moved / 
 
 Stubs, mocks, hardcoded fixtures, "temporary" literals, debug values, and inline test data **do not ship**. If you wired a UI, query, or branch to a stand-in during development, replace it with the real source before declaring the work done. The risk isn't sloppiness — it's that a forgotten stub silently shapes behavior, and when the feature misbehaves weeks later, the cause is invisible and the debugging trail leads in the wrong direction.
 
-If a stub must exist mid-stream (active debugging, intentional prototyping), mark every one with a `// TODO: remove` comment (or language-equivalent) so it stays greppable. Before handoff, search the touched feature for `TODO: remove`, `MOCK`, `STUB`, fixture arrays, and hardcoded values that mirror enum or option labels, and remove them. The TODO comment is a safety net, not a substitute for cleanup. Unmarked stubs are a first-class REVIEW finding.
+If a stub must exist mid-stream (active debugging, intentional prototyping), make it greppable through its identifier (a `stub`/`mock`-prefixed name), never through a comment. Before handoff, search the touched feature for `STUB`, `MOCK`, fixture arrays, and hardcoded values that mirror enum or option labels, and remove them. Unmarked stubs are a first-class REVIEW finding.
 
 <!-- @> Hard rule: a file may not cross from below 1000 lines to above. Only waiver is extremely uniform content (data table, generated code, flat enum) where any split would hurt readability. Decompose first by default -->
 
@@ -146,26 +146,11 @@ When adding an entry, place it in the correct position rather than appending. Th
 
 For config files that combine tool defaults with project overrides, encode only the **deviations**: a short config that diverges meaningfully is more readable than a long one that mostly restates the defaults. Before adding an option, check whether it matches the default; if so, omit it.
 
-<!-- @> Comments explain WHY not WHAT. If explaining WHAT, refactor to be self-documenting -->
+<!-- @> Comments are banned entirely: flag every comment in touched code for deletion; refactor until self-documenting (extract, rename, restructure); knowledge code can't express goes to the PR description, never the source. Sole exception: TODO-style markers the user specifically requested -->
 
 ### Comment policy
 
-Remove unacceptable comments:
-
-- Comments that repeat what code does.
-- Commented-out code (delete it).
-- Obvious comments ("increment counter").
-- Comments that could be fixed by better naming.
-- Comments about updates to old code ("now supports xyz", "moved to new location").
-
-Code should be self-documenting. If a comment explains WHAT the code does, refactor to make it clearer.
-
-Acceptable comments:
-
-- Explaining an unintuitive decision.
-- Intuitively explaining a complex algorithm.
-- Justifying an inconsistency or deviation.
-- Translating symbols/phrases otherwise unintelligible.
+Comments are banned. Every comment in touched code is a finding: delete it, and when it carried information, move that information into the code (a named function or constant, a better identifier, a restructure) or out of the source entirely (PR description, commit message, docs). A construct that seems to need a comment is not clear enough and gets rewritten. Machine-read directives (shebangs, codegen pragmas) are code, not comments; lint suppressions remain a last resort governed by the lint-directives rule. The single exception: `TODO`-style markers the user specifically requested.
 
 ### Don't silence the tool; don't roll your own codemod
 
