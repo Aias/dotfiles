@@ -1,3 +1,5 @@
+approval_policy = "on-request"
+approvals_reviewer = "auto_review"
 file_opener = "cursor"
 model = "gpt-5.6-sol"
 model_reasoning_effort = "medium"
@@ -8,6 +10,7 @@ service_tier = "default"
 notify = ["/Users/nicktrombley/.codex/computer-use/Codex Computer Use.app/Contents/SharedSupport/SkyComputerUseClient.app/Contents/MacOS/SkyComputerUseClient", "turn-ended"]
 
 [features]
+context_management.experimental_mode = true
 rmcp_client = true
 skills = true
 default_mode_request_user_input = true
