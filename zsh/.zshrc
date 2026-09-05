@@ -59,7 +59,7 @@ if [[ -x /opt/homebrew/bin/brew ]]; then
   unset _fzf_base
 fi
 
-# Bun completions
+# bun completions
 [[ -s "$HOME/.bun/_bun" ]] && source "$HOME/.bun/_bun"
 
 # ─────────────────────────────────────────────────────────────
