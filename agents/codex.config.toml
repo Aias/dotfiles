@@ -62,6 +62,12 @@ trust_level = "trusted"
 [projects."/Users/nicktrombley/conductor/repos/nut-butter"]
 trust_level = "trusted"
 
+[projects."/Users/nicktrombley/conductor/repos/tp-7"]
+trust_level = "trusted"
+
+[projects."/Users/nicktrombley/Code/barnsworthburning"]
+trust_level = "trusted"
+
 [mcp_servers.linear]
 url = "https://mcp.linear.app/mcp"
 

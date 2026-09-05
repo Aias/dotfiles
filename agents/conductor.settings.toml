@@ -2,11 +2,11 @@
 
 [git]
 branch_prefix = "aias/"
-branch_prefix_type = "custom"
+branch_prefix_type = "none"
 
 [models]
-default = "fable-5"
-review = "fable-5"
+default = "claude:fable-5-1"
+review = "fable-5-1"
 
 [models.claude_code]
 default_effort_level = "high"
