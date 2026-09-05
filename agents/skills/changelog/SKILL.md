@@ -11,8 +11,7 @@ You are helping me review outdated dependencies and understand what has changed.
 
 ### Current Project
 
-- Lockfiles present: !`ls package.json pnpm-lock.yaml yarn.lock bun.lockb package-lock.json rush.json 2>/dev/null | tr '\n' ' '`
-- `packageManager` field: !`jq -r '.packageManager // "(not set)"' package.json 2>/dev/null || echo "(no package.json)"`
+Package-manager detection needs the lockfiles present (`ls package.json pnpm-lock.yaml yarn.lock bun.lockb package-lock.json rush.json`) and the `packageManager` field (`jq -r '.packageManager // "(not set)"' package.json`). Read both before Step 1 and report a failing command rather than guessing the manager.
 
 ### Step 1: Detect Package Manager and Check Outdated Dependencies
 

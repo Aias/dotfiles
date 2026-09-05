@@ -11,10 +11,7 @@ allowed-tools: Bash(git:*), Read, Glob, Grep, Edit, Write
 
 ## Context
 
-- Current branch: !`git branch --show-current`
-- Git status: !`git status --short`
-- Commits on branch: !`git log --oneline $(git merge-base HEAD origin/main 2>/dev/null || git merge-base HEAD origin/dev 2>/dev/null || echo HEAD~10)..HEAD`
-- Diff stat: !`git diff $(git merge-base HEAD origin/main 2>/dev/null || git merge-base HEAD origin/dev 2>/dev/null || echo HEAD~10)...HEAD --stat`
+A history rewrite needs the current branch (`git branch --show-current`), a clean working tree (`git status --short`), and the verified base branch from Step 1 before anything else. Only with the base resolved do the commit range (`git log --oneline origin/<base>..HEAD`) and the diff stat (`git diff origin/<base>...HEAD --stat`) mean anything; never guess the base from a fixed candidate list. Read these in one batch, reuse the results within the session, and report a failing command rather than assuming the state it would have shown.
 
 ## Task
 

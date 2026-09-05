@@ -12,16 +12,16 @@ Make changes. Two entry paths:
 - **Don't auto-commit.** The user reviews edits before commit. Default to leaving changes staged-but-uncommitted. *"Make all changes but don't commit, I'll review first"* is the standing pattern.
 - **Cleanup commits live on top, not folded.** *"Fix and commit as a single cleanup commit on top, we don't need to do this as part of the rebase."* Don't `git commit --amend` or `git rebase -i` to fold cleanup into prior commits unless the user asks.
 - **Don't auto-resolve conflicts or auto-push.** *"Don't auto-resolve without checking with me first, for any conflicts propose a resolution and allow me to confirm or deny."*
-- **Stub sweep before handoff.** Before declaring done, `rg` the touched feature for `TODO: remove`, `MOCK`, `STUB`, hardcoded fixture arrays, and remove them.
+- **Stub sweep before handoff.** Before declaring done, `rg` the touched feature for `stub`/`mock`-prefixed identifiers, hardcoded fixture arrays, and literals that mirror enum or option labels, and remove them.
 - **PR description sync.** When cleanup changes claims in the PR body, suggest running `/pr-guidelines` to refresh the description. Don't edit it silently.
 
 ## Workflow shape
 
-Every APPLY follows **explore → propose → approve → apply.**
+A pick by number is the approval: apply selected findings without requesting approval again. The **explore → propose → approve → apply** shape applies to a cleanup whose scope remains open.
 
-1. **Explore.** Read the picked items (or the change-set, for standalone intensity). Identify everything in scope. Do not edit yet.
+1. **Explore.** Read the change-set. Identify everything in scope. Do not edit yet.
 2. **Propose.** Present a numbered plan, ordered largest-to-smallest refactor. Each item: one-line description, affected file(s), scope tag (structural / cosmetic / deletion).
-3. **Approve.** Ask the user to approve all, select by number, or deny. Wait. Don't slide from propose to apply.
+3. **Approve.** Obtain agreement on that concrete scope before editing. Ask again later only when a substantive decision or reserved action remains unresolved.
 4. **Apply.** Make approved changes. Run build/tests afterward. Report what changed in one or two sentences.
 
 The proposal step is the same shape regardless of which entry path got you here.

@@ -6,7 +6,6 @@ description: >
   Framer Motion (motion/react), GSAP, CSS keyframes/transitions, cubic-bezier, @starting-style,
   clip-path, transform-origin, modal/drawer/tooltip/toast motion, drag/gesture feel, GPU-safe
   properties. Design and implement purposeful web animation.
-global_category: Animation
 ---
 
 # Web Animation Design
@@ -27,7 +26,6 @@ When reviewing animations, present findings as a single markdown table, one row 
 
 Answer these in order, before writing animation code.
 
-<!-- @> Entering/exiting → ease-out. On-screen movement → ease-in-out. Hover → ease. 100+ daily → don't animate -->
 
 ### 1. Should this animate at all?
 
@@ -66,7 +64,6 @@ Easing is the single most important part of an animation—it can make a bad ani
 
 **Never use `ease-in` on UI.** It starts slow—delaying the exact moment the user is watching—then accelerates into the stop, the opposite of how things settle.
 
-<!-- @> Built-in curves are too weak — use custom cubic-beziers; a flat animation has too weak a curve, not too short a duration -->
 
 ### Use custom curves
 
@@ -94,7 +91,6 @@ Built-in named curves are almost never strong enough—their acceleration is too
 --ease-height: cubic-bezier(0.25, 1, 0.5, 1);   /* snappy drawer height change */
 ```
 
-<!-- @> Elements that animate together (modal+overlay, tooltip+arrow) share exact easing and duration — mismatched timings look broken even when each looks fine alone -->
 
 ### Paired Elements Rule
 
@@ -112,7 +108,6 @@ Elements that animate together must use the same easing and duration. Modal + ov
 
 ## Timing and Duration
 
-<!-- @> Choose easing first, then tune duration to it — a steep curve affords a longer duration. Exits shorter than entries. UI stays under ~300ms -->
 
 **Duration and easing are inseparable.** A steep curve can afford a longer duration (a 500ms iOS sheet doesn't feel slow because the curve front-loads the movement); a weak curve must be shorter. Choose the easing first, then tune duration to it.
 
@@ -134,7 +129,6 @@ Elements that animate together must use the same easing and duration. Modal + ov
 
 ## Physicality
 
-<!-- @> Never scale(0) — enter from scale(0.9–0.95)+opacity 0. Press scale(0.97) felt-not-seen. Hover scale 1–2% max. Popovers scale from their trigger; modals stay centered -->
 
 - **Never animate from `scale(0)`.** Start entrances from `scale(0.9–0.95)` + `opacity: 0`—nothing appears from nothing; a near-full start reads as "it was always almost there." Bigger floating elements start closer to 1 (a nav menu uses `scale(0.98)`).
 - **Button press:** `transform: scale(0.97)` on `:active`. Press feedback is *felt, not seen*—`scale(0.9)` visibly collapses. Buttons feel best with both hover and press feedback; hover with nothing on click feels dead.
@@ -179,7 +173,6 @@ An interaction that is neither a gesture nor interruptible takes the easing curv
 
 ## Interruptibility
 
-<!-- @> Rapidly-triggered UI (toasts, toggles, drawers, accordions) needs interruptible motion: transitions/springs retarget mid-flight, @keyframes restart from zero -->
 
 Anything triggered rapidly (toasts, toggles, drawers, accordions, drags) must animate **from its current state**, not restart. CSS transitions and springs are interruptible; `@keyframes` restart from zero and make new items jump. Reserve `@keyframes` for autonomous, looping, or one-shot motion that never needs interruption.
 
@@ -212,7 +205,6 @@ Radix/Base UI animate exit via `[data-state]` (they suspend unmount so the closi
 
 ### The Golden Rule
 
-<!-- @> GPU only: animate transform and opacity. Never padding/margin/height/width. Motion x/y shorthands and CSS vars on a parent run on the main thread -->
 
 Only animate `transform` and `opacity`. These touch just the Composite step and run on the GPU. Everything else costs more:
 
@@ -269,7 +261,6 @@ Animations can cause motion sickness or distraction for some users—vestibular 
 
 ### prefers-reduced-motion
 
-<!-- @> Reduced motion means gentler, not zero: remove movement, keep opacity/color changes that carry meaning; disable purely decorative motion entirely -->
 
 **Reduced motion means gentler, not zero.** Deleting all animation makes the interface *harder* to follow. The transformation is: remove the motion, keep the meaning.
 

@@ -5,7 +5,7 @@ description: >
   descriptions, extraction or classification instructions, image-generation prompts, LLM-judge rubrics,
   or any multi-stage AI pipeline. Triggers on "the prompt", "tune the prompt", "the extractor/judge/curator
   anchors on", "prompt is too long", "cache_control", "prompt caching", "which model should this call".
-  For the prose itself, pair with `/write`; for model ids, pricing, and caching mechanics, see `/claude-api`.
+  For the prose itself, pair with `/write`; for model ids, pricing, and caching mechanics, read the provider's current model docs.
 global_category: AI
 ---
 
@@ -27,9 +27,9 @@ Craft for prompts that a downstream model reads, distinct from prose a human rea
 
 ## Cost and Caching
 
-**Cache only what you reuse.** Prompt caching (`cache_control`) pays a write premium to amortize a stable prefix across calls. Mark a span cacheable only when later requests reuse that exact prefix: a fixed system prompt, a shared rubric, a tool schema. Turn it off for per-call payloads that never recur, such as a one-shot image or document handed to a single extraction or judging stage, request-specific user content, or anything downstream of the cache breakpoint. Caching unrepeated content adds the write surcharge with no hit to recover it. See `/claude-api` for breakpoint placement and pricing.
+**Cache only what you reuse.** Prompt caching (`cache_control`) pays a write premium to amortize a stable prefix across calls. Mark a span cacheable only when later requests reuse that exact prefix: a fixed system prompt, a shared rubric, a tool schema. Turn it off for per-call payloads that never recur, such as a one-shot image or document handed to a single extraction or judging stage, request-specific user content, or anything downstream of the cache breakpoint. Caching unrepeated content adds the write surcharge with no hit to recover it. See the provider's current model docs for breakpoint placement and pricing.
 
-**Default to the latest model when touching a pipeline.** When editing an AI pipeline, pin its calls to the current stable model rather than inheriting a stale id. Confirm the id against `/claude-api`; never carry an old version forward by default.
+**Flag a stale model id when touching a pipeline.** When editing an AI pipeline, check its model ids against the provider's current model docs and call out any that are behind the current stable release. Migrate only on request: a model change alters behavior and needs its own task justification.
 
 ## Length
 

@@ -37,7 +37,7 @@ Extract durable learnings from conversation context and persist them appropriate
    | Global (via skill)  | Skill SKILL.md + `<!-- @> summary -->` annotation                                       | Learning relates to a skill with `global_category` — edit the skill, add annotation, run `make compile`            |
    | Project-specific    | `./AGENTS.md` in project root (symlink `./CLAUDE.md → ./AGENTS.md`)                     | Patterns specific to this codebase, local conventions                                                              |
    | Workflow/technology | New or existing skill in `~/Code/dotfiles/agents/skills/` or local `.claude/skills`     | Detailed procedures for specific tools, frameworks, or workflows                                                   |
-   | Enforcement         | Hook script in `~/Code/dotfiles/agents/hooks/` + registration in `claude.settings.json` | When a skill or rule must be loaded before certain tool calls (e.g. read `/pr-guidelines` before `gh pr` commands) |
+   | Enforcement         | Hook script in `~/Code/dotfiles/agents/hooks/` + registration in `claude.settings.json` and `codex.config.toml` | When a skill or rule must be loaded before certain tool calls (e.g. read `/pr-guidelines` before `gh pr` commands) |
    | Agent-proactive note | Skill's `skill.feedback.md` (e.g. `~/Code/dotfiles/agents/skills/write/skill.feedback.md`) | Agent-initiated only: subtle preference inferred during a skill session that the user did not explicitly ask to be saved. Not for `/remember-that` invocations. |
 
    **Decision heuristics:**
@@ -48,11 +48,11 @@ Extract durable learnings from conversation context and persist them appropriate
    - Agent noticed a subtle pattern the user did not explicitly flag → skill's `skill.feedback.md` (lightweight, no confirmation needed). Never route a `/remember-that` invocation here.
    - "Must not forget to do X before Y" → companion hook that reminds or blocks. Hook matchers filter by tool name only (regex); command-content filtering happens inside the script.
 
-   **Global via skill annotation:** When a learning falls within a skill that has `global_category` in its frontmatter (e.g. `/git-workflows`, `/react-best-practices`, `/change-review`), prefer editing/expanding the skill content AND adding a `<!-- @> token-dense summary -->` annotation above the relevant section. Then run `make compile` to regenerate the compiled GLOBAL.md index. This keeps the full context in the skill while surfacing a dense summary in always-loaded context. Annotate only rules that change behavior in most invocations of the skill; edge cases and rare-branch guidance stay in the skill body unannotated — the always-loaded index has no room for caveats.
+   **Global via skill annotation:** When a learning falls within a skill that has `global_category` in its frontmatter (e.g. `/git-workflows`, `/react-best-practices`, `/change-review`), prefer editing/expanding the skill content AND adding a `<!-- @> token-dense summary -->` annotation above the relevant section. Then run `make compile` to regenerate the compiled GLOBAL.md index. This keeps the full context in the skill while surfacing a dense summary in always-loaded context. Annotate only rules that bind across most sessions regardless of domain (routing cues and cross-cutting constraints); domain-specific detail, edge cases, and rare-branch guidance stay in the skill body unannotated — the always-loaded index is paid for on every turn in every harness.
 
    This only applies to the dotfiles-source GLOBAL.md — project-level AGENTS.md and CLAUDE.md have no compilation step.
 
-   **Workspace sandboxing:** Conductor workspaces and other sandboxed environments restrict Edit/Write tools to the workspace directory. When you need to edit dotfiles source files (skills, GLOBAL.md, hooks, settings) from a sandboxed workspace, use Bash (e.g., `sed`) as a fallback. Always edit the source at `~/Code/dotfiles/`, never the installed/symlinked/workspace copies.
+   Always edit the source at `~/Code/dotfiles/`, never the installed/symlinked/workspace copies. The harness settings grant that directory to the file tools; if a sandbox still refuses the write, report the boundary rather than routing around it.
 
 4. **Consolidate, don't accumulate** — Before adding:
    - Read the target file(s)
@@ -61,7 +61,7 @@ Extract durable learnings from conversation context and persist them appropriate
    - Prefer editing existing rules over adding new ones
    - Delete redundant rules when consolidating
 
-5. **Propose changes** — Use `AskUserQuestion` to present:
+5. **Propose changes** — Use the harness's question tool (AskUserQuestion in Claude Code, `request_user_input` in Codex) to present:
    - What will be remembered (the extracted principle)
    - Where it will go (file path and section)
    - How it relates to existing rules (consolidation, replacement, or addition)

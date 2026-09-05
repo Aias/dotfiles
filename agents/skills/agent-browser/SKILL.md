@@ -14,7 +14,7 @@ allowed-tools: Bash(npx agent-browser:*), Bash(agent-browser:*)
 
 agent-browser is an open-source CLI by Vercel Labs ([vercel-labs/agent-browser](https://github.com/vercel-labs/agent-browser)).
 
-Delegate multi-step click-throughs — QA passes, form flows, exploratory testing — to a Sonnet-tier subagent carrying a crisp test script. Write the spec and consolidate findings at the top level instead of driving the browser loop yourself.
+Delegate multi-step click-throughs — QA passes, form flows, exploratory testing — to a mid-tier subagent carrying a crisp test script. Write the spec and consolidate findings at the top level instead of driving the browser loop yourself.
 
 ## Specialized Capabilities
 

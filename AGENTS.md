@@ -12,7 +12,7 @@ Personal dotfiles repo — shell config, git, editor settings, and AI agent conf
 - `agents/claude.settings.json` — Claude Code settings
 - `agents/codex.config.toml` — Codex settings
 - `agents/conductor.settings.toml` — Conductor user settings (schema: `https://conductor.build/schemas/settings.schema.json`)
-- `agents/hooks/` — Claude Code hooks (e.g. PR guideline checks)
+- `agents/hooks/` — Shell-command hooks shared by Claude Code and Codex (force-push denial, PR guideline reminder); the `.sh` entry points call `shell_commands.py`, which parses the command rather than matching its text
 - `.agents/skills/` — External skills (from skills.sh)
 - `skills-lock.json` — External skill version tracking
 - `install.sh` — Symlink installer (reads `links.txt`), syncs skills, discovers MCP servers

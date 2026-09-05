@@ -7,7 +7,7 @@ Read-only fan-out across a change-set. Output: numbered findings in chat.
 These are non-negotiable.
 
 - **Read-only.** No code edits, no commits, no GitHub or Linear comments unless explicitly authorized in this turn. Output is chat text only.
-- **No `AskUserQuestion` during the review.** Complete the review without user intervention; questions go in the report's "open questions" section.
+- **No questions to the user during the review.** Complete the review without user intervention; questions go in the report's "open questions" section.
 - **Verify, don't punt — and verify the invariant, not just the symptom.** Anything verifiable during the review must be verified by the reviewer — not asked back to the user. That includes reading library source code (locally in `node_modules` or upstream on GitHub), official docs, framework release notes, RFCs, GitHub issues/PRs, and the project's own git history. Web search and validation against public documentation are first-class tools for every subagent in the fan-out. Findings of the form *"this might be wrong, can you confirm?"* are not findings — they're questions the reviewer was supposed to resolve.
 
   Extend the same rule to the invariant a finding rests on. If your claim is *"X is the case today,"* X is itself a verification step — confirm it by reading the code, not by intuition. A dedup proposal that assumes *"selected always equals the most recent"* must read the path that produces "selected." A nullability claim must read the schema. For compliance findings across multiple call sites, enumerate which sites already comply and which don't, in the finding itself — don't lump them.
@@ -28,7 +28,7 @@ These are non-negotiable.
 
 Pick the diff source in this order, and **state which you used** as the first line of the report:
 
-1. **Conductor workspace** — `mcp__conductor__GetWorkspaceDiff` with `stat: true` first, then specific files. Read attached `Review request.md` if present.
+1. **Conductor workspace** — `mcp__conductor__GetWorkspaceDiff` with `stat: true` first, then specific files, when the harness exposes it; otherwise git and `gh` against the Conductor target branch. Read attached `Review request.md` if present.
 2. **Open PR** — `gh pr view --json files,baseRefName`, then `gh pr diff`.
 3. **Branch vs base** — resolve base via Conductor target → existing PR → repo convention → ask. Then `git fetch origin <base>` (local refs go stale), then `git diff origin/<base>...HEAD` (three-dot — `..` is symmetric and pulls in unrelated merged work).
 4. **Staged / uncommitted** — `git diff --staged` and `git diff HEAD`.
@@ -44,7 +44,7 @@ For any non-trivial diff, **always fan out across parallel subagents.** Non-triv
 
 Launch agents in a single message so they run concurrently. Each agent gets the full diff (or its bucket) plus the PR title and description for author intent.
 
-**Model tier: every review and validator subagent runs on the Opus tier at high or extra-high effort** (per GLOBAL.md) — a judgment call per axis (reach for extra-high on the densest buckets, high is fine for the rest); max is never needed. The analysis quality is the constraint, not tokens or latency — a subagent that misses the bug or the simplification costs more than it saved. Reserve faster models only for narrow retrieval fan-out (collecting files, grepping call sites) whose raw output a stronger agent then reasons over.
+**Model tier: every review and validator subagent runs on the strongest tier at high or extra-high effort** (per GLOBAL.md) — a judgment call per axis (reach for extra-high on the densest buckets, high is fine for the rest); max is never needed. The analysis quality is the constraint, not tokens or latency — a subagent that misses the bug or the simplification costs more than it saved. Reserve faster models only for narrow retrieval fan-out (collecting files, grepping call sites) whose raw output a stronger agent then reasons over.
 
 ### Code-judo lens
 
@@ -284,7 +284,7 @@ When the user asks for re-review after they applied feedback (*"re-review, I con
 
 When inside a Conductor workspace (paths under `~/conductor/workspaces/...`, `CONDUCTOR_*` env vars):
 
-- Use `mcp__conductor__GetWorkspaceDiff` instead of `git diff`. Start with `stat: true` to scope the read; request specific files in follow-up calls.
+- Use `mcp__conductor__GetWorkspaceDiff` instead of `git diff` when the harness exposes it. Start with `stat: true` to scope the read; request specific files in follow-up calls. Without it, `git diff origin/<target>...HEAD` after a fetch.
 - The target branch from the system instruction is the diff base — not the checked-out branch name.
 - Other workspaces may push to the same base; `git fetch` before any cross-workspace comparison.
 - If the user attached `.context/attachments/.../Review request.md`, read it for any workspace-specific overrides (it usually reiterates: read-only, chat output, no GitHub comments).

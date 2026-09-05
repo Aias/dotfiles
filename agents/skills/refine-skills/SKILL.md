@@ -39,13 +39,13 @@ For each pattern identified, draft a concrete SKILL.md edit:
 - If the skill has `global_category` in frontmatter and the correction is important enough for always-in-context, draft a `<!-- @> summary -->` annotation too
 - Show the user the before/after for each proposed edit
 
-Use `AskUserQuestion` to present all proposed promotions at once and get confirmation before editing.
+Use the harness's question tool (AskUserQuestion in Claude Code, `request_user_input` in Codex) to present all proposed promotions at once and get confirmation before editing.
 
 ### 4. Apply and clean up
 
 After confirmation:
 
-1. Edit the source SKILL.md at `~/Code/dotfiles/agents/skills/{name}/SKILL.md` (use Bash if workspace-sandboxed)
+1. Edit the source SKILL.md at `~/Code/dotfiles/agents/skills/{name}/SKILL.md`
 2. Remove promoted entries from `skill.feedback.md` — leave unpromoted entries intact
 3. Run `make compile` to regenerate `.build/` copies and update GLOBAL.md if annotations changed
 4. Run `make link` to deploy

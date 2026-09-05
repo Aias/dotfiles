@@ -1,62 +1,34 @@
-#!/usr/bin/env bun
-
-/**
- * Compiles @> annotations from skill .md files into a dense index in GLOBAL.md,
- * and injects feedback-loop preambles into all personal skills.
- *
- * Source syntax:
- *   - SKILL.md frontmatter: `global_category: CategoryName`
- *   - Any .md file in the skill dir: `<!-- @> summary text -->` above relevant section
- *
- * Output (in GLOBAL.md between BEGIN/END COMPILED markers):
- *   Category|skills/skill-name|summary:Lnn|summary:subpath:Lnn|...
- *   (subpath omitted for SKILL.md — it's the default)
- *
- * Cleaned .md files (annotations stripped) written to agents/.build/skills/.
- * All personal skills get a feedback preamble injected into their .build/ SKILL.md.
- *
- * Usage:
- *   bun agents/compile-global.ts          # compile
- *   bun agents/compile-global.ts --check  # check staleness (exit 1 if stale)
- */
-
 import { readdir, mkdir, rm } from "fs/promises";
 import { join, dirname } from "path";
 
 const ANNOTATION_RE = /^<!-- @> (.+?) -->$/;
+const FRONTMATTER_CLOSE = "---";
 const BEGIN_MARKER = "<!-- BEGIN COMPILED -->";
 const END_MARKER = "<!-- END COMPILED -->";
-
-// ---------------------------------------------------------------------------
-// Types
-// ---------------------------------------------------------------------------
+const PERSONAL_SKILLS_DIR = "agents/skills";
+const SKILL_SOURCE_DIRS = [PERSONAL_SKILLS_DIR, ".agents/skills"];
 
 interface Summary {
   text: string;
   line: number;
-  file: string; // relative to skill dir, e.g. "SKILL.md" or "workflows/pr-guidelines.md"
+  file: string;
 }
 
 interface ProcessedFile {
-  relPath: string; // relative to skill dir
+  relPath: string;
   summaries: Summary[];
   cleanedContent: string;
 }
 
 interface ProcessedSkill {
-  category: string;
-  skillPath: string; // e.g. "skills/git-workflows"
+  category?: string;
+  skillPath: string;
   files: ProcessedFile[];
 }
-
-// ---------------------------------------------------------------------------
-// Frontmatter
-// ---------------------------------------------------------------------------
 
 function parseFrontmatter(raw: string): Record<string, string> {
   const match = raw.match(/^---\n([\s\S]*?)\n---\n/);
   if (!match) return {};
-
   const data: Record<string, string> = {};
   for (const line of match[1].split("\n")) {
     const colonIdx = line.indexOf(":");
@@ -68,17 +40,27 @@ function parseFrontmatter(raw: string): Record<string, string> {
   return data;
 }
 
-// ---------------------------------------------------------------------------
-// Process a single .md file for annotations
-// ---------------------------------------------------------------------------
+function buildFeedbackPreamble(skillName: string): string[] {
+  return [
+    "",
+    `> **Feedback loop** — On this skill's first use in a session, read \`~/Code/dotfiles/agents/skills/${skillName}/skill.feedback.md\` if it exists, and re-read it after a correction. When the user corrects your output or states a preference that would apply to future sessions, append a dated line to that file. Skip task-specific details.`,
+    "",
+  ];
+}
 
-function processFile(content: string, fileRelPath: string): ProcessedFile {
+function processFile(
+  content: string,
+  fileRelPath: string,
+  preamble: string[] = [],
+): ProcessedFile {
   const inputLines = content.split("\n");
   const cleanedLines: string[] = [];
   const summaries: Summary[] = [];
   const pendingSummaries: string[] = [];
+  let pendingPreamble = preamble;
+  let insideFrontmatter = inputLines[0] === FRONTMATTER_CLOSE;
 
-  for (const line of inputLines) {
+  for (const [index, line] of inputLines.entries()) {
     const m = line.match(ANNOTATION_RE);
     if (m) {
       pendingSummaries.push(m[1]);
@@ -86,6 +68,12 @@ function processFile(content: string, fileRelPath: string): ProcessedFile {
     }
 
     cleanedLines.push(line);
+
+    if (insideFrontmatter && index > 0 && line === FRONTMATTER_CLOSE) {
+      insideFrontmatter = false;
+      cleanedLines.push(...pendingPreamble);
+      pendingPreamble = [];
+    }
 
     if (pendingSummaries.length > 0 && line.trim() !== "") {
       const lineNum = cleanedLines.length;
@@ -102,6 +90,10 @@ function processFile(content: string, fileRelPath: string): ProcessedFile {
     }
   }
 
+  if (pendingPreamble.length > 0) {
+    cleanedLines.unshift(...pendingPreamble);
+  }
+
   if (pendingSummaries.length > 0) {
     const lineNum = cleanedLines.length || 1;
     for (const text of pendingSummaries) {
@@ -116,16 +108,12 @@ function processFile(content: string, fileRelPath: string): ProcessedFile {
   };
 }
 
-// ---------------------------------------------------------------------------
-// Find and process skills
-// ---------------------------------------------------------------------------
-
 async function findAndProcessSkills(
   repoDir: string,
 ): Promise<ProcessedSkill[]> {
   const results: ProcessedSkill[] = [];
 
-  for (const skillsDir of ["agents/skills", ".agents/skills"]) {
+  for (const skillsDir of SKILL_SOURCE_DIRS) {
     const fullDir = join(repoDir, skillsDir);
     let entries;
     try {
@@ -140,21 +128,27 @@ async function findAndProcessSkills(
       const skillMdFile = Bun.file(join(skillDir, "SKILL.md"));
       if (!(await skillMdFile.exists())) continue;
 
-      // Check for global_category in SKILL.md frontmatter
-      const skillMdContent = await skillMdFile.text();
-      const frontmatter = parseFrontmatter(skillMdContent);
-      if (!frontmatter.global_category) continue;
+      const frontmatter = parseFrontmatter(await skillMdFile.text());
+      const receivesPreamble =
+        skillsDir === PERSONAL_SKILLS_DIR && frontmatter.feedback !== "false";
+      const preamble = receivesPreamble
+        ? buildFeedbackPreamble(entry.name)
+        : [];
 
-      // Scan all .md files in this skill directory
       const glob = new Bun.Glob("**/*.md");
-      const mdFiles = Array.from(glob.scanSync(skillDir));
       const processedFiles: ProcessedFile[] = [];
-
-      for (const mdRelPath of mdFiles) {
-        const mdFullPath = join(skillDir, mdRelPath);
-        const content = await Bun.file(mdFullPath).text();
-        const processed = processFile(content, mdRelPath);
-        if (processed.summaries.length > 0) {
+      for (const mdRelPath of Array.from(glob.scanSync(skillDir))) {
+        const content = await Bun.file(join(skillDir, mdRelPath)).text();
+        const isSkillMd = mdRelPath === "SKILL.md";
+        const processed = processFile(
+          content,
+          mdRelPath,
+          isSkillMd ? preamble : [],
+        );
+        const indexed = frontmatter.global_category
+          ? processed.summaries.length > 0
+          : false;
+        if (indexed || (isSkillMd && receivesPreamble)) {
           processedFiles.push(processed);
         }
       }
@@ -172,13 +166,13 @@ async function findAndProcessSkills(
   return results;
 }
 
-// ---------------------------------------------------------------------------
-// Build compiled block
-// ---------------------------------------------------------------------------
-
 function buildCompiledBlock(skills: ProcessedSkill[]): string {
-  const sorted = [...skills].sort((a, b) =>
-    a.category.localeCompare(b.category),
+  const indexed = skills.filter(
+    (skill) =>
+      skill.category && skill.files.some((file) => file.summaries.length > 0),
+  );
+  const sorted = [...indexed].sort((a, b) =>
+    (a.category ?? "").localeCompare(b.category ?? ""),
   );
 
   const lines: string[] = [];
@@ -198,10 +192,6 @@ function buildCompiledBlock(skills: ProcessedSkill[]): string {
   return lines.join("\n") + "\n";
 }
 
-// ---------------------------------------------------------------------------
-// Update GLOBAL.md
-// ---------------------------------------------------------------------------
-
 function updateGlobalMd(
   content: string,
   compiledBlock: string,
@@ -218,74 +208,6 @@ function updateGlobalMd(
   const updated = before + "\n" + compiledBlock + after;
   return { updated, changed: updated !== content };
 }
-
-// ---------------------------------------------------------------------------
-// Feedback preamble injection
-// ---------------------------------------------------------------------------
-
-const FRONTMATTER_RE = /^---\n[\s\S]*?\n---\n/;
-
-function buildFeedbackPreamble(skillName: string): string {
-  return [
-    "",
-    `> **Feedback loop** — Read \`~/Code/dotfiles/agents/skills/${skillName}/skill.feedback.md\` before producing output (if it exists). When the user corrects your output or states a preference that would apply to future sessions, append a dated line to that file. Skip task-specific details.`,
-    "",
-  ].join("\n");
-}
-
-async function injectFeedbackPreambles(
-  repoDir: string,
-  buildDir: string,
-): Promise<number> {
-  const personalDir = join(repoDir, "agents/skills");
-  let entries;
-  try {
-    entries = await readdir(personalDir, { withFileTypes: true });
-  } catch {
-    return 0;
-  }
-
-  let count = 0;
-  for (const entry of entries) {
-    if (!entry.isDirectory()) continue;
-
-    const sourceSkillMd = join(personalDir, entry.name, "SKILL.md");
-    const sourceFile = Bun.file(sourceSkillMd);
-    if (!(await sourceFile.exists())) continue;
-
-    // Check for opt-out
-    const sourceContent = await sourceFile.text();
-    const frontmatter = parseFrontmatter(sourceContent);
-    if (frontmatter.feedback === "false") continue;
-
-    // Prefer .build/ copy (already annotation-cleaned) over source
-    const buildSkillMd = join(buildDir, entry.name, "SKILL.md");
-    const buildFile = Bun.file(buildSkillMd);
-    const content = (await buildFile.exists())
-      ? await buildFile.text()
-      : sourceContent;
-
-    // Inject preamble after frontmatter
-    const fmMatch = content.match(FRONTMATTER_RE);
-    const preamble = buildFeedbackPreamble(entry.name);
-    const injected = fmMatch
-      ? content.slice(0, fmMatch[0].length) +
-        preamble +
-        content.slice(fmMatch[0].length)
-      : preamble + content;
-
-    const outPath = join(buildDir, entry.name, "SKILL.md");
-    await mkdir(dirname(outPath), { recursive: true });
-    await Bun.write(outPath, injected);
-    count++;
-  }
-
-  return count;
-}
-
-// ---------------------------------------------------------------------------
-// Main
-// ---------------------------------------------------------------------------
 
 async function main() {
   const checkMode = process.argv.includes("--check");
@@ -316,7 +238,6 @@ async function main() {
     console.log("GLOBAL.md up to date");
   }
 
-  // Clean first so removed annotations/files do not leave stale overlays
   await rm(buildDir, { recursive: true, force: true });
   await mkdir(buildDir, { recursive: true });
   let fileCount = 0;
@@ -331,13 +252,7 @@ async function main() {
   }
 
   console.log(
-    `Cleaned ${fileCount} file(s) across ${processed.length} skill(s) → agents/.build/skills/`,
-  );
-
-  // Inject feedback preambles into all personal skills
-  const feedbackCount = await injectFeedbackPreambles(repoDir, buildDir);
-  console.log(
-    `Injected feedback preambles into ${feedbackCount} skill(s)`,
+    `Wrote ${fileCount} file(s) across ${processed.length} skill(s) → agents/.build/skills/`,
   );
 }
 
