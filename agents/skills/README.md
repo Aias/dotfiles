@@ -50,8 +50,8 @@ skill-name/
 ---
 name: skill-name # Lowercase, hyphens, max 64 chars
 description: >
-  Lead with when to invoke—situations, user phrases, keywords, file types—then a short capability line.
-  Be specific enough to combat under-triggering; see `/skill-creator`.
+  Lead with the distinguishing task and representative user language, then a boundary where a
+  neighboring skill could apply, then a short capability line.
 global_category: Category # Optional: opt into GLOBAL.md compiled index
 ---
 # Skill Title
@@ -59,7 +59,7 @@ global_category: Category # Optional: opt into GLOBAL.md compiled index
 Instructions in markdown...
 ```
 
-The `description` field is the primary trigger signal. Prioritize **when** to load the skill (contexts, phrases, synonyms, adjacent intents); add a brief **what** second. Models under-trigger—err on listing concrete keywords and near-miss situations. See `.agents/skills/skill-creator/SKILL.md` (Write the SKILL.md → description).
+The `description` field is the primary trigger signal. Lead with the distinguishing task and representative user language. Add a boundary where another skill could plausibly apply ("for X, use `/y`"). Put procedures and secondary capabilities in the body. Every harness loads every description into context on every turn, so a description competes with its neighbors for precision, and a long synonym list attracts requests the skill does not serve. This guidance overrides the description advice in `.agents/skills/skill-creator/SKILL.md`; use that skill for structure and packaging.
 
 ### Cross-links
 
@@ -93,8 +93,8 @@ agents/skills/write/
 ```
 
 **How it works:**
-- `make compile` injects a feedback preamble after the frontmatter in each skill's `.build/` copy
-- When a skill triggers, the agent reads `skill.feedback.md` from source and applies accumulated preferences
+- `make compile` injects a feedback preamble after the frontmatter in each skill's `.build/` copy, before it computes the line pointers for the compiled index, so `:Lnn` references match the deployed file
+- On a skill's first use in a session, the agent reads `skill.feedback.md` from source and applies accumulated preferences; it re-reads after a correction
 - When the user corrects output during a session, the agent appends a dated line to that file
 - `install.sh` excludes `skill.feedback.md` from rsync — the preamble points agents to the source path directly
 

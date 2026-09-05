@@ -5,8 +5,8 @@ description: >-
   the bottom of a bug, behavior, regression, or question about how something
   works. Also use when the user says "why is this happening", "trace this",
   "figure this out", "root cause", or expresses frustration that a previous
-  investigation was too shallow. Forces exhaustive, evidence-backed investigation
-  using every available tool before returning an answer.
+  investigation was too shallow. Read-only, evidence-backed investigation that
+  cites what it read; when a fix needs runtime instrumentation, use `/debug-agent`.
 global_category: Investigation
 ---
 
@@ -60,7 +60,7 @@ When the bug could be a data issue rather than a code issue, look at the actual 
 
 ### 5. Check external systems
 
-Use every MCP and tool available:
+Investigate the unresolved claims using relevant source, history, dependencies, logs, and external systems. Choose each read or tool call for the evidence it can provide. Test competing explanations and verify consequential claims against direct evidence. Keep the investigation read-only. Distinguish verified findings from unresolved explanations and name the evidence needed to settle them. The systems that usually hold that evidence:
 
 - **Linear**: Search for related tickets. Check if the bug has been reported before, if there's ongoing work that touches the same area, or if there are linked issues with additional context.
 - **Sentry**: Search for errors matching the symptom. Look at stack traces, breadcrumbs, and event frequency. Check whether the error started at a specific deployment.

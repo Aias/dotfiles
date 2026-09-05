@@ -13,23 +13,16 @@ Manages external skills within the dotfiles setup. External skills live in the d
 
 **Scope: the dotfiles pipeline only.** A project repository's own `.agents/skills/` directory (`<repo>/.agents/skills/<name>`) follows the same skills spec but is ordinary project source — edit it in place, commit it with the repo, and keep it out of `skills-lock.json` and the deploy targets. Nothing in this pipeline manages, installs, or syncs project-owned skills.
 
-**When invoked with no additional user context**, use `AskUserQuestion` to present the available actions (install/update, delete, cleanup, find) as interactive prompts rather than listing them as plain text.
+**When invoked with no additional user context**, use the harness's question tool (AskUserQuestion in Claude Code, `request_user_input` in Codex) to present the available actions (install/update, delete, cleanup, find) as interactive prompts rather than listing them as plain text.
 
 ## Current State
 
-Sources:
+Inventory and cleanup decisions need the three source directories (`agents/skills/`, `.agents/skills/`, `agents/skills.local/`) and the three deploy targets (`~/.claude/skills/`, `~/.codex/skills/`, `~/.cursor/skills/`). `make check` prints all six with sync status; list a directory directly only when acting on it. Orphans (deployed but no source) are the deploy-target names absent from every source directory:
 
-- `agents/skills/`: !`ls ~/Code/dotfiles/agents/skills/ 2>/dev/null | tr '\n' ' '`
-- `.agents/skills/`: !`ls ~/Code/dotfiles/.agents/skills/ 2>/dev/null | tr '\n' ' '`
-- `agents/skills.local/`: !`ls ~/Code/dotfiles/agents/skills.local/ 2>/dev/null | tr '\n' ' ' || echo "(none)"`
-
-Deploy targets:
-
-- `~/.claude/skills/`: !`ls ~/.claude/skills/ 2>/dev/null | tr '\n' ' '`
-- `~/.codex/skills/`: !`ls ~/.codex/skills/ 2>/dev/null | tr '\n' ' '`
-- `~/.cursor/skills/`: !`ls ~/.cursor/skills/ 2>/dev/null | tr '\n' ' '`
-
-Orphans (deployed but no source): !`comm -23 <({ ls ~/.claude/skills/ 2>/dev/null; ls ~/.codex/skills/ 2>/dev/null; ls ~/.cursor/skills/ 2>/dev/null; } | sort -u) <({ ls ~/Code/dotfiles/agents/skills/ 2>/dev/null; ls ~/Code/dotfiles/.agents/skills/ 2>/dev/null; ls ~/Code/dotfiles/agents/skills.local/ 2>/dev/null; } | sort -u) | tr '\n' ' '`
+```bash
+comm -23 <({ ls ~/.claude/skills/ ~/.codex/skills/ ~/.cursor/skills/ 2>/dev/null; } | sort -u) \
+        <({ ls ~/Code/dotfiles/agents/skills/ ~/Code/dotfiles/.agents/skills/ ~/Code/dotfiles/agents/skills.local/ 2>/dev/null; } | sort -u)
+```
 
 ## Directory Structure
 

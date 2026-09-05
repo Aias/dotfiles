@@ -15,9 +15,7 @@ A collection of git-related workflows and guidelines. Use this skill for any git
 
 ## Context
 
-- Branch: !`git branch -vv 2>/dev/null | grep '^\*' || echo "not in a git repo"`
-- Status: !`git status --short 2>/dev/null`
-- Recent commits: !`git log --oneline -5 2>/dev/null`
+Any git decision needs the current branch and its upstream (`git branch -vv`), the working-tree state (`git status --short`), and the recent history (`git log --oneline -5`). Read them in one batch before the dependent action, reuse the results within the session, and report a failing command rather than assuming the state it would have shown.
 
 ## When to Use
 

@@ -6,6 +6,8 @@ description: >
   "clean up", "deslop", "tighten", "simplify", "dedup", "reduce LOC", "refactor pass", "knip", "find dead code".
   Also covers TypeScript types/imports/barrels and HTML/CSS/markup conventions (semantic elements, flex/grid,
   declaration order, a11y, tokens, CLS). Two modes: REVIEW (read-only, numbered findings) and APPLY (make changes).
+  Owns every review and cleanup of the user's own change-set in this setup, including when a harness ships its
+  own review command.
 global_category: Code Quality
 ---
 
@@ -30,7 +32,7 @@ A user who says *"review this"* and then replies *"fix 2, 3, 5"* has moved from 
 
 A change-review is **change-scoped**, never repo-wide. Pick scope in this order:
 
-1. **Conductor workspace** — `mcp__conductor__GetWorkspaceDiff` with `stat: true` first, then specific files (see [`/conductor`](../conductor/SKILL.md)).
+1. **Conductor workspace** — `mcp__conductor__GetWorkspaceDiff` with `stat: true` first, then specific files, when the harness exposes it; otherwise git and `gh` against the Conductor target branch (see [`/conductor`](../conductor/SKILL.md)).
 2. **Open PR** — `gh pr diff` or `gh pr view --json files,baseRefName`.
 3. **Branch vs base** — `git merge-base origin/<base> HEAD`, then `git diff <merge-base> HEAD` (or three-dot `git diff origin/<base>...HEAD`). Always `git fetch origin <base>` first; local refs go stale silently.
 4. **Staged / uncommitted** — `git diff --staged` and/or `git diff HEAD`.
@@ -50,7 +52,7 @@ Brief — full workflow in [references/review.md](references/review.md).
 
 - **Read-only.** No edits, no commits, no GitHub/Linear comments unless explicitly authorized. Output is chat text only. When posting is authorized, attribute each agent-authored comment per `/pr-guidelines` (open with an italic `*<model> (<effort>):*` prefix).
 - **Fan out across parallel subagents** for any non-trivial diff — a single-pass skim cannot cover a real change-set. Standard axes: bug scan, AGENTS.md/CLAUDE.md compliance, dead code & duplication, LOC & complexity. Add a **spec-conformance** axis whenever the change traces to a ticket/PRD/RFC — it runs in parallel and reframes the other findings, but the spec is an input, not ground truth (the doc/ticket is often the stale side, not the code), so divergences are reconciliation items for the author, not automatic code defects. See [references/review.md](references/review.md#synthesis-let-spec-conformance-set-disposition).
-- **Model tier per GLOBAL.md:** review and validator subagents run on the Opus tier at high or extra-high effort; drop to a faster model only for pure retrieval (gathering files, grepping call sites) that an analysis agent then reasons over.
+- **Model tier per GLOBAL.md:** review and validator subagents run on the strongest tier at high or extra-high effort; drop to a faster model only for pure retrieval (gathering files, grepping call sites) that an analysis agent then reasons over.
 - **Validate each finding** with a second-pass subagent before reporting — a fresh context adversarially refuting *another* agent's finding, never an agent re-checking its own work. Validation is where filtering happens, which is what lets the finders stay open.
 - **Cite file path + line range** on every finding. Never restate the diff.
 - **Numbered list** with stable IDs (`#1`, `#2`, ...) so the user can reply "fix 2, 3, 5". Findings are grouped into **Clear fixes** (one right solution, all get applied regardless of severity) vs **Decisions needed** (a product/design choice gates the fix — options + one recommendation each); run each finding through `/what` before it reaches the report. See [references/review.md](references/review.md#phase-4-report).
@@ -105,7 +107,7 @@ When categorizing a large diff, split into: **generated / boilerplate / moved / 
 - **Repetition that serves an argument.** Callbacks, deliberate restatement, or layered comments that reinforce intent are not duplication. Only flag *fully duplicated / redundant* sections.
 - **Specific semantic intent.** A `<dialog>` wrapper exists for top-layer semantics; a button-styled-as-link exists for download behavior. Read the intent before flattening.
 
-<!-- @> No shipped stubs, mocks, hardcoded fixtures, or "temporary" literals. Replace stand-ins with real sources before handoff. Mid-stream stubs must carry `// TODO: remove` to stay greppable -->
+<!-- @> No shipped stubs, mocks, hardcoded fixtures, or "temporary" literals. Replace stand-ins with real sources before handoff. Mid-stream stubs stay greppable through a stub/mock-prefixed identifier, never a comment -->
 
 ### No shipped stubs, mocks, or temporary values
 
@@ -211,13 +213,11 @@ Run type/lint checks yourself when relevant; don't ask the user to run them.
 
 Markup and styles for `.html`, `.css`, and templated/JSX UI. Deep dive: [Web Interface Guidelines](references/web-interface-guidelines.md).
 
-<!-- @> Semantic elements over div/span; built-in elements over generic containers -->
 
 ### Semantic HTML first
 
 Prefer built-in semantics over generic containers: structure (`article`, `header`, `main`, `nav`, `section`, `ul`/`li`), interactive (`button`, `form`, `label`), content (`table`, `time`). Avoid `div`/`span` unless necessary. Prefer real text + structure over ARIA-only shortcuts.
 
-<!-- @> Flexbox/grid + gap; margin is code smell. Logical properties (block/inline, start/end). Transform sub-properties -->
 
 ### Layout
 
@@ -226,19 +226,16 @@ Prefer built-in semantics over generic containers: structure (`article`, `header
 - Logical properties: `block`/`inline`, `start`/`end` over physical `left`/`right`/`top`/`bottom` where appropriate.
 - Transform sub-properties (`translate`, `rotate`, `scale`) over a single long `transform` when the stack allows it.
 
-<!-- @> Order CSS declarations logically (outside-in): position/display → flex/grid → sizing/spacing → overflow → typography → visual → transforms → interaction -->
 
 ### Declaration order
 
 Order by concern, outside-in (not alphabetically): position & display → flex/grid container & child → sizing & spacing → overflow → typography → visual (color, background, border, shadow) → transform & animation → interaction (`cursor`, `pointer-events`, `user-select`). Applies to CSS-in-JS objects too.
 
-<!-- @> Drive selected/active state with a data attribute (`data-state="active"`) and an attribute selector, not a conditional className/`cx()` merge -->
 
 ### State styling
 
 Drive selected/active/expanded state with a data attribute and an attribute selector (`[data-state="active"] {…}`, `[aria-pressed="true"]`), not a conditional className or `cx()` merge in the component. The DOM stays declarative, the styling lives with the rest of the component's CSS, and the state is inspectable in devtools without reading render logic.
 
-<!-- @> Avoid CLS: hold geometry constant across states and breakpoints; container queries (not viewport) when available width comes from a sibling panel -->
 
 ### Layout stability
 
@@ -248,13 +245,11 @@ Avoid layout shift (CLS) by holding geometry constant across state and breakpoin
 - **Keep controls present and in the same order across every variant.** A control that appears in one state should occupy the same slot in the others rather than appearing, disappearing, or reordering. Consistent placement prevents both the UX surprise of a moving target and the reflow when an element pops into the flow.
 - **A border that must not change box height becomes an `inset box-shadow`.** A `1px` border adds to height; toggling it between states shifts everything below by a pixel. Use `box-shadow: inset 0 0 0 1px …` instead, or keep an equal transparent border (`border: 1px solid transparent`) in every state so the box height never changes.
 
-<!-- @> Colors: tokens/custom properties, then oklch or hex (not rgb) -->
 
 ### Colors
 
 Design tokens / CSS custom properties first; otherwise `oklch` or hex — not `rgb` for new work.
 
-<!-- @> CSS over JS when equivalent -->
 
 ### CSS over JavaScript
 

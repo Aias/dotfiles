@@ -146,6 +146,10 @@ LLMs produce recognizable tics. Hunt and eliminate these during every editing pa
 
 **No emoji decoration.** Emojis on headings or bullets signal generated text.
 
+**No mannered prose.** Metaphor and flourish in place of direct statement: "a dial worth turning" for "a parameter worth varying", "earns its keep" for "still matters". The phrases display the writer, drag in connotations the writer did not choose, and make the reader work harder. When a literal phrase is available, use it.
+
+**No invented compound labels.** "Exact-head checks", "editorial-row layouts": a hyphenated coinage standing in for the ordinary noun and a plain verb. Say what the thing is and what it does.
+
 **Vary semantic density.** AI treats every sentence as independently self-contained. Human writing varies: some sentences carry heavy freight, others breathe, and meaning accumulates non-linearly. Let some sentences depend on their neighbors. Uniform polish is the same tell at the surface: contractions, fragments, and a plain sentence where plainness serves are markers of a mind, not carelessness.
 
 **Sentence case in headings.** AI defaults to title case. Use sentence case in every heading, including in files like this one.
@@ -166,6 +170,7 @@ Status updates, findings, and explanations in conversation follow every rule abo
 - **The actionable part comes first.** If something needs a decision or an action, open with it. Say what to do, then why. A decision buried at the end of a paragraph is a decision missed.
 - **Make the subject the subject.** The thing the update is about is the grammatical subject of the first sentence.
 - **Short sentences, one idea each.** The reader is parsing your message between other tasks.
+- **Form follows the content.** Prose for explanation, each paragraph developing one idea. A list when the items are genuinely parallel or ordered steps. A table when the reader compares items across shared attributes. Headings only when distinct sections need navigation. Prefer familiar, literal wording throughout.
 - **A detail earns its place only if it changes what the reader does.** A count ("installed 16 packages") matters only when one member of the count needs calling out. Otherwise the fact is "dependencies were stale and are now installed."
 - **Plain verbs.** A dramatic verb ("armed", "fired", "tripped") only when it names the actual mechanism. Prefer "turned on", "started", "scheduled".
 

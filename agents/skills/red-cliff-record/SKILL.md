@@ -19,7 +19,7 @@ The `rcr` CLI provides direct access to Red Cliff Record, a highly networked, ma
 
 ## Live CLI Help
 
-!`rcr --help 2>&1 || echo "(rcr CLI not available on this machine)"`
+Run `rcr --help` before composing a command; the flags below are a summary, and the installed CLI is the source of truth. Report the CLI as unavailable if the command fails rather than guessing its surface.
 
 ## Safety Defaults
 

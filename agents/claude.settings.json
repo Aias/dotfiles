@@ -6,7 +6,10 @@
     "pr": ""
   },
   "permissions": {
-    "defaultMode": "auto"
+    "defaultMode": "auto",
+    "additionalDirectories": [
+      "/Users/nicktrombley/Code/dotfiles"
+    ]
   },
   "model": "fable[1m]",
   "hooks": {
@@ -107,9 +110,6 @@
   "skipWorkflowUsageWarning": true,
   "agentPushNotifEnabled": true,
   "skipAutoPermissionPrompt": true,
-  "additionalDirectories": [
-    "/Users/nicktrombley/Code/dotfiles"
-  ],
   "feedbackSurveyState": {
     "lastShownTime": 1753980901020
   }

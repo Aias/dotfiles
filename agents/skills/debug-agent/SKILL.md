@@ -1,10 +1,9 @@
 ---
 name: debug-agent
 description: >-
-  Systematic evidence-based debugging using runtime logs. Generates hypotheses,
-  instruments code with NDJSON logs, guides reproduction, analyzes log evidence,
-  and iterates until root cause is proven with cited log lines. Use when the
-  user reports a bug, unexpected behavior, or asks to debug an issue.
+  Use when a bug needs runtime evidence and source changes are authorized: the agent
+  instruments code with NDJSON logs, reproduces, and fixes only what the logs prove.
+  For read-only investigation with no instrumentation, use `/dig` instead.
 global_category: Investigation
 ---
 
@@ -16,39 +15,25 @@ You are now in **DEBUG MODE**. You must debug with **runtime evidence**.
 
 **When to use `/dig` instead:** `/dig` is read-only investigation — no code mutations, no instrumentation. Use `/dig` when you only need to understand behavior or when the environment forbids modifying source. Use `/debug-agent` when you can modify code and need runtime evidence to support a fix.
 
-**Your systematic workflow:**
+<!-- @> Debug from runtime evidence, never code reasoning alone: instrument only when existing evidence is insufficient, reproduce, cite log lines to confirm/reject each hypothesis, and fix only what the logs prove -->
 
-1. **Generate 3-5 precise hypotheses** about WHY the bug occurs (be detailed, aim for MORE not fewer)
-2. **Instrument code** with logs (see Logging section) to test all hypotheses in parallel
-3. **Reproduce the bug.**
-   - **If a failing test already exists**: run it directly.
-   - **If reproduction is straightforward** (e.g., a single CLI command, a curl request, a simple script): write and run an ad hoc reproduction script yourself. Tailor it to the runtime — drive the browser via `/agent-browser` for frontend bugs, a Node/Python/shell script for backend bugs, etc.
-   - **Otherwise**: ask the user to reproduce it. Provide clear, numbered steps. Remind them to restart apps/services if instrumented files are cached or bundled. Offer: "If you'd like me to write a reproduction script instead, let me know."
-   - Once the user confirms a reproduction pathway (manual or automated), reuse it for all subsequent iterations without re-asking.
-4. **Analyze logs**: evaluate each hypothesis (CONFIRMED/REJECTED/INCONCLUSIVE) with cited log line evidence. CONFIRMED requires a log value only that hypothesis predicts — if a competing hypothesis would produce the same line, mark INCONCLUSIVE and add a discriminating log
-5. **Fix only with cited log proof**; do NOT remove instrumentation yet
-6. **Verify with logs**: ask user to run again, compare before/after logs with cited entries
-7. **If logs prove success** and user confirms: remove all instrumentation by searching for `#region debug log` / `#endregion` markers and deleting those blocks (see Cleanup section). **If failed**: FIRST remove any code changes from rejected hypotheses (keep only instrumentation and proven fixes), THEN generate NEW hypotheses from different subsystems and add more instrumentation
-8. **After confirmed success**: explain the problem and provide a concise summary of the fix (1-2 lines)
+**Workflow:** Use existing runtime evidence (a failing test, existing logs, an observed API response) to distinguish plausible causes. Add targeted instrumentation only when the evidence is insufficient and source changes are authorized. Follow the daemon protocol below when using the daemon. Reproduce with the cheapest authorized method and reuse it for every later iteration: run an existing failing test, or write an ad hoc script tailored to the runtime (drive the browser via `/agent-browser` for frontend bugs, a Node, Python, or shell script for backend bugs). Ask the user to reproduce only when their participation is necessary, with numbered steps and a reminder to restart anything that caches instrumented files. Evaluate each hypothesis against cited log lines: CONFIRMED requires a log value only that hypothesis predicts; if a competing hypothesis would produce the same line, mark it INCONCLUSIVE and add a discriminating log. Fix only with cited proof, verify the fix against the observed failure with a before/after comparison, preserve the evidence needed for that comparison, then remove temporary instrumentation. Successful automated verification does not require an additional user confirmation. When logs reject a hypothesis, revert the code changes made for it; when every hypothesis is rejected, form new ones from other subsystems and instrument those. Close with a one or two line summary of the cause and the fix.
 
-<!-- @> Debug from runtime evidence, never code reasoning alone: instrument, reproduce, cite log lines to confirm/reject each hypothesis, and fix only what the logs prove -->
+**Constraints:**
 
-**Critical constraints:**
-
-- NEVER fix without runtime evidence first
-- ALWAYS rely on runtime information + code (never code alone)
-- Do NOT remove instrumentation before post-fix verification logs prove success and user confirms that there are no more issues
-- Fixes often fail; iteration is expected and preferred. Taking longer with more data yields better, more precise fixes
+- Rely on runtime information plus code, never code alone.
+- Keep instrumentation in place until post-fix verification logs prove success.
+- Iteration is expected; taking longer with more data yields more precise fixes.
 <!-- @> Never instrument or mutate production. Debug locally, in staging, or in a reproducible environment — never add log lines to or write data into production services, even temporarily -->
-- **NEVER instrument or mutate production.** Debug locally, in staging, or in another reproducible environment. Adding log lines to production services or writing to production data to "see what's happening" is forbidden — even temporarily, even with the intent to revert. A bug observed in production is still a code issue; reproduce the conditions in a safe environment and instrument there.
+- **Never instrument or mutate production.** Debug locally, in staging, or in another reproducible environment. Adding log lines to production services or writing to production data to "see what's happening" is forbidden — even temporarily, even with the intent to revert. A bug observed in production is still a code issue; reproduce the conditions in a safe environment and instrument there.
 
 ---
 
 ## Logging
 
-### STEP 0: Start the logging server (MANDATORY BEFORE ANY INSTRUMENTATION)
+### Step 0: Start the logging server before instrumenting
 
-Run the debug server in **daemon mode** before any instrumentation. The `--daemon` flag starts the server in the background and exits immediately with the server info — no backgrounding or `&` required.
+Run the debug server in **daemon mode** before adding instrumentation. The `--daemon` flag starts the server in the background and exits immediately with the server info — no backgrounding or `&` required.
 
 ```bash
 npx debug-agent --daemon
@@ -71,13 +56,12 @@ Capture and remember these values:
 - **Log path**: The `logPath` value (NDJSON logs are written here)
 - **Session ID**: The `sessionId` value (unique identifier for this debug session)
 
-If the server fails to start, STOP IMMEDIATELY and inform the user.
+If the server fails to start, stop and inform the user; do not instrument without a valid logging configuration.
 
-- DO NOT PROCEED with instrumentation without valid logging configuration.
 - The server is idempotent — if one is already running, it returns the existing server's info instead of starting a duplicate.
 - You do not need to pre-create the log file; it will be created automatically when your instrumentation first writes to it.
 
-### STEP 1: Understand the log format
+### Step 1: Understand the log format
 
 - Logs are written in **NDJSON format** (one JSON object per line) to the file specified by the **log path**.
 - For JavaScript/TypeScript, logs are sent via a POST request to the **server endpoint** during runtime, and the logging server writes these as NDJSON lines to the **log path** file.
@@ -98,7 +82,7 @@ Example log entry:
 }
 ```
 
-### STEP 2: Insert instrumentation logs
+### Step 2: Insert instrumentation logs
 
 - In **JavaScript/TypeScript files**, use this one-line fetch template (replace `ENDPOINT` and `SESSION_ID` with values from Step 0), even if filesystem access is available:
 
@@ -108,10 +92,7 @@ fetch('ENDPOINT',{method:'POST',headers:{'Content-Type':'application/json'},body
 
 - In **non-JavaScript languages** (Python, Go, Rust, Java, C, C++, Ruby), instrument by opening the **log path** in append mode using standard library file I/O, writing a single NDJSON line with your payload, and then closing the file. Keep these snippets as tiny and compact as possible (ideally one line, or just a few).
 
-- Decide how many instrumentation logs to insert based on the complexity of the code under investigation and the hypotheses you are testing. A single well-placed log may be enough when the issue is highly localized; complex multi-step flows may need more. Aim for the minimum number that can confirm or reject ALL your hypotheses. Guidelines:
-  - At least 1 log is required; never skip instrumentation entirely
-  - Do not exceed 10 logs — if you think you need more, narrow your hypotheses first
-  - Typical range is 2-6 logs, but use your judgment
+- Place the minimum number of logs that can confirm or reject every open hypothesis; a single well-placed log may be enough when the issue is localized, and a growing count is a sign to narrow the hypotheses first.
 
 - Choose log placements from these categories as relevant to your hypotheses:
   - Function entry with parameters
@@ -124,49 +105,39 @@ fetch('ENDPOINT',{method:'POST',headers:{'Content-Type':'application/json'},body
 
 - Each log must map to at least one hypothesis (include `hypothesisId` in payload).
 - Use this payload structure: `{sessionId, runId, hypothesisId, location, message, data, timestamp}`
-- **REQUIRED:** Wrap EACH debug log in a collapsible code region:
-  - Use language-appropriate region syntax (e.g., `// #region debug log`, `// #endregion` for JS/TS)
-  - This keeps the editor clean by auto-folding debug instrumentation
-- **FORBIDDEN:** Logging secrets (tokens, passwords, API keys, PII)
+- Wrap each debug log in a collapsible code region using language-appropriate syntax (`// #region debug log` and `// #endregion` for JS/TS). The markers keep the editor clean and make cleanup deterministic.
+- Never log secrets (tokens, passwords, API keys, PII).
 
-### STEP 3: Clear previous log file before each run (MANDATORY)
+### Step 3: Clear the previous log file before each run
 
 - Send a `DELETE` request to the **server endpoint** to clear the log file before each run. For example: `curl -X DELETE ENDPOINT` (replace `ENDPOINT` with the endpoint value from Step 0).
 - This ensures clean logs for the new run without mixing old and new data.
 - Clearing the log file is NOT the same as removing instrumentation; do not remove any debug logs from code here.
-- **CRITICAL:** Only clear YOUR session's logs (via your endpoint from Step 0). NEVER delete, modify, or overwrite log files belonging to other debug sessions.
+- Only clear your own session's logs (via your endpoint from Step 0). Never delete, modify, or overwrite log files belonging to other debug sessions.
 
-### STEP 4: Read logs after user runs the program
+### Step 4: Read logs after the run
 
-- After the user runs the program and confirms completion in their interface, do NOT ask them to type "done"; then use the file-read tool to read the file at the **log path**.
+- After the reproduction completes (do not ask the user to type "done"), read the file at the **log path**.
 - The log file will contain NDJSON entries (one JSON object per line) from your instrumentation.
 - Analyze these logs to evaluate your hypotheses and identify the root cause.
-- If the log file is empty or missing, do not conclude the instrumentation is broken. First confirm the instrumented path actually executed: a path behind a lazy-mounted component, a deferred import, or an interaction gate (click, route change, feature flag) never runs on a plain reload, so correct instrumentation still emits nothing. Drive the trigger, then re-read. Only after confirming the path ran should you treat an empty log as a failed reproduction and ask the user to try again.
-- **For frontend bugs**, supplement the NDJSON log with a browser MCP — console messages, network requests, and performance traces are runtime evidence too. Prefer `claude-in-chrome` (it attaches to the already-running browser and its signed-in session); reach for `chrome-devtools` only when a DevTools-protocol Chrome is what's available. Cite MCP findings with the same specificity as log lines (exact message, request URL, stack frame) rather than paraphrasing.
+- If the log file is empty or missing, do not conclude the instrumentation is broken. First confirm the instrumented path actually executed: a path behind a lazy-mounted component, a deferred import, or an interaction gate (click, route change, feature flag) never runs on a plain reload, so correct instrumentation still emits nothing. Drive the trigger, then re-read. Only after confirming the path ran should you treat an empty log as a failed reproduction and run it again.
+- **For frontend bugs**, supplement the NDJSON log with the browser MCP attached to the live browser (claude-in-chrome in Claude Code, Chrome DevTools MCP in Codex) — console messages, network requests, and performance traces are runtime evidence too. Cite MCP findings with the same specificity as log lines (exact message, request URL, stack frame) rather than paraphrasing.
 
-### STEP 5: Keep logs during fixes
+### Step 5: Keep logs during fixes
 
-- When implementing a fix, DO NOT remove debug logs yet.
-- Logs MUST remain active for verification runs.
-- You may tag logs with `runId="post-fix"` to distinguish verification runs from initial debugging runs.
-- FORBIDDEN: Removing or modifying any previously added logs in any files before post-fix verification logs are analyzed or the user explicitly confirms success.
-- Only remove logs after a successful post-fix verification run (log-based proof) or explicit user request to remove.
+- When implementing a fix, keep the debug logs in place; they are the verification run's evidence.
+- Tag verification runs with `runId="post-fix"` to distinguish them from initial debugging runs.
+- Remove logs only after a successful post-fix verification run (log-based proof) or an explicit user request.
 
 ---
 
 <!-- @> No setTimeout/sleep/artificial delays as a "fix" — use proper reactivity, events, and lifecycles -->
-## Critical Reminders (must follow)
+## Critical reminders
 
-- Keep instrumentation active during fixes; do not remove or modify logs until verification succeeds or the user explicitly confirms.
-- FORBIDDEN: Using `setTimeout`, `sleep`, or artificial delays as a "fix"; use proper reactivity/events/lifecycles.
-- FORBIDDEN: Removing instrumentation before analyzing post-fix verification logs or receiving explicit user confirmation.
+- Never use `setTimeout`, `sleep`, or artificial delays as a "fix"; use proper reactivity, events, and lifecycles.
 - Verification requires before/after log comparison with cited log lines; do not claim success without log proof.
-- Clear logs by sending a DELETE request to the server endpoint.
-- Do not create the log file manually; it's created automatically.
-- Clearing the log file is not removing instrumentation.
-- NEVER delete or modify log files that do not belong to this session. Only touch the log file at the exact path from Step 0.
-- Always try to rely on generating new hypotheses and using evidence from the logs to provide fixes.
-- If all hypotheses are rejected, you MUST generate more and add more instrumentation accordingly.
+- Clear logs by sending a DELETE request to the server endpoint; do not create the log file manually.
+- Only touch the log file at the exact path from Step 0.
 - **Remove code changes from rejected hypotheses:** When logs prove a hypothesis wrong, revert the code changes made for that hypothesis. Do not let defensive guards, speculative fixes, or unproven changes accumulate. Only keep modifications that are supported by runtime evidence.
 - Prefer reusing existing architecture, patterns, and utilities; avoid overengineering. Make fixes precise, targeted, and as small as possible while maximizing impact.
 
@@ -178,8 +149,6 @@ When it is time to remove instrumentation (after verified fix or user request):
 2. For each match, delete everything from the `#region debug log` line through its corresponding `#endregion` line (inclusive)
 3. Grep again to verify zero markers remain
 4. Run `git diff` to review all changes — confirm only your intentional fix remains and no stray debug code was missed
-
-This is why wrapping every debug log in `#region debug log` / `#endregion` is mandatory — it enables deterministic cleanup.
 
 ---
 

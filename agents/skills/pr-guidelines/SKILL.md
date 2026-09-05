@@ -12,10 +12,7 @@ global_category: Git
 
 ## Context
 
-- Branch: !`git branch --show-current 2>/dev/null`
-- Status: !`git status --short 2>/dev/null`
-- Existing PR: !`gh pr view --json number,baseRefName,title,url 2>/dev/null || echo "none"`
-- Recent commits (for style): !`git log --oneline -10 2>/dev/null`
+Drafting or updating a PR needs the current branch (`git branch --show-current`), the working-tree state (`git status --short`), whether a PR already exists (`gh pr view --json number,baseRefName,title,url`), and recent commit messages for style (`git log --oneline -10`). Read them in one batch before drafting, reuse the results within the session, and report a failing command rather than assuming the state it would have shown.
 
 ## Procedure
 

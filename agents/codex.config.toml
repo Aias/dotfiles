@@ -122,6 +122,7 @@ status_line = ["model-with-reasoning", "current-dir", "git-branch", "context-use
 [tui.model_availability_nux]
 "gpt-5.5" = 3
 "gpt-5.6-sol" = 2
+gpt-6-astra = 3
 
 [marketplaces.openai-bundled]
 last_updated = "2026-07-21T17:52:31Z"
@@ -162,3 +163,22 @@ NODE_REPL_TRUSTED_CODE_PATHS = "/Users/nicktrombley/.codex"
 [desktop]
 conversationDetailMode = "STEPS_COMMANDS"
 ambient-suggestions-enabled = true
+
+[[hooks.PreToolUse]]
+matcher = "^Bash$"
+
+[[hooks.PreToolUse.hooks]]
+type = "command"
+command = "/Users/nicktrombley/Code/dotfiles/agents/hooks/block-force-push.sh"
+
+[[hooks.PreToolUse.hooks]]
+type = "command"
+command = "/Users/nicktrombley/Code/dotfiles/agents/hooks/check-pr-guidelines.sh"
+
+[hooks.state]
+
+[hooks.state."/Users/nicktrombley/.codex/config.toml:pre_tool_use:0:0"]
+trusted_hash = "sha256:04582aef1a6a10dbb2aac980cc21d2d262da4d26477ab4f97a7a215cfd8a9e50"
+
+[hooks.state."/Users/nicktrombley/.codex/config.toml:pre_tool_use:0:1"]
+trusted_hash = "sha256:19288f98a5cecece8357a9b98e5b937bf1def189d6f2751a0c1654586f56da52"

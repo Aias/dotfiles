@@ -18,16 +18,17 @@ Pairs with `/conductor` (worktree layout, target branch, `.context/`), `/git-wor
 
 ## Context
 
-- Repo root: !`git rev-parse --show-toplevel 2>/dev/null`
-- Branch: !`git branch --show-current 2>/dev/null`
-- Short status: !`git status --short 2>/dev/null`
-- Conductor env: !`env | grep '^CONDUCTOR_' 2>/dev/null || echo "not in Conductor"`
-- Open PR: !`gh pr view --json number,title,state,isDraft,baseRefName,url 2>/dev/null || echo "none"`
-- `.context/` present: !`[ -d .context ] && ls -1 .context 2>/dev/null | head -20 || echo "no"`
+Establish the repository, workspace, base, and current git state before anything that depends on them. Batch these reads in one pass and reuse the results for the rest of the session; report a failing command rather than guessing the state it would have shown.
+
+- Repo root and branch: `git rev-parse --show-toplevel`, `git branch --show-current`
+- Short status: `git status --short`
+- Conductor env: `env | grep '^CONDUCTOR_'`
+- Open PR: `gh pr view --json number,title,state,isDraft,baseRefName,url`
+- Session notes: `ls -1 .context` when the directory exists
 
 ## Procedure
 
-Read-only throughout. Run steps in order, skip ones that don't apply, and stop early if the branch is obviously a no-op (zero ahead commits, no PR, no `.context/`).
+Read-only throughout. Read history, PR context, and session notes as the task needs them; skip steps that don't apply, and stop early if the branch is obviously a no-op (zero ahead commits, no PR, no `.context/`).
 
 ### 1. Resolve the base and fetch
 
@@ -84,7 +85,7 @@ Produce one summary. Omit sections that don't apply rather than showing them emp
 **Where to pick up** <one or two sentences synthesized from PR body, recent commits, and session notes — the concrete next step, not a paraphrase of the description>
 ```
 
-On a cold start, finish with one question: *"Continue from here, or is there something specific you want to tackle first?"* This gives the user a chance to redirect before the agent acts on stale assumptions about which task is active. When the user already gave a resume instruction ("continue", "pick up where we left off"), skip the question — the summary flows straight into the synthesized next step.
+Continue the user's stated task after the summary. Ask for direction only when the task itself remains unclear, for example a cold start with no instruction and several candidate next steps in the notes.
 
 ## Principles
 
@@ -92,5 +93,5 @@ On a cold start, finish with one question: *"Continue from here, or is there som
 - **Cheap before expensive.** Branch metadata and PR JSON are instant; diffs, comments, and full file reads cost. Stop early when there's clearly nothing to orient to.
 - **Synthesize, don't paste.** The value is in the short summary, not a transcript.
 - **Trust cross-linked skills.** `/conductor`, `/git-workflows`, and `/pr-guidelines` already cover their domains; re-deriving their rules here just drifts out of sync.
-<!-- @> Resume signals (continue, pick up, resume) trigger a full /orient re-run — then proceed without re-asking. Don't claim work is undone before reading git log/status -->
-- **Resume signals trigger a full re-orient.** "Continue", "resume", "pick up where we left off", or any prompt that follows a pause is a signal that time has passed and side effects may have accumulated. Run the procedure from the top — re-fetch, re-status, re-check the PR, re-read recent commits. Don't claim any piece of work is undone before running `git log` and `git status`; the user can see committed history, and contradicting it costs trust. Also check any background processes the agent itself started (dev servers, watchers, `pm2` jobs) — they may be dangling, holding ports, or running against stale code.
+<!-- @> Resume signals (continue, pick up, resume) refresh mutable state (fetch, status, PR, recent commits) and expand to a full /orient when context is missing or state changed — then proceed without re-asking. Don't claim work is undone before reading git log/status -->
+- **Resume signals refresh state.** "Continue", "resume", "pick up where we left off", or any prompt that follows a pause means time has passed and side effects may have accumulated. Refresh the mutable state (fetch, status, PR, recent commits) and expand into a full orientation when context is missing or the state has changed. Don't claim any piece of work is undone before running `git log` and `git status`; the user can see committed history, and contradicting it costs trust. Also check any background processes the agent itself started (dev servers, watchers, `pm2` jobs) — they may be dangling, holding ports, or running against stale code.
