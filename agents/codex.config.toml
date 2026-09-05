@@ -1,8 +1,8 @@
 approval_policy = "on-request"
 approvals_reviewer = "auto_review"
 file_opener = "cursor"
-model = "gpt-5.6-sol"
-model_reasoning_effort = "medium"
+model = "gpt-6-astra"
+model_reasoning_effort = "high"
 suppress_unstable_features_warning = true
 web_search = "live"
 service_tier = "default"
