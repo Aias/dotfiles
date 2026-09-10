@@ -5,7 +5,7 @@ branch_prefix = "aias/"
 branch_prefix_type = "none"
 
 [models]
-default = "claude:fable-5-1"
+default = "codex:gpt-6-astra"
 review = "fable-5-1"
 
 [models.claude_code]

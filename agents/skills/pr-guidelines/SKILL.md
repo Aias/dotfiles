@@ -153,17 +153,17 @@ Place `Fixes <ticket>` or `Closes <ticket>` on its own line, near the top (after
 - The phrase "smoke test"
 - "Generated with Claude Code" or similar AI footers / co-authorship
 
-<!-- @> Attribute agent-authored GitHub comments: open with an italic "<model> (<effort>):" prefix, body inline in the same paragraph — the agent posts under the user's account. Not for PR titles/descriptions -->
+<!-- @> Attribute agent-authored GitHub comments: open with an italic "<model>:" prefix with no effort level, body inline in the same paragraph — the agent posts under the user's account. Not for PR titles/descriptions -->
 
 ## PR Comments and Interactions
 
 Posting a comment, reply, or review on GitHub is a publish action. Do it when the user asks — including replying to their inline feedback on an agent's first-pass PR — but never unprompted. When asked only to "get" or "check" comments, present them in the conversation; don't reply on GitHub.
 
-The agent posts through the user's own GitHub account, so author metadata can't tell an agent comment apart from the user's own — the attribution has to live in the body. Open every agent-authored comment with an italicized model-and-effort prefix, colon included, and run the comment inline from there:
+The agent posts through the user's own GitHub account, so attribution belongs in the body. Open every agent-authored comment with an italicized model name and colon, followed by the comment in the same paragraph:
 
-*<model> (<effort>):* <comment body>
+*<model>:* <comment body>
 
-Name the model and effort actually running (`*Opus 4.8 (Max):*`, `*Codex 5.5 (Extra High):*`). The prefix is a byline, not a wrapper — the body stays plain text in the same paragraph, so the comment reads as prose rather than as a quoted block. This covers every agent-authored GitHub comment — inline review replies, review summaries, conversation comments — including those posted via `/code-review --comment`. It does not apply to PR titles or descriptions, which are written in the user's voice and still carry no AI footer.
+Name the model actually running. Omit effort levels. Keep the body plain text in the same paragraph. Apply this attribution to inline review replies, review summaries, and conversation comments, including those posted via `/code-review --comment`. Write PR titles and descriptions in the user's voice without AI attribution.
 
 <!-- @> Run every PR comment through /what before posting: the reviewer has none of the session's context — restore referents, cut padding, lead with the answer -->
 
