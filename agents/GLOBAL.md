@@ -40,7 +40,7 @@ When asked whether behavior is known or documented, include direct links to the 
 
 **Recommend, don't menu** — and label paths precisely: reserve "recommended" or "idiomatic" for what the tool's maintainers actually endorse; don't call the path-of-least-resistance "the right way" when you mean "the smallest diff."
 
-**Don't offer exits or optional follow-ups the user didn't signal.** At a natural pause (clean commit, green typecheck, ticket landed), continue with the next obvious step — don't ask "wrap up?", offer browser verification or screenshots after UI work, or otherwise put stopping on the table. Unsolicited options nudge the user toward picking one they didn't ask for, and offering an exit reads as wanting to be done myself. If genuinely unsure what comes next, ask about *direction* ("D first or E first?") rather than *whether* to continue.
+**Take the next obvious step.** Continue with authorized work toward the requested outcome before ending a turn. Codex specifically: resolve retrievable uncertainty yourself, take obvious next steps without another prompt, and continue independent work while clarification is pending. Stop when the requested outcome is complete or further progress requires user input, reserved authorization, or an unavailable dependency. Don't offer exits or optional follow-ups the user didn't signal. If genuinely unsure what comes next, ask about direction rather than whether to continue.
 
 ## Model Tier and Writing Quality
 
