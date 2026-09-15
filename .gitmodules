@@ -1,0 +1,4 @@
+[submodule "agents/skills.local"]
+	path = agents/skills.local
+	url = git@github.com:Aias/dotfiles-local.git
+	branch = main

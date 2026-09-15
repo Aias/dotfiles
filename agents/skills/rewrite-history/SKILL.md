@@ -3,8 +3,7 @@ name: rewrite-history
 description: >
   Use when rewriting git history while keeping the same tree—squash, reword, reorder commits, narrative
   commits, or cleanup before review/force-push. Triggers on "rewrite history", "clean up commits",
-  "reorganize commits", "redo the history", "narrative commits". Destructive; follow `/git-workflows`
-  for permission gates.
+  "reorganize commits", "redo the history", "narrative commits". Requires authorization for the rewrite.
 argument-hint: [base-branch]
 allowed-tools: Bash(git:*), Read, Glob, Grep, Edit, Write
 ---
@@ -17,7 +16,7 @@ A history rewrite needs the current branch (`git branch --show-current`), a clea
 
 Rewrite the current branch's commit history with clean, narrative-quality commits. The final tree must be byte-for-byte identical to the current state — only the commits change, not the code.
 
-This is a destructive rewrite of the current branch. The user will force-push the result over the existing remote history when ready.
+This rewrites the current branch. When replacing published history requires a force-push, the user performs that step.
 
 ### Steps
 
@@ -73,7 +72,7 @@ This is a destructive rewrite of the current branch. The user will force-push th
 
 8. **Report**
    - Show the new commit log: `git log <base>..HEAD --oneline`
-   - Remind the user that force-push is needed to update the remote:
+   - When the rewritten commits replace published history, give the user the manual push command:
      ```
      git push --force-with-lease
      ```

@@ -7,7 +7,7 @@ global_category: Conductor
 
 # Conductor
 
-[Conductor](https://conductor.build) runs coding agents in isolated git worktrees. Git behavior (fetch, base branch, permissions) still follows `/git-workflows` and `/pr-guidelines` — this skill is the Conductor-specific layer on top.
+[Conductor](https://conductor.build) runs coding agents in isolated git worktrees. This skill covers Conductor-specific configuration and lifecycle. Standing authorization rules apply to Git operations.
 
 ## Agent-critical context
 
@@ -81,7 +81,6 @@ What this Grok path *does* inject: Cursor User Rules (Customize → Rules) and C
 
 ## Git and PRs
 
-- **Permission and safety:** `/git-workflows` (commit/push gates, fetch-before-diff, SSH, etc.).
 - **Base branch and PR prose:** `/pr-guidelines` — first step when choosing base is still **Conductor target branch** when present.
 
 ## Managed settings

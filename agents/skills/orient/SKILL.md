@@ -11,7 +11,7 @@ global_category: Workflow
 Recover enough context to continue the user's task. Read current branch, working-tree state, and recent commits before describing work as unfinished. Reuse fresh context already gathered in the session.
 
 <!-- @> When resuming stale or missing context, refresh relevant branch, PR, and working-tree state before claiming work is unfinished; continue the requested task after orientation -->
-For work that depends on branch history, resolve the base from the Conductor target, existing PR, or repository convention, then fetch the needed ref. Read the git-workflows skill for branch operations and pr-guidelines for PR decisions.
+For work that depends on branch history, resolve the base from the Conductor target, existing PR, or repository convention, then fetch the needed ref. Use pr-guidelines for PR-specific conventions.
 
 Inspect the relevant unfinished work: active changes, PR discussion or failing checks, session notes, and background services started for the task. Read architecture and project documentation where they explain that work. Use [fresh-repo diagnostics](references/fresh-repo-diagnostics.md) for a requested repository assessment.
 

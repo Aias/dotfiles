@@ -36,12 +36,12 @@ dotfiles/
 │   ├── .build/       # Generated instructions and skills by harness (gitignored)
 │   ├── skills/        # [P] Personal skills (hand-written)
 │   │   ├── conductor/       # Conductor worktrees / CONDUCTOR_* / target branch
-│   │   ├── git-workflows/
+│   │   ├── pr-guidelines/
 │   │   ├── code-quality/
 │   │   ├── write/
 │   │   ├── skills-manager/
 │   │   └── .../
-│   └── skills.local/  # [L] Local-only skills (not committed)
+│   └── skills.local/  # [L] Private skills (optional submodule)
 ├── local/
 │   ├── env.template       # Machine-specific env vars template
 │   └── secrets.template   # API keys/tokens template
@@ -104,10 +104,30 @@ Authoring details: [agents/skills/README.md](agents/skills/README.md).
 Skills come in three types:
 
 - **[P] Personal** — Hand-written, tracked in `agents/skills/`
-- **[L] Local** — Machine-specific, gitignored in `agents/skills.local/`
+- **[L] Local** — Private skills in the optional `agents/skills.local/` submodule
 - **[E] External** — Installed from GitHub via [skills.sh](https://skills.sh) in `.agents/skills/`
 
 `make link` / `install.sh` deploy compiled skills to their selected harnesses. Whole-skill metadata and section markers control inclusion, as described in [Agent skills](agents/skills/README.md#harness-inclusion). Excluded copies of a current source skill are removed from that target. Removed or renamed source directories still require separate orphan cleanup. After dropping or renaming a skill, remove the stale folder from those home paths too (compare `ls agents/skills` / `.agents/skills` / `agents/skills.local` with `ls ~/.claude/skills`). See the **skills-manager** skill (`agents/skills/skills-manager/`) for the full cleanup checklist.
+
+### Private skills
+
+`agents/skills.local` is an optional submodule backed by the private [Aias/dotfiles-local](https://github.com/Aias/dotfiles-local) repository. Public clones can run the installer without initializing it. The public repository stores its URL and pinned commit, while skill contents and history remain private.
+
+With access to the private repository, initialize the pinned revision and deploy:
+
+```bash
+make setup-private-skills
+```
+
+To fetch and deploy the latest private `main` revision:
+
+```bash
+make update-private-skills
+```
+
+Updating requires a clean private checkout and uses a fast-forward merge. Divergent history stops the update for review. Regular `make install`, `make link`, and `make update` deploy the private checkout as it stands, without moving its revision.
+
+Private skill edits are committed and pushed inside `agents/skills.local` first. Then commit the updated submodule reference in dotfiles. Initialization can leave the submodule detached, so create a working branch there before editing. Credentials and authentication state stay outside both repositories.
 
 ### Adding a Personal Skill
 

@@ -210,6 +210,30 @@ describe("compile-global", () => {
     ).toBe(0o755);
   });
 
+  test("compiles without the optional private submodule", async () => {
+    const root = await createFixture();
+    await rm(join(root, "agents/skills.local"), { recursive: true });
+    expect((await runCompiler(root)).exitCode).toBe(0);
+    expect((await runCompiler(root, "--check")).exitCode).toBe(0);
+    for (const target of ["claude", "codex", "cursor"]) {
+      const built = join(root, "agents/.build", target);
+      expect(await Bun.file(join(built, "skills/shared/SKILL.md")).exists()).toBe(true);
+      expect(await Bun.file(join(built, "skills/private/SKILL.md")).exists()).toBe(false);
+      expect(await readFile(join(built, "GLOBAL.md"), "utf8")).not.toContain("private summary");
+    }
+  });
+
+  test("keeps private repository metadata outside deployment", async () => {
+    const root = await createFixture();
+    await write(join(root, "agents/skills.local/.git"), "gitdir: ../../.git/modules/agents/skills.local\n");
+    await write(join(root, "agents/skills.local/README.md"), "Private repository notes\n");
+    expect((await runCompiler(root)).exitCode).toBe(0);
+    const built = join(root, "agents/.build/codex/skills");
+    expect(await Bun.file(join(built, "private/SKILL.md")).exists()).toBe(true);
+    expect(await Bun.file(join(built, ".git")).exists()).toBe(false);
+    expect(await Bun.file(join(built, "README.md")).exists()).toBe(false);
+  });
+
   test("check detects stale outputs without rewriting them", async () => {
     const root = await createFixture();
     expect((await runCompiler(root)).exitCode).toBe(0);

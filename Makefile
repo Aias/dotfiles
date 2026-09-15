@@ -1,4 +1,4 @@
-.PHONY: compile install setup link update update-skills check test-compile-global
+.PHONY: compile install setup setup-private-skills link update update-private-skills update-skills check test-compile-global
 
 compile:
 	bun agents/compile-global.ts
@@ -14,13 +14,24 @@ install:
 setup:
 	./setup.sh
 
+setup-private-skills:
+	git submodule update --init -- agents/skills.local
+	$(MAKE) link
+
+update-private-skills:
+	@test -e agents/skills.local/.git || { echo "Run make setup-private-skills first"; exit 1; }
+	@changes=$$(git -C agents/skills.local status --porcelain) || exit $$?; test -z "$$changes" || { echo "Commit or stash private skill changes before updating"; exit 1; }
+	git -C agents/skills.local fetch origin main
+	git -C agents/skills.local merge --ff-only origin/main
+	$(MAKE) link
+
 # Link only (skip brew packages)
 link:
 	SKIP_DEPENDENCY_INSTALL=1 ./install.sh
 
 # Pull latest and reinstall
 update:
-	git pull --rebase --autostash
+	git pull --no-recurse-submodules --rebase --autostash
 	$(MAKE) install
 
 # Update external skills from skills.sh

@@ -30,7 +30,7 @@ Pick the diff source in this order, and **state which you used** as the first li
 
 1. **Conductor workspace** — `mcp__conductor__GetWorkspaceDiff` with `stat: true` first, then specific files, when the harness exposes it; otherwise git and `gh` against the Conductor target branch. Read attached `Review request.md` if present.
 2. **Open PR** — `gh pr view --json files,baseRefName`, then `gh pr diff`.
-3. **Branch vs base** — resolve base via Conductor target → existing PR → repo convention → ask. Then `git fetch origin <base>` (local refs go stale), then `git diff origin/<base>...HEAD` (three-dot — `..` is symmetric and pulls in unrelated merged work).
+3. **Branch vs base** — resolve base via Conductor target → existing PR → repo convention → ask. Then `git fetch origin <base>` (local refs go stale), then `git diff origin/<base>...HEAD` (merge base to branch head).
 4. **Staged / uncommitted** — `git diff --staged` and `git diff HEAD`.
 5. **Recently modified files** — only files the user named, or that you edited earlier in this conversation.
 
