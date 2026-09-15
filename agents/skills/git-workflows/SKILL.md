@@ -1,10 +1,7 @@
 ---
 name: git-workflows
 description: >
-  Use when git operations, merge/rebase (including conflicts), branches, fetch/pull, stash, cherry-pick,
-  or commit/push/reset permission questions. For PR prose, titles, bases, and `gh pr` authoring, use
-  `/pr-guidelines` instead. In Conductor workspaces (paths, CONDUCTOR_*, target branch), also read `/conductor`.
-  Covers workflow norms and explicit permission gates.
+  Use for Git branch changes, commits, pushes, merges, rebases, or history recovery. Includes authorization and base-selection conventions. Routine status or diff reads do not need the full workflow.
 compatibility: Requires git and GitHub CLI (gh).
 global_category: Git
 ---

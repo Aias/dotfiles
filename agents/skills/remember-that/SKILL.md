@@ -1,100 +1,34 @@
 ---
 name: remember-that
 description: >
-  Use when the user asks to remember something, change standing rules, or stop a repeated mistake—even
-  without saying "skill". Also corrections and interruptions ("wait", "stop", "no", "undo that",
-  "you keep doing X"). Persists to GLOBAL.md, a skill, AGENTS.md, or hooks as appropriate.
+  Persist a requested standing preference or a correction explicitly intended for future tasks.
+  Routes guidance to GLOBAL.md, project instructions, skills, or hooks.
+  One-off stops, approvals, and undo requests stay in the current task.
 ---
 
-# Remember That
+# Remember that
 
-Extract durable learnings from conversation context and persist them appropriately. This skill is the decision point for _how and where_ context gets injected — whether passively (always-loaded rules in GLOBAL.md), on-demand (skills invoked by trigger), or enforced (hooks that remind or block before certain tool calls).
+Capture guidance that should change behavior on future tasks. Apply the user's immediate correction first. A task-specific instruction does not imply a new standing rule.
 
-**Default: edit the relevant skill, GLOBAL.md, AGENTS.md, or hook directly.** When the user invokes `/remember-that`, they are giving explicit feedback — it almost always belongs in the canonical instructions, not in a `skill.feedback.md` scratch file. `skill.feedback.md` is reserved for the _agent's_ proactive recording of subtle preferences the user did not explicitly ask to be saved (see the feedback-loop note at the top of every skill).
+Read the relevant existing guidance before adding anything. Quote an existing rule when it already covers the preference. Otherwise consolidate overlapping instructions and describe the applicable condition. Use a representative example only when the rule would be ambiguous without it.
 
-> **Not Claude's built-in memory tool.** `/remember-that` always means: **edit a tracked file** — GLOBAL.md, a skill SKILL.md, project AGENTS.md/CLAUDE.md, or a hook. It never means: write to Claude's cross-conversation memory system (auto-memory, the `memory` tool, file-based memory under `~/.claude/projects/.../memory/`). Those systems are private to a single agent and invisible to other agents, other machines, and the user's git history — and in Conductor, each worktree is its own "project", so that memory is feature-scoped and won't even follow the repo. Harness memory is acceptable only for the agent's own project-local working context; anything the user says to remember belongs in the dotfiles repo so it's versioned, reviewable, and shared. If you find yourself reaching for a memory tool in response to `/remember-that`, stop — the right answer is always a file edit in this repo.
+## Choose a home
 
-## Process
+| Guidance | Source |
+| --- | --- |
+| Cross-project behavior | `~/Code/dotfiles/agents/GLOBAL.md` |
+| Workflow or tool knowledge | A skill under `~/Code/dotfiles/agents/skills/` |
+| Machine-specific or private guidance | `~/Code/dotfiles/agents/skills.local/` |
+| Project conventions | The project's `AGENTS.md` |
+| Deterministic enforcement | A hook and its harness registration |
+| An inferred preference needing later review | The relevant skill's `skill.feedback.md` |
 
-1. **Analyze recent context** — Review the last few user messages and the conversation thread to identify what the user wants remembered. Look for:
-   - Explicit corrections ("don't do X", "always do Y")
-   - Preferences revealed through feedback ("I prefer...", "that's too verbose")
-   - Patterns that emerged during the session
-   - Implicit standards the user enforced
+Edit dotfiles sources, not installed copies. Keep private information out of tracked files in the public dotfiles repository. Harness-private memory can hold working context, but shared standing rules belong in the source files above.
 
-2. **Filter for durability** — Only persist learnings that are:
-   - General principles or repeatable patterns (not one-off task details)
-   - Applicable across multiple sessions
-   - Not already captured in existing rules
+For a skill with `global_category`, add an annotation only when the rule belongs in every relevant session. Keep detailed procedures in the skill. Use harness sections for guidance that applies only to a particular harness.
 
-   The test: would the rule have changed your behavior on a *different* task in the same domain? If it only fits this exact task or file, it's a one-off — decline to persist it and say so.
+## Apply the change
 
-3. **Determine storage location(s)** — A learning may require edits to multiple files:
+An explicit request to save a specific preference authorizes the corresponding edit. If the inferred rule would broaden the user's request or change an existing preference, show the proposed wording and location for approval. Existing authorization persists across turns.
 
-   | Scope               | Location                                                                                | When to use                                                                                                        |
-   | ------------------- | --------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
-   | Global behavior     | `~/Code/dotfiles/agents/GLOBAL.md` (direct edit)                                        | Universal preferences not tied to any skill domain                                                                 |
-   | Global (via skill)  | Skill SKILL.md + `<!-- @> summary -->` annotation                                       | Learning relates to a skill with `global_category` — edit the skill, add annotation, run `make compile`            |
-   | Project-specific    | `./AGENTS.md` in project root (symlink `./CLAUDE.md → ./AGENTS.md`)                     | Patterns specific to this codebase, local conventions                                                              |
-   | Workflow/technology | New or existing skill in `~/Code/dotfiles/agents/skills/` or local `.claude/skills`     | Detailed procedures for specific tools, frameworks, or workflows                                                   |
-   | Enforcement         | Hook script in `~/Code/dotfiles/agents/hooks/` + registration in `claude.settings.json` and `codex.config.toml` | When a skill or rule must be loaded before certain tool calls (e.g. read `/pr-guidelines` before `gh pr` commands) |
-   | Agent-proactive note | Skill's `skill.feedback.md` (e.g. `~/Code/dotfiles/agents/skills/write/skill.feedback.md`) | Agent-initiated only: subtle preference inferred during a skill session that the user did not explicitly ask to be saved. Not for `/remember-that` invocations. |
-
-   **Decision heuristics:**
-   - Global vs skill-scoped: a rule that holds regardless of tool or domain ("confirm before destructive actions") is GLOBAL.md; a rule that only binds while using a specific tool or workflow ("confirm before `rebase --continue`") belongs in that tool's skill. A rule with a tool name in it almost always belongs in the tool's skill.
-   - "Every conversation" → global GLOBAL.md (direct or via skill annotation)
-   - "Every conversation in this project" → project root `AGENTS.md` (create `CLAUDE.md` symlink if missing)
-   - "When working with X technology/workflow" → skill SKILL.md (edit directly)
-   - Agent noticed a subtle pattern the user did not explicitly flag → skill's `skill.feedback.md` (lightweight, no confirmation needed). Never route a `/remember-that` invocation here.
-   - "Must not forget to do X before Y" → companion hook that reminds or blocks. Hook matchers filter by tool name only (regex); command-content filtering happens inside the script.
-
-   **Global via skill annotation:** When a learning falls within a skill that has `global_category` in its frontmatter (e.g. `/git-workflows`, `/react-best-practices`, `/change-review`), prefer editing/expanding the skill content AND adding a `<!-- @> token-dense summary -->` annotation above the relevant section. Then run `make compile` to regenerate the compiled GLOBAL.md index. This keeps the full context in the skill while surfacing a dense summary in always-loaded context. Annotate only rules that bind across most sessions regardless of domain (routing cues and cross-cutting constraints); domain-specific detail, edge cases, and rare-branch guidance stay in the skill body unannotated — the always-loaded index is paid for on every turn in every harness.
-
-   This only applies to the dotfiles-source GLOBAL.md — project-level AGENTS.md and CLAUDE.md have no compilation step.
-
-   Always edit the source at `~/Code/dotfiles/`, never the installed/symlinked/workspace copies. The harness settings grant that directory to the file tools; if a sandbox still refuses the write, report the boundary rather than routing around it.
-
-4. **Consolidate, don't accumulate** — Before adding:
-   - Read the target file(s)
-   - Check if a more general rule would capture this + existing related rules
-   - Merge overlapping instructions into one
-   - Prefer editing existing rules over adding new ones
-   - Delete redundant rules when consolidating
-
-5. **Propose changes** — Use the harness's question tool (AskUserQuestion in Claude Code, `request_user_input` in Codex) to present:
-   - What will be remembered (the extracted principle)
-   - Where it will go (file path and section)
-   - How it relates to existing rules (consolidation, replacement, or addition)
-   - The exact diff or new text
-
-   Wait for explicit user confirmation before making any edits.
-
-## Examples
-
-**User feedback:** "Stop adding docstrings to functions I didn't modify"
-**Extract:** Don't add comments/docstrings to unchanged code
-**Location:** GLOBAL.md (universal coding practice)
-**Check:** Already covered by "only make changes that are directly requested" → no edit needed, just acknowledge
-
-**User feedback:** "In this repo we use pnpm, not npm"
-**Extract:** Use pnpm as package manager
-**Location:** Project AGENTS.md (project-specific)
-
-**User correction during `/write` session, invoked via `/remember-that`:** "Too formal, drop the semicolons"
-**Extract:** Prefer shorter sentences, casual punctuation
-**Location:** `~/Code/dotfiles/agents/skills/write/SKILL.md` (explicit feedback → edit the skill directly)
-
-**Agent notices mid-session, no `/remember-that` invocation:** user rephrased a sentence to drop a hedging "perhaps" three times in a row
-**Extract:** This user prefers direct phrasing over hedged
-**Location:** `~/Code/dotfiles/agents/skills/write/skill.feedback.md` (agent-proactive note — never promoted without confirmation; eventually distilled via `/refine-skills`)
-
-## Distilling Feedback
-
-When a skill's `skill.feedback.md` has accumulated enough entries (~10+), use `/refine-skills` to promote patterns into permanent SKILL.md instructions and clean up the feedback file. This is the mechanism that turns raw accumulation into compounding improvement.
-
-## Anti-patterns
-
-- Don't persist task-specific details ("remember to fix the login bug")
-- Don't duplicate existing rules in different words
-- Don't add rules that contradict existing ones without consolidating
-- Don't create new skills for single simple rules — use GLOBAL.md or project AGENTS.md
+After an authorized edit, run `make compile` and `make link` for dotfiles guidance. Report what was saved and where. Read the refine-skills skill when the task is to distill accumulated feedback.

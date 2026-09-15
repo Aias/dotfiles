@@ -1,12 +1,7 @@
 ---
 name: agent-browser
 description: >
-  Use when programmatic browser work—navigate, fill forms, click, screenshots, scrape/extract data,
-  login flows, or E2E-style checks without manual driving. Triggers on "open this site", "automate
-  the browser", "take a screenshot", "test in the browser", headless UI verification. Also covers
-  Electron desktop apps (VS Code, Slack, Discord, Figma, Notion), Slack workspace automation,
-  exploratory testing / dogfooding / QA / bug hunts, running inside Vercel Sandbox microVMs, and
-  AWS Bedrock AgentCore cloud browsers. Uses agent-browser.
+  Use the agent-browser CLI for isolated browser automation or when the attached live-browser tools are unavailable. Includes session, authentication, snapshot, and element-reference handling.
 allowed-tools: Bash(npx agent-browser:*), Bash(agent-browser:*)
 ---
 

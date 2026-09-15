@@ -1,11 +1,7 @@
 ---
 name: conductor
 description: >
-  Use when working inside Conductor (conductor.build): parallel workspaces/worktrees, `CONDUCTOR_*` env vars,
-  workspace path under ~/conductor/workspaces, target branch for PRs/rebase/diff, Diff Viewer, archiving,
-  one-branch-per-workspace rules, run scripts and ports, checkpoints/todos, or "which branch is the base".
-  Pair with `/git-workflows` and `/pr-guidelines` for git and PR specifics. Triggers on Conductor, worktree,
-  CONDUCTOR_ROOT_PATH, workspace city name, parallel agents, ⌘⇧N workspace, merge block, @todos.
+  Use for Conductor workspace configuration, target branches, lifecycle, and runtime setup. Applies to conductor.build and workspaces under ~/conductor/workspaces.
 global_category: Conductor
 ---
 

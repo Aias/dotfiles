@@ -14,41 +14,16 @@ global_category: Git
 
 Drafting or updating a PR needs the current branch (`git branch --show-current`), the working-tree state (`git status --short`), whether a PR already exists (`gh pr view --json number,baseRefName,title,url`), and recent commit messages for style (`git log --oneline -10`). Read them in one batch before drafting, reuse the results within the session, and report a failing command rather than assuming the state it would have shown.
 
-## Procedure
+## Drafting and publishing
 
-1. Run `git status` to see changes
-2. Use `gh pr diff` (for existing PRs) or `git diff origin/<base>...HEAD` (after fetching) to review changes — never diff against a local branch, which may be stale
-3. Run `git log` to see commit message style
-4. Run pre-submission checks (type checks, linting, formatting, tests)
-5. Stage and commit with a concise message
-6. Push branch to remote with `-u` flag
-7. Draft the PR title and description following the guidelines below
-8. Re-read the draft through the lens of the `/write` skill — edit sentence by sentence for clarity, concision, and craft. Even technical documentation should be a joy to read.
-9. Create draft PR using `gh pr create --draft`
+Read the relevant diff and author intent, then draft the title and description using the conventions below. A drafting request ends with reviewable prose. Reuse the writing guidance already loaded in the session.
 
-<!-- @> After pushing to an existing PR, review and update title/description to reflect current changes -->
+Commit, push, and remote PR changes each require authorization for that action. Complete the preparation and relevant checks before asking for any missing authorization. Existing authorization persists across turns.
 
-## Updating an Existing PR
+For an authorized new PR, create a draft with an explicit base. Write multiline prose to a file and pass it with `--body-file` so formatting survives shell parsing.
 
-After pushing new commits to a branch with an open PR, **always** check whether the title and description still match the current state. Do this proactively — don't wait for the user to invoke `/pr-guidelines`.
-
-1. Run `gh pr view` to read the current title and description
-2. Compare against the full diff (`gh pr diff` or `git diff origin/<base>...HEAD`) — not just the new commits
-3. Update title and/or description with `gh pr edit` if they no longer accurately reflect the PR's scope
-4. Apply the `/write` skill to the revised description — edit for clarity and craft before submitting
-
-The title and description should always describe the PR as a whole, not just the latest push. Apply the same voice and formatting rules from [PR Title](#pr-title) and [PR Description](#pr-description).
-
-## Creating a New PR
-
-Use HEREDOC for the PR body to preserve formatting:
-
-```bash
-gh pr create --draft --title "Restore focus after closing dialogs" --body "$(cat <<'EOF'
-PR body here...
-EOF
-)"
-```
+<!-- @> After pushing to an existing PR, compare its title and description with the full diff; update when authorized, otherwise prepare the revision locally -->
+After pushing to an existing PR, compare its title and description with the full diff. Revise the prose around the final scope. Publish the revision when PR editing is authorized, otherwise present the prepared text.
 
 ## Parameters
 
@@ -130,7 +105,7 @@ When included, use a bulleted list for independent things to check, or an ordere
 
 ### Visual Evidence
 
-Many PRs would benefit from screenshots or videos to illustrate changes, but these can't be uploaded via GitHub's CLI or MCP. When the change is visual, capture the evidence with `/agent-browser` and hand the user the files to upload manually — don't defer it to an offered follow-up, and don't leave placeholder text in the PR body.
+Many PRs would benefit from screenshots or videos to illustrate changes, but these can't be uploaded via GitHub's CLI or MCP. When the change is visual, capture the evidence with the available browser tools and hand the user the files to upload manually — don't defer it to an offered follow-up, and don't leave placeholder text in the PR body.
 
 ### Ticket References
 
@@ -165,6 +140,6 @@ The agent posts through the user's own GitHub account, so attribution belongs in
 
 Name the model actually running. Omit effort levels. Keep the body plain text in the same paragraph. Apply this attribution to inline review replies, review summaries, and conversation comments, including those posted via `/code-review --comment`. Write PR titles and descriptions in the user's voice without AI attribution.
 
-<!-- @> Run every PR comment through /what before posting: the reviewer has none of the session's context — restore referents, cut padding, lead with the answer -->
+<!-- @> Write PR comments for a reviewer without the session context: lead with the answer, name referents, and explain the impact -->
 
-Run every comment through `/what` before posting. The reviewer has none of the session's context: open with the answer, restate referents the conversation coined, name code in the project's own terms, and cut the padding. A comment that reads like a mid-session chat update has not been re-pitched yet.
+Write for a reviewer without the session's context: open with the answer, restate referents the conversation coined, name code in the project's own terms, and cut the padding. A comment that reads like a mid-session chat update has not been re-pitched yet.

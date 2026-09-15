@@ -33,7 +33,7 @@ dotfiles/
 │   ├── claude.statusline-command.sh
 │   ├── hooks/         # Claude Code hooks (e.g. PR guideline check)
 │   ├── compile-global.ts        # Annotation compiler
-│   ├── .build/skills/ # Cleaned skill files (annotations stripped, gitignored)
+│   ├── .build/       # Generated instructions and skills by harness (gitignored)
 │   ├── skills/        # [P] Personal skills (hand-written)
 │   │   ├── conductor/       # Conductor worktrees / CONDUCTOR_* / target branch
 │   │   ├── git-workflows/
@@ -74,7 +74,7 @@ After this repo is on your machine and zsh is sourced, the **`dotup`** alias run
 
 `make install` will:
 
-1. Compile `@>` annotations from skills into GLOBAL.md
+1. Compile skill annotations and harness inclusion into generated instructions and skill trees
 2. Back up any existing files to `~/.dotfiles-backup/`
 3. Create symlinks from this repo to `~/` (based on `links.txt`)
 4. Copy mise global config and Cursor `global.mdc` (not symlinked — see `install.sh`); merge tracked Cursor CLI attribution into `~/.cursor/cli-config.json` (not a symlink — Cursor writes auth/model there); symlink `~/AGENTS.md` for Cursor CLI ancestor discovery
@@ -107,7 +107,7 @@ Skills come in three types:
 - **[L] Local** — Machine-specific, gitignored in `agents/skills.local/`
 - **[E] External** — Installed from GitHub via [skills.sh](https://skills.sh) in `.agents/skills/`
 
-`make link` / `install.sh` **rsync each skill folder into** `~/.claude/skills/`, `~/.codex/skills/`, and `~/.cursor/skills/` — they **do not delete** directories you removed or renamed in the repo. After dropping or renaming a skill, remove the stale folder from those home paths too (compare `ls agents/skills` / `.agents/skills` / `agents/skills.local` with `ls ~/.claude/skills`). See the **skills-manager** skill (`agents/skills/skills-manager/`) for the full cleanup checklist.
+`make link` / `install.sh` deploy compiled skills to their selected harnesses. Whole-skill metadata and section markers control inclusion, as described in [Agent skills](agents/skills/README.md#harness-inclusion). Excluded copies of a current source skill are removed from that target. Removed or renamed source directories still require separate orphan cleanup. After dropping or renaming a skill, remove the stale folder from those home paths too (compare `ls agents/skills` / `.agents/skills` / `agents/skills.local` with `ls ~/.claude/skills`). See the **skills-manager** skill (`agents/skills/skills-manager/`) for the full cleanup checklist.
 
 ### Adding a Personal Skill
 

@@ -1,172 +1,95 @@
-# Agent Skills
+# Agent skills
 
-Skills are modular packages that extend agent capabilities with specialized knowledge, workflows, and tools. This directory contains **personal skills** (hand-written) that are deployed alongside external skills to agent-specific directories.
+Skill sources live in three directories:
 
-## Personal vs External Skills
+- `agents/skills/`: personal skills, tracked in this repository.
+- `.agents/skills/`: external skills tracked by `skills-lock.json`.
+- `agents/skills.local/`: private or machine-specific skills, gitignored.
 
-- **`agents/skills/`** (this directory) - [P] Personal skills you write and maintain
-- **`.agents/skills/`** - [E] External skills installed from [skills.sh](https://skills.sh)
-- **`agents/skills.local/`** - [L] Local-only skills (not committed)
+Edit these sources. `make compile` generates deployment files and `make link` installs them. Installed skills and generated files are build outputs.
 
-All types are synced to `~/.claude/skills/`, `~/.codex/skills/`, and `~/.cursor/skills/` by the install script.
+## Descriptions and references
 
-## Quick Start
+Each skill has a `SKILL.md` with a YAML `name` and `description`. Describe the specific task the skill serves and the boundary that prevents likely misrouting. Keep procedures and secondary capabilities in the body.
 
-**Create a personal skill:**
+Keep the entry point focused on the outcome, essential constraints, and relevant references. Put substantial conditional workflows in `references/`, executable helpers in `scripts/`, and output assets in `assets/`.
 
-```bash
-~/.claude/skills/skill-creator/scripts/init_skill.py my-new-skill
-```
+Use backticked skill names such as `/write` for cross-links. State the condition where the other skill is useful. Reuse guidance already loaded in the session. A cross-link alone does not require another read.
 
-**Install an external skill:**
+## Harness inclusion
 
-See `skills-manager/README.md` for complete workflow, or:
+Shared content applies to Claude, Codex, and Cursor. These names identify deployment destinations, not the model selected inside each application.
 
-```bash
-npx skills add <source> --skill <skill-name>
-```
-
-**Deploy all skills:**
-
-```bash
-cd ~/Code/dotfiles && make link
-```
-
-## Format Overview
-
-Skills follow the [Agent Skills open standard](https://agentskills.io/). Each skill is a directory containing:
-
-```
-skill-name/
-├── SKILL.md          # Required: metadata + instructions
-├── references/       # Optional: documentation loaded on demand
-├── scripts/          # Optional: executable code
-└── assets/           # Optional: templates, static resources
-```
-
-### SKILL.md
+To restrict a whole skill, set a comma-separated target list in its source frontmatter:
 
 ```yaml
 ---
-name: skill-name # Lowercase, hyphens, max 64 chars
-description: >
-  Lead with the distinguishing task and representative user language, then a boundary where a
-  neighboring skill could apply, then a short capability line.
-global_category: Category # Optional: opt into GLOBAL.md compiled index
+name: example-workflow
+description: Perform the named workflow using its application-specific tools.
+metadata:
+  targets: claude,cursor
 ---
-# Skill Title
-
-Instructions in markdown...
 ```
 
-The `description` field is the primary trigger signal. Lead with the distinguishing task and representative user language. Add a boundary where another skill could plausibly apply ("for X, use `/y`"). Put procedures and secondary capabilities in the body. Every harness loads every description into context on every turn, so a description competes with its neighbors for precision, and a long synonym list attracts requests the skill does not serve. This guidance overrides the description advice in `.agents/skills/skill-creator/SKILL.md`; use that skill for structure and packaging.
+Omit `metadata.targets` for a shared skill. This controls dotfiles deployment. A harness may separately discover source skills when opened inside this repository, including `.agents/skills/`. Review local target metadata when updating external skills so an upstream replacement does not erase the intended deployment policy.
 
-### Cross-links
-
-Skills reference each other with `` `/<skill-name>` `` — a leading slash plus the skill directory / YAML `name` (e.g. `` `/write` ``, `` `/git-workflows` ``), always in backticks. A cross-link signals that the agent should read that skill or apply it alongside the current one; individual skills may state stronger requirements (e.g. must invoke `/write` before submitting). Prefer this form over paraphrases like `` `foo` skill `` or relative links to another skill's SKILL.md when the intent is to name a skill for the agent.
-
-### Compiled Annotations
-
-Skills with `global_category` in their frontmatter contribute to a dense always-in-context index in `GLOBAL.md`. Add `<!-- @> summary text -->` annotations above relevant sections to surface key rules:
+To restrict a section in GLOBAL.md or a skill's Markdown files:
 
 ```markdown
-<!-- @> GPU only: animate transform and opacity. Never padding/margin/height/width -->
+Shared guidance.
 
-### The Golden Rule
+<!-- harness: codex -->
+Guidance for Codex.
+<!-- /harness -->
 
-Only animate `transform` and `opacity`...
+<!-- harness: claude,cursor -->
+Guidance for Claude and Cursor.
+<!-- /harness -->
 ```
 
-Annotations are extracted by `bun agents/compile-global.ts` (or `make compile`) into a pipe-delimited block in GLOBAL.md. Cleaned copies (annotations stripped) are written to `agents/.build/skills/` and overlaid onto installed skill copies during deployment.
+Blocks cannot nest. The compiler rejects empty or unknown target lists and malformed or unclosed blocks. Keep a target-specific reference and its link under matching conditions.
 
-See the [Annotation Compilation](/CLAUDE.md#annotation-compilation) section in CLAUDE.md for full details.
+## Generated instructions
 
-### Feedback Loops
+`agents/GLOBAL.md` remains the source of standing instructions. The compiler writes:
 
-Every personal skill gets a feedback preamble injected into its deployed SKILL.md (via the `.build/` overlay). The preamble tells agents to read and write a `skill.feedback.md` file in the skill's **source** directory.
+| Output | Destination |
+| --- | --- |
+| `agents/.build/claude/GLOBAL.md` | `~/.claude/CLAUDE.md` symlink |
+| `agents/.build/codex/GLOBAL.md` | `~/.codex/AGENTS.md` symlink |
+| `agents/.build/cursor/GLOBAL.md` | Content of `~/.cursor/rules/global.mdc` |
+| `agents/.build/shared/GLOBAL.md` | `~/AGENTS.md` symlink |
+| `agents/.build/<target>/skills/` | `~/.<target>/skills/` |
 
+The shared ancestor file contains only guidance common to every target. This prevents a harness from finding another harness's instructions through `~/AGENTS.md`.
+
+## Compiled annotations
+
+A skill with `global_category` contributes `<!-- @> summary -->` annotations to GLOBAL.md's compiled index:
+
+```markdown
+<!-- @> Preserve the operation's authorization boundary when retrying -->
+Retry within the approved scope. Ask when a retry requires a different external action.
 ```
-agents/skills/write/
-├── SKILL.md              # Instructions (source of truth)
-├── skill.feedback.md     # Accumulated corrections (gitignored)
-├── references/
-```
 
-**How it works:**
-- `make compile` injects a feedback preamble after the frontmatter in each skill's `.build/` copy, before it computes the line pointers for the compiled index, so `:Lnn` references match the deployed file
-- On a skill's first use in a session, the agent reads `skill.feedback.md` from source and applies accumulated preferences; it re-reads after a correction
-- When the user corrects output during a session, the agent appends a dated line to that file
-- `install.sh` excludes `skill.feedback.md` from rsync — the preamble points agents to the source path directly
+Use annotations for constraints worth carrying into every relevant session. Keep rare cases in the skill body. The compiler strips markers and calculates line references against each target's generated files. Shared ancestor summaries omit line pointers because the target files can have different line offsets. The tracked source index includes public skill summaries. Private local skills can contribute to generated target instructions without placing their summaries in tracked GLOBAL.md.
 
-**Distillation:** Over time, repeated corrections in `skill.feedback.md` should be promoted into the actual SKILL.md as proper instructions, then cleared from the feedback file. Use `/remember-that` to trigger this, or ask the agent to "refine" or "distill" a skill's feedback.
+## Feedback review
 
-**Opt-out:** Add `feedback: false` to a skill's SKILL.md frontmatter to skip preamble injection.
+`skill.feedback.md` is a local staging file for preferences that need review. It is gitignored, excluded from deployment, and not read during ordinary skill use. The compiler adds no feedback-reading preamble.
 
-## Resource Directories
+Use `/refine-skills` during requested maintenance to compare notes with current guidance and promote supported preferences. Approved instructions belong in the source skill or GLOBAL.md, where compilation delivers them without another file read. Use `/remember-that` when the user asks to save a standing preference directly.
 
-Per the [Agent Skills spec](https://agentskills.io/specification), skills use three optional directories:
-
-**references/** — Documentation loaded into context on demand
-
-- Workflows, library patterns, API docs, schema references
-- Example: `change-review/references/apply.md`, `change-review/references/web-interface-guidelines.md`
-
-**scripts/** — Executable code run directly without loading into context
-
-- Python, Bash, etc.
-- Example: `rotate_pdf.py`, `extract_data.sh`
-
-**assets/** — Static resources (templates, images, data files)
-
-- Templates, images, boilerplate
-- Example: `template.pptx`, `boilerplate/`
-
-## Naming Conventions
-
-- Lowercase letters, numbers, hyphens only (`a-z`, `0-9`, `-`)
-- Cannot start or end with a hyphen
-- No consecutive hyphens (`--`)
-- Max 64 characters
-- Directory name must match the `name` field
-
-## Deployment
-
-Skills from `agents/skills/` (personal), `.agents/skills/` (external), and `agents/skills.local/` (local) are synced via rsync to agent-specific locations by `install.sh`:
-
-- `~/.claude/skills/` — Claude Code
-- `~/.codex/skills/` — Codex
-- `~/.cursor/skills/` — Cursor
-
-The sync uses `rsync -a --delete` to mirror each skill folder individually. After syncing, cleaned skill files from `agents/.build/skills/` are overlaid to strip `@>` annotations from installed copies.
-
-External skill install/remove lifecycle is managed by `skills-manager` (`npx skills add/remove/update`). `install.sh` only syncs skills present in source directories.
+## Deployment and checks
 
 ```bash
-make check    # Show all skills with [P]/[E]/[L] labels and sync status
-make compile  # Regenerate GLOBAL.md compiled block and .build/ cleaned files
-make link     # Full install: symlinks + skills + compilation
+make compile
+make link
+make check
 ```
 
-## Creating Skills
+Compilation filters skills and sections for each target. The installer mirrors each included skill's generated tree. It removes an excluded deployment only when a current source skill explicitly excludes that target. Unrelated installed skills, system skills, and plugins remain outside this cleanup.
 
-Use `/skill-creator` for guidance:
+Removing or renaming a source skill requires separate orphan cleanup. Check all three source directories before deleting a deployed folder. See the [skills-manager workflow](skills-manager/SKILL.md).
 
-```bash
-# Initialize a new skill
-~/.claude/skills/skill-creator/scripts/init_skill.py my-skill-name --path ~/Code/dotfiles/agents/skills/
-
-# Package a skill for distribution
-~/.claude/skills/skill-creator/scripts/package_skill.py ~/Code/dotfiles/agents/skills/my-skill-name
-```
-
-See `~/.claude/skills/skill-creator/SKILL.md` for comprehensive authoring guidance.
-
-## Managing External Skills
-
-`/skills-manager` (in this directory) handles external skills from skills.sh:
-
-- Install external skills with `npx skills add`
-- Track versions in `.agents/skills.json`
-- Update with `make update-skills`
-
-See `skills-manager/README.md` for full documentation.
+Use `bun agents/compile-global.ts --check` to verify generated output freshness and `make check` to inspect deployment drift. Source files remain authoritative after compilation and installation.

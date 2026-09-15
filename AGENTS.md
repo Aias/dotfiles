@@ -4,11 +4,11 @@ Personal dotfiles repo — shell config, git, editor settings, and AI agent conf
 
 ## Structure
 
-- `agents/GLOBAL.md` — Global agent instructions + compiled `@>` skill index (symlinked to `~/.claude/CLAUDE.md`, `~/.codex/AGENTS.md`, `~/AGENTS.md`; copied to Cursor `global.mdc`). Conductor-specific detail lives in the `/conductor` skill; GLOBAL keeps a short pointer and compiled reminders.
+- `agents/GLOBAL.md` — Source global instructions + compiled `@>` skill index. Harness-specific generated versions are symlinked to `~/.claude/CLAUDE.md` and `~/.codex/AGENTS.md`, with shared-only output at `~/AGENTS.md` and Cursor output copied to `global.mdc`. Conductor-specific detail lives in the `/conductor` skill; GLOBAL keeps a short pointer and compiled reminders.
 - `agents/skills/` — Personal agent skills (tracked)
 - `agents/skills.local/` — Machine-specific skills (gitignored)
 - `agents/compile-global.ts` — Compiles `@>` annotations from skills into GLOBAL.md's dense index
-- `agents/.build/skills/` — Cleaned skill files (annotations stripped), gitignored
+- `agents/.build/<target>/` — Generated instructions and complete skill trees for each harness, gitignored
 - `agents/claude.settings.json` — Claude Code settings
 - `agents/codex.config.toml` — Codex settings
 - `agents/conductor.settings.toml` — Conductor user settings (schema: `https://conductor.build/schemas/settings.schema.json`)
@@ -35,5 +35,7 @@ Skills with `global_category` in their SKILL.md frontmatter contribute to GLOBAL
 
 - Annotations: `<!-- @> summary text -->` above the relevant section in any `.md` file within a skill
 - Output format: `Category|skills/skill-name|summary:L{n}|summary:subpath:L{n}`
-- Cleaned files (annotations stripped) go to `agents/.build/skills/` and are overlaid during `install.sh`
+- Filtered instructions and skills go to `agents/.build/<target>/`; `install.sh` deploys these generated files
+- Whole-skill `metadata.targets` and `<!-- harness: target -->` blocks control inclusion. See `agents/skills/README.md`
+- Feedback files are a periodic review queue, excluded from deployment and ordinary skill reads
 - Run `make compile` after adding/editing annotations, or use `--check` to verify staleness

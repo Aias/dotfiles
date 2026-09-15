@@ -1,10 +1,7 @@
 ---
 name: avoid-effects
 description: >
-  Use when adding or reviewing `useEffect`—unnecessary effects, effect vs event handler, deriving state in
-  effects, reset state on prop change, fetch in effect, effect chains, race conditions, or "do I need an
-  effect". Triggers on React data-flow and synchronization questions alongside `/react-best-practices`.
-  Summary here; full official walkthrough in references/react-dev-full-article.md (react.dev "You Might Not Need an Effect").
+  Review or replace React effects when choosing between external synchronization, derived state, and event handlers. Use for effect lifecycle problems or unnecessary useEffect calls.
 global_category: React
 ---
 
@@ -12,7 +9,7 @@ global_category: React
 
 Effects are for **synchronizing with an external system** (non-React UI, network, browser APIs, subscriptions). If nothing outside React is involved—only props, state, and rendering—you usually **should not** use `useEffect`. Removing unnecessary Effects simplifies code, cuts extra renders, and avoids bugs. Canonical narrative: [react.dev/learn/you-might-not-need-an-effect](https://react.dev/learn/you-might-not-need-an-effect).
 
-For bundle, RSC, memo, and waterfall rules, use `/react-best-practices`. **Read this skill or the full article before adding `useEffect`.**
+Use `/react-best-practices` for performance or server/client architecture questions. Read the full article when this summary does not settle the synchronization choice.
 
 <!-- @> Effects only for external sync; derive in render; events for interactions; useSyncExternalStore for stores; fetch Effects need stale cleanup -->
 ## Code smells (often wrong)

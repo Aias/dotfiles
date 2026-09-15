@@ -14,14 +14,14 @@ Git | git/ignore | .config/git/ignore | .config/git/ignore
 Git | git/allowed_signers | .config/git/allowed_signers | .config/git/allowed_signers
 
 # Claude
-Claude | agents/GLOBAL.md | .claude/CLAUDE.md | .claude/CLAUDE.md
+Claude | agents/.build/claude/GLOBAL.md | .claude/CLAUDE.md | .claude/CLAUDE.md
 Claude | agents/claude.settings.json | .claude/settings.json | .claude/settings.json
 Claude | agents/claude.statusline-command.sh | .claude/statusline-command.sh | .claude/statusline-command.sh
 Claude | agents/hooks/check-pr-guidelines.sh | .claude/hooks/check-pr-guidelines.sh | .claude/hooks/check-pr-guidelines.sh
 Claude | agents/hooks/block-force-push.sh | .claude/hooks/block-force-push.sh | .claude/hooks/block-force-push.sh
 
 # Codex
-Codex | agents/GLOBAL.md | .codex/AGENTS.md | .codex/AGENTS.md
+Codex | agents/.build/codex/GLOBAL.md | .codex/AGENTS.md | .codex/AGENTS.md
 Codex | agents/codex.config.toml | .codex/config.toml | .codex/config.toml
 
 # Conductor
@@ -31,7 +31,7 @@ Conductor | agents/conductor.settings.toml | .conductor/settings.toml | .conduct
 # cli-config.json: Cursor CLI writes auth/model into the live file, so it is not
 # symlinked. install.sh merges tracked durable keys (attribution) into ~/.cursor/cli-config.json.
 # ~/AGENTS.md: Cursor CLI ancestor walk (and any harness that walks to ~); keep global.mdc for IDE
-Cursor | agents/GLOBAL.md | AGENTS.md | AGENTS.md
+Cursor | agents/.build/shared/GLOBAL.md | AGENTS.md | AGENTS.md
 Cursor | cursor/mcp.json | .cursor/mcp.json | .cursor/mcp.json
 Cursor | cursor/settings.json | Library/Application Support/Cursor/User/settings.json | Cursor/User/settings.json
 Cursor | cursor/keybindings.json | Library/Application Support/Cursor/User/keybindings.json | Cursor/User/keybindings.json

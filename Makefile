@@ -1,11 +1,13 @@
-.PHONY: compile install setup link update update-skills check
+.PHONY: compile install setup link update update-skills check test-compile-global
 
-# Compile @> annotations from skills into GLOBAL.md + cleaned .build/ copies
 compile:
 	bun agents/compile-global.ts
 
+test-compile-global:
+	bun test agents/compile-global.test.ts
+
 # Full install with dependencies
-install: compile
+install:
 	./install.sh
 
 # Repo-local setup (git hooks, etc.) — run per clone/worktree
@@ -13,7 +15,7 @@ setup:
 	./setup.sh
 
 # Link only (skip brew packages)
-link: compile
+link:
 	SKIP_DEPENDENCY_INSTALL=1 ./install.sh
 
 # Pull latest and reinstall
@@ -29,13 +31,15 @@ update-skills:
 	@echo "External skills updated. Review changes and commit if needed."
 
 # Check symlink health
-check:
+check: test-compile-global
+	@bun agents/compile-global.ts --check
 	@GREEN='\033[0;32m'; RED='\033[0;31m'; YELLOW='\033[0;33m'; BOLD='\033[1m'; DIM='\033[2m'; RESET='\033[0m'; \
 	issues=""; \
 	current_section=""; \
 	while IFS='|' read -r section source target label; do \
 		case "$$section" in \#*|"") continue;; esac; \
 		section=$$(echo "$$section" | xargs); \
+		source=$$(echo "$$source" | xargs); \
 		target=$$(echo "$$target" | xargs); \
 		label=$$(echo "$$label" | xargs); \
 		if [ "$$section" != "$$current_section" ]; then \
@@ -44,8 +48,12 @@ check:
 			current_section="$$section"; \
 		fi; \
 		target_path=~/"$$target"; \
-		if [ -L "$$target_path" ]; then \
+		expected_path="$$PWD/$$source"; \
+		if [ -L "$$target_path" ] && [ "$$(readlink "$$target_path")" = "$$expected_path" ]; then \
 			printf "  $${GREEN}✓$${RESET} %s\n" "$$label"; \
+		elif [ -L "$$target_path" ]; then \
+			printf "  $${RED}✗$${RESET} %s $${DIM}(wrong target)$${RESET}\n" "$$label"; \
+			issues="$$issues $$label"; \
 		elif [ -e "$$target_path" ]; then \
 			printf "  $${RED}✗$${RESET} %s $${DIM}(not a symlink)$${RESET}\n" "$$label"; \
 			issues="$$issues $$label"; \
@@ -56,8 +64,11 @@ check:
 	done < links.txt; \
 	echo ""; \
 	printf "$${BOLD}Cursor (special)$${RESET}\n"; \
-	if [ -f ~/.cursor/rules/global.mdc ]; then \
+	if [ -f ~/.cursor/rules/global.mdc ] && { printf '%s\n' '---' 'alwaysApply: true' '---' ''; cat agents/.build/cursor/GLOBAL.md; } | cmp -s - ~/.cursor/rules/global.mdc; then \
 		printf "  $${GREEN}✓$${RESET} %s\n" ".cursor/rules/global.mdc"; \
+	elif [ -f ~/.cursor/rules/global.mdc ]; then \
+		printf "  $${RED}✗$${RESET} %s $${DIM}(out of sync)$${RESET}\n" ".cursor/rules/global.mdc"; \
+		issues="$$issues .cursor/rules/global.mdc"; \
 	else \
 		printf "  $${YELLOW}-$${RESET} %s $${DIM}(missing)$${RESET}\n" ".cursor/rules/global.mdc"; \
 		issues="$$issues .cursor/rules/global.mdc"; \
@@ -94,30 +105,34 @@ check:
 	done; \
 	printf "  %-$${max_w}s  type  claude  codex  cursor\n" "skill"; \
 	check_skill() { \
-		local skill="$$1" type_label="$$2" src_dir="$$3"; \
+		local skill="$$1" type_label="$$2"; \
 		local claude="$${YELLOW}-$${RESET}" codex="$${YELLOW}-$${RESET}" cursor="$${YELLOW}-$${RESET}"; \
-		local src="$$src_dir/$$skill/SKILL.md"; \
-		local built="agents/.build/skills/$$skill/SKILL.md"; \
-		local cmp="$$src"; [ -f "$$built" ] && cmp="$$built"; \
-		if [ -f ~/.claude/skills/$$skill/SKILL.md ]; then \
-			diff -q "$$cmp" ~/.claude/skills/$$skill/SKILL.md >/dev/null 2>&1 && claude="$${GREEN}✓$${RESET}" || claude="$${RED}✗$${RESET}"; \
-		fi; \
-		if [ -f ~/.codex/skills/$$skill/SKILL.md ]; then \
-			diff -q "$$cmp" ~/.codex/skills/$$skill/SKILL.md >/dev/null 2>&1 && codex="$${GREEN}✓$${RESET}" || codex="$${RED}✗$${RESET}"; \
-		fi; \
-		if [ -f ~/.cursor/skills/$$skill/SKILL.md ]; then \
-			diff -q "$$cmp" ~/.cursor/skills/$$skill/SKILL.md >/dev/null 2>&1 && cursor="$${GREEN}✓$${RESET}" || cursor="$${RED}✗$${RESET}"; \
-		fi; \
+		local built target exclusions; \
+		built="agents/.build/claude/skills/$$skill"; target="$$HOME/.claude/skills/$$skill"; exclusions="agents/.build/claude/excluded-skills.txt"; \
+		if [ -d "$$built" ] && [ -d "$$target" ] && [ -z "$$(rsync -anic --delete "$$built/" "$$target/")" ]; then claude="$${GREEN}✓$${RESET}"; \
+		elif [ -d "$$built" ]; then claude="$${RED}✗$${RESET}"; issues="$$issues claude:$$skill"; \
+		elif grep -Fxq "$$skill" "$$exclusions" && { [ -e "$$target" ] || [ -L "$$target" ]; }; then claude="$${RED}✗$${RESET}"; issues="$$issues claude:$$skill"; \
+		elif grep -Fxq "$$skill" "$$exclusions"; then claude="$${DIM}-$${RESET}"; fi; \
+		built="agents/.build/codex/skills/$$skill"; target="$$HOME/.codex/skills/$$skill"; exclusions="agents/.build/codex/excluded-skills.txt"; \
+		if [ -d "$$built" ] && [ -d "$$target" ] && [ -z "$$(rsync -anic --delete "$$built/" "$$target/")" ]; then codex="$${GREEN}✓$${RESET}"; \
+		elif [ -d "$$built" ]; then codex="$${RED}✗$${RESET}"; issues="$$issues codex:$$skill"; \
+		elif grep -Fxq "$$skill" "$$exclusions" && { [ -e "$$target" ] || [ -L "$$target" ]; }; then codex="$${RED}✗$${RESET}"; issues="$$issues codex:$$skill"; \
+		elif grep -Fxq "$$skill" "$$exclusions"; then codex="$${DIM}-$${RESET}"; fi; \
+		built="agents/.build/cursor/skills/$$skill"; target="$$HOME/.cursor/skills/$$skill"; exclusions="agents/.build/cursor/excluded-skills.txt"; \
+		if [ -d "$$built" ] && [ -d "$$target" ] && [ -z "$$(rsync -anic --delete "$$built/" "$$target/")" ]; then cursor="$${GREEN}✓$${RESET}"; \
+		elif [ -d "$$built" ]; then cursor="$${RED}✗$${RESET}"; issues="$$issues cursor:$$skill"; \
+		elif grep -Fxq "$$skill" "$$exclusions" && { [ -e "$$target" ] || [ -L "$$target" ]; }; then cursor="$${RED}✗$${RESET}"; issues="$$issues cursor:$$skill"; \
+		elif grep -Fxq "$$skill" "$$exclusions"; then cursor="$${DIM}-$${RESET}"; fi; \
 		printf "  %-$${max_w}s  %b   %b       %b      %b\n" "$$skill" "$$type_label" "$$claude" "$$codex" "$$cursor"; \
 	}; \
 	for skill in $$(ls -1d agents/skills/*/ 2>/dev/null | xargs -I{} basename {}); do \
-		check_skill "$$skill" "$${DIM}[P]$${RESET}" "agents/skills"; \
+		check_skill "$$skill" "$${DIM}[P]$${RESET}"; \
 	done; \
 	for skill in $$(ls -1d .agents/skills/*/ 2>/dev/null | xargs -I{} basename {}); do \
-		check_skill "$$skill" "$${DIM}[E]$${RESET}" ".agents/skills"; \
+		check_skill "$$skill" "$${DIM}[E]$${RESET}"; \
 	done; \
 	for skill in $$(ls -1d agents/skills.local/*/ 2>/dev/null | xargs -I{} basename {}); do \
-		check_skill "$$skill" "$${DIM}[L]$${RESET}" "agents/skills.local"; \
+		check_skill "$$skill" "$${DIM}[L]$${RESET}"; \
 	done; \
 	echo ""; \
 	if [ -n "$$issues" ]; then \

@@ -6,7 +6,7 @@ Read-only fan-out across a change-set. Output: numbered findings in chat.
 
 These are non-negotiable.
 
-- **Read-only.** No code edits, no commits, no GitHub or Linear comments unless explicitly authorized in this turn. Output is chat text only.
+- **Read-only.** No code edits, no commits, no GitHub or Linear comments unless explicitly authorized in the session. Output is chat text only.
 - **No questions to the user during the review.** Complete the review without user intervention; questions go in the report's "open questions" section.
 - **Verify, don't punt — and verify the invariant, not just the symptom.** Anything verifiable during the review must be verified by the reviewer — not asked back to the user. That includes reading library source code (locally in `node_modules` or upstream on GitHub), official docs, framework release notes, RFCs, GitHub issues/PRs, and the project's own git history. Web search and validation against public documentation are first-class tools for every subagent in the fan-out. Findings of the form *"this might be wrong, can you confirm?"* are not findings — they're questions the reviewer was supposed to resolve.
 
@@ -40,11 +40,7 @@ Never diff `dev...main` or any other long-lived-base-to-base range. It pulls in 
 
 ## Phase 2: Fan-out
 
-For any non-trivial diff, **always fan out across parallel subagents.** Non-trivial means the diff touches logic or spans multiple files; a single-file config, typo, or lockfile change reads in one pass — don't spin up subagents to review a two-line fix. Single-pass review is the dominant failure mode the user pushes back on (*"there's no way you reviewed all 17k lines of that code"*). Parallel agents are also strongly preferred over hand-written codemods or scripted refactors.
-
-Launch agents in a single message so they run concurrently. Each agent gets the full diff (or its bucket) plus the PR title and description for author intent.
-
-**Model tier: every review and validator subagent runs on the strongest tier at high or extra-high effort** (per GLOBAL.md) — a judgment call per axis (reach for extra-high on the densest buckets, high is fine for the rest); max is never needed. The analysis quality is the constraint, not tokens or latency — a subagent that misses the bug or the simplification costs more than it saved. Reserve faster models only for narrow retrieval fan-out (collecting files, grepping call sites) whose raw output a stronger agent then reasons over.
+Delegate substantial independent review work when it can run alongside useful local analysis. Review small focused changes directly. Give each reviewer the relevant diff and author intent. Use the strongest available tier for judgment and select axes according to the actual risks in the change.
 
 ### Code-judo lens
 
@@ -57,9 +53,9 @@ Frame every axis around **deleting complexity, not rearranging it.** A clean rev
 
 This is the lens, not an axis. Apply it inside each subagent below.
 
-### Standard axes (default to all four; add Axis 5 when an originating spec exists)
+### Review axes
 
-All axes — including spec conformance — launch together in one message and run **in parallel**. Spec conformance is special only at synthesis: its findings are read *first* and used to set the disposition of every other axis's findings (see [Synthesis](#synthesis-let-spec-conformance-set-disposition)), not to gate the other agents.
+Independent axes can run in parallel when their scope warrants separate reviewers. Spec conformance is special only at synthesis: its findings are read *first* and used to set the disposition of every other axis's findings (see [Synthesis](#synthesis-let-spec-conformance-set-disposition)), not to gate the other agents.
 
 **Axis 1: Bug scan.**
 Look for obvious bugs in the diff itself — incorrect logic, broken control flow, off-by-ones, missing awaits, mishandled errors. Focus on the diff; don't reach outside it for context unless the finding requires it. Flag only bugs that fire on a plausible real input or state and change observable behavior (wrong output, crash, hang, data loss) — not edge cases the type system or an upstream guard already rules out.
@@ -143,7 +139,7 @@ Add or substitute axes when the user names a concern: *"focus on app router patt
 ## Phase 3: Validation
 
 <!-- @> Validate adversarially: try to REFUTE each finding (default refuted when unsure); only findings that survive with a code citation get reported -->
-For each finding from Phase 2, launch a validator subagent whose job is to **refute the finding**, not to confirm it. Single-axis agents over-flag, so the validator starts adversarial: assume the finding is a false positive and try to break it by reading the cited code and the surrounding context the original agent didn't see. A finding survives only if the validator *cannot* refute it with a code citation; when the validator is unsure, it defaults to refuted.
+For each finding, try to refute it against the surrounding code and actual inputs. Use a fresh reviewer when independent scrutiny adds value, grouping related findings where they share context. Single-axis agents over-flag, so the validator starts adversarial: assume the finding is a false positive and try to break it by reading the cited code and the surrounding context the original agent didn't see. A finding survives only if the validator *cannot* refute it with a code citation; when the validator is unsure, it defaults to refuted.
 
 Pass the validator: the PR title/description, the finding description, and the rule (if compliance). It reads the cited code and answers: *can I show this is not actually a problem here?*
 
@@ -161,15 +157,15 @@ When no spec axis ran, synthesis is just cross-axis dedup.
 
 ## Phase 4: Report
 
-<!-- @> Report splits findings into "Clear fixes" (unambiguous solution — ALL get applied regardless of severity; priority orders work, never gates it) vs "Decisions needed" (product/design/API choice gates the fix — options + one recommendation each). Run every finding through /what before reporting: open with what breaks and for whom, plain language, project's own terms -->
+<!-- @> Report splits findings into "Clear fixes" (unambiguous solution — ALL get applied regardless of severity; priority orders work, never gates it) vs "Decisions needed" (product/design/API choice gates the fix — options + one recommendation each). Explain what breaks and for whom, in plain language using the project's terms -->
 Findings are split into two groups. The split is the load-bearing structure of the report:
 
-- **Clear fixes** — the finding has one right solution and no product/design choice gates it. Every item in this group gets applied — severity ordering exists to sequence the work, never to shrink it. Never present a subset of clear fixes as the bar and leave the rest as optional polish; a confirmed problem with an unambiguous fix is fixed, whether it's a data-corrupting bug or a dead export.
+- **Clear fixes** — the finding has one right solution and no product/design choice gates it. Once application is authorized, apply every selected item. Severity orders the work rather than silently reducing its scope. Never present a subset of clear fixes as the bar and leave the rest as optional polish; a confirmed problem with an unambiguous fix is fixed, whether it's a data-corrupting bug or a dead export.
 - **Decisions needed** — the fix depends on a call only the user can make (product behavior, API shape, wait-for-upstream vs. patch locally, scope tradeoffs). For each: state the options with their tradeoffs in prose and give exactly one recommendation with why. A finding lands here only when the *choice* is genuinely open — "I'd have to pick an implementation detail" does not qualify; pick it and put the finding in clear fixes.
 
-Before writing, run every finding through `/what`: open with what breaks and for whom, restore the context a cold reader lacks, and use the project's own terms — a finding that needs the review transcript to parse hasn't been written yet.
+Before reporting, check each finding for clarity: open with what breaks and for whom, restore the context a cold reader lacks, and use the project's own terms — a finding that needs the review transcript to parse hasn't been written yet.
 
-Output format — copy this shape exactly.
+Use this structure when both groups contain findings. Omit empty sections.
 
 ```
 Scope: <one line: "this branch vs origin/dev", "PR #1234", "workspace diff (Conductor)", "staged changes">
@@ -250,12 +246,12 @@ End with a **Next** line — one of: pick items to apply, refresh PR description
 Do not flag any of these. They erode the signal-to-noise ratio.
 
 - **Pre-existing issues** — only flag what the diff introduced or worsened.
-- **Linter-catchable issues** — assume the linter runs; don't duplicate it. (Do not run the linter yourself to verify.)
+- **Linter-catchable issues** — assume the linter runs; don't duplicate it. (Run relevant existing checks when they can resolve a finding.)
 - **Pedantic nitpicks** — a naming preference with no ambiguity cost, formatting a linter would catch, or a style choice with no behavioral or readability difference from the alternative.
 - **General code-quality concerns** (test coverage, generic security worries) unless explicitly required by AGENTS.md / CLAUDE.md.
 - **Issues silenced explicitly in code** (lint-ignore comments, `// known issue`) — the author already decided.
 - **Intentional scaffolding** — design-system primitives, re-export barrels, framework-required exports.
-- **Repetition that serves an argument** — callbacks, deliberate restatement, layered comments. Only flag *fully duplicated / redundant* sections.
+- **Repetition that serves an argument** — callbacks and deliberate restatement. Only flag *fully duplicated / redundant* sections.
 - **Specific semantic intent** — `<dialog>` for top-layer behavior, `<a download>` for download semantics, `useId` for SSR-stable IDs. Read the intent before flattening.
 - **Test files when the diff is non-test** unless the test file itself has a bug.
 - **Style suggestions** not explicitly required by AGENTS.md / CLAUDE.md.
@@ -288,7 +284,7 @@ When inside a Conductor workspace (paths under `~/conductor/workspaces/...`, `CO
 - The target branch from the system instruction is the diff base — not the checked-out branch name.
 - Other workspaces may push to the same base; `git fetch` before any cross-workspace comparison.
 - If the user attached `.context/attachments/.../Review request.md`, read it for any workspace-specific overrides (it usually reiterates: read-only, chat output, no GitHub comments).
-- `mcp__conductor__DiffComment` is **hard-gated**. Never post inline comments without an explicit "post these as comments" from the user in this turn.
+- `mcp__conductor__DiffComment` is **hard-gated**. Never post inline comments without an explicit "post these as comments" from the user in the session.
 
 ## Tools the user reaches for
 

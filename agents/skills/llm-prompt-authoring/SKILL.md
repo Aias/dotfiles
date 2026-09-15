@@ -1,36 +1,26 @@
 ---
 name: llm-prompt-authoring
 description: >
-  Use when writing or editing a prompt that another model consumes—system prompts, tool/function
-  descriptions, extraction or classification instructions, image-generation prompts, LLM-judge rubrics,
-  or any multi-stage AI pipeline. Triggers on "the prompt", "tune the prompt", "the extractor/judge/curator
-  anchors on", "prompt is too long", "cache_control", "prompt caching", "which model should this call".
-  For the prose itself, pair with `/write`; for model ids, pricing, and caching mechanics, read the provider's current model docs.
+  Create or revise instructions consumed by a model, including system prompts, skill guidance,
+  tool descriptions, and evaluation rubrics. Use for prompt behavior and quality, not model selection alone.
 global_category: AI
 ---
 
-# LLM Prompt Authoring
+# LLM prompt authoring
 
-Craft for prompts that a downstream model reads, distinct from prose a human reads (`/write`). The reader is a sampler over tokens, so framing, ordering, and cost behave differently.
+State the desired outcome, relevant context, and decision boundaries. Preserve explicit constraints and permissions. Prefer affirmative wording when it communicates the rule fully. Keep an explicit exclusion when it defines a necessary boundary.
 
-## Framing
+<!-- @> Scope instructions to the conditions where they apply; reserve absolutes for invariants and verify prompt changes on representative inputs -->
+Audit instructions for cases where literal compliance would misfire. State the applicable condition. Generic advice about being thorough, thinking carefully, or following a fixed itinerary rarely adds information beyond the task.
 
-<!-- @> Prompt the model toward the target, never away from a distractor: "not X" anchors it on X. Affirmative instructions; describe the wanted output, not the banned one -->
-**Prefer affirmative instructions.** State what the output should be, not what it should avoid. A negative instruction injects the excluded concept into the context, and the model anchors on it: image and language models alike sample toward salient tokens and weight `not` weakly. "Render an empty room" beats "render a room with no people"; "extract only verifiable claims" beats "don't extract opinions." This is the bag-of-words skim from `/write`, sharpened. Here the reader literally conditions on every token you write, so a banned concept you name becomes a concept you summoned.
+Keep descriptions short and specific to the task the skill actually serves. Put essential constraints in the entry point and substantial conditional workflows in references. Link another skill only when the task needs its guidance. Remove duplicated instructions across prompts, skills, and standing rules.
 
-**When you must exclude, name the positive alternative.** If a constraint is unavoidable, pair it with the wanted target so the model has something to move toward: "use a neutral gray background" rather than "avoid colored backgrounds." First try collapsing the pair into the positive half alone — if the wanted description already implies the exclusion, keep only it; retain an explicit negative only when no positive phrasing covers the constraint.
+Preserve useful tool protocols, domain knowledge, output contracts, and user preferences. Give the model room to choose a method where several methods can satisfy the task. Use examples to clarify ambiguous boundaries.
 
-<!-- @> Audit absolutes for edge cases: a standing rule that's 90% true is wrong 10% of the time — state the condition instead of "always/never"; reserve bare absolutes for genuine invariants -->
-**Audit absolutes for edge cases.** A standing instruction ships with every request, so a rule that's 90% true is wrong 10% of the time. Before committing "always X" or "never Y" to a prompt, ask how a well-intentioned reader following it literally would misfire; if real exceptions exist, state the condition instead of the absolute — "update the changelog when behavior changes," not "always update the changelog." Reserve bare absolutes for genuine invariants.
+Evaluate meaningful prompt changes on representative requests, including requests that should not trigger the workflow. Compare the output and behavior, not just instruction length. Usage logs can reveal misrouting, but invocation counts alone do not measure benefit. Keep conclusions scoped to the models and tasks observed.
 
-**Keep examples on-target.** Few-shot examples and counter-examples both teach by demonstration; a vivid counter-example can be imitated as readily as a positive one. Lead with examples of the output you want.
+## Provider-specific behavior
 
-## Cost and Caching
+Read the provider's current documentation when changing model selection, caching, or API behavior. Keep those choices unchanged during a wording edit unless the requested outcome requires them.
 
-**Cache only what you reuse.** Prompt caching (`cache_control`) pays a write premium to amortize a stable prefix across calls. Mark a span cacheable only when later requests reuse that exact prefix: a fixed system prompt, a shared rubric, a tool schema. Turn it off for per-call payloads that never recur, such as a one-shot image or document handed to a single extraction or judging stage, request-specific user content, or anything downstream of the cache breakpoint. Caching unrepeated content adds the write surcharge with no hit to recover it. See the provider's current model docs for breakpoint placement and pricing.
-
-**Flag a stale model id when touching a pipeline.** When editing an AI pipeline, check its model ids against the provider's current model docs and call out any that are behind the current stable release. Migrate only on request: a model change alters behavior and needs its own task justification.
-
-## Length
-
-**Trim while editing.** Long prompts dilute attention and cost tokens every call. On any pass, cut redundancy: instructions repeated across the system prompt and the user turn, restated constraints, hedges, throat-clearing. State each instruction once, in the place the model reads it. Apply `/write` density rules: every sentence in a prompt earns its place the same way every sentence in prose does.
+Prompt-caching controls and pricing depend on the provider. Reuse stable prefixes and check the provider's actual hit, write, and retention rules before adding cache configuration. A write premium is not a universal property of prompt caching.
