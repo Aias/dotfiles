@@ -31,12 +31,14 @@ dotfiles/
 ├── agents/skills/           # [P] Personal skills (hand-written, tracked in git)
 ├── agents/skills.local/     # [L] Local skills (machine-specific, gitignored)
 ├── .agents/skills/          # [E] External skills (from GitHub)
-└── .claude/skills/          # Symlinks created by npx skills (delete these)
+└── .claude/skills/          # Symlinks created by bunx skills (delete these)
 
 ~/.claude/skills/            # Deployed skills (via make link)
 ~/.codex/skills/             # Deployed skills (via make link)
 ~/.cursor/skills/            # Deployed skills (via make link)
 ```
+
+Read [the inclusion format](../README.md#harness-inclusion) when changing target metadata. Preserve local `metadata.targets` values across upstream updates.
 
 ## Install or Update a Skill
 
@@ -46,7 +48,7 @@ Install and update use the same command:
 cd ~/Code/dotfiles
 
 # 1. Install skill (goes to .agents/skills/)
-npx skills add OWNER/REPO --skill SKILL-NAME -a claude-code -y
+bunx skills add OWNER/REPO --skill SKILL-NAME -a claude-code -y
 
 # 2. Remove the symlink it creates (we use make link instead). Note this is relative to the dotfiles repo, NOT `~/.claude/skills/`
 rm .claude/skills/SKILL-NAME
@@ -59,7 +61,7 @@ make link
 
 ```bash
 # Install a skill from an external source
-npx skills add <org>/<repo> --skill <skill-name> -a claude-code -y
+bunx skills add <org>/<repo> --skill <skill-name> -a claude-code -y
 rm .claude/skills/<skill-name>
 
 make link
@@ -74,15 +76,14 @@ If an external skill has been adopted into `agents/skills/` (vendored as a perso
 cd ~/Code/dotfiles
 rm -rf .agents/skills/SKILL-NAME    # External skill
 rm -rf agents/skills/SKILL-NAME     # Personal skill
-git add -A && git commit -m "Remove SKILL-NAME skill"
 # Then clean up orphaned deployments (see below)
 ```
 
 ## Cleanup Orphaned Skills
 
-`make link` only adds/updates—it doesn't delete from target directories.
+`make link` removes excluded target copies when a current source skill explicitly restricts its targets. It does not prune orphaned deployments of removed or renamed source skills.
 
-Three source directories, not two: `agents/skills/`, `.agents/skills/`, **and** `agents/skills.local/` (gitignored). All three deploy to `~/.claude/skills/`, `~/.codex/skills/`, and `~/.cursor/skills/`.
+Three source directories, not two: `agents/skills/`, `.agents/skills/`, **and** `agents/skills.local/` (gitignored). All three compile for their selected targets under `~/.claude/skills/`, `~/.codex/skills/`, and `~/.cursor/skills/`.
 
 Run this exact command to list orphans (deployed directories with no source):
 

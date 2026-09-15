@@ -8,6 +8,7 @@ web_search = "live"
 service_tier = "priority"
 
 notify = ["/Users/nicktrombley/.codex/computer-use/Codex Computer Use.app/Contents/SharedSupport/SkyComputerUseClient.app/Contents/MacOS/SkyComputerUseClient", "turn-ended"]
+sandbox_mode = "danger-full-access"
 
 [features]
 context_management.experimental_mode = true
@@ -215,6 +216,7 @@ ambient-suggestions-enabled = true
 followUpQueueMode = "steer"
 composerEnterBehavior = "cmdAlways"
 show-context-window-usage = false
+enabled-reasoning-efforts = ["low", "medium", "high", "xhigh", "ultra", "persistent", "max"]
 
 [[hooks.PreToolUse]]
 matcher = "^Bash$"

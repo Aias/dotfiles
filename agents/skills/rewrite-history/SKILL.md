@@ -23,8 +23,8 @@ This is a destructive rewrite of the current branch. The user will force-push th
 
 1. **Determine the base branch**
    - If `$ARGUMENTS` is provided, use it as the base branch.
-   - Otherwise, detect it: check for an open PR with `gh pr view --json baseRefName` first. If no PR exists, look at the remote tracking branch or fall back to whichever of `dev` or `main` exists on the remote.
-   - Confirm the base branch with the user before proceeding.
+   - Otherwise, use the Conductor target, existing PR base, or documented repository convention. Ask when these leave the base ambiguous.
+   - Fetch the verified base before analyzing the commit range.
 
 2. **Validate preconditions**
    - Ensure no uncommitted changes (`git status --porcelain` must be empty)
@@ -47,13 +47,13 @@ This is a destructive rewrite of the current branch. The user will force-push th
    **Stop here. Present the proposed commit list — ordered, each with a one-line summary of intent — and wait for explicit confirmation before moving on.** Do not create `_rewrite-temp` or run any tree-mutating command until the user has approved the storyline. This is a destructive rewrite; the gate matters more than the time it costs.
 
 5. **Rewrite the history**
-   - Create a temporary branch from the branch's original merge-base, **not** from the current tip of `<base>`: `git checkout -b _rewrite-temp $(git merge-base origin/<base> <branch>)`. The tree-match check in step 6 fails if the base has advanced since the branch was created, because files outside the branch's own diff will differ. Rebasing onto the current base is a separate step you will typically perform after the history is clean. Offer to do so after the history rewrite is complete.
+   - Create a temporary branch from the branch's original merge-base, **not** from the current tip of `<base>`: `git checkout -b _rewrite-temp $(git merge-base origin/<base> <branch>)`. The tree-match check in step 6 fails if the base has advanced since the branch was created, because files outside the branch's own diff will differ. Rebasing onto the current base is a separate step you will typically perform after the history is clean. Perform it only when separately requested.
    - Recreate changes commit by commit following the planned storyline
    - Each commit must:
      - Introduce a single coherent idea
      - Leave the codebase in a functional state — each commit should stand on its own as a reasonable checkpoint
      - Have a clear commit message (short summary line + description body when warranted)
-   - Use `git commit --no-verify` for intermediate commits. Pre-commit hooks may check things like tests or type coverage that depend on the full implementation being present. `--no-verify` skips the hooks, not step 4's bar: every intermediate commit still compiles and works on its own.
+   - Run required checks and hooks for every commit. Adjust the storyline if an intermediate commit cannot satisfy them.
 
 6. **Verify byte-for-byte equivalence**
    - After the final commit, compare the tree SHA against the one recorded in step 2:
@@ -61,7 +61,7 @@ This is a destructive rewrite of the current branch. The user will force-push th
      [ "$(git rev-parse HEAD^{tree})" = "<saved-tree-sha>" ] && echo "MATCH" || echo "MISMATCH"
      ```
    - If they differ, diff the two trees to find the discrepancy and fix it before proceeding.
-   - Run the final commit **without** `--no-verify` to ensure all checks pass on the complete state.
+   - Confirm all required checks pass on the complete state.
 
 7. **Move the branch**
    - Point the original branch at the rewritten history:
@@ -82,6 +82,6 @@ This is a destructive rewrite of the current branch. The user will force-push th
 ### Rules
 
 - Commit authorship follows GLOBAL.md: single authorial point of view, no AI attribution or `Co-Authored-By` lines
-- The final tree SHA must exactly match the original — this is the only correctness check that matters
+- The final tree SHA must exactly match the original.
 - Do not open a pull request — that is a separate workflow
 - Do not force-push — only the user does that

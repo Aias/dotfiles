@@ -8,7 +8,7 @@ Make changes. Two entry paths:
 ## Standing rules
 
 - **Don't expand scope.** When modifying a function, you may clean obvious decay within it. Do not expand to sibling files or unrelated modules without asking. *"Don't refactor what I didn't ask about"* is a repeated correction.
-- **Phased over big-bang.** When the work spans multiple concerns (dead code + consolidation + token cleanup), propose a phased plan. Execute one phase, pause for review, then continue. *"Let's do this in stages"* and *"fix duplicate exports first since that's an easy win"* are the user's defaults.
+- **Coherent steps.** Split substantial cleanup by concern and continue through the authorized work. Pause at a user-requested checkpoint, unresolved design choice, or reserved action.
 - **Don't auto-commit.** The user reviews edits before commit. Default to leaving changes staged-but-uncommitted. *"Make all changes but don't commit, I'll review first"* is the standing pattern.
 - **Cleanup commits live on top, not folded.** *"Fix and commit as a single cleanup commit on top, we don't need to do this as part of the rebase."* Don't `git commit --amend` or `git rebase -i` to fold cleanup into prior commits unless the user asks.
 - **Don't auto-resolve conflicts or auto-push.** *"Don't auto-resolve without checking with me first, for any conflicts propose a resolution and allow me to confirm or deny."*

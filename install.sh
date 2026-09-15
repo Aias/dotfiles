@@ -96,6 +96,8 @@ if [[ "${SKIP_DEPENDENCY_INSTALL:-0}" != "1" ]]; then
     install_dependencies
 fi
 
+bun "$DOTFILES_DIR/agents/compile-global.ts"
+
 # Create backup directory
 BACKUP_DIR="$HOME/.dotfiles-backup/$(date +%Y%m%d-%H%M%S)"
 BACKUP_CREATED=false
@@ -191,7 +193,7 @@ install_mise_config
 # ─────────────────────────────────────────────────────────────
 
 install_cursor_global_rules() {
-    local source="$DOTFILES_DIR/agents/GLOBAL.md"
+    local source="$DOTFILES_DIR/agents/.build/cursor/GLOBAL.md"
     local target="$HOME/.cursor/rules/global.mdc"
     mkdir -p "$(dirname "$target")"
     {
@@ -243,7 +245,8 @@ install_skills() {
     local personal_skills="$DOTFILES_DIR/agents/skills"
     local external_skills="$DOTFILES_DIR/.agents/skills"
     local local_skills="$DOTFILES_DIR/agents/skills.local"
-    local targets=(
+    local target_names=(claude codex cursor)
+    local target_dirs=(
         "$HOME/.claude/skills"
         "$HOME/.codex/skills"
         "$HOME/.cursor/skills"
@@ -262,15 +265,15 @@ install_skills() {
     done
 
     # Prepare target directories
-    for target_dir in "${targets[@]}"; do
+    for target_dir in "${target_dirs[@]}"; do
         if [[ -L "$target_dir" ]]; then
             rm "$target_dir"
         fi
         mkdir -p "$target_dir"
     done
 
-    local build_dir="$DOTFILES_DIR/agents/.build/skills"
     local check="${GREEN}✓${RESET}"
+    local omitted="${DIM}-${RESET}"
     local max_w=5
     for skill_entry in "${skills[@]}"; do
         local name="${skill_entry#*:}"
@@ -282,33 +285,32 @@ install_skills() {
     for skill_entry in "${skills[@]}"; do
         local skill_type="${skill_entry%%:*}"
         local skill_name="${skill_entry#*:}"
-        local skill_source=""
-
-        if [[ "$skill_type" == "personal" ]]; then
-            skill_source="$personal_skills/$skill_name/"
-        elif [[ "$skill_type" == "external" ]]; then
-            skill_source="$external_skills/$skill_name/"
-        else
-            skill_source="$local_skills/$skill_name/"
-        fi
-
-        for target_dir in "${targets[@]}"; do
+        local statuses=()
+        for index in "${!target_names[@]}"; do
+            local target_name="${target_names[$index]}"
+            local target_dir="${target_dirs[$index]}"
             local skill_target="$target_dir/$skill_name"
-            if [[ -L "$skill_target" ]]; then
-                rm "$skill_target"
-            fi
-            mkdir -p "$skill_target"
-            rsync -a --delete --exclude='skill.feedback.md' "$skill_source" "$skill_target/"
-            # Overwrite with cleaned version (annotations stripped)
-            if [[ -d "$build_dir/$skill_name" ]]; then
-                rsync -a "$build_dir/$skill_name/" "$skill_target/"
+            local built_skill="$DOTFILES_DIR/agents/.build/$target_name/skills/$skill_name"
+            local exclusions="$DOTFILES_DIR/agents/.build/$target_name/excluded-skills.txt"
+            if [[ -d "$built_skill" ]]; then
+                if [[ -L "$skill_target" ]]; then
+                    rm "$skill_target"
+                fi
+                mkdir -p "$skill_target"
+                rsync -a --delete "$built_skill/" "$skill_target/"
+                statuses+=("$check")
+            elif grep -Fxq "$skill_name" "$exclusions"; then
+                rm -rf "$skill_target"
+                statuses+=("$omitted")
+            else
+                statuses+=("$omitted")
             fi
         done
 
         local type_label="${DIM}[P]${RESET}"
         [[ "$skill_type" == "external" ]] && type_label="${DIM}[E]${RESET}"
         [[ "$skill_type" == "local" ]] && type_label="${DIM}[L]${RESET}"
-        printf "  %-${max_w}s  %b   %b       %b      %b\n" "$skill_name" "$type_label" "$check" "$check" "$check"
+        printf "  %-${max_w}s  %b   %b       %b      %b\n" "$skill_name" "$type_label" "${statuses[0]}" "${statuses[1]}" "${statuses[2]}"
     done
 }
 

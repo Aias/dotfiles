@@ -1,13 +1,11 @@
 ---
 name: react-best-practices
 description: >
-  Use when writing or reviewing React/Next.js—hooks, server/client boundaries, data fetching, re-renders,
-  bundle splitting, suspense, streaming, or performance tuning. Triggers on .jsx/.tsx, memo, hydration,
-  "slow render", RSC patterns. For `useEffect` specifically, refer to `/avoid-effects`.
+  Use for React or Next.js performance work, data-fetching architecture, rendering behavior, or server/client boundaries. Load the relevant pattern references. A JSX/TSX edit alone does not require this skill.
 global_category: React
 ---
 
-<!-- @> v19+: no forwardRef (ref is a prop). No useEffect for transforms/events/derived state — calculate in render or handlers; read `/avoid-effects` before adding any Effect. rAF over setTimeout for frame work -->
+<!-- @> v19+: no forwardRef (ref is a prop). No useEffect for transforms/events/derived state — calculate in render or handlers; read `/avoid-effects` when the synchronization boundary is unclear. rAF over setTimeout for frame work -->
 
 # React Best Practices
 
@@ -125,4 +123,4 @@ These rules answer a *measured* re-render cost — don't add `memo`/`useMemo`/`u
 
 ## Additional References
 
-- `/avoid-effects` — When `useEffect` is and isn’t appropriate (it usually isn't); full React doc in that skill’s `references/react-dev-full-article.md`. **Read before adding any `useEffect`.**
+- `/avoid-effects` — When `useEffect` is and isn’t appropriate (it usually isn't); full React doc in that skill’s `references/react-dev-full-article.md`. Read when the synchronization choice remains unclear.

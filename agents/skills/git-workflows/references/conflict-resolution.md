@@ -4,9 +4,9 @@ Use when resolving merge or rebase conflicts.
 
 ## Authority and checkpoints
 
-- **No surprise finalization:** Do not complete `git merge` (commit), `git rebase --continue`, or any push without the user's **explicit** go-ahead. Treat each of those as a separate permission.
-- **Review before apply:** After analyzing a conflict (or a coherent batch of conflicts in one file), present the proposed resolution — file(s), what each side was doing, and the merged outcome (or options if ambiguous). **Stop.** Only apply after the user approves (or selects among options).
-- **Interactive prompts:** Use `AskUserQuestion` (or an equivalent) at checkpoints: e.g. approve this resolution, choose strategy A/B, proceed to staging, proceed to continue rebase, proceed to push. If that tool is unavailable, ask in plain messages and wait for a clear yes/no or choice.
+Require explicit authorization for the merge or rebase before starting it. Existing approval covers routine conflict resolution and continuation within the agreed approach. Present unresolved semantic choices before applying them. Keep commit and push permissions separate, and never force-push.
+
+Use the active harness's supported approval mechanism for a reserved action. Use clarification tools only for decisions their schema permits.
 
 ## Workflow
 
@@ -29,15 +29,15 @@ For each conflicted region (or file, if the whole file is in dispute):
 
 - **Name branches explicitly:** When describing each side, use the actual branch names (and short commit subjects if helpful) rather than pronouns like "ours / theirs / yours / HEAD side". Especially during rebase, where ours/theirs are reversed vs. merge, branch names remove ambiguity. If you do use a pronoun, pair it with the branch name (e.g. "HEAD (origin/dev)").
 - Present path, a short description of each side, and the **proposed** resolved content (or a clear preview/summary).
-- **Checkpoint:** user approval required before editing the file.
+- Ask before applying a resolution that changes the agreed behavior or leaves a semantic choice unresolved.
 - After applying an approved resolution, confirm that conflict markers are gone and the file is internally consistent before moving to the next conflict.
 
 How you edit (patch tool, structured replace, shell, etc.) is up to you; the requirement is correct merged content and no leftover markers.
 
 ### 4. Staging and completion
 
-- When all conflicts in scope are resolved and verified, **checkpoint:** ask whether to stage the resolved paths.
-- After staging, show clean status for those paths and **checkpoint:** remind the user that merge commit, `git rebase --continue`, and push still require explicit permission per `/git-workflows`.
+- When all conflicts in scope are resolved and verified, stage the resolved paths within the approved operation.
+- After staging, verify the operation state and continue within its authorization. Commit and push require their own authorization per `/git-workflows`.
 - **Do not** run `git commit`, `git rebase --continue`, or `git push` unless the user has clearly authorized that step.
 
 <!-- @> Generated artifacts and lockfiles: never hand-merge, conflict or not — a generated file stays a build output regardless of where or when it's edited. Reset the file to one side wholesale, rerun the generator, then diff against the base to confirm only the replayed commit's changes appear -->
@@ -51,12 +51,12 @@ Per-hunk resolution is tempting because each hunk looks individually decidable, 
 
 Verify by diffing the regenerated file against the base. The delta should contain only what the replayed commit's source changes imply — anything else is schema or dependency drift that does not belong in this commit.
 
-<!-- @> Rebase: run /orient first to map the change-set vs the base. A rebased branch needs a force-push, which the agent never runs (see /git-workflows) — hand it back for the user to push, even after they approve the resolution. Regenerate codegen after the rebase lands -->
+<!-- @> Rebase: recover missing branch context with /orient before planning. A rebased branch needs a force-push, which the agent never runs (see /git-workflows) — hand it back for the user to push, even after they approve the resolution. Regenerate codegen after the rebase lands -->
 ## Rebasing (workflow)
 
-**Before starting:** Run `/orient` first to map the change-set and how far the base has moved — what the branch is doing and its relationship to the base. Fetch the remote base you will rebase onto (`origin/<target>` or equivalent) so comparisons aren't stale.
+**Before starting:** Establish the branch objective and its relationship to the base. Use `/orient` when that context is missing or stale. Fetch the remote base you will rebase onto (`origin/<target>` or equivalent) so comparisons aren't stale.
 
-**During:** Resolve conflicts using the same propose → approve → apply loop. After conflicts for the current stopped commit are fixed and staged, **checkpoint** before `git rebase --continue` — the user must explicitly agree to continue the rebase.
+**During:** Resolve conflicts within the approved approach and continue the rebase. Pause for unresolved semantic choices or a change in scope.
 
 **Abort / skip:** If the user wants to abandon the rebase, use `git rebase --abort`. `git rebase --skip` only when a commit is truly obsolete — confirm with the user.
 

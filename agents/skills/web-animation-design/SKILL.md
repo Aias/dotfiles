@@ -1,30 +1,18 @@
 ---
 name: web-animation-design
 description: >
-  Use whenever motion questions arise—easing, duration, springs, entrance/exit, hover, stagger,
-  scroll-linked animation, interruptibility, reduced motion, or "janky"/"make it smooth". Triggers on
-  Framer Motion (motion/react), GSAP, CSS keyframes/transitions, cubic-bezier, @starting-style,
-  clip-path, transform-origin, modal/drawer/tooltip/toast motion, drag/gesture feel, GPU-safe
-  properties. Design and implement purposeful web animation.
+  Design, implement, or diagnose web animation, including timing, easing, interruption, and reduced motion. Use for motion behavior, not static styling alone.
 ---
 
 # Web Animation Design
 
 A comprehensive guide for creating animations that feel right, based on Emil Kowalski's "Animations on the Web" course.
 
-## Review Format
-
-When reviewing animations, present findings as a single markdown table, one row per issue:
-
-| Before                            | After                                            | Why                                          |
-| --------------------------------- | ------------------------------------------------ | -------------------------------------------- |
-| `transform: scale(0)`             | `transform: scale(0.95); opacity: 0`             | Nothing appears from nothing                 |
-| `animation: fadeIn 400ms ease-in` | `animation: fadeIn 200ms ease-out`               | `ease-in` delays the moment the user watches |
-| No reduced motion support         | `@media (prefers-reduced-motion: reduce) {...}`  | Movement removed, meaning kept               |
+Use the existing design system's motion treatments. Values below are reference ranges, not authorization to introduce new tokens or treatments. Present review findings in the form that best explains the behavior and proposed correction.
 
 ## Decision Framework
 
-Answer these in order, before writing animation code.
+Use these criteria where they affect the requested interaction.
 
 
 ### 1. Should this animate at all?
@@ -206,7 +194,7 @@ Radix/Base UI animate exit via `[data-state]` (they suspend unmount so the closi
 ### The Golden Rule
 
 
-Only animate `transform` and `opacity`. These touch just the Composite step and run on the GPU. Everything else costs more:
+Prefer `transform` and `opacity` where they express the intended motion. They can avoid layout and paint work. Profile other properties when the interaction needs them:
 
 | Tier                       | Properties                                              | Cost                          |
 | -------------------------- | ------------------------------------------------------- | ----------------------------- |
@@ -339,7 +327,7 @@ Quick reference for common scenarios. See [PRACTICAL-TIPS.md](references/PRACTIC
 Great animations take iteration, not one sitting.
 
 - **Record and scrub** the reference (and your own work) frame by frame—this reveals details invisible at normal speed. Tune magic transform values live in the console.
-- **Don't code and ship in one sitting**—review with fresh eyes the next day.
+- Review the motion in context before handoff, including interruption and reduced-motion behavior.
 - **Test gestures on real devices**—hit the dev server by IP; profile on a mid-range phone, not a throttled desktop (throttling models a slow CPU, not a weak GPU).
 - Steal like an artist: recreate great animations by studying proven products rather than inventing patterns.
 

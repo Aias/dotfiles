@@ -1,13 +1,7 @@
 ---
 name: change-review
 description: >
-  Use when reviewing or cleaning up a change-set — a branch, PR, workspace diff, staged changes, or recent commits.
-  Triggers on "review the changes", "review this PR", "review my branch", "anything I'm missing", "is this dead?",
-  "clean up", "deslop", "tighten", "simplify", "dedup", "reduce LOC", "refactor pass", "knip", "find dead code".
-  Also covers TypeScript types/imports/barrels and HTML/CSS/markup conventions (semantic elements, flex/grid,
-  declaration order, a11y, tokens, CLS). Two modes: REVIEW (read-only, numbered findings) and APPLY (make changes).
-  Owns every review and cleanup of the user's own change-set in this setup, including when a harness ships its
-  own review command.
+  Review a branch, PR, or workspace change-set, or perform a requested code cleanup. Supports read-only findings and authorized edits. Ordinary implementation and prose revision do not need this workflow.
 global_category: Code Quality
 ---
 
@@ -51,13 +45,11 @@ Report change size as `+added / −removed` from `git diff --shortstat` or the P
 Brief — full workflow in [references/review.md](references/review.md).
 
 - **Read-only.** No edits, no commits, no GitHub/Linear comments unless explicitly authorized. Output is chat text only. When posting is authorized, attribute each agent-authored comment per `/pr-guidelines` (open with an italic `*<model>:*` prefix).
-- **Fan out across parallel subagents** for any non-trivial diff — a single-pass skim cannot cover a real change-set. Standard axes: bug scan, AGENTS.md/CLAUDE.md compliance, dead code & duplication, LOC & complexity. Add a **spec-conformance** axis whenever the change traces to a ticket/PRD/RFC — it runs in parallel and reframes the other findings, but the spec is an input, not ground truth (the doc/ticket is often the stale side, not the code), so divergences are reconciliation items for the author, not automatic code defects. See [references/review.md](references/review.md#synthesis-let-spec-conformance-set-disposition).
-- **Model tier per GLOBAL.md:** review and validator subagents run on the strongest tier at high or extra-high effort; drop to a faster model only for pure retrieval (gathering files, grepping call sites) that an analysis agent then reasons over.
-- **Validate each finding** with a second-pass subagent before reporting — a fresh context adversarially refuting *another* agent's finding, never an agent re-checking its own work. Validation is where filtering happens, which is what lets the finders stay open.
+- Delegate substantial independent review work when it can run in parallel with useful local review. Choose the relevant axes for the change: correctness, instruction compliance, dead code, complexity, or spec conformance. Small focused changes can be reviewed directly.
+- Use the strongest available tier for review judgment. Validate consequential findings adversarially, with a fresh reviewer when independent scrutiny adds value.
 - **Cite file path + line range** on every finding. Never restate the diff.
-- **Numbered list** with stable IDs (`#1`, `#2`, ...) so the user can reply "fix 2, 3, 5". Findings are grouped into **Clear fixes** (one right solution, all get applied regardless of severity) vs **Decisions needed** (a product/design choice gates the fix — options + one recommendation each); run each finding through `/what` before it reaches the report. See [references/review.md](references/review.md#phase-4-report).
+- **Numbered list** with stable IDs (`#1`, `#2`, ...) so the user can reply "fix 2, 3, 5". Findings are grouped into **Clear fixes** (one right solution, all get applied regardless of severity) vs **Decisions needed** (a product/design choice gates the fix — options + one recommendation each); state what breaks, for whom, and why the evidence supports it. See [references/review.md](references/review.md#phase-4-report).
 - **High signal in the report, not in the finders.** Finders report everything with confidence and severity; validation filters. The [explicit false-positives list](references/review.md#explicit-false-positives) (pre-existing issues, linter-catchable, pedantic nits) is a category exclusion that binds every stage.
-- **End with a handoff suggestion:** APPLY the clear fixes, answer the decision items, run `/pr-guidelines` to refresh the description, or defer to a follow-up PR.
 
 ## APPLY Mode
 
@@ -74,7 +66,7 @@ Two entry paths:
 | **Heavy** (refactor) | "refactor pass", "tighten up", "dead code"       | Structural cleanup, dead path removal, build/test verification. [Workflow →](references/apply.md#heavy-refactor-pass) |
 | **Targeted**         | "fix 2, 3, 5", "do all 4", "in stages"           | Execute picked items from a prior REVIEW. [Workflow →](references/apply.md#targeted-picks) |
 
-Phased over big-bang. The user repeatedly steers toward "in stages, dead code first, then consolidation". Default to proposing a phased plan; execute one phase, pause, then continue.
+Divide substantial cleanup into coherent steps. Continue within the authorized scope. Pause when a design decision or reserved action requires the user, or when the user requested a review checkpoint.
 
 ## Shared Principles
 
@@ -187,7 +179,6 @@ A cast is a symptom: the type is too wide somewhere upstream. Fix the source, no
 
 - Order prop intersections: specific props before generic (`{ specific } & RootProps`).
 - Favor readability over brevity; avoid mirror variables.
-- Comments only for non-obvious logic, never narration.
 - Follow existing conventions: use `rg`, `fd`, git history before adding patterns.
 - Don't declare variables only used once immediately after; inline them.
 
@@ -270,15 +261,6 @@ Explicit `width` and `height` (or constrained aspect) to limit CLS. `loading="la
 - `mask-image` for gradient fades works across arbitrary backgrounds.
 - Fix SVG `viewBox` at the asset, not at every call site.
 
-## Workflow Shape (when in doubt)
+## Completion
 
-Both modes share the same skeleton: **explore → propose → approve → apply.** The difference is what each phase produces.
-
-| Phase    | REVIEW                                                    | APPLY                                                          |
-| -------- | --------------------------------------------------------- | -------------------------------------------------------------- |
-| Explore  | Establish scope, fan out across axes, gather findings.    | Read the picked items (or the change-set).                     |
-| Propose  | Numbered findings, file:line cited, validated.            | Numbered plan of edits, largest-to-smallest, with scope tag.   |
-| Approve  | User picks items by number or replies with refinements.   | User approves all, picks by number, or denies.                 |
-| Apply    | Hand off to APPLY mode (or stop, or refresh PR prose).    | Make approved changes. Run build/tests. Don't auto-commit.     |
-
-End every session with a short summary: what changed, what's deferred, and the next handoff (e.g. *"run `/pr-guidelines` to refresh the description"* or *"the dead-code thread continues into the unused GraphQL fields"*).
+A review request ends with supported findings and unresolved decisions. An authorized cleanup ends with the requested edits and relevant checks complete. Preserve existing authorization and ask only where scope or a reserved action remains unsettled.

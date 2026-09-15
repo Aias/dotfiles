@@ -1,9 +1,7 @@
 ---
 name: rcr
 description: >
-  Use when the user mentions rcr, Red Cliff Record, personal knowledge base, records, links,
-  graph-style queries, or sync/integration runs for that KB—even if they omit the tool name.
-  Runs and interprets the `rcr` CLI.
+  Query and manage the Red Cliff Record personal knowledge base with the rcr CLI. Use when the task identifies that knowledge base or one of its integrations.
 ---
 
 # Red Cliff Record CLI
