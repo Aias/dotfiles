@@ -29,7 +29,7 @@ comm -23 <({ ls ~/.claude/skills/ ~/.codex/skills/ ~/.cursor/skills/ 2>/dev/null
 ```
 dotfiles/
 ├── agents/skills/           # [P] Personal skills (hand-written, tracked in git)
-├── agents/skills.local/     # [L] Local skills (machine-specific, gitignored)
+├── agents/skills.local/     # [L] Private skills (optional submodule)
 ├── .agents/skills/          # [E] External skills (from GitHub)
 └── .claude/skills/          # Symlinks created by bunx skills (delete these)
 
@@ -83,7 +83,7 @@ rm -rf agents/skills/SKILL-NAME     # Personal skill
 
 `make link` removes excluded target copies when a current source skill explicitly restricts its targets. It does not prune orphaned deployments of removed or renamed source skills.
 
-Three source directories, not two: `agents/skills/`, `.agents/skills/`, **and** `agents/skills.local/` (gitignored). All three compile for their selected targets under `~/.claude/skills/`, `~/.codex/skills/`, and `~/.cursor/skills/`.
+Three source directories, not two: `agents/skills/`, `.agents/skills/`, **and** `agents/skills.local/` (optional private submodule). All three compile for their selected targets under `~/.claude/skills/`, `~/.codex/skills/`, and `~/.cursor/skills/`.
 
 Run this exact command to list orphans (deployed directories with no source):
 

@@ -85,13 +85,20 @@ Never list more than 3–4 bullets in a row. Break longer lists into conceptual 
 
 A change spanning two repos (e.g. a frontend and the backend it calls) gets one PR per repo, each on a branch named for the shared ticket. Cross-link them in both descriptions with full URLs, stating what each side provides and what it depends on. Name non-obvious causes a reviewer can't infer from the diff — a transitive dependency bump forcing a direct-dependency version, an API contract the other side must ship first.
 
-When ship order matters, block the downstream PR loudly so it can't merge early: set it to CHANGES_REQUESTED and add an all-caps note linking the blocker — `DO NOT MERGE UNTIL <linked PR> IS DEPLOYED TO PRODUCTION`. Remove the block once the dependency lands. Cross-repo edits belong in dedicated worktrees, not a shared local branch — see `/git-workflows`.
+When ship order matters, block the downstream PR loudly so it can't merge early: set it to CHANGES_REQUESTED and add an all-caps note linking the blocker — `DO NOT MERGE UNTIL <linked PR> IS DEPLOYED TO PRODUCTION`. Remove the block once the dependency lands. Cross-repo edits belong in dedicated worktrees.
 
 ### Scale to PR Size
 
 - **Small:** One or two sentences + screenshot/video if visual. Nothing more.
 - **Medium:** Intro paragraph + bullet points + inline media + related links.
 - **Large:** Same flat structure — no headers. Group related bullets under short prose paragraphs to create scannable sections.
+
+<!-- harness: codex -->
+<!-- @> Complex PRs merit a few substantive sentences or short bullets covering the problem, behavior, and key implications; simple PRs can stay minimal -->
+### Codex description detail
+
+For complex PRs, lean toward a little more detail. Three or four substantive sentences or short bullets often give enough room to explain the problem, resulting behavior, and key implications or tradeoffs. Include edge cases or dependencies when they affect review. Scale the length to the change, with each sentence adding useful detail. Simple PRs can stay at one or two sentences.
+<!-- /harness -->
 
 ### Considered Alternatives
 

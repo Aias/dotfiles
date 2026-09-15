@@ -4,7 +4,9 @@ Skill sources live in three directories:
 
 - `agents/skills/`: personal skills, tracked in this repository.
 - `.agents/skills/`: external skills tracked by `skills-lock.json`.
-- `agents/skills.local/`: private or machine-specific skills, gitignored.
+- `agents/skills.local/`: private skills in an optional submodule with its own history.
+
+Use `make setup-private-skills` to initialize the pinned private revision and `make update-private-skills` to fast-forward it to its remote main branch. Commit and push private changes in that repository before recording its updated commit reference in dotfiles. See [private skills](../../README.md#private-skills).
 
 Edit these sources. `make compile` generates deployment files and `make link` installs them. Installed skills and generated files are build outputs.
 
@@ -76,7 +78,7 @@ Use annotations for constraints worth carrying into every relevant session. Keep
 
 ## Feedback review
 
-`skill.feedback.md` is a local staging file for preferences that need review. It is gitignored, excluded from deployment, and not read during ordinary skill use. The compiler adds no feedback-reading preamble.
+`skill.feedback.md` is a local staging file for preferences that need review. It is excluded from deployment and ordinary skill reads. Public skill queues are gitignored; private skill queues can be versioned in the private submodule. The compiler adds no feedback-reading preamble.
 
 Use `/refine-skills` during requested maintenance to compare notes with current guidance and promote supported preferences. Approved instructions belong in the source skill or GLOBAL.md, where compilation delivers them without another file read. Use `/remember-that` when the user asks to save a standing preference directly.
 

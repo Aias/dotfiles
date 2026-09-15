@@ -38,7 +38,7 @@ Never diff the full range between two long-lived branches (`dev...main`) — tha
 
 State which scope you used in the report's first line. The answer to "how many files changed?" differs by tool, and the user will ask.
 
-Report change size as `+added / −removed` from `git diff --shortstat` or the PR's own counts (`gh pr view --json additions,deletions`), never `wc -l` of a raw diff — see `/git-workflows`.
+Report change size as `+added / −removed` from `git diff --shortstat` or the PR's own counts (`gh pr view --json additions,deletions`), never `wc -l` of a raw diff.
 
 ## REVIEW Mode (default)
 
