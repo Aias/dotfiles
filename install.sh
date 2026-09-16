@@ -77,9 +77,7 @@ install_cursor() {
 }
 
 install_bun_globals() {
-    # Global CLIs live in bun's install prefix (node-version independent)
     [[ -x "$HOME/.bun/bin/gemini" ]] || bun install -g @google/gemini-cli
-    [[ -x "$HOME/.bun/bin/agent-browser" ]] || bun install -g agent-browser
 }
 
 install_dependencies() {

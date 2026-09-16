@@ -127,7 +127,7 @@ function up() {
   bun upgrade
 
   _up_step "bun globals"
-  bun install -g @google/gemini-cli@latest agent-browser@latest
+  bun install -g @google/gemini-cli@latest
 
   _up_step "mise upgrade"
   mise upgrade

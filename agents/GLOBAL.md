@@ -100,7 +100,7 @@ For an npm-published CLI that isn't installed, **run it on demand with `bunx`** 
 
 **Use canonical CLI commands** before resorting to manual invocation. Prefer `mytool build` over `node path/to/mytool-wrapper.js build`. Needing a workaround to run a tool that should be on PATH signals misconfiguration worth investigating.
 
-**Browser automation: default to the MCP attached to the live Dia browser** (claude-in-chrome in Claude Code; Chrome DevTools MCP with `--autoConnect` in Codex) — it reuses signed-in sessions (dashboards, Slack, storefronts). Reach for `agent-browser` only when a clean isolated session matters (reproducible QA, viewport screenshots) or the MCP is unavailable.
+**Browser tasks: prefer the agent's available browser and computer-use tools.** First choose tools that integrate with Dia and reuse its signed-in sessions, such as claude-in-chrome when connected to Dia. Otherwise use the harness's built-in browser or computer-use tools, including Codex's browser tools. Discover available tools and connected browsers before choosing a route. Use an isolated session when the task requires one and the available tools support it.
 
 ## Context-Specific Guidelines
 
