@@ -31,7 +31,12 @@ link:
 
 # Pull latest and reinstall
 update:
-	git pull --no-recurse-submodules --rebase --autostash
+	@if git rev-parse --abbrev-ref --symbolic-full-name @{u} >/dev/null 2>&1; then \
+		git pull --no-recurse-submodules --rebase --autostash; \
+	else \
+		echo "No upstream for branch '$$(git branch --show-current)'; rebasing onto origin/main instead."; \
+		git pull --no-recurse-submodules --rebase --autostash origin main; \
+	fi
 	$(MAKE) install
 
 # Update external skills from skills.sh
