@@ -40,7 +40,6 @@ Describe the problem before the solution. Use present tense, a single authorial 
 
 ### Documentation
 
-<!-- @> Match documentation to the public surface and surrounding scope; verify claims against the implementation and keep feature concepts durable -->
 Match the surrounding documentation's scope. Explain public behavior and durable concepts. Document internal details only where the surrounding material calls for them. Verify technical claims against the relevant implementation. Use examples when they clarify a decision or behavior.
 
 Use relative file links in repository documents. Use the destination renderer's supported syntax for line links. Keep absolute machine paths in local artifacts only.

@@ -2,7 +2,6 @@
 name: conductor
 description: >
   Use for Conductor workspace configuration, target branches, lifecycle, and runtime setup. Applies to conductor.build and workspaces under ~/conductor/workspaces.
-global_category: Conductor
 ---
 
 # Conductor
@@ -11,17 +10,11 @@ global_category: Conductor
 
 ## Agent-critical context
 
-<!-- @> Worktree clone at ~/conductor/workspaces/<project>/<city>; CONDUCTOR_ROOT_PATH = repo root; .context/ gitignored for inter-agent files -->
-
 - Each workspace is a full repo checkout, typically `~/conductor/workspaces/<project>/<city>` (the `city` name is the workspace directory label; the **branch** is the primary identifier for what you're building).
 - **`CONDUCTOR_ROOT_PATH`** points at the repository root inside that workspace. Use it in setup scripts (e.g. symlinking `.env` files): `ln -sf "$CONDUCTOR_ROOT_PATH/<path>/.env.local" <path>/.env.local`.
 - **`.context/`** in the workspace is for inter-agent collaboration and is gitignored — don't treat it as durable repo state.
 
-<!-- @> Conductor target branch in system instruction → PR base, rebase, diff — not the checked-out branch name alone -->
-
 - Conductor injects a **target branch** in the workspace system instruction. Use it for **PR base selection**, **rebase targets**, and **diff range** — not merely "whatever branch is currently checked out" without confirming it matches that target.
-
-<!-- @> origin is shared across all workspaces — another workspace may advance the base between your fetches -->
 
 - **`origin` is shared** with every other clone of the repo. **`git fetch`** (especially `origin` and the relevant base) before diffing or rebasing — another workspace may have advanced the base branch.
 
@@ -72,8 +65,6 @@ Per [Workspaces and branches](https://docs.conductor.build/tips/workspaces-and-b
 [Diff viewer](https://docs.conductor.build/core/diff-viewer) shows agent-made changes and aligns with steps toward merge/PR.
 
 ## Cursor / Grok in Conductor
-
-<!-- @> Grok/Cursor CLI in Conductor does not inject AGENTS.md or skill catalogs; do not put a bootstrap in prompts.general (that hits Claude and GPT too) -->
 
 Cursor IDE Agent, Claude Code, and Codex inject `AGENTS.md` and skill catalogs. Conductor's Grok / Cursor CLI path does not, even when those files sit in Cursor's documented discovery locations. Do not compensate with `[prompts.general]` — that prompt is appended to every harness.
 

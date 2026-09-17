@@ -5,7 +5,6 @@ description: >
   base branch, or refreshing description after new pushes. Triggers on "create PR", "PR description",
   "update the PR". Requires `gh`.
 compatibility: Requires GitHub CLI (gh).
-global_category: Git
 ---
 
 # PR Guidelines
@@ -22,12 +21,9 @@ Commit, push, and remote PR changes each require authorization for that action. 
 
 For an authorized new PR, create a draft with an explicit base. Write multiline prose to a file and pass it with `--body-file` so formatting survives shell parsing.
 
-<!-- @> After pushing to an existing PR, compare its title and description with the full diff; update when authorized, otherwise prepare the revision locally -->
 After pushing to an existing PR, compare its title and description with the full diff. Revise the prose around the final scope. Publish the revision when PR editing is authorized, otherwise present the prepared text.
 
 ## Parameters
-
-<!-- @> Verify base branch first: Conductor target → existing PR → repo convention → ask. Wrong base = wrong diff -->
 
 **Base branch:** Determine the correct base before doing anything else — a wrong base makes the entire diff meaningless.
 
@@ -51,23 +47,17 @@ Always `git fetch origin <base>` before diffing. Diff against `origin/<base>`, n
 
 If any of these are unclear, ask before proceeding.
 
-<!-- @> PR titles: plain language, no fix:/feat: prefixes -->
-
 ## PR Title
 
 - Plain language in sentence case — no commit-style prefixes (`feat:`, `fix:`, etc.)
 - Describe what changed, not the ticket number
 - Concise but specific
 
-<!-- @> No headers in PR body. Max 3-4 bullets per group; break longer lists with prose paragraphs. Problem before solution, direct, no filler -->
-
 ## PR Description
 
 Never use `##` headers in the PR body. Start directly with a paragraph explaining the problem, context, or motivation — why this PR exists. Then use bullet points describing what changed, focused on _what_ and _why_.
 
 Never list more than 3–4 bullets in a row. Break longer lists into conceptual groups, each introduced by a sentence or two of prose. Readers should be able to scan at multiple levels of hierarchy — paragraph-level for the gist, bullet-level for details.
-
-<!-- @> Present tense ("Adds", not "Added"). Drop subject pronouns. "we" for team decisions, "I" for first-person only -->
 
 ### Voice
 
@@ -78,8 +68,6 @@ Never list more than 3–4 bullets in a row. Break longer lists into conceptual 
 - Mention edge cases as asides or parentheticals, not dedicated sections.
 - Group small related changes at the end with "Also:" or "A couple other semi-related changes:".
 - Reference related work inline — link to tickets, Slack threads, Figma files, related PRs naturally in the text. For dependent PRs, see [Dependent and Cross-Repo PRs](#dependent-and-cross-repo-prs).
-
-<!-- @> Cross-repo change: one PR per repo on a shared ticket-named branch, cross-linked with full URLs; when ship order matters, block the downstream PR loudly (CHANGES_REQUESTED + DO NOT MERGE note) -->
 
 ### Dependent and Cross-Repo PRs
 
@@ -94,7 +82,6 @@ When ship order matters, block the downstream PR loudly so it can't merge early:
 - **Large:** Same flat structure — no headers. Group related bullets under short prose paragraphs to create scannable sections.
 
 <!-- harness: codex -->
-<!-- @> Complex PRs merit a few substantive sentences or short bullets covering the problem, behavior, and key implications; simple PRs can stay minimal -->
 ### Codex description detail
 
 For complex PRs, lean toward a little more detail. Three or four substantive sentences or short bullets often give enough room to explain the problem, resulting behavior, and key implications or tradeoffs. Include edge cases or dependencies when they affect review. Scale the length to the change, with each sentence adding useful detail. Simple PRs can stay at one or two sentences.
@@ -118,8 +105,6 @@ Many PRs would benefit from screenshots or videos to illustrate changes, but the
 
 Place `Fixes <ticket>` or `Closes <ticket>` on its own line, near the top (after opening context) or at the bottom. For related-but-not-closed tickets, use inline links.
 
-<!-- @> No file listings, counts/magnitudes/diff stats, diff-restating bullets, status info, AI vocabulary, decision narration, checkboxes, or "smoke test" -->
-
 ## What to Avoid
 
 - File-by-file change listings or mechanical inventories (unless the refactoring is the point)
@@ -135,8 +120,6 @@ Place `Fixes <ticket>` or `Closes <ticket>` on its own line, near the top (after
 - The phrase "smoke test"
 - "Generated with Claude Code" or similar AI footers / co-authorship
 
-<!-- @> Attribute agent-authored GitHub comments: open with an italic "<model>:" prefix with no effort level, body inline in the same paragraph — the agent posts under the user's account. Not for PR titles/descriptions -->
-
 ## PR Comments and Interactions
 
 Posting a comment, reply, or review on GitHub is a publish action. Do it when the user asks — including replying to their inline feedback on an agent's first-pass PR — but never unprompted. When asked only to "get" or "check" comments, present them in the conversation; don't reply on GitHub.
@@ -146,7 +129,5 @@ The agent posts through the user's own GitHub account, so attribution belongs in
 *<model>:* <comment body>
 
 Name the model actually running. Omit effort levels. Keep the body plain text in the same paragraph. Apply this attribution to inline review replies, review summaries, and conversation comments, including those posted via `/code-review --comment`. Write PR titles and descriptions in the user's voice without AI attribution.
-
-<!-- @> Write PR comments for a reviewer without the session context: lead with the answer, name referents, and explain the impact -->
 
 Write for a reviewer without the session's context: open with the answer, restate referents the conversation coined, name code in the project's own terms, and cut the padding. A comment that reads like a mid-session chat update has not been re-pitched yet.

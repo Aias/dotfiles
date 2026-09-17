@@ -14,6 +14,6 @@ Follow the evidence across repository and service boundaries when the cause lies
 
 Test the strongest competing explanation before concluding. For a suspected regression, compare the relevant behavior with the baseline before attributing it to the change. Distinguish what source code implies from what the failing environment actually runs.
 
-Temporary scripts and isolated reproductions are useful when they resolve uncertainty. Use existing authorized access. Ask for missing access or an input whose location only the user knows. Read the debug-agent skill when an authorized fix needs additional runtime instrumentation.
+Temporary scripts and isolated reproductions are useful when they resolve uncertainty. Use existing authorized access. Ask for missing access or an input whose location only the user knows.
 
 Lead with the finding and its practical impact. Cite the code, history, or runtime evidence supporting consequential claims. State what remains unknown and the evidence needed to resolve it. Stop when the requested question is answered or the remaining evidence requires user input or unavailable access.

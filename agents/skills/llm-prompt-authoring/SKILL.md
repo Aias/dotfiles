@@ -3,15 +3,13 @@ name: llm-prompt-authoring
 description: >
   Create or revise instructions consumed by a model, including system prompts, skill guidance,
   tool descriptions, and evaluation rubrics. Use for prompt behavior and quality, not model selection alone.
-global_category: AI
 ---
 
 # LLM prompt authoring
 
 State the desired outcome, relevant context, and decision boundaries. Preserve explicit constraints and permissions. Prefer affirmative wording when it communicates the rule fully. Keep an explicit exclusion when it defines a necessary boundary.
 
-<!-- @> Scope instructions to the conditions where they apply; reserve absolutes for invariants and verify prompt changes on representative inputs -->
-Audit instructions for cases where literal compliance would misfire. State the applicable condition. Generic advice about being thorough, thinking carefully, or following a fixed itinerary rarely adds information beyond the task.
+Scope instructions to the conditions where they apply, and reserve absolutes for invariants. Audit instructions for cases where literal compliance would misfire. Generic advice about being thorough, thinking carefully, or following a fixed itinerary rarely adds information beyond the task.
 
 Keep descriptions short and specific to the task the skill actually serves. Put essential constraints in the entry point and substantial conditional workflows in references. Link another skill only when the task needs its guidance. Remove duplicated instructions across prompts, skills, and standing rules.
 

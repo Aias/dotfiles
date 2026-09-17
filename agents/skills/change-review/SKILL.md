@@ -9,8 +9,6 @@ global_category: Code Quality
 
 Review and cleanup at the scope of a change-set — what's on this branch, in this PR, in the workspace diff, or in recently modified files. Type-safety and imports for `.ts`/`.tsx`, and HTML/CSS/markup conventions, all live here.
 
-<!-- @> Two modes: REVIEW (read-only — numbered findings citing file:line, no edits/commits/GitHub comments unless authorized) and APPLY (execute picks from a prior review, or run cleanup intensity). Default to REVIEW unless the verb is execute-shaped -->
-
 ## Modes
 
 Two modes. **Default to REVIEW** unless the user's verb is execute-shaped or they've explicitly picked items from a prior REVIEW.
@@ -31,8 +29,6 @@ A change-review is **change-scoped**, never repo-wide. Pick scope in this order:
 3. **Branch vs base** — `git merge-base origin/<base> HEAD`, then `git diff <merge-base> HEAD` (or three-dot `git diff origin/<base>...HEAD`). Always `git fetch origin <base>` first; local refs go stale silently.
 4. **Staged / uncommitted** — `git diff --staged` and/or `git diff HEAD`.
 5. **Recently modified files** — only as a last resort, and only files the user explicitly named or you edited earlier in this conversation.
-
-<!-- @> Never diff the full range between two long-lived branches (e.g. dev...main) — pulls in unrelated merged work and pollutes the review -->
 
 Never diff the full range between two long-lived branches (`dev...main`) — that pulls in unrelated merged work and pollutes the review.
 
@@ -72,8 +68,6 @@ Divide substantial cleanup into coherent steps. Continue within the authorized s
 
 These apply to both modes — they shape what counts as a finding (REVIEW) and what counts as a clean diff (APPLY).
 
-<!-- @> Cleanup should net fewer lines; if LOC increases, justify the complexity reduction. Diff size itself is a finding — flag 10k+ line diffs and look for the codemod, idiomatic API, or generated content to exclude -->
-
 ### Primary outcome: net LOC reduction
 
 After cleanup, total LOC should usually be lower than before. If cleanup increases LOC, keep it only when it clearly reduces complexity or risk, and call out that tradeoff explicitly.
@@ -81,8 +75,6 @@ After cleanup, total LOC should usually be lower than before. If cleanup increas
 Diff size is itself a finding. A version bump that produces 20k+ lines of diff, or a feature that costs 10k+ lines for a small surface, is suspect — flag it and look for the maintainer-provided codemod, an idiomatic API the project missed, or generated content that should be excluded from review.
 
 When categorizing a large diff, split into: **generated / boilerplate / moved / new logic**. The user evaluates PR quality partly by the new-logic fraction.
-
-<!-- @> Remove defensive checks, type casts, redundant annotations, single-use variables abnormal for codepath context. Don't auto-remove useCallback/useMemo/memo — only with profiling evidence or explicit user direction -->
 
 ### What to remove
 
@@ -117,15 +109,11 @@ The only valid waiver: the file is extremely uniform — a long data table, gene
 
 When APPLY is about to push a file across the line, stop and propose the decomposition (subcomponents, helpers, separate modules) before continuing.
 
-<!-- @> Cleanup uncovers more cleanup — follow the thread. After removing a feature, search for sibling dead code (utilities, tokens, fixtures, resolver fields) that's now unused -->
-
 ### Cleanup uncovers more cleanup
 
 After removing a feature, branch, or component, search the codebase for sibling code that's now dead — utilities only it called, design tokens only it used, GraphQL fields only it queried, fixtures only it referenced, schema columns only it wrote. A one-shot deletion that only removes the named thing under-delivers. The user expects the cleanup to **follow the thread**.
 
 Scope guard: stay within the change-set's natural boundary. "Sibling code that became dead because of this change" is in scope. "Sibling code that was always dead but you noticed in passing" is a follow-up, not this PR.
-
-<!-- @> List ordering: every list has an intrinsic best order — alphabetical, dependency, frequency, numeric — match the list's purpose. Place new entries in position; never just append. Encode deviations from tool defaults, not the defaults themselves -->
 
 ### List ordering
 
@@ -140,17 +128,13 @@ When adding an entry, place it in the correct position rather than appending. Th
 
 For config files that combine tool defaults with project overrides, encode only the **deviations**: a short config that diverges meaningfully is more readable than a long one that mostly restates the defaults. Before adding an option, check whether it matches the default; if so, omit it.
 
-<!-- @> Comments are banned entirely: flag every comment in touched code for deletion; refactor until self-documenting (extract, rename, restructure); knowledge code can't express goes to the PR description, never the source. Sole exception: TODO-style markers the user specifically requested -->
-
 ### Comment policy
 
-Comments are banned. Every comment in touched code is a finding: delete it, and when it carried information, move that information into the code (a named function or constant, a better identifier, a restructure) or out of the source entirely (PR description, commit message, docs). A construct that seems to need a comment is not clear enough and gets rewritten. Machine-read directives (shebangs, codegen pragmas) are code, not comments; lint suppressions remain a last resort governed by the lint-directives rule. The single exception: `TODO`-style markers the user specifically requested.
+Never add code comments. Following GLOBAL.md's comment policy, exceptions require very strong surrounding precedent that comments are required, or an explicit user request. Nearby comments alone do not establish that requirement. Existing comments are not findings merely because they are comments or appear in a touched file. In APPLY, do not proactively delete them unless rewriting the code they describe. In REVIEW, do not recommend removing them solely to reduce comments. When rewriting associated code, assess its comments for accuracy and usefulness. Machine-read directives are code, and lint suppressions remain governed by the lint-directives rule. Add `TODO`-style markers only when the user specifically requests them.
 
 ### Don't silence the tool; don't roll your own codemod
 
 When a tool reports something you've already accepted as correct, run it and let downstream state settle — don't reach for `ignore` / `exclude` / `skip` config to silence it. When the upstream maintainers publish an official migration path (codemod, preset, framework-provided helper), prefer it over a handwritten substitute, even when the resulting diff is larger. A 20k-line maintainer codemod is more trustworthy than a 2k-line homegrown one. Parallel subagents > scripted refactors when no official codemod exists.
-
-<!-- @> A lint rule targets a behavior not a token: a sibling construct emitting the same flagged output still dodges it. Fix at root, or write a real standard and disable the rule deliberately. Inline-suppress only as last resort when no compliant alternative exists (stable id over array-index key); offer the simpler path first -->
 
 A lint rule targets a behavior, not a token. Switching to a sibling construct that produces the same flagged output — a wrapper or alternate API that emits exactly what a `no-X` rule forbids — dodges the rule without honoring it, and is still a workaround. Two honest paths: fix at the root so the rule passes on its merits, or, when the rule genuinely doesn't fit the case, write a real standard for the codebase and disable the rule deliberately. An off-the-cuff sibling swap is neither.
 
@@ -159,8 +143,6 @@ Inline suppression is a last resort, valid only when a rule blocks the sole viab
 ## Types, imports & tooling (`.ts`, `.tsx`)
 
 Applies when writing or reviewing TypeScript: typecheck failures, strictness, generics, barrels, module layout — not only during cleanup passes.
-
-<!-- @> A cast signals a too-wide upstream type: tighten the source so the cast and its guard both vanish; invert call sites instead of widen-then-cast; parse boundaries with zod, narrow with instanceof. Don't assert type-system behavior without an empirical repro -->
 
 ### Type safety
 
@@ -173,8 +155,6 @@ A cast is a symptom: the type is too wide somewhere upstream. Fix the source, no
 - **Parse at the boundary, narrow within it.** Validate untrusted input with a schema (zod or equivalent) at the edge so a typed value flows inward; narrow runtime variants with `instanceof` or a discriminant. Both replace the assertion with a check the compiler trusts.
 - **Don't assert how the type system behaves.** A claim that "TS widens this" or "the inference fails here" is a verification step — confirm it with a minimal repro before designing around it, never from intuition.
 
-<!-- @> Prop intersections: specific before generic. Inline single-use variables -->
-
 ### Component & prop style
 
 - Order prop intersections: specific props before generic (`{ specific } & RootProps`).
@@ -183,8 +163,6 @@ A cast is a symptom: the type is too wide somewhere upstream. Fix the source, no
 - Don't declare variables only used once immediately after; inline them.
 
 ### Imports & dependencies
-
-<!-- @> Import order: React → runtime → external → internal → aliased → relative → local. type keyword for type imports -->
 
 - Import order: React → runtime → external → internal → aliased → relative → local.
 - Use `type` keyword for type imports: `import type { Foo } from './types'`.
@@ -207,6 +185,7 @@ Markup and styles for `.html`, `.css`, and templated/JSX UI. Deep dive: [Web Int
 
 ### Semantic HTML first
 
+<!-- @> Prefer native semantic elements. Preserve keyboard interaction and visible focus when building or simplifying UI -->
 Prefer built-in semantics over generic containers: structure (`article`, `header`, `main`, `nav`, `section`, `ul`/`li`), interactive (`button`, `form`, `label`), content (`table`, `time`). Avoid `div`/`span` unless necessary. Prefer real text + structure over ARIA-only shortcuts.
 
 
@@ -225,6 +204,7 @@ Order by concern, outside-in (not alphabetically): position & display → flex/g
 
 ### State styling
 
+<!-- @> Style selected, active, and expanded states through data or appropriate ARIA attributes and CSS selectors rather than conditional class names -->
 Drive selected/active/expanded state with a data attribute and an attribute selector (`[data-state="active"] {…}`, `[aria-pressed="true"]`), not a conditional className or `cx()` merge in the component. The DOM stays declarative, the styling lives with the rest of the component's CSS, and the state is inspectable in devtools without reading render logic.
 
 

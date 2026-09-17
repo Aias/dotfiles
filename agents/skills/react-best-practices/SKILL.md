@@ -2,16 +2,13 @@
 name: react-best-practices
 description: >
   Use for React or Next.js performance work, data-fetching architecture, rendering behavior, or server/client boundaries. Load the relevant pattern references. A JSX/TSX edit alone does not require this skill.
-global_category: React
 ---
-
-<!-- @> v19+: no forwardRef (ref is a prop). No useEffect for transforms/events/derived state — calculate in render or handlers; read `/avoid-effects` when the synchronization boundary is unclear. rAF over setTimeout for frame work -->
 
 # React Best Practices
 
 Performance optimization guide for React and Next.js applications. 57 rules across 8 categories, prioritized by impact. Originally adopted from [Vercel Engineering](https://github.com/vercel/next.js) (MIT).
 
-Core rules are compiled into GLOBAL.md. This skill contains additional detail.
+In React 19 and later, use ref as a prop instead of `forwardRef`. Derive values during render and handle interactions in event handlers instead of Effects. Read `/avoid-effects` when the synchronization boundary is unclear. Use `requestAnimationFrame` instead of `setTimeout` for frame work.
 
 ## When to Apply
 

@@ -21,7 +21,6 @@ These are non-negotiable.
   Before suggesting *removal* of incomplete code, read the diff's intent. **Broken-because-unfinished** is not the same as **broken-because-buggy**: a not-yet-wired feature should be wired up, not amputated. The fix has to come from what the author was trying to do, not from the assumption that the broken piece should go away.
 - **Numbered list with stable IDs** (`#1`, `#2`, ...). The user replies with positional refs ("fix 2, 3, 5", "walk me through #1"). Aggregated prose loses this affordance.
 - **HIGH SIGNAL IN THE REPORT.** What reaches the user is high-signal; getting it there is [validation](#phase-3-validation)'s job, not self-censorship while finding. The [explicit false positives](#explicit-false-positives) bind every stage — pre-existing issues, linter-catchable nits, and pedantry are the wrong *category*, not merely uncertain, so no agent raises them at any point.
-<!-- @> Confidence-gate the report, not the finders: finders report everything tagged with confidence + severity, validation does the dropping — a finding filtered a step later costs less than one never raised. Keep the unverified high-impact tail (data loss/security/silent corruption), tagged, at true confidence -->
 - **Confidence-gate the report, not the finders.** Finder agents report everything they see, each tagged with confidence and severity; [Phase 3](#phase-3-validation) and synthesis do the dropping. A finding filtered one step later costs far less than one never raised, and the validator judges it against surrounding code the finder never read. Two things survive that handoff: the high-impact tail — a finding you couldn't fully verify but whose potential cost is severe (data loss, a security hole, silent corruption) — reaches the report tagged with what remains unverified and why this pass couldn't resolve it; and priority is never inflated to compensate for uncertainty, so report at true confidence with the gap named. Synthesis drops the low-confidence *and* low-impact residue without mention.
 
 ## Phase 1: Establish scope
@@ -138,7 +137,6 @@ Add or substitute axes when the user names a concern: *"focus on app router patt
 
 ## Phase 3: Validation
 
-<!-- @> Validate adversarially: try to REFUTE each finding (default refuted when unsure); only findings that survive with a code citation get reported -->
 For each finding, try to refute it against the surrounding code and actual inputs. Use a fresh reviewer when independent scrutiny adds value, grouping related findings where they share context. Single-axis agents over-flag, so the validator starts adversarial: assume the finding is a false positive and try to break it by reading the cited code and the surrounding context the original agent didn't see. A finding survives only if the validator *cannot* refute it with a code citation; when the validator is unsure, it defaults to refuted.
 
 Pass the validator: the PR title/description, the finding description, and the rule (if compliance). It reads the cited code and answers: *can I show this is not actually a problem here?*
@@ -157,7 +155,6 @@ When no spec axis ran, synthesis is just cross-axis dedup.
 
 ## Phase 4: Report
 
-<!-- @> Report splits findings into "Clear fixes" (unambiguous solution — ALL get applied regardless of severity; priority orders work, never gates it) vs "Decisions needed" (product/design/API choice gates the fix — options + one recommendation each). Explain what breaks and for whom, in plain language using the project's terms -->
 Findings are split into two groups. The split is the load-bearing structure of the report:
 
 - **Clear fixes** — the finding has one right solution and no product/design choice gates it. Once application is authorized, apply every selected item. Severity orders the work rather than silently reducing its scope. Never present a subset of clear fixes as the bar and leave the rest as optional polish; a confirmed problem with an unambiguous fix is fixed, whether it's a data-corrupting bug or a dead export.
@@ -305,7 +302,6 @@ Point the duplication/dead-code scanners at the **whole package the diff touches
 - **`bunx react-doctor@latest`** — React-specific audit (state & effects, performance, architecture, security, a11y) across Next/Vite/RN/Expo. Read-only; can report only newly-introduced issues against a PR. Seeds the React/frontend slice of a review and pairs with [`/react-best-practices`](../react-best-practices/SKILL.md), [`/avoid-effects`](../avoid-effects/SKILL.md), and the HTML/CSS section.
 - **Focused supplements when one axis needs depth:** `bunx knip` (dead files/exports/deps — strong post-migration, but scaffolding is a common false positive), `similarity-ts` (AST-based duplication), `bunx jscpd` (token-based, language-agnostic duplication).
 - **`rg` / `fd` / `git grep`** — the verification workhorses: confirm a symbol is truly unused, trace call sites, check for orphaned utilities/tokens/fixtures. Reach for these to *confirm* every lead above rather than trusting any tool's report.
-- **`/orient`** — often precedes a review when the user hasn't said what branch/base they're on.
 - **`/dig`** — for "why does this happen" style questions buried inside a review.
 
 Conspicuously not used: `eslint --fix`, hand-written codemods, throwaway scripts. The user prefers parallel subagents over scripted refactors.

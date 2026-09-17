@@ -4,10 +4,12 @@ description: >
   Persist a requested standing preference or a correction explicitly intended for future tasks.
   Routes guidance to GLOBAL.md, project instructions, skills, or hooks.
   One-off stops, approvals, and undo requests stay in the current task.
+global_category: Workflow
 ---
 
 # Remember that
 
+<!-- @> A task-specific instruction does not establish a standing preference -->
 Capture guidance that should change behavior on future tasks. Apply the user's immediate correction first. A task-specific instruction does not imply a new standing rule.
 
 Read the relevant existing guidance before adding anything. Quote an existing rule when it already covers the preference. Otherwise consolidate overlapping instructions and describe the applicable condition. Use a representative example only when the rule would be ambiguous without it.
