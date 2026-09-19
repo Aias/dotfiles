@@ -40,6 +40,11 @@ export HOMEBREW_FORBIDDEN_FORMULAE=node
 export COREPACK_ENABLE_DOWNLOAD_PROMPT=0
 export EDITOR="${EDITOR:-cursor --wait}"
 export VISUAL="${VISUAL:-cursor --wait}"
+if [[ -n "$SSH_CONNECTION" ]]; then
+  export GIT_CONFIG_COUNT=1
+  export GIT_CONFIG_KEY_0=gpg.ssh.program
+  export GIT_CONFIG_VALUE_0=ssh-keygen
+fi
 
 # Local environment (paths, exports)
 [[ -r "$HOME/.local/bin/env" ]] && source "$HOME/.local/bin/env"

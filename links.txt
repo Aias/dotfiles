@@ -13,6 +13,9 @@ Git | git/.gitconfig | .gitconfig | .gitconfig
 Git | git/ignore | .config/git/ignore | .config/git/ignore
 Git | git/allowed_signers | .config/git/allowed_signers | .config/git/allowed_signers
 
+# SSH
+SSH | ssh/config | .ssh/config | .ssh/config
+
 # Claude
 Claude | agents/.build/claude/GLOBAL.md | .claude/CLAUDE.md | .claude/CLAUDE.md
 Claude | agents/claude.settings.json | .claude/settings.json | .claude/settings.json

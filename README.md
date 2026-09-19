@@ -14,6 +14,8 @@ dotfiles/
 │   ├── .gitconfig     # Git configuration
 │   ├── ignore         # Global ignore rules (→ ~/.config/git/ignore)
 │   └── allowed_signers  # SSH signing key for signature verification
+├── ssh/
+│   └── config         # SSH client config (1Password agent only for local sessions)
 ├── mise/
 │   └── global-config.toml   # mise global config (copied to ~/.config/mise/config.toml)
 ├── starship/
