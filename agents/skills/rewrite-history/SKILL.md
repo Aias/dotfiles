@@ -16,7 +16,7 @@ A history rewrite needs the current branch (`git branch --show-current`), a clea
 
 Rewrite the current branch's commit history with clean, narrative-quality commits. The final tree must be byte-for-byte identical to the current state — only the commits change, not the code.
 
-This rewrites the current branch. When replacing published history requires a force-push, the user performs that step.
+This rewrites the current branch. Replacing published history requires a force-push, which needs its own explicit authorization.
 
 ### Steps
 
@@ -72,15 +72,11 @@ This rewrites the current branch. When replacing published history requires a fo
 
 8. **Report**
    - Show the new commit log: `git log <base>..HEAD --oneline`
-   - When the rewritten commits replace published history, give the user the manual push command:
-     ```
-     git push --force-with-lease
-     ```
-   - Do **not** push automatically — the user decides when.
+   - When the rewritten commits replace published history, push with `git push --force-with-lease` once the user has explicitly authorized it. Never push unprompted.
 
 ### Rules
 
 - Commit authorship follows GLOBAL.md: single authorial point of view, no AI attribution or `Co-Authored-By` lines
 - The final tree SHA must exactly match the original.
 - Do not open a pull request — that is a separate workflow
-- Do not force-push — only the user does that
+- Force-push only with explicit authorization, and always with `--force-with-lease`

@@ -27,8 +27,6 @@ MUTATIVE_GH_PR_SUBCOMMANDS = {
     "unlock",
     "update-branch",
 }
-FORCE_PUSH_FLAGS = {"-f", "--force", "--force-with-lease", "--force-if-includes"}
-COMBINED_SHORT_FLAGS_WITH_F = re.compile(r"-[a-zA-Z]*f[a-zA-Z]*")
 HEREDOC_START = re.compile(r"<<-?\s*(['\"]?)(\w+)\1")
 
 
@@ -71,28 +69,6 @@ def simple_commands(command):
         yield current
 
 
-def git_invocations(tokens):
-    for index, token in enumerate(tokens):
-        if token != "git" and not token.endswith("/git"):
-            continue
-        cursor = index + 1
-        while cursor < len(tokens) and tokens[cursor].startswith("-"):
-            cursor += 2 if tokens[cursor] in GIT_GLOBAL_FLAGS_WITH_VALUE else 1
-        if cursor < len(tokens):
-            yield tokens[cursor], tokens[cursor + 1 :]
-
-
-def is_forced_push(args):
-    for arg in args:
-        if arg in FORCE_PUSH_FLAGS or arg.startswith("--force-with-lease="):
-            return True
-        if arg.startswith("+") and len(arg) > 1:
-            return True
-        if COMBINED_SHORT_FLAGS_WITH_F.fullmatch(arg):
-            return True
-    return False
-
-
 def gh_pr_subcommands(tokens):
     for index, token in enumerate(tokens):
         if token != "gh" and not token.endswith("/gh"):
@@ -107,14 +83,6 @@ def gh_pr_subcommands(tokens):
             yield tokens[cursor]
 
 
-def contains_forced_push(command):
-    return any(
-        subcommand == "push" and is_forced_push(args)
-        for tokens in simple_commands(command)
-        for subcommand, args in git_invocations(tokens)
-    )
-
-
 def contains_mutative_gh_pr(command):
     return any(
         subcommand in MUTATIVE_GH_PR_SUBCOMMANDS
@@ -124,14 +92,6 @@ def contains_mutative_gh_pr(command):
 
 
 def hook_output(mode, command):
-    if mode == "force-push" and contains_forced_push(command):
-        return {
-            "hookSpecificOutput": {
-                "hookEventName": "PreToolUse",
-                "permissionDecision": "deny",
-                "permissionDecisionReason": "Force push is never allowed by the agent. If remote history needs rewriting, the user will do it manually.",
-            }
-        }
     if mode == "gh-pr" and contains_mutative_gh_pr(command):
         return {
             "hookSpecificOutput": {

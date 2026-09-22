@@ -51,8 +51,6 @@ dotfiles/
 │   └── pre-commit         # Auto-compiles GLOBAL.md annotations
 ├── .agents/
 │   └── skills/        # [E] External skills (from skills.sh)
-│       ├── next-best-practices/
-│       ├── skill-creator/
 │       └── .../
 ├── install.sh         # Symlink installation script
 ├── setup.sh           # Repo-local setup (git hooks)
@@ -172,6 +170,5 @@ Shows a table of all skills with sync status for each agent:
 ```
 skill                        type  claude  codex  cursor
 changelog                    [P]   ✓       ✓      ✓
-skill-creator                [E]   ✓       ✓      ✓
 react-best-practices         [P]   ✓       ✓      ✓
 ```
