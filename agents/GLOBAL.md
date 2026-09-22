@@ -104,7 +104,7 @@ For an npm-published CLI that isn't installed, **run it on demand with `bunx`** 
 
 ## Context-Specific Guidelines
 
-When adding agent instructions to a project, create a new file as `AGENTS.md` at the project root. `CLAUDE.md` should be a symlink to `AGENTS.md` unless the project has an existing convention. If both exist, never edit `CLAUDE.md` directly, always edit `AGENTS.md`.
+When adding agent instructions to a project, create `AGENTS.md` at the project root. Claude Code loads it directly when no `CLAUDE.md` exists, so don't add a `CLAUDE.md` symlink. If a project already has both, edit `AGENTS.md`, never `CLAUDE.md`.
 
 Agent skills and config live in `~/Code/dotfiles` as source of truth (skills in `agents/skills/`; private skills in the optional `agents/skills.local/` submodule) and are deployed to each harness by the install script. Always edit the dotfiles source, never the installed copies under `~/.claude`, `~/.codex`, or `~/.cursor` — check symlink mapping first. See `/remember-that` for routing.
 
