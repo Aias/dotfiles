@@ -107,7 +107,7 @@ A file may not cross from below 1000 lines to above. This applies to REVIEW (fla
 
 The only valid waiver: the file is extremely uniform — a long data table, generated code, a flat enum, a list of route registrations — where any split would hurt readability. If the file has meaningful control flow or distinct sections, decompose first. Don't waive because the new code "logically belongs here" or because splitting "is a lot of work."
 
-When APPLY is about to push a file across the line, stop and propose the decomposition (subcomponents, helpers, separate modules) before continuing.
+When APPLY would push a file across the line, decompose it as part of the change (subcomponents, helpers, separate modules), following the codebase's existing module patterns. Raise the split as a decision only when it creates a new boundary in shared code.
 
 ### Cleanup uncovers more cleanup
 

@@ -13,7 +13,7 @@ Manages external skills within the dotfiles setup. External skills live in the d
 
 **Scope: the dotfiles pipeline only.** A project repository's own `.agents/skills/` directory (`<repo>/.agents/skills/<name>`) follows the same skills spec but is ordinary project source — edit it in place, commit it with the repo, and keep it out of `skills-lock.json` and the deploy targets. Nothing in this pipeline manages, installs, or syncs project-owned skills.
 
-**When invoked with no additional user context**, use the harness's question tool (AskUserQuestion in Claude Code, `request_user_input` in Codex) to present the available actions (install/update, delete, cleanup, find) as interactive prompts rather than listing them as plain text.
+**When invoked with no additional user context**, run `make check` and the orphan listing, then recommend the action the current state calls for.
 
 ## Current State
 
@@ -95,7 +95,7 @@ comm -23 \
 
 Do **not** substitute `Glob` — it returns files only and misses directory-only entries in `skills.local/`, which will produce false-positive orphans for valid local skills. Use `ls` (or `fd --type d --max-depth 1`).
 
-For each orphan: check `git log` for context — a skill mid-rename looks identical to an orphan until the log shows the new path. Then propose `rm -rf ~/.claude/skills/NAME ~/.codex/skills/NAME ~/.cursor/skills/NAME` and ask for confirmation.
+For each orphan: check `git log` for context — a skill mid-rename looks identical to an orphan until the log shows the new path. Remove orphans whose dotfiles source the log shows was removed or renamed (`rm -rf ~/.claude/skills/NAME ~/.codex/skills/NAME ~/.cursor/skills/NAME`). List any orphan with no dotfiles history, such as a plugin or a manual install, and ask before removing it.
 
 ## Finding Skills
 

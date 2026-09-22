@@ -24,6 +24,7 @@ Personal dotfiles repo — shell config, git, editor settings, and AI agent conf
 ## Conventions
 
 - Edit config in this repo, not in `~/` — symlinks propagate changes automatically
+- Work directly on `main`. Commit and push completed changes without asking, keeping unrelated uncommitted edits out of your commits.
 - This repo is public. Never commit private information, credentials, machine-specific secrets, personal data, or internal-only notes here, even temporarily. Use ignored local files or tracked templates instead.
 - For agent config, dotfiles is source of truth; check symlink mapping before editing
 - Skills: personal in `agents/skills/`, private in `agents/skills.local/` (optional submodule), external in `.agents/skills/`

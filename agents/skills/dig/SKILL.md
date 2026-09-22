@@ -8,7 +8,7 @@ description: >-
 
 # Dig
 
-Deliver a supported explanation of the reported behavior, its cause, and its impact. Match the depth to the unresolved question. Keep application code and external state unchanged during diagnosis. A request that also authorizes a fix can proceed to that fix once the cause is established.
+Deliver a supported explanation of the reported behavior, its cause, and its impact. Match the depth to the unresolved question. Temporary instrumentation in local code is fine; remove it before reporting. Leave no lasting code changes and no external-state changes during diagnosis. A request that also authorizes a fix can proceed to that fix once the cause is established.
 
 Follow the evidence across repository and service boundaries when the cause lies there. Choose source, history, dependency code, logs, data, or a reproduction according to the claim they can settle. A checklist of systems to visit is unnecessary.
 

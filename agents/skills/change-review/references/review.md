@@ -2,9 +2,7 @@
 
 Read-only fan-out across a change-set. Output: numbered findings in chat.
 
-## Standing rules (override all defaults)
-
-These are non-negotiable.
+## Standing rules
 
 - **Read-only.** No code edits, no commits, no GitHub or Linear comments unless explicitly authorized in the session. Output is chat text only.
 - **No questions to the user during the review.** Complete the review without user intervention; questions go in the report's "open questions" section.
@@ -57,7 +55,7 @@ This is the lens, not an axis. Apply it inside each subagent below.
 Independent axes can run in parallel when their scope warrants separate reviewers. Spec conformance is special only at synthesis: its findings are read *first* and used to set the disposition of every other axis's findings (see [Synthesis](#synthesis-let-spec-conformance-set-disposition)), not to gate the other agents.
 
 **Axis 1: Bug scan.**
-Look for obvious bugs in the diff itself — incorrect logic, broken control flow, off-by-ones, missing awaits, mishandled errors. Focus on the diff; don't reach outside it for context unless the finding requires it. Flag only bugs that fire on a plausible real input or state and change observable behavior (wrong output, crash, hang, data loss) — not edge cases the type system or an upstream guard already rules out.
+Look for obvious bugs in the diff itself — incorrect logic, broken control flow, off-by-ones, missing awaits, mishandled errors. Follow the diff into its callers and callees as far as needed to show the bug fires. Flag only bugs that fire on a plausible real input or state and change observable behavior (wrong output, crash, hang, data loss) — not edge cases the type system or an upstream guard already rules out.
 
 **Axis 2: AGENTS.md / CLAUDE.md compliance.**
 Audit the diff for compliance with AGENTS.md / CLAUDE.md rules. When evaluating compliance for a file, only consider AGENTS.md / CLAUDE.md files that share a path with the file or its parents. Quote the exact rule being broken; if you can't quote it, don't flag it.
@@ -133,7 +131,7 @@ When the diff crosses this line, the finding should propose the decomposition (s
 
 ### Custom axes
 
-Add or substitute axes when the user names a concern: *"focus on app router patterns"*, *"review for false positive conversions"*, *"only the changes about storybook"*, *"is X used anywhere?"*. Replace one of the standard axes; don't pile on.
+Add or substitute axes when the user names a concern: *"focus on app router patterns"*, *"review for false positive conversions"*, *"only the changes about storybook"*, *"is X used anywhere?"*. Add an axis for the named concern, and drop standard axes it makes irrelevant.
 
 ## Phase 3: Validation
 
@@ -190,7 +188,7 @@ File: path/to/file.ts:42-48
 ---
 
 Verdict: <one of: "pass", "apply clear fixes", "apply clear fixes + decide #N…", "restructure needed: <why>">
-Next: <one of: "applying clear fixes now", "answer the decision items", "run `/pr-guidelines` to refresh the description", "no action needed">
+Next: <one of: "applying clear fixes now", "answer the decision items", "refresh the PR description", "no action needed">
 
 Open questions:
 - <Anything that needed a judgment call you couldn't make alone>
@@ -285,9 +283,7 @@ When inside a Conductor workspace (paths under `~/conductor/workspaces/...`, `CO
 
 ## Tools the user reaches for
 
-In rough order of how often they appear in past sessions:
-
-- **Parallel subagents** — the canonical answer to "did you actually read it". Use them by default.
+- **Parallel subagents** — independent axes and wide reads, per the delegation rules above.
 - **`gh pr diff`, `gh pr view --json files,baseRefName`** — PR-context REVIEW.
 - **`git diff origin/<base>...HEAD`** (three-dot, after fetch) — branch-vs-base REVIEW.
 - **`mcp__conductor__GetWorkspaceDiff`** — Conductor REVIEW.
@@ -304,4 +300,4 @@ Point the duplication/dead-code scanners at the **whole package the diff touches
 - **`rg` / `fd` / `git grep`** — the verification workhorses: confirm a symbol is truly unused, trace call sites, check for orphaned utilities/tokens/fixtures. Reach for these to *confirm* every lead above rather than trusting any tool's report.
 - **`/dig`** — for "why does this happen" style questions buried inside a review.
 
-Conspicuously not used: `eslint --fix`, hand-written codemods, throwaway scripts. The user prefers parallel subagents over scripted refactors.
+For cleanup edits, prefer an official codemod, then parallel subagents, over `eslint --fix` or hand-written codemods. Scratch scripts that verify a finding are fine.

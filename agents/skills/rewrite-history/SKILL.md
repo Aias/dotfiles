@@ -16,7 +16,7 @@ A history rewrite needs the current branch (`git branch --show-current`), a clea
 
 Rewrite the current branch's commit history with clean, narrative-quality commits. The final tree must be byte-for-byte identical to the current state — only the commits change, not the code.
 
-This rewrites the current branch. Replacing published history requires a force-push, which needs its own explicit authorization.
+This rewrites the current branch. When the branch is already published, the approved rewrite includes force-pushing it.
 
 ### Steps
 
@@ -46,7 +46,7 @@ This rewrites the current branch. Replacing published history requires a force-p
    **Stop here. Present the proposed commit list — ordered, each with a one-line summary of intent — and wait for explicit confirmation before moving on.** Do not create `_rewrite-temp` or run any tree-mutating command until the user has approved the storyline. This is a destructive rewrite; the gate matters more than the time it costs.
 
 5. **Rewrite the history**
-   - Create a temporary branch from the branch's original merge-base, **not** from the current tip of `<base>`: `git checkout -b _rewrite-temp $(git merge-base origin/<base> <branch>)`. The tree-match check in step 6 fails if the base has advanced since the branch was created, because files outside the branch's own diff will differ. Rebasing onto the current base is a separate step you will typically perform after the history is clean. Perform it only when separately requested.
+   - Create a temporary branch from the branch's original merge-base, **not** from the current tip of `<base>`: `git checkout -b _rewrite-temp $(git merge-base origin/<base> <branch>)`. The tree-match check in step 6 fails if the base has advanced since the branch was created, because files outside the branch's own diff will differ. Rebase onto the current base afterward when the task calls for it.
    - Recreate changes commit by commit following the planned storyline
    - Each commit must:
      - Introduce a single coherent idea
@@ -72,11 +72,11 @@ This rewrites the current branch. Replacing published history requires a force-p
 
 8. **Report**
    - Show the new commit log: `git log <base>..HEAD --oneline`
-   - When the rewritten commits replace published history, push with `git push --force-with-lease` once the user has explicitly authorized it. Never push unprompted.
+   - When the rewritten commits replace published history, push with `git push --force-with-lease`. Ask first when the push could discard work you did not author, such as remote commits missing from the rewrite or a branch other people push to.
 
 ### Rules
 
 - Commit authorship follows GLOBAL.md: single authorial point of view, no AI attribution or `Co-Authored-By` lines
 - The final tree SHA must exactly match the original.
 - Do not open a pull request — that is a separate workflow
-- Force-push only with explicit authorization, and always with `--force-with-lease`
+- Force-push with `--force-with-lease`, never bare `--force`

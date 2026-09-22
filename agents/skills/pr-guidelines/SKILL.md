@@ -17,7 +17,7 @@ Drafting or updating a PR needs the current branch (`git branch --show-current`)
 
 Read the relevant diff and author intent, then draft the title and description using the conventions below. A drafting request ends with reviewable prose. Reuse the writing guidance already loaded in the session.
 
-Commit, push, and remote PR changes each require authorization for that action. Complete the preparation and relevant checks before asking for any missing authorization. Existing authorization persists across turns.
+Commits and pushes follow GLOBAL.md's permission rules. Creating or editing a remote PR requires authorization. Complete the preparation and relevant checks before asking for any missing authorization. Existing authorization persists across turns.
 
 For an authorized new PR, create a draft with an explicit base. Write multiline prose to a file and pass it with `--body-file` so formatting survives shell parsing.
 
@@ -37,15 +37,9 @@ After pushing to an existing PR, compare its title and description with the full
 
 Always `git fetch origin <base>` before diffing. Diff against `origin/<base>`, never a local branch.
 
-**Changes to include:** Determine if the PR should include:
-
-- All uncommitted changes (staged + unstaged)
-- Staged changes only (`git diff --cached`)
-- Specific files
+**Changes to include:** The PR carries the branch's commits. Commit the task's own uncommitted changes first, leave unrelated working-tree changes out, and mention them.
 
 **Branch naming:** If the user mentions a ticket number (e.g., `PROJ-1234` — use your tracker's actual prefix), use it in the branch name from the start: `<handle>/proj-1234`. This ensures the tracker's PR auto-linking works and avoids renaming branches after PR creation. Without a ticket, name the branch for the change itself (`<handle>/checkout-retry-backoff`) — never invent a plausible-looking ticket number.
-
-If any of these are unclear, ask before proceeding.
 
 ## PR Title
 
@@ -99,7 +93,7 @@ When included, use a bulleted list for independent things to check, or an ordere
 
 ### Visual Evidence
 
-Many PRs would benefit from screenshots or videos to illustrate changes, but these can't be uploaded via GitHub's CLI or MCP. When the change is visual, capture the evidence with the available browser tools and hand the user the files to upload manually — don't defer it to an offered follow-up, and don't leave placeholder text in the PR body.
+Many PRs would benefit from screenshots or videos to illustrate changes, but these can't be uploaded via GitHub's CLI or MCP. When the change is visual, capture the evidence with the available browser tools. When PR editing is authorized and a signed-in browser is available, attach the media in the PR editor; otherwise hand the user the files to upload — don't defer it to an offered follow-up, and don't leave placeholder text in the PR body.
 
 ### Ticket References
 

@@ -30,15 +30,9 @@ Conductor exposes these in the terminal and in [scripts](https://docs.conductor.
 | `CONDUCTOR_DEFAULT_BRANCH` | Default branch name (often `main`)                                                      |
 | `CONDUCTOR_PORT`           | First of **10** consecutive ports reserved for this workspace (`CONDUCTOR_PORT` … `+9`) |
 
-## Recommended workflow
+## Running the app
 
-From [Workflow](https://docs.conductor.build/workflow):
-
-1. **One workspace per feature or bugfix** — create via **⌘⇧N** or the **⋯** menu next to "New workspace" (from PR, branch, or Linear issue).
-2. **Develop** in Conductor's Claude Code UI or open the same tree in your IDE.
-3. **Review** in the **Diff Viewer (⌘D)**; use Terminal or **Run** to exercise the app. For dev servers, see [Using run scripts](https://docs.conductor.build/guides/how-to-run) — bind to **`$CONDUCTOR_PORT`**; script cwd is **`$CONDUCTOR_WORKSPACE_PATH`**.
-4. **Open a PR (⌘⇧P)** when ready; fix failing checks with help from Conductor, then merge when green.
-5. **Archive** the workspace when done; restore later (including chat history) from **Workspaces** in the sidebar.
+Dev servers bind to **`$CONDUCTOR_PORT`**, and run-script cwd is **`$CONDUCTOR_WORKSPACE_PATH`** ([Using run scripts](https://docs.conductor.build/guides/how-to-run)). Each workspace is one feature or bugfix; archived workspaces can be restored with their chat history.
 
 ## Workspaces and branches
 
@@ -50,7 +44,7 @@ Per [Workspaces and branches](https://docs.conductor.build/tips/workspaces-and-b
 
 ## Parallel agents
 
-**⌘N** opens another workspace; each agent works in an **isolated** tree so concurrent runs don't stomp the same working copy ([Parallel agents](https://docs.conductor.build/core/parallel-agents)).
+Each workspace is an isolated tree ([Parallel agents](https://docs.conductor.build/core/parallel-agents)). Subagents within one workspace share its working tree, so give editing subagents their own worktree.
 
 ## Checkpoints
 
@@ -59,10 +53,6 @@ Per [Workspaces and branches](https://docs.conductor.build/tips/workspaces-and-b
 ## Todos
 
 [Todos](https://docs.conductor.build/core/todos) live in the notes tab; incomplete todos can **block merging**. Reference them in composer with **`@todos`**.
-
-## Diff viewer
-
-[Diff viewer](https://docs.conductor.build/core/diff-viewer) shows agent-made changes and aligns with steps toward merge/PR.
 
 ## Cursor / Grok in Conductor
 
@@ -76,7 +66,7 @@ What this Grok path *does* inject: Cursor User Rules (Customize → Rules) and C
 
 ## Managed settings
 
-`~/.conductor/settings.json` (schema: `https://conductor.build/schemas/settings.json`) holds machine-wide overrides Conductor enforces — `defaultModel`, `enterpriseDataPrivacy`, `claudeExecutablePath`. In this dotfiles setup it is symlinked from `agents/conductor.settings.json`; edit there.
+`~/.conductor/settings.toml` (schema: `https://conductor.build/schemas/settings.schema.json`) holds machine-wide overrides Conductor enforces — `defaultModel`, `enterpriseDataPrivacy`, `claudeExecutablePath`. In this dotfiles setup it is symlinked from `agents/conductor.settings.toml`; edit there.
 
 ## Official documentation
 
