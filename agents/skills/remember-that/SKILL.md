@@ -33,4 +33,4 @@ For a skill with `global_category`, add an annotation only when the rule belongs
 
 An explicit request to save a specific preference authorizes the corresponding edit. If the inferred rule would broaden the user's request or change an existing preference, show the proposed wording and location for approval. Existing authorization persists across turns.
 
-After an authorized edit, run `make compile` and `make link` for dotfiles guidance. Report what was saved and where. Read the refine-skills skill when the task is to distill accumulated feedback.
+After an authorized edit to dotfiles guidance, run `make compile` and `make link`, then commit and push as GLOBAL.md's dotfiles rule directs. Report what was saved and where. Read the refine-skills skill when the task is to distill accumulated feedback.

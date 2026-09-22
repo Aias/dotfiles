@@ -109,6 +109,8 @@ When adding agent instructions to a project, create `AGENTS.md` at the project r
 
 Agent skills and config live in `~/Code/dotfiles` as source of truth (skills in `agents/skills/`; private skills in the optional `agents/skills.local/` submodule) and are deployed to each harness by the install script. Always edit the dotfiles source, never the installed copies under `~/.claude`, `~/.codex`, or `~/.cursor` — check symlink mapping first. See `/remember-that` for routing.
 
+Dotfiles changes ship immediately. After any edit, run `make compile` and `make link`, then commit and push to `main`; this is standing authorization to push the dotfiles default branch. Leave nothing uncommitted, including pending changes unrelated to the current task: commit those separately after checking them for private information, since the repository is public. For `agents/skills.local/`, commit and push inside the submodule before committing its pointer. Rules are cheap to revert, so don't hold them back for review.
+
 ### Durable memory
 
 Dotfiles are the durable memory: standing rules, corrections, and preferences belong in tracked files — GLOBAL.md, a skill, or a project's `AGENTS.md` (see `/remember-that`) — where they're versioned and visible to every agent, harness, and machine. Harness-private memory (Claude's auto-memory directory) is fine for a project's own working context; it's keyed to the main repo checkout, so it follows the repo across Conductor worktrees — but it stays harness-private and machine-local. Never route a durable rule there.
