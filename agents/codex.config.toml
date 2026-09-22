@@ -111,6 +111,12 @@ trust_level = "trusted"
 [projects."/Users/nicktrombley/Documents/Codex/2026-09-15/i-d"]
 trust_level = "trusted"
 
+[projects."/Users/nicktrombley/Documents/Codex/2026-09-17/i-d-x20"]
+trust_level = "trusted"
+
+[projects."/Users/nicktrombley/Code/pattern-languages"]
+trust_level = "trusted"
+
 [mcp_servers.linear]
 url = "https://mcp.linear.app/mcp"
 
