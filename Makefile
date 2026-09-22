@@ -1,4 +1,4 @@
-.PHONY: compile install setup setup-private-skills link update update-private-skills update-skills check test-compile-global
+.PHONY: compile install setup setup-private-skills link update fast-forward-private-skills update-private-skills update-skills check test-compile-global
 
 compile:
 	bun agents/compile-global.ts
@@ -18,11 +18,14 @@ setup-private-skills:
 	git submodule update --init -- agents/skills.local
 	$(MAKE) link
 
-update-private-skills:
-	@test -e agents/skills.local/.git || { echo "Run make setup-private-skills first"; exit 1; }
+fast-forward-private-skills:
 	@changes=$$(git -C agents/skills.local status --porcelain) || exit $$?; test -z "$$changes" || { echo "Commit or stash private skill changes before updating"; exit 1; }
 	git -C agents/skills.local fetch origin main
 	git -C agents/skills.local merge --ff-only origin/main
+
+update-private-skills:
+	@test -e agents/skills.local/.git || { echo "Run make setup-private-skills first"; exit 1; }
+	$(MAKE) fast-forward-private-skills
 	$(MAKE) link
 
 # Link only (skip brew packages)
@@ -37,6 +40,7 @@ update:
 		echo "No upstream for branch '$$(git branch --show-current)'; rebasing onto origin/main instead."; \
 		git pull --no-recurse-submodules --rebase --autostash origin main; \
 	fi
+	@if test -e agents/skills.local/.git; then $(MAKE) fast-forward-private-skills; fi
 	$(MAKE) install
 
 # Update external skills from skills.sh
