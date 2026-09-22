@@ -1,3 +1,5 @@
+Include /Users/nicktrombley/.ssh/conductor_config
+
 Include ~/.ssh/conductor_config
 
 Match host * exec "test -z \"$SSH_CONNECTION\" && test -S ~/Library/Group\ Containers/2BUA8C4S2C.com.1password/t/agent.sock"
