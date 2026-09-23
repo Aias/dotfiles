@@ -7,6 +7,8 @@ description: >
 
 # What
 
+First rule out a wrong answer. Confusion can mean the answer described the wrong thing or rested on stale facts. Re-verify its referent and key facts against source, and correct them before rewording.
+
 Find where the explanation lost the reader. Restore a missing referent, causal step, or definition before removing padding. A clearer explanation may need more words.
 
 Open with the answer. Use terms already established in the project or conversation and name the concrete behavior they describe. Consult source only when the meaning is uncertain. A small example or diagram can explain a relationship more directly than another paragraph.
