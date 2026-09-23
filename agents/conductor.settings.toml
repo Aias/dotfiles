@@ -7,10 +7,11 @@ branch_prefix_type = "none"
 [models]
 default = "codex:gpt-6-astra"
 review = "fable-5-1"
+review_fast_mode = false
 
 [models.claude_code]
 default_effort_level = "high"
-review_effort_level = "high"
+review_effort_level = "xhigh"
 
 [models.codex]
 default_thinking_level = "high"
