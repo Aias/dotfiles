@@ -77,6 +77,7 @@ install_cursor() {
 }
 
 install_bun_globals() {
+    [[ -x "$HOME/.bun/bin/agent-browser" ]] || bun install -g agent-browser
     [[ -x "$HOME/.bun/bin/gemini" ]] || bun install -g @google/gemini-cli
 }
 

@@ -101,7 +101,7 @@ For an npm-published CLI that isn't installed, **run it on demand with `bunx`** 
 
 **Use canonical CLI commands** before resorting to manual invocation. Prefer `mytool build` over `node path/to/mytool-wrapper.js build`. Needing a workaround to run a tool that should be on PATH signals misconfiguration worth investigating.
 
-**Browser tasks: prefer the agent's available browser and computer-use tools.** First choose tools that integrate with Dia and reuse its signed-in sessions, such as claude-in-chrome when connected to Dia. Otherwise use the harness's built-in browser or computer-use tools, including Codex's browser tools. Discover available tools and connected browsers before choosing a route. Use an isolated session when the task requires one and the available tools support it.
+**Browser tasks: use the simplest tool that fits.** For pages that need no sign-in, use a session isolated from the user's own browser: the globally installed `agent-browser` CLI (`agent-browser skills get core` prints its version-matched guide), the harness's built-in browser, or a plain fetch when text is enough. For pages behind a login, use Dia, the user's primary browser, through claude-in-chrome when it is connected to Dia, otherwise through computer use. Google Chrome is usually closed, so check which browser claude-in-chrome is connected to before acting, and never launch Chrome to get a connection. When an isolated session needs credentials, read them from 1Password with `op read` and pipe the password to `agent-browser auth save <name> --password-stdin` so it never appears in a command argument.
 
 ## Context-Specific Guidelines
 
