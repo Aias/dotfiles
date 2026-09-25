@@ -103,6 +103,8 @@ For an npm-published CLI that isn't installed, **run it on demand with `bunx`** 
 
 **Browser tasks: use the simplest tool that fits.** For pages that need no sign-in, use a session isolated from the user's own browser: the globally installed `agent-browser` CLI (`agent-browser skills get core` prints its version-matched guide), the harness's built-in browser, or a plain fetch when text is enough. For pages behind a login, use Dia, the user's primary browser, through claude-in-chrome when it is connected to Dia, otherwise through computer use. Google Chrome is usually closed, so check which browser claude-in-chrome is connected to before acting, and never launch Chrome to get a connection. When an isolated session needs credentials, read them from 1Password with `op read` and pipe the password to `agent-browser auth save <name> --password-stdin` so it never appears in a command argument.
 
+**Read a repeated 1Password value once per session.** When a task needs the same 1Password value more than once, write it with a single `op read` into a temporary secrets or env file with owner-only permissions (`umask 077`) in the session's scratch directory, and have later commands and scripts load it from that file so each call doesn't need another approval. Never print or read the file's contents yourself. Delete the file when the task is done.
+
 ## Context-Specific Guidelines
 
 When adding agent instructions to a project, create `AGENTS.md` at the project root. Claude Code loads it directly when no `CLAUDE.md` exists, so don't add a `CLAUDE.md` symlink. If a project already has both, edit `AGENTS.md`, never `CLAUDE.md`.
