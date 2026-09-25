@@ -83,6 +83,7 @@ When categorizing a large diff, split into: **generated / boilerplate / moved / 
 - Unnecessary or redundant type annotations.
 - Variable declarations only used once right after declaration — inline them.
 - Style inconsistent with the surrounding file.
+- Interface comments the change introduces: UI copy that narrates what the interface already shows (GLOBAL.md, "No interface comments").
 
 ### What NOT to remove
 
