@@ -2,7 +2,7 @@ approval_policy = "on-request"
 approvals_reviewer = "auto_review"
 file_opener = "cursor"
 model = "gpt-6-astra"
-model_reasoning_effort = "ultra"
+model_reasoning_effort = "high"
 suppress_unstable_features_warning = true
 web_search = "live"
 service_tier = "default"
@@ -115,6 +115,12 @@ trust_level = "trusted"
 trust_level = "trusted"
 
 [projects."/Users/nicktrombley/Code/pattern-languages"]
+trust_level = "trusted"
+
+[projects."/Users/nicktrombley/Documents/Codex/2026-09-25/i-w"]
+trust_level = "trusted"
+
+[projects."/Users/nicktrombley/Documents/Codex/2026-09-26/how"]
 trust_level = "trusted"
 
 [mcp_servers.linear]
