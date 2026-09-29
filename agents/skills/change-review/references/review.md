@@ -165,7 +165,7 @@ Use this structure when both groups contain findings. Omit empty sections.
 ```
 Scope: <one line: "this branch vs origin/dev", "PR #1234", "workspace diff (Conductor)", "staged changes">
 
-## Clear fixes (apply all — ordered by impact)
+## Clear fixes (apply all — quickest calls first)
 
 ### #1 <Short title>
 
@@ -200,11 +200,13 @@ Rules for the format:
 - One paragraph per finding. Two only if the issue genuinely needs more.
 - `File:` lines use the workspace-relative path. Line numbers via `:start-end` (rendered display) or `#Lstart` for clickable links — pick whichever the project uses.
 - No headers per finding beyond `### #N`. The user has accepted this format and references findings by number. Numbering runs continuously across both groups so any item can be picked by number.
-- Within each group, order by severity/impact. Group by axis only when there are many (>10) in one group.
+- Within each group, order per [Finding order](#finding-order). Group by axis only when there are many (>10) in one group.
 
-### Finding prioritization
+### Finding order
 
-When there are many findings, order them by severity, not by axis. Higher-priority items appear first as `#1`, `#2`, etc.:
+Order each group from the quickest call to the most involved one, so the findings that need discussion sit at the bottom of the chat, next to where the conversation continues. The user settles the quick items in one pass and carries the involved ones into follow-up. A finding is quick when the evidence settles it and its fix stays within one place. It is involved when the fix restructures code or spans packages, depends on an open thread or another finding, or invites a design argument. Mark a blocker in its title instead of moving it up.
+
+Severity still sets the verdict and breaks ties between equally quick findings. From most to least severe:
 
 1. **Structural code-quality regressions** — the diff makes the codebase materially harder to work with.
 2. **Missed code-judo opportunities** — a dramatic simplification is visible and the diff didn't take it.
