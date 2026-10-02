@@ -1,4 +1,5 @@
 "$schema" = "https://conductor.build/schemas/settings.schema.json"
+codex_provider = "default"
 
 [git]
 branch_prefix = "aias/"
