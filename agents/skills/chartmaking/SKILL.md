@@ -35,13 +35,19 @@ Choose visual variables whose perceptual properties match the information and re
 
 | Information | Working default |
 | --- | --- |
-| Quantity requiring precise comparison | Position on a shared scale, or length from a common baseline |
+| Quantities compared across categories | Cleveland-style dot plots on a shared scale |
 | Ordered magnitude | Ordered position or a clear progression in lightness |
 | Nominal identity | Distinct hue, shape, or position without implying rank |
 | Additional grouping variables | Facets, grouped displays, or matrix rows and columns |
 | Geographic relationships | A map when location or spatial structure matters |
 
 Favor aligned position for close quantitative comparisons over judgments of angle or area.
+Prefer dot plots over bars for most categorical comparisons. Arrange categories in labeled rows
+and position dots on a common quantitative axis. Extend the same structure with paired dots for
+change, multiple dots for comparable series, or intervals for uncertainty. Connect paired or
+ordered observations when the relationship is meaningful. Give variables with incompatible units
+separate aligned panels or an explicitly defined common index. Use bars when length from zero
+or stacked composition serves the reading task, or when the user requests them.
 Use proportional symbols when overall magnitude matters, with area proportional to quantity.
 Texture and orientation remain available when they are legible at the export size.
 Give each visible distinction a stable meaning. For many categories, use grouping, position, or
@@ -52,9 +58,17 @@ input order. Preserve chronology and other inherent orders when position carries
 For entities described by multiple variables, consider a matrix or aligned profiles. Try row and
 column arrangements that expose groups, gradients, and exceptions. Apply a common entity order
 across variables so each row or column retains its identity. Preserve the order in the source.
-Integrate descriptions, identifiers, and distinct quantitative, binary, and missing states as needed.
-With different units, use explicit scales or disclosed normalization so visual similarity does not
-imply false comparability. Fine rules or spacing can clarify groups without overpowering the marks.
+Treat reordering as an analytical operation. Inspect alternative arrangements and retain exceptions
+that challenge the apparent groups. Let patterns in the observations support the interpretation.
+
+For broad multivariate inspection, use a full variable-by-entity matrix with integrated identifiers,
+descriptions, and grouped variable families. Dense fields of small marks can carry extensive evidence
+when their alignment and hierarchy remain readable. Match encodings to each variable's meaning,
+with distinct quantitative, binary, missing, and uncertain states. With different units, use explicit
+scales or disclosed normalization so visual similarity does not imply false comparability.
+Use fine rules, spacing, and aligned headings to make groups navigable. When useful, accompany the
+full matrix with a compact interpretation view whose groups and representative patterns can be
+traced back to the observations. Preserve access to the detailed evidence and its exceptions.
 
 ## Dense, multivariate displays
 

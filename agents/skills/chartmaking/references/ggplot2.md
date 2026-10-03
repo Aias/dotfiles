@@ -12,6 +12,7 @@ Preserve missing periods as explicit gaps in time series. Omitting a row can mak
 
 | Reading task | Useful ggplot2 construction |
 | --- | --- |
+| Compare quantities across categories | Cleveland-style dot plot with `geom_point()`, ordered categories on y, and quantity on x |
 | Compare estimates and uncertainty | `geom_point()` with `geom_linerange()` or `geom_errorbar()` on a common scale |
 | Compare change over time | `geom_line()` with explicit groups, contextual series, and relevant reference lines |
 | Compare many groups | `facet_wrap(vars(group))`, with ordered factors and shared scales |
@@ -24,6 +25,18 @@ Preserve missing periods as explicit gaps in time series. Omitting a row can mak
 Use free facet scales for within-panel shape only when the different ranges remain clear. Shared units alone do not make independently scaled panels comparable. Repeated reference layers can give every panel a useful population or historical comparison. See the official [facet wrap](https://ggplot2.tidyverse.org/reference/facet_wrap.html) and [facet grid](https://ggplot2.tidyverse.org/reference/facet_grid.html) references.
 
 Use `coord_cartesian()` for a visual zoom that preserves data used by statistics. Scale limits remove out-of-range observations and can change summaries or fitted curves. Check exclusions deliberately. See [Cartesian coordinates](https://ggplot2.tidyverse.org/reference/coord_cartesian.html).
+
+## Dot plots
+
+Use horizontal dot plots as the default for categorical quantity comparisons. Keep categories on labeled rows and quantitative values on a shared axis. Add multiple series as dots within each row, uncertainty as intervals, or `geom_segment()` between meaningful pairs such as two observation dates. Keep ordering consistent across series and related panels. Direct labels, shape, or restrained color can identify series. Use aligned panels for incompatible units unless an explicit common index supports the comparison.
+
+## Reorderable matrices
+
+Compute entity and variable orders once, then apply them to every mark layer, label column, group strip, and accompanying interpretation view. Preserve the permutation in the source. Compare meaningful orders or similarity arrangements while retaining observations that disagree with the apparent pattern.
+
+For mixed-variable matrices, choose geometry and scales by variable meaning. Tiles can show presence or ordered magnitude, while compact bars or points can retain quantitative differences. Use aligned panels where incompatible scales need separate treatment. Keep quantitative units and normalization explicit, and give absence, missingness, and uncertainty distinguishable encodings.
+
+Integrate variable descriptions, identifiers, and family headings alongside the marks. Use group boundaries and shared alignment to support both overview and individual lookup. Render enough area and resolution to preserve small distinctions across the full matrix. A compact interpretation panel should keep its groups and representative patterns traceable to the detailed matrix.
 
 ## Scatterplot matrices
 

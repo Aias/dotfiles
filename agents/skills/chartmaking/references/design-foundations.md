@@ -17,8 +17,12 @@ Use these principles to organize dense evidence and reduce unnecessary symbol de
 
 "Graphic processing by matrices" demonstrates permutations shared across aligned variable
 profiles. The entity order stays consistent so relationships survive the rearrangement.
-"The reorderable matrix," page 256, integrates quantitative and binary indicators, missing states,
-identifiers, and descriptions. These examples support density through structured alignment.
+"The reorderable matrix," pages 256–257, combines quantitative and binary indicators, distinguishes
+missing and doubtful observations, and aligns identifiers with descriptions and variable families.
+The sequence moves from an inventory through a permuted matrix to a compact interpretation of
+the relationships. This supports using arrangement to discover structure, keeping detailed evidence
+available, and making a summary traceable to the observations. Density is organized through
+alignment, grouping, and repeated encodings.
 The [publisher's contents](https://www.esri.com/content/dam/esrisites/en-us/esri-press/book-pages/toc/semiology-graphics-diagrams-networks-maps.pdf)
 locate these sections. Perin, Fekete, and Dragicevic's
 [research on Bertin's matrices](https://www.researchgate.net/publication/325052190_Jacques_Bertin%27s_Legacy_in_Information_Visualization_and_the_Reorderable_Matrix)
@@ -60,7 +64,9 @@ Use this work to select encodings for the reader's task, without treating a rank
 verdict on every chart form.
 
 Their grouped dot charts demonstrate multivariate comparisons with aligned quantitative scales.
-This supports arranging groups and variables so readers can compare values directly.
+This supports arranging groups and variables so readers can compare values directly. The skill
+prefers this structure over bars for most categorical comparisons and extends it to paired
+observations, multiple comparable series, and uncertainty intervals.
 Tufte's sparkline essay also explains Cleveland's banking-to-45-degrees approach to aspect ratios.
 Consider it when comparing slopes, alongside panel alignment and the physical reading size.
 
