@@ -12,8 +12,6 @@ sandbox_mode = "danger-full-access"
 
 [features]
 context_management.experimental_mode = true
-rmcp_client = true
-skills = true
 default_mode_request_user_input = true
 js_repl = false
 prevent_idle_sleep = true
