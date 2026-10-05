@@ -121,6 +121,9 @@ trust_level = "trusted"
 [projects."/Users/nicktrombley/Documents/Codex/2026-09-26/how"]
 trust_level = "trusted"
 
+[projects."/Users/nicktrombley/Documents/ChatGPT/jev-pi"]
+trust_level = "trusted"
+
 [mcp_servers.linear]
 url = "https://mcp.linear.app/mcp"
 
@@ -226,8 +229,8 @@ enabled = true
 NODE_REPL_TRUSTED_BROWSER_CLIENT_SHA256S = "0b03c76c1d0f3d4c81f89f58ff210ae6709fd1204d2c5a4fdffa0a7bdb961b96,6d25aa7656feac858f3a3bdaea5bcbab0dbfd426c9de8e6931ce90c399ee8e4f"
 
 [desktop]
-conversationDetailMode = "STEPS_PROSE"
-ambient-suggestions-enabled = true
+conversationDetailMode = "STEPS_COMMANDS"
+ambient-suggestions-enabled = false
 followUpQueueMode = "steer"
 composerEnterBehavior = "cmdAlways"
 show-context-window-usage = false
@@ -235,6 +238,25 @@ enabled-reasoning-efforts = ["low", "medium", "high", "xhigh", "ultra", "persist
 browser-show-full-url = true
 worktree-upstream-refresh-mode = "best-effort"
 git-branch-prefix = "aias/"
+usePointerCursors = true
+appearanceTheme = "system"
+toys-audio-visualizer-enabled = true
+
+[desktop.appearanceDarkChromeTheme]
+accent = "#3a83f7"
+accentSource = "chatgpt"
+contrast = 67
+ink = "#ffffff"
+opaqueWindows = false
+surface = "#181818"
+
+[desktop.appearanceDarkChromeTheme.fonts]
+code = '"Berkeley Mono Variable"'
+
+[desktop.appearanceDarkChromeTheme.semanticColors]
+diffAdded = "#40c977"
+diffRemoved = "#fa423e"
+skill = "#ad7bf9"
 
 [[hooks.PreToolUse]]
 matcher = "^Bash$"
