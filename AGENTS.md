@@ -17,14 +17,14 @@ Personal dotfiles repo — shell config, git, editor settings, and AI agent conf
 - `skills-lock.json` — External skill version tracking
 - `install.sh` — Symlink installer (reads `links.txt`), syncs skills, discovers MCP servers
 - `setup.sh` — Repo-local setup (git hooks)
-- `git-hooks/pre-commit` — Auto-compiles GLOBAL.md annotations before each commit
+- `git-hooks/pre-commit` — Compiles GLOBAL.md annotations and runs portable source checks before each commit
 - `local/` — Templates for machine-specific env vars and secrets (not tracked)
 - `Makefile` — Common tasks (`make install`, `make link`, `make check`, `make compile`, `make setup`, `make setup-private-skills`, `make update`, `make update-private-skills`, `make update-skills`). Shell alias **`dotup`** (in `zsh/.zshrc`) runs `make update` from `~/Code/dotfiles`. There's also `dotcheck` and `dotlink` for checking for config drift and linking the config to `~/`.
 
 ## Conventions
 
 - Edit config in this repo, not in `~/` — symlinks propagate changes automatically
-- Work directly on `main`. Commit and push completed changes without asking, keeping unrelated uncommitted edits out of your commits.
+- Work directly on `main`. Follow GLOBAL.md's dotfiles policy for review and authorization before committing or pushing. Leave unrelated changes untouched.
 - This repo is public. Never commit private information, credentials, machine-specific secrets, personal data, or internal-only notes here, even temporarily. Use ignored local files or tracked templates instead.
 - For agent config, dotfiles is source of truth; check symlink mapping before editing
 - Skills: personal in `agents/skills/`, private in `agents/skills.local/` (optional submodule), external in `.agents/skills/`

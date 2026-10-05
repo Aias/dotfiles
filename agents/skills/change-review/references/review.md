@@ -19,7 +19,7 @@ Read-only fan-out across a change-set. Output: numbered findings in chat.
   Before suggesting *removal* of incomplete code, read the diff's intent. **Broken-because-unfinished** is not the same as **broken-because-buggy**: a not-yet-wired feature should be wired up, not amputated. The fix has to come from what the author was trying to do, not from the assumption that the broken piece should go away.
 - **Numbered list with stable IDs** (`#1`, `#2`, ...). The user replies with positional refs ("fix 2, 3, 5", "walk me through #1"). Aggregated prose loses this affordance.
 - **HIGH SIGNAL IN THE REPORT.** What reaches the user is high-signal; getting it there is [validation](#phase-3-validation)'s job, not self-censorship while finding. The [explicit false positives](#explicit-false-positives) bind every stage — pre-existing issues, linter-catchable nits, and pedantry are the wrong *category*, not merely uncertain, so no agent raises them at any point.
-- **Confidence-gate the report, not the finders.** Finder agents report everything they see, each tagged with confidence and severity; [Phase 3](#phase-3-validation) and synthesis do the dropping. A finding filtered one step later costs far less than one never raised, and the validator judges it against surrounding code the finder never read. Two things survive that handoff: the high-impact tail — a finding you couldn't fully verify but whose potential cost is severe (data loss, a security hole, silent corruption) — reaches the report tagged with what remains unverified and why this pass couldn't resolve it; and priority is never inflated to compensate for uncertainty, so report at true confidence with the gap named. Synthesis drops the low-confidence *and* low-impact residue without mention.
+- **Validate before filtering.** Finder agents report candidates with confidence and severity. [Phase 3](#phase-3-validation) classifies the evidence as confirmed, unresolved, or disproven. Report confirmed findings and unresolved high-impact risks at their actual confidence. Discard disproven findings regardless of severity.
 
 ## Phase 1: Establish scope
 
@@ -135,11 +135,15 @@ Add or substitute axes when the user names a concern: *"focus on app router patt
 
 ## Phase 3: Validation
 
-For each finding, try to refute it against the surrounding code and actual inputs. Use a fresh reviewer when independent scrutiny adds value, grouping related findings where they share context. Single-axis agents over-flag, so the validator starts adversarial: assume the finding is a false positive and try to break it by reading the cited code and the surrounding context the original agent didn't see. A finding survives only if the validator *cannot* refute it with a code citation; when the validator is unsure, it defaults to refuted.
+For each candidate, look for evidence that confirms or disproves it in the surrounding code and actual inputs. Use a fresh reviewer when independent scrutiny adds value, grouping related candidates where they share context. Give the validator the PR title and description, the candidate, and the applicable rule. It must trace the relevant callers and integration boundaries before classifying the result:
 
-Pass the validator: the PR title/description, the finding description, and the rule (if compliance). It reads the cited code and answers: *can I show this is not actually a problem here?*
+- **Confirmed:** evidence establishes the claimed behavior and impact under reachable conditions.
+- **Unresolved:** evidence is insufficient to confirm or disprove the claim. Identify the missing evidence and why it remains unavailable after investigation.
+- **Disproven:** evidence contradicts the claim or rules out its triggering conditions. Discard it regardless of potential severity.
 
-Filter out everything the validator refuted, **with one exception**: a refuted-but-high-impact finding (data loss, security, silent corruption) carries forward into the report tagged with the validator's doubt, per [confidence-gate the report, not the finders](#standing-rules-override-all-defaults). Don't silently drop a severe finding just because it couldn't be fully nailed down. Track refutation count per axis — if Axis N produced 12 findings but only 2 survived, the axis prompt likely needs tightening (signal for skill iteration, not for the report).
+Runtime reproductions must preserve the application's relevant lifecycle, inputs, and integration boundaries. State the exact command, API, or user flow exercised and keep the claim within that evidence. An isolated reproduction supports an application-level finding only after checking that its assumptions hold in the application.
+
+Carry confirmed findings into synthesis. Retain unresolved risks involving data loss, security, or silent corruption with their evidence gaps explicit. Discard other unresolved candidates. Track disproven candidates separately from unresolved ones when assessing each review axis.
 
 ## Synthesis: let spec conformance set disposition
 
@@ -153,10 +157,12 @@ When no spec axis ran, synthesis is just cross-axis dedup.
 
 ## Phase 4: Report
 
-Findings are split into two groups. The split is the load-bearing structure of the report:
+Confirmed findings are split into two groups:
 
 - **Clear fixes** — the finding has one right solution and no product/design choice gates it. Once application is authorized, apply every selected item. Severity orders the work rather than silently reducing its scope. Never present a subset of clear fixes as the bar and leave the rest as optional polish; a confirmed problem with an unambiguous fix is fixed, whether it's a data-corrupting bug or a dead export.
 - **Decisions needed** — the fix depends on a call only the user can make (product behavior, API shape, wait-for-upstream vs. patch locally, scope tradeoffs). For each: state the options with their tradeoffs in prose and give exactly one recommendation with why. A finding lands here only when the *choice* is genuinely open — "I'd have to pick an implementation detail" does not qualify; pick it and put the finding in clear fixes.
+
+List unresolved high-impact risks separately under **Unverified risks**, with the missing evidence and the investigation needed to settle each one. Keep them out of the confirmed-fix verdict.
 
 Before reporting, check each finding for clarity: open with what breaks and for whom, restore the context a cold reader lacks, and use the project's own terms — a finding that needs the review transcript to parse hasn't been written yet.
 
@@ -254,7 +260,7 @@ Do not flag any of these. They erode the signal-to-noise ratio.
 - **Style suggestions** not explicitly required by AGENTS.md / CLAUDE.md.
 - **Behavior the diff deliberately changes.** When the PR's stated purpose is to remove, loosen, or replace a behavior, don't flag that removal as a regression — it's the point of the change. Confirm the intent against the PR description or the originating spec, then flag only if the deliberate change has a blast radius the author plausibly didn't weigh (e.g. dropping a guard also exposes an unrelated path). A hardcoded-broad value or removed gate chosen on purpose is an intentional change, not a bug.
 
-Uncertainty is not on this list. Everything above is excluded by *category*; an unconfirmed finding is instead a job for [validation](#phase-3-validation), so raise it tagged with your confidence rather than staying quiet — see [confidence-gate the report, not the finders](#standing-rules-override-all-defaults).
+Send uncertain candidates to [validation](#phase-3-validation) with their confidence stated. The category exclusions above apply regardless of confidence.
 
 ## When the diff is for someone else's branch
 
@@ -290,7 +296,7 @@ When inside a Conductor workspace (paths under `~/conductor/workspaces/...`, `CO
 - **`git diff origin/<base>...HEAD`** (three-dot, after fetch) — branch-vs-base REVIEW.
 - **`mcp__conductor__GetWorkspaceDiff`** — Conductor REVIEW.
 
-**Static-analysis seeds — leads, never findings.** These surface candidates fast; none is authoritative. Every hit is confirmed by reading the actual code and call sites before it becomes a finding — the verify-don't-punt and [confidence-gate the report, not the finders](#standing-rules-override-all-defaults) rules apply to tool output too. Newer tools (deslop, react-doctor) over-flag; lean on the verification step.
+**Static-analysis seeds — leads, never findings.** These surface candidates fast; none is authoritative. Every hit passes [validation](#phase-3-validation) against the actual code and call sites before it becomes a finding. Newer tools (deslop, react-doctor) over-flag; lean on the verification step.
 
 Run them with **`bunx`** (fast, and confirmed to leave the reviewed repo's lockfile / `package.json` / working tree untouched — it caches globally, not in cwd); `npx` is the fallback where bun isn't installed.
 

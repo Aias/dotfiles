@@ -46,6 +46,6 @@ Use relative file links in repository documents. Use the destination renderer's 
 
 ### Agent instructions
 
-State the applicable condition and desired behavior. Keep each rule short. Add an example only when it prevents a likely misreading, using a representative case rather than the incident that prompted the rule. For model-facing instructions, apply the llm-prompt-authoring skill's scope and evaluation guidance.
+State the applicable condition and desired behavior. Keep each rule short. For model-facing instructions, apply the llm-prompt-authoring skill's scope and evaluation guidance.
 
 Read the finished text for missing context, unsupported claims, and needless words. Stop when the requested deliverable is complete.

@@ -83,7 +83,7 @@ When categorizing a large diff, split into: **generated / boilerplate / moved / 
 - Unnecessary or redundant type annotations.
 - Variable declarations only used once right after declaration — inline them.
 - Style inconsistent with the surrounding file.
-- Interface comments the change introduces: UI copy that narrates what the interface already shows (GLOBAL.md, "No interface comments").
+- Interface comments the change introduces: UI copy that narrates what the interface already shows (see [Interface copy](#interface-copy)).
 
 ### What NOT to remove
 
@@ -131,7 +131,21 @@ For config files that combine tool defaults with project overrides, encode only 
 
 ### Comment policy
 
-Never add code comments. Following GLOBAL.md's comment policy, exceptions require very strong surrounding precedent that comments are required, or an explicit user request. Nearby comments alone do not establish that requirement. Existing comments are not findings merely because they are comments or appear in a touched file. In APPLY, do not proactively delete them unless rewriting the code they describe. In REVIEW, do not recommend removing them solely to reduce comments. When rewriting associated code, assess its comments for accuracy and usefulness. Machine-read directives are code, and lint suppressions remain governed by the lint-directives rule. Add `TODO`-style markers only when the user specifically requests them.
+Apply GLOBAL.md's comment policy to new comments. Prefer clear names and structure to narration of what the code does or how it came to be. Existing comments are not findings merely because they are comments or appear in a touched file. When rewriting associated code, keep, update, or remove its comments according to their accuracy and usefulness. Lint suppressions remain governed by the lint-directives rule.
+
+### Interface copy
+
+Apply GLOBAL.md's no-interface-comments rule to shipped UI, prototypes, and scratch tools. Code commentary, process residue, and interface comments share one cause: signposts left for a reader who lacks the session's context. The code and interface should carry the rest.
+
+Cut headlines and intros that restate the request or tell the viewer what is already obvious, notes on provenance or method (source files, omitted items, how a value is computed), badges and captions that repeat a value already on screen, and labels padded past what disambiguates them. Keep names, values, units, and states the reader needs. Test a questionable string by deleting it and checking whether the interface still reads.
+
+A scratch tool built to make one decision shows the candidate in its real context, the controls that change it, and the value to commit. Put explanations about the artifact, its creation, and its use in chat.
+
+### Process residue
+
+Source, schema, config, and prose describe the destination shape. Flag temporal references such as "now", "previously", and "used to", and rollout metadata such as ticket IDs, "this PR", "this migration", phase or MVP labels, and shorthand that assumes the author's context.
+
+When a shape or behavior changes, migrate to it fully. Flag unrequested compatibility shims, legacy aliases, and old-format branches. A schema describes the canonical shape. Keep explanations of what a construct replaced or why it moved in the PR description or comments.
 
 ### Don't silence the tool; don't roll your own codemod
 
@@ -147,7 +161,7 @@ Applies when writing or reviewing TypeScript: typecheck failures, strictness, ge
 
 ### Type safety
 
-**Never compromise type safety**: No `any`, no type assertions (`as Type`), no non-null assertions (`!`), no `ts-ignore`/`eslint-disable`/lint-disable. Avoid `unknown` unless narrowed immediately. This holds equally in backend resolvers and services — a cast in a query layer is no more acceptable than one in a component.
+Apply GLOBAL.md's type-safety rule at every layer, including backend resolvers and services. Narrow `unknown` immediately. Type and lint suppressions remain prohibited.
 
 A cast is a symptom: the type is too wide somewhere upstream. Fix the source, not the call site.
 

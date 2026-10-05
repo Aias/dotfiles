@@ -13,7 +13,7 @@ Scope instructions to the conditions where they apply, and reserve absolutes for
 
 Keep descriptions short and specific to the task the skill actually serves. Put essential constraints in the entry point and substantial conditional workflows in references. Link another skill only when the task needs its guidance. Remove duplicated instructions across prompts, skills, and standing rules.
 
-Preserve useful tool protocols, domain knowledge, output contracts, and user preferences. Give the model room to choose a method where several methods can satisfy the task. Use examples to clarify ambiguous boundaries.
+Preserve useful tool protocols, domain knowledge, output contracts, and user preferences. Give the model room to choose a method where several methods can satisfy the task. Use representative examples to make the desired behavior concrete.
 
 Evaluate meaningful prompt changes on representative requests, including requests that should not trigger the workflow. Compare the output and behavior, not just instruction length. Usage logs can reveal misrouting, but invocation counts alone do not measure benefit. Keep conclusions scoped to the models and tasks observed.
 

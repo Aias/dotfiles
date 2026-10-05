@@ -48,7 +48,7 @@ dotfiles/
 │   ├── env.template       # Machine-specific env vars template
 │   └── secrets.template   # API keys/tokens template
 ├── git-hooks/
-│   └── pre-commit         # Auto-compiles GLOBAL.md annotations
+│   └── pre-commit         # Compiles annotations and runs source checks
 ├── .agents/
 │   └── skills/        # [E] External skills (from skills.sh)
 │       └── .../
@@ -82,6 +82,8 @@ After this repo is on your machine and zsh is sourced, the **`dotup`** alias run
 6. Register MCP servers with Claude Code (user scope)
 
 `make link` sets `SKIP_DEPENDENCY_INSTALL=1` so Homebrew/mise steps are skipped; use it when deps are already satisfied. `make update` is for pulling latest dotfiles and re-running a full install.
+
+`make check-source` runs compiler and Git hook tests and checks compiled output freshness. The pre-commit hook compiles first, runs these checks, and stages the compiled GLOBAL.md only after they pass. CI runs the same checks and rejects changes to the tracked annotation index. `make check` also verifies this machine's links and deployed skills.
 
 ## Usage
 
@@ -127,7 +129,7 @@ make update-private-skills
 
 Updating requires a clean private checkout and uses a fast-forward merge. Divergent history stops the update for review. Regular `make install`, `make link`, and `make update` deploy the private checkout as it stands, without moving its revision.
 
-Private skill edits are committed and pushed inside `agents/skills.local` first. Then commit the updated submodule reference in dotfiles. Initialization can leave the submodule detached, so create a working branch there before editing. Credentials and authentication state stay outside both repositories.
+When publishing is authorized, commit and push private skill edits inside `agents/skills.local` first. Then commit the updated submodule reference in dotfiles. Initialization can leave the submodule detached, so create a working branch there before editing. Credentials and authentication state stay outside both repositories.
 
 ### Adding a Personal Skill
 

@@ -11,7 +11,7 @@ Read feedback during a requested refinement or periodic maintenance task. Normal
 
 Compare each relevant note with the current source instructions and the user's intent. Repeated corrections can reveal a missing rule, but repetition alone does not make a task-specific preference universal. Keep unsupported inferences in the queue. Flag conflicts with explicit standing rules instead of silently overriding them.
 
-Consolidate supported guidance into the smallest appropriate source: a skill, project instructions, or GLOBAL.md. Scope harness-specific guidance with the inclusion markers. Keep private details in local-only sources. Add examples only when they clarify the rule on a different, representative task.
+Consolidate supported guidance into the smallest appropriate source: a skill, project instructions, or GLOBAL.md. Scope harness-specific guidance with the inclusion markers. Keep private details in local-only sources.
 
 An explicit request to apply a defined refinement authorizes that edit. For proposed changes to standing preferences that the user has not authorized, present the wording, destination, and reason for approval. Reuse authorization already given in the session.
 

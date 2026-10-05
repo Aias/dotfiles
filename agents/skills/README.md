@@ -6,7 +6,7 @@ Skill sources live in three directories:
 - `.agents/skills/`: external skills tracked by `skills-lock.json`.
 - `agents/skills.local/`: private skills in an optional submodule with its own history.
 
-Use `make setup-private-skills` to initialize the pinned private revision and `make update-private-skills` to fast-forward it to its remote main branch. Commit and push private changes in that repository before recording its updated commit reference in dotfiles. See [private skills](../../README.md#private-skills).
+Use `make setup-private-skills` to initialize the pinned private revision and `make update-private-skills` to fast-forward it to its remote main branch. When publishing is authorized, commit and push private changes in that repository before recording its updated commit reference in dotfiles. See [private skills](../../README.md#private-skills).
 
 Edit these sources. `make compile` generates deployment files and `make link` installs them. Installed skills and generated files are build outputs.
 

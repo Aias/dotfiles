@@ -12,7 +12,7 @@ global_category: Workflow
 <!-- @> A task-specific instruction does not establish a standing preference -->
 Capture guidance that should change behavior on future tasks. Apply the user's immediate correction first. A task-specific instruction does not imply a new standing rule.
 
-Read the relevant existing guidance before adding anything. Quote an existing rule when it already covers the preference. Otherwise consolidate overlapping instructions and describe the applicable condition. Use a representative example only when the rule would be ambiguous without it.
+Read the relevant existing guidance before adding anything. Quote an existing rule when it already covers the preference. Otherwise consolidate overlapping instructions and describe the applicable condition.
 
 ## Choose a home
 
@@ -33,4 +33,4 @@ For a skill with `global_category`, add an annotation only when the rule belongs
 
 An explicit request to save a specific preference authorizes the corresponding edit. If the inferred rule would broaden the user's request or change an existing preference, show the proposed wording and location for approval. Existing authorization persists across turns.
 
-After an authorized edit to dotfiles guidance, run `make compile` and `make link`, then commit and push as GLOBAL.md's dotfiles rule directs. Report what was saved and where. Read the refine-skills skill when the task is to distill accumulated feedback.
+After an authorized edit to dotfiles guidance, run `make compile`, `make link`, and the relevant checks. Report what changed and where. Follow GLOBAL.md's dotfiles policy for authorization before committing or pushing. Read the refine-skills skill when the task is to distill accumulated feedback.

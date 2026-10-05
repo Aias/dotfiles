@@ -1,10 +1,16 @@
-.PHONY: compile install setup setup-private-skills link update fast-forward-private-skills update-private-skills update-skills check test-compile-global
+.PHONY: compile install setup setup-private-skills link update fast-forward-private-skills update-private-skills update-skills check check-source test-compile-global test-hooks
 
 compile:
 	bun agents/compile-global.ts
 
 test-compile-global:
 	bun test agents/compile-global.test.ts
+
+test-hooks:
+	bun test git-hooks/tests
+
+check-source: test-compile-global test-hooks
+	@bun agents/compile-global.ts --check
 
 # Full install with dependencies
 install:
@@ -51,8 +57,7 @@ update-skills:
 	@echo "External skills updated. Review changes and commit if needed."
 
 # Check symlink health
-check: test-compile-global
-	@bun agents/compile-global.ts --check
+check: check-source
 	@GREEN='\033[0;32m'; RED='\033[0;31m'; YELLOW='\033[0;33m'; BOLD='\033[1m'; DIM='\033[2m'; RESET='\033[0m'; \
 	issues=""; \
 	current_section=""; \
