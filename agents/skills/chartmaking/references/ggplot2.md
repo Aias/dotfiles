@@ -30,6 +30,12 @@ Use `coord_cartesian()` for a visual zoom that preserves data used by statistics
 
 Use horizontal dot plots as the default for categorical quantity comparisons. Keep categories on labeled rows and quantitative values on a shared axis. Add multiple series as dots within each row, uncertainty as intervals, or `geom_segment()` between meaningful pairs such as two observation dates. Keep ordering consistent across series and related panels. Direct labels, shape, or restrained color can identify series. Use aligned panels for incompatible units unless an explicit common index supports the comparison.
 
+For an integrated comparison, compute row positions once and share them across identifier columns, contextual fields, marks, and numerical labels. Give each quantitative column an explicit scale and unit. Align exact values at a consistent precision. Use text columns for recurring qualifiers that affect interpretation. The [worked comparison](aligned-comparison.md) includes an executable example with two quantitative scales and a contextual benchmark.
+
+Use related point shapes for related states. Shape 21 supports a common circular outline with independently mapped fill. Use the chart background for an open-looking interior and data ink for a filled interior. Inspect overlap: outlines can accumulate into a dark mark, and opaque fills can conceal coincident observations. Adjust size, stroke, or the display arrangement so both identity and multiplicity remain legible. Use an unencoded direction for any positional separation.
+
+Build event and benchmark layers from explicit reference data. Use `geom_vline()` or `geom_hline()` with the relevant scale, or insert a labeled separator between chronological rows. A separator locates an event in the sequence without implying that equal row spacing represents equal elapsed time. Keep annotation labels close to the reference and include their source in the accompanying documentation or reproducible input.
+
 ## Reorderable matrices
 
 Compute entity and variable orders once, then apply them to every mark layer, label column, group strip, and accompanying interpretation view. Preserve the permutation in the source. Compare meaningful orders or similarity arrangements while retaining observations that disagree with the apparent pattern.
@@ -56,6 +62,8 @@ Determine row heights from legible text and discernible variation at the final d
 
 Start from `theme_minimal()` and adapt it to the comparison. Keep major gridlines where they support estimation, quiet supporting layers, and remove minor grids or panel furniture that add no information. Apply chart-specific choices through `theme()` rather than imposing one fixed theme on every geometry. See [theme components](https://ggplot2.tidyverse.org/reference/theme.html).
 
+Carry the chosen background through `plot.background`, `panel.background`, the output device, and any open-looking point fills. Fine neutral rules, modest headings, and muted secondary labels establish hierarchy around stronger data marks. Judge spacing by how easily the eye follows one observation across the display.
+
 Use the destination's typeface when available. Choose text size at the intended display dimensions. Use alignment, regular spacing, tabular numbers, compact facet labels, and clear weight differences to support dense reading. Keep data labels close to their marks. Reserve annotation for values, events, units, and definitions that change interpretation.
 
 Theme text sizes are in points. Geometric text uses millimeters by default, while `geom_text(size.unit = "pt")` accepts point sizes. Set `linewidth` explicitly for thin line layers and judge it in the exported artifact. See [aesthetic specifications](https://ggplot2.tidyverse.org/articles/ggplot2-specs.html).
@@ -81,8 +89,7 @@ ggplot2::ggsave(
   device = svglite::svglite,
   width = display_width / 96,
   height = display_height / 96,
-  units = "in",
-  bg = "white"
+  units = "in"
 )
 
 ggplot2::ggsave(
@@ -92,8 +99,7 @@ ggplot2::ggsave(
   width = display_width / 96,
   height = display_height / 96,
   units = "in",
-  dpi = 96 * pixel_ratio,
-  bg = "white"
+  dpi = 96 * pixel_ratio
 )
 ```
 

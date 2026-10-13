@@ -28,6 +28,11 @@ Inspect the data before choosing the form. Identify the observational unit, meas
 denominators, time coverage, and the distinction between nominal, ordered, and quantitative fields.
 Preserve differences between zero, missing, and not applicable. Check aggregation, incomplete
 periods, and uncertainty when they affect interpretation. Keep transformations in the source.
+Read accompanying metadata, data dictionaries, and notes for coverage limits, reference values,
+and contextual events. Verify event dates against their sources and place useful annotations
+beside the observations they clarify. Distinguish external events from changes in measurement.
+A temporal association alone does not establish causation. Chronologically ordered rows preserve
+sequence, while a continuous time axis also represents elapsed time.
 
 ## Encode and arrange
 
@@ -48,10 +53,22 @@ change, multiple dots for comparable series, or intervals for uncertainty. Conne
 ordered observations when the relationship is meaningful. Give variables with incompatible units
 separate aligned panels or an explicitly defined common index. Use bars when length from zero
 or stacked composition serves the reading task, or when the user requests them.
+
+For named observations with several relevant attributes, favor aligned text columns, dot plots,
+and exact numerical values in a shared row. Keep identifiers, contextual categories, and measurement
+qualifiers beside the observations they describe. Give recurring qualifiers a readable column.
+Plot supporting quantities when their distribution helps the comparison, using separate scales
+for incompatible units. Include fields that change interpretation or support useful comparisons.
+See the [worked comparison](references/aligned-comparison.md) for an example of this arrangement.
+
 Use proportional symbols when overall magnitude matters, with area proportional to quantity.
 Texture and orientation remain available when they are legible at the export size.
 Give each visible distinction a stable meaning. For many categories, use grouping, position, or
 facets so readers can perceive distributions without decoding a large inventory of symbols.
+For related states of the same kind of observation, prefer variations within one symbol family,
+such as open and filled circles. Match the prominence of a distinction to its importance.
+Check whether overlapping marks can resemble another encoded state. Adjust mark size, stroke,
+or arrangement while preserving quantitative positions and keeping multiplicity apparent.
 
 Order categories by a relevant measure, meaningful grouping, or similarity rather than accepting
 input order. Preserve chronology and other inherent orders when position carries that meaning.
@@ -78,9 +95,12 @@ to a few averages. Organize the view to reveal overall structure, groups, except
 Support sustained study when it yields useful discoveries. Reduce effort spent decoding the display
 while retaining evidence worth examining closely. Judge efficiency against the question being asked.
 
-Use facets and small multiples as standard tools for multivariate comparison. Align panels and keep
-scales consistent when comparing magnitudes. Use free scales for within-panel patterns only when
-their differences are explicit. Keep category order and visual encodings stable across panels.
+Choose the primary display from the observed distributions, group sizes, repeated values, and
+overlap. Use facets and small multiples when separating groups reveals useful structure.
+Sparse panels or clusters of coincident marks can make an aligned comparison more informative.
+Add a secondary view when it reveals a relationship the primary display obscures.
+Align panels and keep scales consistent when comparing magnitudes. Use free scales for within-panel
+patterns only when their differences are explicit. Keep category order and encodings stable across panels.
 
 Use scatterplot matrices to expose pairwise relationships among several quantitative variables.
 Use conditioned scatterplots to examine how a relationship changes across groups or ranges of
@@ -102,7 +122,10 @@ line segments toward 45 degrees when slope differences matter, while preserving 
 
 ## Restrained visual hierarchy
 
-Keep large backgrounds and supporting layers quiet. Give the data the strongest visual signal.
+When the destination has no established visual system, default to a subtly warm near-white
+background, dark neutral primary text, muted secondary text, and fine supporting rules.
+Use compact, readable typography and modest headings. Keep related fields close enough to scan
+across a row, with spacing that distinguishes groups. Give the data the strongest visual signal.
 Concentrate saturation and contrast where they carry meaning. Use sequential lightness for ordered
 magnitude, diverging color around a meaningful reference, and qualitative colors for categories.
 Check distinctions against the actual marks and background. Reinforce essential color differences

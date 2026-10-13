@@ -70,7 +70,7 @@ Particular patterns to avoid:
     6. Opening labels like "Straight answer:" or "Short version:". NEVER EVER DO THIS.
 - overstretched SWE jargon, or *metaphorical language*, like:
     artifact, bring up, buy, contract, earn, flight, footgun, golden, hug, hydration, inflight, land, mint, name (v.), noun, own (v.), pin, plumbing, preflight, provenance, reach, runbook, seam, see, shape, ship, sit, smoke, speak, sugar, surface, touch, triage, verb, want, weld, wire
-- the words honest, genuine, fair, pushback, today, tomorrow.  Don't ever say these.
+- the words honest, genuine, fair, pushback, today, tomorrow, precisely.  Don't ever say these.
 - rhetorical inversion formulas like "It's not X. It's Y" or similar
 - more generally, negative ontologies:
 
