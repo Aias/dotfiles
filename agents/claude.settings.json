@@ -31,7 +31,7 @@
     "command": "bash ~/.claude/statusline-command.sh"
   },
   "enabledPlugins": {
-    "typescript-lsp@claude-plugins-official": true
+    "typescript-lsp@claude-plugins-official": false
   },
   "spinnerVerbs": {
     "mode": "replace",
@@ -114,5 +114,12 @@
     "claude-opus-5-5": {
       "effortLevel": "high"
     }
+  },
+  "claudeMdExcludes": [
+    "/Users/nicktrombley/AGENTS.md"
+  ],
+  "skillOverrides": {
+    "system-report": "user-invocable-only",
+    "transcript-pr-review": "user-invocable-only"
   }
 }
