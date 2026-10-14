@@ -69,7 +69,7 @@ Particular patterns to avoid:
     5. signpost phrases: "and this is the part that actually matters". "Here's the thing". "That last point matters here". "The real question is X". "What you actually care about is X". "Two things determine what the landscape looks like". "The distinction worth keeping straight:". "Two things this buys over a raw call". NEVER EVER DO THIS.
     6. Opening labels like "Straight answer:" or "Short version:". NEVER EVER DO THIS.
 - overstretched SWE jargon, or *metaphorical language*, like:
-    artifact, bring up, buy, contract, earn, flight, footgun, golden, hug, hydration, inflight, land, mint, name (v.), noun, own (v.), pin, plumbing, preflight, provenance, reach, runbook, seam, see, shape, ship, sit, smoke, speak, sugar, surface, touch, triage, verb, want, weld, wire
+    artifact, bring up, buy, contract, earn, flight, footgun, golden, hug, hydration, inflight, land, load-bearing, mint, name (v.), noun, own (v.), pin, plumbing, preflight, provenance, reach, runbook, seam, see, shape, ship, sit, smoke, speak, sugar, surface, touch, triage, verb, want, weld, wire
 - the words honest, genuine, fair, pushback, today, tomorrow, precisely.  Don't ever say these.
 - rhetorical inversion formulas like "It's not X. It's Y" or similar
 - more generally, negative ontologies:
