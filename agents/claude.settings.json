@@ -119,7 +119,10 @@
     "/Users/nicktrombley/AGENTS.md"
   ],
   "skillOverrides": {
+    "pangram": "user-invocable-only",
     "system-report": "user-invocable-only",
     "transcript-pr-review": "user-invocable-only"
-  }
+  },
+  "syncClaudeAiPlugins": false,
+  "syncClaudeAiSkills": false
 }
