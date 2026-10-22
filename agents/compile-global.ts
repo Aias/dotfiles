@@ -10,7 +10,7 @@ import {
 } from "fs/promises";
 import { basename, dirname, join } from "path";
 
-type Target = "claude" | "codex" | "cursor";
+type Target = "claude" | "codex" | "cursor" | "devin";
 type Filter = Target | "shared" | "union";
 
 const ANNOTATION_RE = /^<!-- @> (.+?) -->$/;
@@ -25,7 +25,8 @@ const SKILL_SOURCE_DIRS = [
   ".agents/skills",
   LOCAL_SKILLS_DIR,
 ];
-const TARGETS: Target[] = ["claude", "codex", "cursor"];
+const TARGETS: Target[] = ["claude", "codex", "cursor", "devin"];
+const MAX_GLOBAL_BYTES = 16384;
 
 interface Summary {
   text: string;
@@ -64,9 +65,8 @@ interface Options {
 }
 
 function targetFromString(value: string, context: string): Target {
-  if (value === "claude" || value === "codex" || value === "cursor") {
-    return value;
-  }
+  const target = TARGETS.find((candidate) => candidate === value);
+  if (target) return target;
   throw new Error(`Unknown harness target "${value}" in ${context}`);
 }
 
@@ -398,10 +398,14 @@ async function createArtifacts(
       "agents/GLOBAL.md",
       target,
     );
-    artifacts.set(`${target}/GLOBAL.md`, {
-      content: updateGlobalMd(filteredGlobal, compiled),
-      mode: 0o644,
-    });
+    const global = updateGlobalMd(filteredGlobal, compiled);
+    const bytes = new TextEncoder().encode(global).length;
+    if (bytes > MAX_GLOBAL_BYTES) {
+      throw new Error(
+        `${target}/GLOBAL.md is ${bytes} bytes; Devin reads only the first ${MAX_GLOBAL_BYTES}`,
+      );
+    }
+    artifacts.set(`${target}/GLOBAL.md`, { content: global, mode: 0o644 });
     const excluded = skills
       .filter((skill) => skill.targets && !skill.targets.includes(target))
       .map((skill) => skill.name)
@@ -458,10 +462,7 @@ async function checkArtifacts(
   for (const relPath of actualFiles) {
     const root = relPath.split("/")[0];
     if (
-      (root === "claude" ||
-        root === "codex" ||
-        root === "cursor" ||
-        root === "shared") &&
+      [...TARGETS, "shared"].some((name) => name === root) &&
       !artifacts.has(relPath)
     ) {
       stale.push(relPath);

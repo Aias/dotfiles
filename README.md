@@ -27,6 +27,10 @@ dotfiles/
 │   ├── keybindings.json # Cursor keybindings
 │   ├── cli-config.json  # Cursor CLI template (attribution merged into ~/.cursor/cli-config.json)
 │   └── mcp.json         # MCP server config
+├── devin/
+│   ├── settings.json    # Devin editor settings
+│   ├── config.json      # Devin CLI template (read_config_from merged into ~/.config/devin/config.json)
+│   └── mcp_config.json  # Devin MCP servers
 ├── agents/
 │   ├── GLOBAL.md      # Shared AI guidelines + compiled @> skill index block
 │   ├── claude.settings.json     # Claude Code settings
@@ -77,8 +81,8 @@ After this repo is on your machine and zsh is sourced, the **`dotup`** alias run
 1. Compile skill annotations and harness inclusion into generated instructions and skill trees
 2. Back up any existing files to `~/.dotfiles-backup/`
 3. Create symlinks from this repo to `~/` (based on `links.txt`)
-4. Copy mise global config and Cursor `global.mdc` (not symlinked — see `install.sh`); merge tracked Cursor CLI attribution into `~/.cursor/cli-config.json` (not a symlink — Cursor writes auth/model there); symlink `~/AGENTS.md` for Cursor CLI ancestor discovery
-5. Sync all skills (personal, external, local) to `~/.claude/skills/`, `~/.codex/skills/`, and `~/.cursor/skills/`
+4. Copy mise global config and Cursor `global.mdc` (not symlinked — see `install.sh`); merge tracked Cursor CLI attribution into `~/.cursor/cli-config.json` and Devin `read_config_from` into `~/.config/devin/config.json` (not symlinks — each tool writes auth, model, or permissions there); symlink `~/AGENTS.md` for Cursor CLI ancestor discovery
+5. Sync all skills (personal, external, local) to `~/.claude/skills/`, `~/.codex/skills/`, `~/.cursor/skills/`, and `~/.config/devin/skills/`
 6. Register MCP servers with Claude Code (user scope)
 
 `make link` sets `SKIP_DEPENDENCY_INSTALL=1` so Homebrew/mise steps are skipped; use it when deps are already satisfied. `make update` is for pulling latest dotfiles and re-running a full install.
@@ -87,7 +91,7 @@ After this repo is on your machine and zsh is sourced, the **`dotup`** alias run
 
 ## Usage
 
-Edit symlinked files in this repo; changes apply immediately. Copied/merged files (`mise/global-config.toml`, Cursor global rules, Cursor CLI attribution) need `make link` after edits. After pulling:
+Edit symlinked files in this repo; changes apply immediately. Copied/merged files (`mise/global-config.toml`, Cursor global rules, Cursor CLI attribution, Devin config) need `make link` after edits. After pulling:
 
 ```bash
 source ~/.zshrc
@@ -159,7 +163,7 @@ make update-skills
 
 1. Delete the skill directory under `agents/skills/`, `agents/skills.local/`, or `.agents/skills/`
 2. Remove any matching entry from `skills-lock.json` (external skills)
-3. Delete the same skill name under `~/.claude/skills/`, `~/.codex/skills/`, and `~/.cursor/skills/` (not done automatically)
+3. Delete the same skill name under `~/.claude/skills/`, `~/.codex/skills/`, `~/.cursor/skills/`, and `~/.config/devin/skills/` (not done automatically)
 
 ### Verifying Sync Status
 
@@ -170,7 +174,7 @@ make check
 Shows a table of all skills with sync status for each agent:
 
 ```
-skill                        type  claude  codex  cursor
-changelog                    [P]   ✓       ✓      ✓
-react-best-practices         [P]   ✓       ✓      ✓
+skill                        type  claude  codex  cursor  devin
+changelog                    [P]   ✓       ✓      ✓       ✓
+react-best-practices         [P]   ✓       ✓      ✓       ✓
 ```

@@ -215,7 +215,7 @@ describe("compile-global", () => {
     await rm(join(root, "agents/skills.local"), { recursive: true });
     expect((await runCompiler(root)).exitCode).toBe(0);
     expect((await runCompiler(root, "--check")).exitCode).toBe(0);
-    for (const target of ["claude", "codex", "cursor"]) {
+    for (const target of ["claude", "codex", "cursor", "devin"]) {
       const built = join(root, "agents/.build", target);
       expect(await Bun.file(join(built, "skills/shared/SKILL.md")).exists()).toBe(true);
       expect(await Bun.file(join(built, "skills/private/SKILL.md")).exists()).toBe(false);
@@ -232,6 +232,15 @@ describe("compile-global", () => {
     expect(await Bun.file(join(built, "private/SKILL.md")).exists()).toBe(true);
     expect(await Bun.file(join(built, ".git")).exists()).toBe(false);
     expect(await Bun.file(join(built, "README.md")).exists()).toBe(false);
+  });
+
+  test("rejects a target GLOBAL.md over the size limit", async () => {
+    const root = await createFixture();
+    const globalPath = join(root, "agents/GLOBAL.md");
+    await writeFile(globalPath, `${"x".repeat(16384)}\n${await readFile(globalPath, "utf8")}`);
+    const result = await runCompiler(root);
+    expect(result.exitCode).toBe(1);
+    expect(result.stderr).toContain("Devin reads only the first 16384");
   });
 
   test("check detects stale outputs without rewriting them", async () => {

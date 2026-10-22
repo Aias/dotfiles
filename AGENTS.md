@@ -4,13 +4,14 @@ Personal dotfiles repo — shell config, git, editor settings, and AI agent conf
 
 ## Structure
 
-- `agents/GLOBAL.md` — Source global instructions + compiled `@>` skill index. Harness-specific generated versions are symlinked to `~/.claude/CLAUDE.md` and `~/.codex/AGENTS.md`, with shared-only output at `~/AGENTS.md` and Cursor output copied to `global.mdc`. Conductor-specific detail lives in the `/conductor` skill; GLOBAL keeps a short pointer and compiled reminders.
+- `agents/GLOBAL.md` — Source global instructions + compiled `@>` skill index. Harness-specific generated versions are symlinked to `~/.claude/CLAUDE.md`, `~/.codex/AGENTS.md`, and `~/.config/devin/AGENTS.md`, with shared-only output at `~/AGENTS.md` and Cursor output copied to `global.mdc`. Conductor-specific detail lives in the `/conductor` skill; GLOBAL keeps a short pointer and compiled reminders.
 - `agents/skills/` — Personal agent skills (tracked)
 - `agents/skills.local/` — Private skills (optional submodule)
 - `agents/compile-global.ts` — Compiles `@>` annotations from skills into GLOBAL.md's dense index
 - `agents/.build/<target>/` — Generated instructions and complete skill trees for each harness, gitignored
 - `agents/claude.settings.json` — Claude Code settings
 - `agents/codex.config.toml` — Codex settings
+- `devin/` — Devin editor settings, MCP servers, and a `read_config_from` template merged into the live `~/.config/devin/config.json`; the template turns off Claude, Cursor, and Windsurf imports so Devin loads only its own build
 - `agents/conductor.settings.toml` — Conductor user settings (schema: `https://conductor.build/schemas/settings.schema.json`)
 - `agents/hooks/` — Shell-command hooks shared by Claude Code and Codex (PR guideline reminder); the `.sh` entry points call `shell_commands.py`, which parses the command rather than matching its text
 - `.agents/skills/` — External skills (from skills.sh)
@@ -24,11 +25,12 @@ Personal dotfiles repo — shell config, git, editor settings, and AI agent conf
 ## Conventions
 
 - Edit config in this repo, not in `~/` — symlinks propagate changes automatically
-- Work directly on `main`. Follow GLOBAL.md's dotfiles policy for review and authorization before committing or pushing. Leave unrelated changes untouched.
+- Work directly on `main`. Leave unrelated changes untouched.
+- After editing, run `make compile`, `make link`, and the relevant checks, then summarize the changes for review. Committing and pushing this repo or `agents/skills.local/` require explicit authorization in the current task. An instruction to update guidance authorizes the edits and local deployment only. When publishing is authorized, check for private information and publish private-submodule changes before committing the submodule pointer here.
 - This repo is public. Never commit private information, credentials, machine-specific secrets, personal data, or internal-only notes here, even temporarily. Use ignored local files or tracked templates instead.
 - For agent config, dotfiles is source of truth; check symlink mapping before editing
 - Skills: personal in `agents/skills/`, private in `agents/skills.local/` (optional submodule), external in `.agents/skills/`
-- Skill deploy **does not prune** `~/.claude/skills/`, `~/.codex/skills/`, or `~/.cursor/skills/`: removing or renaming a skill in the repo leaves old directories in home until you delete them (see README _Managing Skills_ / `/skills-manager`)
+- Skill deploy **does not prune** `~/.claude/skills/`, `~/.codex/skills/`, `~/.cursor/skills/`, or `~/.config/devin/skills/`: removing or renaming a skill in the repo leaves old directories in home until you delete them (see README _Managing Skills_ / `/skills-manager`)
 
 ## Annotation Compilation
 

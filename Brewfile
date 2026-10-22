@@ -3,6 +3,7 @@
 
 # Apps
 cask "araxis-merge"
+cask "devin-cli"
 
 # CLI Tools
 brew "bat"

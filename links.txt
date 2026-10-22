@@ -26,6 +26,11 @@ Claude | agents/hooks/check-pr-guidelines.sh | .claude/hooks/check-pr-guidelines
 Codex | agents/.build/codex/GLOBAL.md | .codex/AGENTS.md | .codex/AGENTS.md
 Codex | agents/codex.config.toml | .codex/config.toml | .codex/config.toml
 
+# Devin
+Devin | agents/.build/devin/GLOBAL.md | .config/devin/AGENTS.md | .config/devin/AGENTS.md
+Devin | devin/mcp_config.json | .config/devin/mcp_config.json | .config/devin/mcp_config.json
+Devin | devin/settings.json | Library/Application Support/Devin/User/settings.json | Devin/User/settings.json
+
 # Conductor
 Conductor | agents/conductor.settings.toml | .conductor/settings.toml | .conductor/settings.toml
 

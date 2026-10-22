@@ -25,7 +25,7 @@ Read the relevant existing guidance before adding anything. Quote an existing ru
 | Deterministic enforcement | A hook and its harness registration |
 | An inferred preference needing later review | The relevant skill's `skill.feedback.md` |
 
-Edit dotfiles sources, not installed copies. Keep private information out of tracked files in the public dotfiles repository. Harness-private memory can hold working context, but shared standing rules belong in the source files above.
+Edit dotfiles sources, not installed copies. Keep private information out of tracked files in the public dotfiles repository. Harness-private memory can hold a project's working context, but it stays harness-private and machine-local, so standing rules belong in the source files above.
 
 For a skill with `global_category`, add an annotation only when the rule belongs in every relevant session. Keep detailed procedures in the skill. Use harness sections for guidance that applies only to a particular harness.
 
@@ -33,4 +33,4 @@ For a skill with `global_category`, add an annotation only when the rule belongs
 
 An explicit request to save a specific preference authorizes the corresponding edit. If the inferred rule would broaden the user's request or change an existing preference, show the proposed wording and location for approval. Existing authorization persists across turns.
 
-After an authorized edit to dotfiles guidance, run `make compile`, `make link`, and the relevant checks. Report what changed and where. Follow GLOBAL.md's dotfiles policy for authorization before committing or pushing. Read the refine-skills skill when the task is to distill accumulated feedback.
+After an authorized edit to dotfiles guidance, run `make compile`, `make link`, and the relevant checks. Report what changed and where. Committing or pushing dotfiles requires explicit authorization in the current task, as the dotfiles `AGENTS.md` describes. Read the refine-skills skill when the task is to distill accumulated feedback.

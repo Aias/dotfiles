@@ -98,17 +98,22 @@ check: check-source
 		printf "  $${YELLOW}-$${RESET} %s $${DIM}(missing)$${RESET}\n" ".cursor/rules/global.mdc"; \
 		issues="$$issues .cursor/rules/global.mdc"; \
 	fi; \
-	if [ -L ~/.cursor/cli-config.json ]; then \
-		printf "  $${RED}✗$${RESET} %s $${DIM}(symlink — live file must stay a real JSON file)$${RESET}\n" ".cursor/cli-config.json"; \
-		issues="$$issues .cursor/cli-config.json"; \
-	elif [ -f ~/.cursor/cli-config.json ]; then \
-		python3 -c 'import json,pathlib,sys; d=json.loads(pathlib.Path.home().joinpath(".cursor/cli-config.json").read_text()); a=d.get("attribution") or {}; sys.exit(0 if a.get("attributePRsToAgent") is False and a.get("attributeCommitsToAgent") is False else 1)' \
-			&& printf "  $${GREEN}✓$${RESET} %s\n" ".cursor/cli-config.json attribution" \
-			|| { printf "  $${RED}✗$${RESET} %s $${DIM}(attribution not false — run make link)$${RESET}\n" ".cursor/cli-config.json"; issues="$$issues .cursor/cli-config.json"; }; \
-	else \
-		printf "  $${YELLOW}-$${RESET} %s $${DIM}(missing)$${RESET}\n" ".cursor/cli-config.json"; \
-		issues="$$issues .cursor/cli-config.json"; \
-	fi; \
+	check_merged() { \
+		local live="$$HOME/$$2"; \
+		if [ -L "$$live" ]; then \
+			printf "  $${RED}✗$${RESET} %s $${DIM}(symlink — live file must stay a real JSON file)$${RESET}\n" "$$2"; issues="$$issues $$2"; \
+		elif [ -f "$$live" ]; then \
+			python3 -c 'import json,sys; t=json.load(open(sys.argv[1]))[sys.argv[3]]; l=json.load(open(sys.argv[2])).get(sys.argv[3]) or {}; sys.exit(0 if all(l.get(k) == v for k, v in t.items()) else 1)' "$$1" "$$live" "$$3" \
+				&& printf "  $${GREEN}✓$${RESET} %s\n" "$$2 $$3" \
+				|| { printf "  $${RED}✗$${RESET} %s $${DIM}(%s out of sync — run make link)$${RESET}\n" "$$2" "$$3"; issues="$$issues $$2"; }; \
+		else \
+			printf "  $${YELLOW}-$${RESET} %s $${DIM}(missing)$${RESET}\n" "$$2"; issues="$$issues $$2"; \
+		fi; \
+	}; \
+	check_merged cursor/cli-config.json .cursor/cli-config.json attribution; \
+	echo ""; \
+	printf "$${BOLD}Devin (special)$${RESET}\n"; \
+	check_merged devin/config.json .config/devin/config.json read_config_from; \
 	echo ""; \
 	printf "$${BOLD}Node (special)$${RESET}\n"; \
 	if [ -f ~/.config/mise/config.toml ] && ! [ -L ~/.config/mise/config.toml ]; then \
@@ -128,27 +133,19 @@ check: check-source
 	for skill in $$(ls -1d agents/skills/*/ .agents/skills/*/ agents/skills.local/*/ 2>/dev/null | xargs -I{} basename {}); do \
 		len=$${#skill}; [ $$len -gt $$max_w ] && max_w=$$len; \
 	done; \
-	printf "  %-$${max_w}s  type  claude  codex  cursor\n" "skill"; \
+	printf "  %-$${max_w}s  type  claude  codex  cursor  devin\n" "skill"; \
 	check_skill() { \
-		local skill="$$1" type_label="$$2"; \
-		local claude="$${YELLOW}-$${RESET}" codex="$${YELLOW}-$${RESET}" cursor="$${YELLOW}-$${RESET}"; \
-		local built target exclusions; \
-		built="agents/.build/claude/skills/$$skill"; target="$$HOME/.claude/skills/$$skill"; exclusions="agents/.build/claude/excluded-skills.txt"; \
-		if [ -d "$$built" ] && [ -d "$$target" ] && [ -z "$$(rsync -anic --delete "$$built/" "$$target/")" ]; then claude="$${GREEN}✓$${RESET}"; \
-		elif [ -d "$$built" ]; then claude="$${RED}✗$${RESET}"; issues="$$issues claude:$$skill"; \
-		elif grep -Fxq "$$skill" "$$exclusions" && { [ -e "$$target" ] || [ -L "$$target" ]; }; then claude="$${RED}✗$${RESET}"; issues="$$issues claude:$$skill"; \
-		elif grep -Fxq "$$skill" "$$exclusions"; then claude="$${DIM}-$${RESET}"; fi; \
-		built="agents/.build/codex/skills/$$skill"; target="$$HOME/.codex/skills/$$skill"; exclusions="agents/.build/codex/excluded-skills.txt"; \
-		if [ -d "$$built" ] && [ -d "$$target" ] && [ -z "$$(rsync -anic --delete "$$built/" "$$target/")" ]; then codex="$${GREEN}✓$${RESET}"; \
-		elif [ -d "$$built" ]; then codex="$${RED}✗$${RESET}"; issues="$$issues codex:$$skill"; \
-		elif grep -Fxq "$$skill" "$$exclusions" && { [ -e "$$target" ] || [ -L "$$target" ]; }; then codex="$${RED}✗$${RESET}"; issues="$$issues codex:$$skill"; \
-		elif grep -Fxq "$$skill" "$$exclusions"; then codex="$${DIM}-$${RESET}"; fi; \
-		built="agents/.build/cursor/skills/$$skill"; target="$$HOME/.cursor/skills/$$skill"; exclusions="agents/.build/cursor/excluded-skills.txt"; \
-		if [ -d "$$built" ] && [ -d "$$target" ] && [ -z "$$(rsync -anic --delete "$$built/" "$$target/")" ]; then cursor="$${GREEN}✓$${RESET}"; \
-		elif [ -d "$$built" ]; then cursor="$${RED}✗$${RESET}"; issues="$$issues cursor:$$skill"; \
-		elif grep -Fxq "$$skill" "$$exclusions" && { [ -e "$$target" ] || [ -L "$$target" ]; }; then cursor="$${RED}✗$${RESET}"; issues="$$issues cursor:$$skill"; \
-		elif grep -Fxq "$$skill" "$$exclusions"; then cursor="$${DIM}-$${RESET}"; fi; \
-		printf "  %-$${max_w}s  %b   %b       %b      %b\n" "$$skill" "$$type_label" "$$claude" "$$codex" "$$cursor"; \
+		local skill="$$1" type_label="$$2" name built target exclusions status; \
+		set --; \
+		for entry in claude:.claude/skills codex:.codex/skills cursor:.cursor/skills devin:.config/devin/skills; do \
+			name="$${entry%%:*}"; built="agents/.build/$$name/skills/$$skill"; target="$$HOME/$${entry#*:}/$$skill"; exclusions="agents/.build/$$name/excluded-skills.txt"; status="$${YELLOW}-$${RESET}"; \
+			if [ -d "$$built" ] && [ -d "$$target" ] && [ -z "$$(rsync -anic --delete "$$built/" "$$target/")" ]; then status="$${GREEN}✓$${RESET}"; \
+			elif [ -d "$$built" ]; then status="$${RED}✗$${RESET}"; issues="$$issues $$name:$$skill"; \
+			elif grep -Fxq "$$skill" "$$exclusions" && { [ -e "$$target" ] || [ -L "$$target" ]; }; then status="$${RED}✗$${RESET}"; issues="$$issues $$name:$$skill"; \
+			elif grep -Fxq "$$skill" "$$exclusions"; then status="$${DIM}-$${RESET}"; fi; \
+			set -- "$$@" "$$status"; \
+		done; \
+		printf "  %-$${max_w}s  %b   %b       %b      %b       %b\n" "$$skill" "$$type_label" "$$@"; \
 	}; \
 	for skill in $$(ls -1d agents/skills/*/ 2>/dev/null | xargs -I{} basename {}); do \
 		check_skill "$$skill" "$${DIM}[P]$${RESET}"; \
