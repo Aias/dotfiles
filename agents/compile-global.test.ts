@@ -215,7 +215,7 @@ describe("compile-global", () => {
     await rm(join(root, "agents/skills.local"), { recursive: true });
     expect((await runCompiler(root)).exitCode).toBe(0);
     expect((await runCompiler(root, "--check")).exitCode).toBe(0);
-    for (const target of ["claude", "codex", "cursor"]) {
+    for (const target of ["claude", "codex", "cursor", "devin"]) {
       const built = join(root, "agents/.build", target);
       expect(await Bun.file(join(built, "skills/shared/SKILL.md")).exists()).toBe(true);
       expect(await Bun.file(join(built, "skills/private/SKILL.md")).exists()).toBe(false);

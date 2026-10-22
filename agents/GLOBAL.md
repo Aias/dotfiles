@@ -110,7 +110,7 @@ For an npm-published CLI that isn't installed, **run it on demand with `bunx`** 
 
 When adding agent instructions to a project, create `AGENTS.md` at the project root. Claude Code loads it directly when no `CLAUDE.md` exists, so don't add a `CLAUDE.md` symlink. If a project already has both, edit `AGENTS.md`, never `CLAUDE.md`.
 
-Agent skills and config live in `~/Code/dotfiles` as source of truth (skills in `agents/skills/`; private skills in the optional `agents/skills.local/` submodule) and are deployed to each harness by the install script. Always edit the dotfiles source, never the installed copies under `~/.claude`, `~/.codex`, or `~/.cursor` — check symlink mapping first. See `/remember-that` for routing.
+Agent skills and config live in `~/Code/dotfiles` as source of truth (skills in `agents/skills/`; private skills in the optional `agents/skills.local/` submodule) and are deployed to each harness by the install script. Always edit the dotfiles source, never the installed copies under `~/.claude`, `~/.codex`, `~/.cursor`, or `~/.config/devin` — check symlink mapping first. See `/remember-that` for routing.
 
 After editing dotfiles, run `make compile`, `make link`, and the relevant checks, then summarize the changes for review. Committing and pushing dotfiles or `agents/skills.local/` require explicit authorization in the current task. An instruction to update guidance authorizes the edits and local deployment only. Leave unrelated changes untouched. When publishing is authorized, check for private information and publish private-submodule changes before committing its pointer in the public repository.
 

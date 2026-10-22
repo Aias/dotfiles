@@ -1,0 +1,97 @@
+{
+  "claudeCode.preferredLocation": "sidebar",
+  "colorize.languages": [
+    "typescript",
+    "ts",
+    "css",
+    "sass",
+    "scss",
+    "less",
+    "postcss",
+    "sss",
+    "stylus",
+    "xml",
+    "svg"
+  ],
+  "cursor.cpp.disabledLanguages": ["plaintext"],
+  "diffEditor.experimental.showMoves": true,
+  "editor.defaultFormatter": "oxc.oxc-vscode",
+  "editor.formatOnSave": true,
+  "editor.tabSize": 2,
+  "editor.wordWrap": "on",
+  "editor.wordWrapColumn": 100,
+  "explorer.confirmDelete": false,
+  "explorer.confirmDragAndDrop": false,
+  "explorer.confirmPasteNative": false,
+  "files.associations": {
+    "rush.json": "jsonc",
+    "**/config/rush/*.json": "jsonc",
+    "*.svg": "html",
+    ".secrets": "shellscript"
+  },
+  "git.allowForcePush": true,
+  "git.autofetch": true,
+  "git.confirmSync": false,
+  "git.enableSmartCommit": true,
+  "git.mergeEditor": true,
+  "git.path": "/opt/homebrew/bin/git",
+  "github.gitProtocol": "ssh",
+  "projectManager.git.baseFolders": ["~/Code"],
+  "search.exclude": {
+    "**/.ck": true,
+    "**/.next": true,
+    "**/dist": true,
+    "**/styled-system": true
+  },
+  "terminal.integrated.defaultProfile.osx": "zsh",
+  "terminal.integrated.env.osx": {},
+  "terminal.integrated.inheritEnv": true,
+  "terminal.integrated.shell.osx": "/bin/zsh",
+  "typescript.updateImportsOnFileMove.enabled": "always",
+  "vsicons.dontShowNewVersionMessage": true,
+  "window.commandCenter": true,
+  "workbench.activityBar.orientation": "vertical",
+  "workbench.editor.enablePreview": false,
+  "workbench.editorAssociations": {
+    "*.svg": "default",
+    "*.md": "default"
+  },
+  "workbench.iconTheme": "vscode-icons",
+  "githubPullRequests.fileListLayout": "tree",
+  "comments.thread.confirmOnCollapse": "never",
+  "claudeCode.useCtrlEnterToSend": true,
+  "githubPullRequests.pullBranch": "never",
+  "update.mode": "silentlyApplyOnQuit",
+  "extensions.ignoreRecommendations": true,
+  "svelte.enable-ts-plugin": true,
+  "files.exclude": {
+    "**/.ck": true
+  },
+  "git.openRepositoryInParentFolders": "never",
+  "editor.fontFamily": "Berkeley Mono Variable, Menlo, Monaco, 'Courier New', monospace",
+  "editor.fontSize": 13,
+  "editor.bracketPairColorization.independentColorPoolPerBracketType": true,
+  "markdown.preview.lineHeight": 1.65,
+  "explorer.compactFolders": false,
+  "diffEditor.ignoreTrimWhitespace": false,
+  "window.newWindowDimensions": "inherit",
+  "security.promptForLocalFileProtocolHandling": false,
+  "cursor.composer.queueMessageDefaultBehavior": "steer",
+  "typescript.experimental.useTsgo": true,
+  "typescript.preferences.includePackageJsonAutoImports": "on",
+  "window.autoDetectColorScheme": false,
+  "devin.acp.preferredAgent": "devin-cli",
+  "devin.acp.enabledAgents": {
+    "devin-cli": true,
+    "claude-acp": false,
+    "codex-acp": false,
+    "cursor": false
+  },
+  "devin.acp.agentPreferences": {
+    "devin-cli": {
+      "model": "fusion-claude-fable-5-1-medium-sidekick-swe-2-medium",
+      "mode": "bypass"
+    }
+  },
+  "claudeCode.hideOnboarding": true
+}

@@ -205,17 +205,18 @@ install_cursor_global_rules() {
 }
 install_cursor_global_rules
 
-# Cursor CLI writes auth, model, and privacy into ~/.cursor/cli-config.json, so
-# the live file cannot be a symlink into this (public) repo. Merge durable keys
-# from the tracked template; leave machine-local fields alone.
-install_cursor_cli_config() {
-    local source="$DOTFILES_DIR/cursor/cli-config.json"
-    local target="$HOME/.cursor/cli-config.json"
+# Cursor CLI and Devin write auth, model, and permissions into their live config
+# files, so those cannot be symlinks into this (public) repo. Merge the named
+# durable key from the tracked template; leave machine-local fields alone.
+merge_json_config() {
+    local source="$DOTFILES_DIR/$1"
+    local target="$HOME/$2"
+    local key="$3"
     mkdir -p "$(dirname "$target")"
     if [[ -L "$target" ]]; then
         rm "$target"
     fi
-    python3 - "$source" "$target" <<'PY'
+    python3 - "$source" "$target" "$key" <<'PY'
 import json
 import pathlib
 import sys
@@ -224,14 +225,13 @@ template_path = pathlib.Path(sys.argv[1])
 live_path = pathlib.Path(sys.argv[2])
 template = json.loads(template_path.read_text())
 live = json.loads(live_path.read_text()) if live_path.exists() else dict(template)
-tracked_attr = template.get("attribution") or {}
-live_attr = live.setdefault("attribution", {})
-live_attr.update(tracked_attr)
+live.setdefault(sys.argv[3], {}).update(template[sys.argv[3]])
 live_path.write_text(json.dumps(live, indent=2) + "\n")
 PY
-    success_dim ".cursor/cli-config.json" "(attribution merged)"
+    success_dim "$2" "($key merged)"
 }
-install_cursor_cli_config
+merge_json_config cursor/cli-config.json .cursor/cli-config.json attribution
+merge_json_config devin/config.json .config/devin/config.json read_config_from
 
 # ─────────────────────────────────────────────────────────────
 # Skills
@@ -243,11 +243,12 @@ install_skills() {
     local personal_skills="$DOTFILES_DIR/agents/skills"
     local external_skills="$DOTFILES_DIR/.agents/skills"
     local local_skills="$DOTFILES_DIR/agents/skills.local"
-    local target_names=(claude codex cursor)
+    local target_names=(claude codex cursor devin)
     local target_dirs=(
         "$HOME/.claude/skills"
         "$HOME/.codex/skills"
         "$HOME/.cursor/skills"
+        "$HOME/.config/devin/skills"
     )
 
     local skills=()
@@ -277,7 +278,7 @@ install_skills() {
         local name="${skill_entry#*:}"
         (( ${#name} > max_w )) && max_w=${#name}
     done
-    printf "  %-${max_w}s  type  claude  codex  cursor\n" "skill"
+    printf "  %-${max_w}s  type  claude  codex  cursor  devin\n" "skill"
 
     # Sync each skill to all targets, printing status as we go
     for skill_entry in "${skills[@]}"; do
@@ -308,7 +309,7 @@ install_skills() {
         local type_label="${DIM}[P]${RESET}"
         [[ "$skill_type" == "external" ]] && type_label="${DIM}[E]${RESET}"
         [[ "$skill_type" == "local" ]] && type_label="${DIM}[L]${RESET}"
-        printf "  %-${max_w}s  %b   %b       %b      %b\n" "$skill_name" "$type_label" "${statuses[0]}" "${statuses[1]}" "${statuses[2]}"
+        printf "  %-${max_w}s  %b   %b       %b      %b       %b\n" "$skill_name" "$type_label" "${statuses[@]}"
     done
 }
 

@@ -17,12 +17,7 @@ Manages external skills within the dotfiles setup. External skills live in the d
 
 ## Current State
 
-Inventory and cleanup decisions need the three source directories (`agents/skills/`, `.agents/skills/`, `agents/skills.local/`) and the three deploy targets (`~/.claude/skills/`, `~/.codex/skills/`, `~/.cursor/skills/`). `make check` prints all six with sync status; list a directory directly only when acting on it. Orphans (deployed but no source) are the deploy-target names absent from every source directory:
-
-```bash
-comm -23 <({ ls ~/.claude/skills/ ~/.codex/skills/ ~/.cursor/skills/ 2>/dev/null; } | sort -u) \
-        <({ ls ~/Code/dotfiles/agents/skills/ ~/Code/dotfiles/.agents/skills/ ~/Code/dotfiles/agents/skills.local/ 2>/dev/null; } | sort -u)
-```
+Inventory and cleanup decisions need the three source directories (`agents/skills/`, `.agents/skills/`, `agents/skills.local/`) and the four deploy targets (`~/.claude/skills/`, `~/.codex/skills/`, `~/.cursor/skills/`, `~/.config/devin/skills/`). `make check` prints all of them with sync status; list a directory directly only when acting on it. Orphans (deployed but no source) are the deploy-target names absent from every source directory; list them with the command in [Cleanup Orphaned Skills](#cleanup-orphaned-skills).
 
 ## Directory Structure
 
@@ -36,6 +31,7 @@ dotfiles/
 ~/.claude/skills/            # Deployed skills (via make link)
 ~/.codex/skills/             # Deployed skills (via make link)
 ~/.cursor/skills/            # Deployed skills (via make link)
+~/.config/devin/skills/      # Deployed skills (via make link)
 ```
 
 Read [the inclusion format](../README.md#harness-inclusion) when changing target metadata. Preserve local `metadata.targets` values across upstream updates.
@@ -83,19 +79,19 @@ rm -rf agents/skills/SKILL-NAME     # Personal skill
 
 `make link` removes excluded target copies when a current source skill explicitly restricts its targets. It does not prune orphaned deployments of removed or renamed source skills.
 
-Three source directories, not two: `agents/skills/`, `.agents/skills/`, **and** `agents/skills.local/` (optional private submodule). All three compile for their selected targets under `~/.claude/skills/`, `~/.codex/skills/`, and `~/.cursor/skills/`.
+Three source directories, not two: `agents/skills/`, `.agents/skills/`, **and** `agents/skills.local/` (optional private submodule). All three compile for their selected targets under `~/.claude/skills/`, `~/.codex/skills/`, `~/.cursor/skills/`, and `~/.config/devin/skills/`.
 
 Run this exact command to list orphans (deployed directories with no source):
 
 ```bash
 comm -23 \
-  <({ ls ~/.claude/skills/ 2>/dev/null; ls ~/.codex/skills/ 2>/dev/null; ls ~/.cursor/skills/ 2>/dev/null; } | sort -u) \
-  <({ ls ~/Code/dotfiles/agents/skills/ 2>/dev/null; ls ~/Code/dotfiles/.agents/skills/ 2>/dev/null; ls ~/Code/dotfiles/agents/skills.local/ 2>/dev/null; } | sort -u)
+  <(for d in ~/.claude/skills ~/.codex/skills ~/.cursor/skills ~/.config/devin/skills; do ls "$d" 2>/dev/null; done | sort -u) \
+  <(for d in ~/Code/dotfiles/agents/skills ~/Code/dotfiles/.agents/skills ~/Code/dotfiles/agents/skills.local; do ls "$d" 2>/dev/null; done | sort -u)
 ```
 
 Do **not** substitute `Glob` — it returns files only and misses directory-only entries in `skills.local/`, which will produce false-positive orphans for valid local skills. Use `ls` (or `fd --type d --max-depth 1`).
 
-For each orphan: check `git log` for context — a skill mid-rename looks identical to an orphan until the log shows the new path. Remove orphans whose dotfiles source the log shows was removed or renamed (`rm -rf ~/.claude/skills/NAME ~/.codex/skills/NAME ~/.cursor/skills/NAME`). List any orphan with no dotfiles history, such as a plugin or a manual install, and ask before removing it.
+For each orphan: check `git log` for context — a skill mid-rename looks identical to an orphan until the log shows the new path. Remove orphans whose dotfiles source the log shows was removed or renamed (`rm -rf ~/.claude/skills/NAME ~/.codex/skills/NAME ~/.cursor/skills/NAME ~/.config/devin/skills/NAME`). List any orphan with no dotfiles history, such as a plugin or a manual install, and ask before removing it. `~/.claude/skills/synced/` holds the Claude app's claude.ai-synced skills and is never an orphan.
 
 ## Finding Skills
 

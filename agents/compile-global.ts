@@ -10,7 +10,7 @@ import {
 } from "fs/promises";
 import { basename, dirname, join } from "path";
 
-type Target = "claude" | "codex" | "cursor";
+type Target = "claude" | "codex" | "cursor" | "devin";
 type Filter = Target | "shared" | "union";
 
 const ANNOTATION_RE = /^<!-- @> (.+?) -->$/;
@@ -25,7 +25,7 @@ const SKILL_SOURCE_DIRS = [
   ".agents/skills",
   LOCAL_SKILLS_DIR,
 ];
-const TARGETS: Target[] = ["claude", "codex", "cursor"];
+const TARGETS: Target[] = ["claude", "codex", "cursor", "devin"];
 
 interface Summary {
   text: string;
@@ -64,9 +64,8 @@ interface Options {
 }
 
 function targetFromString(value: string, context: string): Target {
-  if (value === "claude" || value === "codex" || value === "cursor") {
-    return value;
-  }
+  const target = TARGETS.find((candidate) => candidate === value);
+  if (target) return target;
   throw new Error(`Unknown harness target "${value}" in ${context}`);
 }
 
@@ -458,10 +457,7 @@ async function checkArtifacts(
   for (const relPath of actualFiles) {
     const root = relPath.split("/")[0];
     if (
-      (root === "claude" ||
-        root === "codex" ||
-        root === "cursor" ||
-        root === "shared") &&
+      [...TARGETS, "shared"].some((name) => name === root) &&
       !artifacts.has(relPath)
     ) {
       stale.push(relPath);

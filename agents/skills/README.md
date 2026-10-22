@@ -20,7 +20,7 @@ Use backticked skill names such as `/write` for cross-links. State the condition
 
 ## Harness inclusion
 
-Shared content applies to Claude, Codex, and Cursor. These names identify deployment destinations, not the model selected inside each application.
+Shared content applies to Claude, Codex, Cursor, and Devin. These names identify deployment destinations, not the model selected inside each application.
 
 To restrict a whole skill, set a comma-separated target list in its source frontmatter:
 
@@ -60,8 +60,9 @@ Blocks cannot nest. The compiler rejects empty or unknown target lists and malfo
 | `agents/.build/claude/GLOBAL.md` | `~/.claude/CLAUDE.md` symlink |
 | `agents/.build/codex/GLOBAL.md` | `~/.codex/AGENTS.md` symlink |
 | `agents/.build/cursor/GLOBAL.md` | Content of `~/.cursor/rules/global.mdc` |
+| `agents/.build/devin/GLOBAL.md` | `~/.config/devin/AGENTS.md` symlink |
 | `agents/.build/shared/GLOBAL.md` | `~/AGENTS.md` symlink |
-| `agents/.build/<target>/skills/` | `~/.<target>/skills/` |
+| `agents/.build/<target>/skills/` | `~/.<target>/skills/`, or `~/.config/devin/skills/` for Devin |
 
 The shared ancestor file contains only guidance common to every target. This prevents a harness from finding another harness's instructions through `~/AGENTS.md`.
 
