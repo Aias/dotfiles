@@ -1,4 +1,4 @@
-.PHONY: compile install setup setup-private-skills link update fast-forward-private-skills update-private-skills update-skills check check-source test-compile-global test-hooks
+.PHONY: compile install setup setup-private-skills setup-devin-plugin publish-devin-plugin link update fast-forward-private-skills update-private-skills update-skills check check-source test-compile-global test-hooks
 
 compile:
 	bun agents/compile-global.ts
@@ -28,6 +28,21 @@ fast-forward-private-skills:
 	@changes=$$(git -C agents/skills.local status --porcelain) || exit $$?; test -z "$$changes" || { echo "Commit or stash private skill changes before updating"; exit 1; }
 	git -C agents/skills.local fetch origin main
 	git -C agents/skills.local merge --ff-only origin/main
+
+setup-devin-plugin:
+	@test -e agents/devin-plugin/.git || git clone git@github.com:Aias/devin-plugin.git agents/devin-plugin
+
+# Publish the Devin build to the private plugin that Devin Cloud, CLI, and Desktop load
+publish-devin-plugin: compile
+	@test -e agents/devin-plugin/.git || { echo "Run make setup-devin-plugin first"; exit 1; }
+	git -C agents/devin-plugin pull -q --ff-only
+	mkdir -p agents/devin-plugin/.devin-plugin
+	cp devin/plugin.json agents/devin-plugin/.devin-plugin/plugin.json
+	cp agents/.build/devin/GLOBAL.md agents/devin-plugin/AGENTS.md
+	rsync -a --delete agents/.build/devin/skills/ agents/devin-plugin/skills/
+	git -C agents/devin-plugin add -A
+	git -C agents/devin-plugin diff --cached --quiet || { git -C agents/devin-plugin commit -q -m "Publish dotfiles $$(git rev-parse --short HEAD)" && git -C agents/devin-plugin push -q; }
+	devin plugins update aias
 
 update-private-skills:
 	@test -e agents/skills.local/.git || { echo "Run make setup-private-skills first"; exit 1; }
@@ -133,11 +148,11 @@ check: check-source
 	for skill in $$(ls -1d agents/skills/*/ .agents/skills/*/ agents/skills.local/*/ 2>/dev/null | xargs -I{} basename {}); do \
 		len=$${#skill}; [ $$len -gt $$max_w ] && max_w=$$len; \
 	done; \
-	printf "  %-$${max_w}s  type  claude  codex  cursor  devin\n" "skill"; \
+	printf "  %-$${max_w}s  type  claude  codex  cursor\n" "skill"; \
 	check_skill() { \
 		local skill="$$1" type_label="$$2" name built target exclusions status; \
 		set --; \
-		for entry in claude:.claude/skills codex:.codex/skills cursor:.cursor/skills devin:.config/devin/skills; do \
+		for entry in claude:.claude/skills codex:.codex/skills cursor:.cursor/skills; do \
 			name="$${entry%%:*}"; built="agents/.build/$$name/skills/$$skill"; target="$$HOME/$${entry#*:}/$$skill"; exclusions="agents/.build/$$name/excluded-skills.txt"; status="$${YELLOW}-$${RESET}"; \
 			if [ -d "$$built" ] && [ -d "$$target" ] && [ -z "$$(rsync -anic --delete "$$built/" "$$target/")" ]; then status="$${GREEN}✓$${RESET}"; \
 			elif [ -d "$$built" ]; then status="$${RED}✗$${RESET}"; issues="$$issues $$name:$$skill"; \
@@ -145,7 +160,7 @@ check: check-source
 			elif grep -Fxq "$$skill" "$$exclusions"; then status="$${DIM}-$${RESET}"; fi; \
 			set -- "$$@" "$$status"; \
 		done; \
-		printf "  %-$${max_w}s  %b   %b       %b      %b       %b\n" "$$skill" "$$type_label" "$$@"; \
+		printf "  %-$${max_w}s  %b   %b       %b      %b\n" "$$skill" "$$type_label" "$$@"; \
 	}; \
 	for skill in $$(ls -1d agents/skills/*/ 2>/dev/null | xargs -I{} basename {}); do \
 		check_skill "$$skill" "$${DIM}[P]$${RESET}"; \

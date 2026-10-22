@@ -243,12 +243,11 @@ install_skills() {
     local personal_skills="$DOTFILES_DIR/agents/skills"
     local external_skills="$DOTFILES_DIR/.agents/skills"
     local local_skills="$DOTFILES_DIR/agents/skills.local"
-    local target_names=(claude codex cursor devin)
+    local target_names=(claude codex cursor)
     local target_dirs=(
         "$HOME/.claude/skills"
         "$HOME/.codex/skills"
         "$HOME/.cursor/skills"
-        "$HOME/.config/devin/skills"
     )
 
     local skills=()
@@ -278,7 +277,7 @@ install_skills() {
         local name="${skill_entry#*:}"
         (( ${#name} > max_w )) && max_w=${#name}
     done
-    printf "  %-${max_w}s  type  claude  codex  cursor  devin\n" "skill"
+    printf "  %-${max_w}s  type  claude  codex  cursor\n" "skill"
 
     # Sync each skill to all targets, printing status as we go
     for skill_entry in "${skills[@]}"; do
@@ -309,7 +308,7 @@ install_skills() {
         local type_label="${DIM}[P]${RESET}"
         [[ "$skill_type" == "external" ]] && type_label="${DIM}[E]${RESET}"
         [[ "$skill_type" == "local" ]] && type_label="${DIM}[L]${RESET}"
-        printf "  %-${max_w}s  %b   %b       %b      %b       %b\n" "$skill_name" "$type_label" "${statuses[@]}"
+        printf "  %-${max_w}s  %b   %b       %b      %b\n" "$skill_name" "$type_label" "${statuses[@]}"
     done
 }
 
