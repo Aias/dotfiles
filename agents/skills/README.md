@@ -60,9 +60,9 @@ Blocks cannot nest. The compiler rejects empty or unknown target lists and malfo
 | `agents/.build/claude/GLOBAL.md` | `~/.claude/CLAUDE.md` symlink |
 | `agents/.build/codex/GLOBAL.md` | `~/.codex/AGENTS.md` symlink |
 | `agents/.build/cursor/GLOBAL.md` | Content of `~/.cursor/rules/global.mdc` |
-| `agents/.build/devin/GLOBAL.md` | `~/.config/devin/AGENTS.md` symlink |
+| `agents/.build/devin/` | `agents/.build/devin-plugin.zip`, uploaded as the `aias` Devin plugin |
 | `agents/.build/shared/GLOBAL.md` | `~/AGENTS.md` symlink |
-| `agents/.build/<target>/skills/` | `~/.<target>/skills/`, or `~/.config/devin/skills/` for Devin |
+| `agents/.build/<target>/skills/` | `~/.<target>/skills/` |
 
 The shared ancestor file contains only guidance common to every target. This prevents a harness from finding another harness's instructions through `~/AGENTS.md`.
 

@@ -30,6 +30,7 @@ dotfiles/
 ├── devin/
 │   ├── settings.json    # Devin editor settings
 │   ├── config.json      # Devin CLI template (read_config_from merged into ~/.config/devin/config.json)
+│   ├── plugin.json      # Manifest for the private aias Devin plugin
 │   └── mcp_config.json  # Devin MCP servers
 ├── agents/
 │   ├── GLOBAL.md      # Shared AI guidelines + compiled @> skill index block
@@ -82,7 +83,7 @@ After this repo is on your machine and zsh is sourced, the **`dotup`** alias run
 2. Back up any existing files to `~/.dotfiles-backup/`
 3. Create symlinks from this repo to `~/` (based on `links.txt`)
 4. Copy mise global config and Cursor `global.mdc` (not symlinked — see `install.sh`); merge tracked Cursor CLI attribution into `~/.cursor/cli-config.json` and Devin `read_config_from` into `~/.config/devin/config.json` (not symlinks — each tool writes auth, model, or permissions there); symlink `~/AGENTS.md` for Cursor CLI ancestor discovery
-5. Sync all skills (personal, external, local) to `~/.claude/skills/`, `~/.codex/skills/`, `~/.cursor/skills/`, and `~/.config/devin/skills/`
+5. Sync all skills (personal, external, local) to `~/.claude/skills/`, `~/.codex/skills/`, and `~/.cursor/skills/`
 6. Register MCP servers with Claude Code (user scope)
 
 `make link` sets `SKIP_DEPENDENCY_INSTALL=1` so Homebrew/mise steps are skipped; use it when deps are already satisfied. `make update` is for pulling latest dotfiles and re-running a full install.
@@ -114,6 +115,14 @@ Skills come in three types:
 - **[E] External** — Installed from GitHub via [skills.sh](https://skills.sh) in `.agents/skills/`
 
 `make link` / `install.sh` deploy compiled skills to their selected harnesses. Whole-skill metadata and section markers control inclusion, as described in [Agent skills](agents/skills/README.md#harness-inclusion). Excluded copies of a current source skill are removed from that target. Removed or renamed source directories still require separate orphan cleanup. After dropping or renaming a skill, remove the stale folder from those home paths too (compare `ls agents/skills` / `.agents/skills` / `agents/skills.local` with `ls ~/.claude/skills`). See the **skills-manager** skill (`agents/skills/skills-manager/`) for the full cleanup checklist.
+
+### Devin plugin
+
+Devin loads the Devin build as `aias`, a plugin uploaded to the personal scope, so cloud sessions get the same instructions and skills as the CLI and Desktop. Skills appear as `/aias:<skill>`. After changing instructions or skills, build the bundle and upload `agents/.build/devin-plugin.zip` in Devin's Customize → Plugins → Add plugin → Upload .zip:
+
+```bash
+make devin-plugin
+```
 
 ### Private skills
 
@@ -163,7 +172,7 @@ make update-skills
 
 1. Delete the skill directory under `agents/skills/`, `agents/skills.local/`, or `.agents/skills/`
 2. Remove any matching entry from `skills-lock.json` (external skills)
-3. Delete the same skill name under `~/.claude/skills/`, `~/.codex/skills/`, `~/.cursor/skills/`, and `~/.config/devin/skills/` (not done automatically)
+3. Delete the same skill name under `~/.claude/skills/`, `~/.codex/skills/`, and `~/.cursor/skills/` (not done automatically)
 
 ### Verifying Sync Status
 
@@ -174,7 +183,7 @@ make check
 Shows a table of all skills with sync status for each agent:
 
 ```
-skill                        type  claude  codex  cursor  devin
-changelog                    [P]   ✓       ✓      ✓       ✓
-react-best-practices         [P]   ✓       ✓      ✓       ✓
+skill                        type  claude  codex  cursor
+changelog                    [P]   ✓       ✓      ✓
+react-best-practices         [P]   ✓       ✓      ✓
 ```
