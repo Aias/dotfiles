@@ -25,7 +25,8 @@ Personal dotfiles repo — shell config, git, editor settings, and AI agent conf
 ## Conventions
 
 - Edit config in this repo, not in `~/` — symlinks propagate changes automatically
-- Work directly on `main`. Follow GLOBAL.md's dotfiles policy for review and authorization before committing or pushing. Leave unrelated changes untouched.
+- Work directly on `main`. Leave unrelated changes untouched.
+- After editing, run `make compile`, `make link`, and the relevant checks, then summarize the changes for review. Committing and pushing this repo or `agents/skills.local/` require explicit authorization in the current task. An instruction to update guidance authorizes the edits and local deployment only. When publishing is authorized, check for private information and publish private-submodule changes before committing the submodule pointer here.
 - This repo is public. Never commit private information, credentials, machine-specific secrets, personal data, or internal-only notes here, even temporarily. Use ignored local files or tracked templates instead.
 - For agent config, dotfiles is source of truth; check symlink mapping before editing
 - Skills: personal in `agents/skills/`, private in `agents/skills.local/` (optional submodule), external in `.agents/skills/`

@@ -234,6 +234,15 @@ describe("compile-global", () => {
     expect(await Bun.file(join(built, "README.md")).exists()).toBe(false);
   });
 
+  test("rejects a target GLOBAL.md over the size limit", async () => {
+    const root = await createFixture();
+    const globalPath = join(root, "agents/GLOBAL.md");
+    await writeFile(globalPath, `${"x".repeat(16384)}\n${await readFile(globalPath, "utf8")}`);
+    const result = await runCompiler(root);
+    expect(result.exitCode).toBe(1);
+    expect(result.stderr).toContain("Devin reads only the first 16384");
+  });
+
   test("check detects stale outputs without rewriting them", async () => {
     const root = await createFixture();
     expect((await runCompiler(root)).exitCode).toBe(0);

@@ -26,6 +26,7 @@ const SKILL_SOURCE_DIRS = [
   LOCAL_SKILLS_DIR,
 ];
 const TARGETS: Target[] = ["claude", "codex", "cursor", "devin"];
+const MAX_GLOBAL_BYTES = 16384;
 
 interface Summary {
   text: string;
@@ -397,10 +398,14 @@ async function createArtifacts(
       "agents/GLOBAL.md",
       target,
     );
-    artifacts.set(`${target}/GLOBAL.md`, {
-      content: updateGlobalMd(filteredGlobal, compiled),
-      mode: 0o644,
-    });
+    const global = updateGlobalMd(filteredGlobal, compiled);
+    const bytes = new TextEncoder().encode(global).length;
+    if (bytes > MAX_GLOBAL_BYTES) {
+      throw new Error(
+        `${target}/GLOBAL.md is ${bytes} bytes; Devin reads only the first ${MAX_GLOBAL_BYTES}`,
+      );
+    }
+    artifacts.set(`${target}/GLOBAL.md`, { content: global, mode: 0o644 });
     const excluded = skills
       .filter((skill) => skill.targets && !skill.targets.includes(target))
       .map((skill) => skill.name)

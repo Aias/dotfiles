@@ -189,6 +189,11 @@ A cast is a symptom: the type is too wide somewhere upstream. Fix the source, no
 
 - No barrel files — don't create `index.ts` re-export files. Import directly from source modules.
 
+#### Version pinning
+
+<!-- @> Pin dependency updates to the latest stable patch range (`~1.2.3`), never a broad `^` range -->
+Pin updated dependencies to patch (`~1.2.3`) on the latest stable version. Don't use broad ranges (`^4`), and migrate existing `^` pins to `~` as you touch them. When a pasted snippet implies a different version than the pin, keep the pin and flag the deviation.
+
 ### Checks
 
 Run type/lint checks yourself when relevant; don't ask the user to run them.
@@ -202,6 +207,12 @@ Markup and styles for `.html`, `.css`, and templated/JSX UI. Deep dive: [Web Int
 
 <!-- @> Prefer native semantic elements. Preserve keyboard interaction and visible focus when building or simplifying UI -->
 Prefer built-in semantics over generic containers: structure (`article`, `header`, `main`, `nav`, `section`, `ul`/`li`), interactive (`button`, `form`, `label`), content (`table`, `time`). Avoid `div`/`span` unless necessary. Prefer real text + structure over ARIA-only shortcuts.
+
+
+### Design mockups
+
+<!-- @> Treat design mockups as styling references: map their values to existing tokens and rebuild layout with the codebase's patterns -->
+Take the look from the mockup and the implementation from the codebase. Map each styling literal to the nearest existing token or treatment, and raise values with no close equivalent to the user instead of inventing them. Never mirror the mockup's layer tree or layout mechanics, since design-tool layouts rarely translate to sound responsive CSS. A new token or treatment requires explicit approval.
 
 
 ### Layout
