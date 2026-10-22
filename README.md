@@ -118,11 +118,10 @@ Skills come in three types:
 
 ### Devin plugin
 
-Devin loads the Devin build as `aias`, a personal plugin in the private [Aias/devin-plugin](https://github.com/Aias/devin-plugin) repository, so cloud sessions get the same instructions and skills as the CLI and Desktop. Skills appear as `/aias:<skill>`. Clone it once, then publish after changing instructions or skills:
+Devin loads the Devin build as `aias`, a plugin uploaded to the personal scope, so cloud sessions get the same instructions and skills as the CLI and Desktop. Skills appear as `/aias:<skill>`. After changing instructions or skills, build the bundle and upload `agents/.build/devin-plugin.zip` in Devin's Customize → Plugins → Add plugin → Upload .zip:
 
 ```bash
-make setup-devin-plugin
-make publish-devin-plugin
+make devin-plugin
 ```
 
 ### Private skills

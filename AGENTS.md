@@ -4,7 +4,7 @@ Personal dotfiles repo — shell config, git, editor settings, and AI agent conf
 
 ## Structure
 
-- `agents/GLOBAL.md` — Source global instructions + compiled `@>` skill index. Harness-specific generated versions are symlinked to `~/.claude/CLAUDE.md` and `~/.codex/AGENTS.md`, published to the private `aias` Devin plugin by `make publish-devin-plugin`, with shared-only output at `~/AGENTS.md` and Cursor output copied to `global.mdc`. Conductor-specific detail lives in the `/conductor` skill; GLOBAL keeps a short pointer and compiled reminders.
+- `agents/GLOBAL.md` — Source global instructions + compiled `@>` skill index. Harness-specific generated versions are symlinked to `~/.claude/CLAUDE.md` and `~/.codex/AGENTS.md`, packaged as the `aias` Devin plugin by `make devin-plugin`, with shared-only output at `~/AGENTS.md` and Cursor output copied to `global.mdc`. Conductor-specific detail lives in the `/conductor` skill; GLOBAL keeps a short pointer and compiled reminders.
 - `agents/skills/` — Personal agent skills (tracked)
 - `agents/skills.local/` — Private skills (optional submodule)
 - `agents/compile-global.ts` — Compiles `@>` annotations from skills into GLOBAL.md's dense index

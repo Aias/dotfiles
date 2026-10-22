@@ -17,7 +17,7 @@ Manages external skills within the dotfiles setup. External skills live in the d
 
 ## Current State
 
-Inventory and cleanup decisions need the three source directories (`agents/skills/`, `.agents/skills/`, `agents/skills.local/`) and the three deploy targets (`~/.claude/skills/`, `~/.codex/skills/`, `~/.cursor/skills/`). Devin gets skills from the `aias` plugin, so run `make publish-devin-plugin` after skill changes. `make check` prints all of them with sync status; list a directory directly only when acting on it. Orphans (deployed but no source) are the deploy-target names absent from every source directory; list them with the command in [Cleanup Orphaned Skills](#cleanup-orphaned-skills).
+Inventory and cleanup decisions need the three source directories (`agents/skills/`, `.agents/skills/`, `agents/skills.local/`) and the three deploy targets (`~/.claude/skills/`, `~/.codex/skills/`, `~/.cursor/skills/`). Devin gets skills from the uploaded `aias` plugin, so run `make devin-plugin` and upload the bundle after skill changes. `make check` prints all of them with sync status; list a directory directly only when acting on it. Orphans (deployed but no source) are the deploy-target names absent from every source directory; list them with the command in [Cleanup Orphaned Skills](#cleanup-orphaned-skills).
 
 ## Directory Structure
 

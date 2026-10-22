@@ -1,4 +1,4 @@
-.PHONY: compile install setup setup-private-skills setup-devin-plugin publish-devin-plugin link update fast-forward-private-skills update-private-skills update-skills check check-source test-compile-global test-hooks
+.PHONY: compile install setup setup-private-skills devin-plugin link update fast-forward-private-skills update-private-skills update-skills check check-source test-compile-global test-hooks
 
 compile:
 	bun agents/compile-global.ts
@@ -29,20 +29,15 @@ fast-forward-private-skills:
 	git -C agents/skills.local fetch origin main
 	git -C agents/skills.local merge --ff-only origin/main
 
-setup-devin-plugin:
-	@test -e agents/devin-plugin/.git || git clone git@github.com:Aias/devin-plugin.git agents/devin-plugin
-
-# Publish the Devin build to the private plugin that Devin Cloud, CLI, and Desktop load
-publish-devin-plugin: compile
-	@test -e agents/devin-plugin/.git || { echo "Run make setup-devin-plugin first"; exit 1; }
-	git -C agents/devin-plugin pull -q --ff-only
-	mkdir -p agents/devin-plugin/.devin-plugin
-	cp devin/plugin.json agents/devin-plugin/.devin-plugin/plugin.json
-	cp agents/.build/devin/GLOBAL.md agents/devin-plugin/AGENTS.md
-	rsync -a --delete agents/.build/devin/skills/ agents/devin-plugin/skills/
-	git -C agents/devin-plugin add -A
-	git -C agents/devin-plugin diff --cached --quiet || { git -C agents/devin-plugin commit -q -m "Publish dotfiles $$(git rev-parse --short HEAD)" && git -C agents/devin-plugin push -q; }
-	devin plugins update aias
+# Package the Devin build as the aias plugin for upload in Devin's Customize page
+devin-plugin: compile
+	rm -rf agents/.build/devin-plugin agents/.build/devin-plugin.zip
+	mkdir -p agents/.build/devin-plugin/.devin-plugin
+	cp devin/plugin.json agents/.build/devin-plugin/.devin-plugin/plugin.json
+	cp agents/.build/devin/GLOBAL.md agents/.build/devin-plugin/AGENTS.md
+	cp -R agents/.build/devin/skills agents/.build/devin-plugin/skills
+	cd agents/.build/devin-plugin && zip -qr ../devin-plugin.zip .
+	@echo "Upload agents/.build/devin-plugin.zip in Customize → Plugins → Add plugin → Upload .zip"
 
 update-private-skills:
 	@test -e agents/skills.local/.git || { echo "Run make setup-private-skills first"; exit 1; }

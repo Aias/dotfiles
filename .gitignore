@@ -15,5 +15,4 @@
 *.jks
 *.keystore
 agents/.build/
-agents/devin-plugin/
 **/skill.feedback.md
