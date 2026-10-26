@@ -116,7 +116,11 @@ Place `Fixes <ticket>` or `Closes <ticket>` on its own line, near the top (after
 
 ## PR Comments and Interactions
 
-Posting a comment, reply, or review on GitHub is a publish action. Do it when the user asks — including replying to their inline feedback on an agent's first-pass PR — but never unprompted. When asked only to "get" or "check" comments, present them in the conversation; don't reply on GitHub.
+Posting a comment, reply, or review on GitHub is a publish action. Do it when the user asks — including replying to their inline feedback on an agent's first-pass PR — or during review follow-up on a PR you posted, but never otherwise unprompted. When asked only to "get" or "check" comments, present them in the conversation; don't reply on GitHub.
+
+### Review follow-up
+
+After posting a PR, watch it for about 15 minutes for comments and reviews from any reviewer, bot or human. Judge each finding adversarially: confirm from source that the failure can actually happen before changing anything. Fix confirmed defects within the PR's scope, run the repository's required checks, push, and reply in the comment's thread with the fixing commit. Decline unreachable, speculative, or out-of-scope findings with a reply that gives the reason from the code. Merging stays outside this follow-up and needs its own authorization.
 
 The agent posts through the user's own GitHub account, so attribution belongs in the body. Open every agent-authored comment with an italicized model name and colon, followed by the comment in the same paragraph:
 
