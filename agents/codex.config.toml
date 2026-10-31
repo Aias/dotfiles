@@ -17,6 +17,9 @@ js_repl = false
 prevent_idle_sleep = true
 memories = true
 
+[features.multi_agent_v2]
+max_concurrent_threads_per_session = 12
+
 [projects."/Users/nicktrombley/Code/acorn"]
 trust_level = "trusted"
 
@@ -159,8 +162,8 @@ NODE_REPL_INSTRUCTIONS_USE_CASE_BROWSER = ""
 NODE_REPL_INSTRUCTIONS_USE_CASE_CHROME = ""
 NODE_REPL_INSTRUCTIONS_USE_CASE_COMPUTER_USE = ""
 BROWSER_USE_CODEX_APP_BUILD_FLAVOR = "prod"
-BROWSER_USE_CODEX_APP_VERSION = "26.1016.51333"
-NODE_REPL_TRUSTED_SERVICES = '{"browser":"/Users/nicktrombley/.codex/plugins/cache/openai-bundled/browser/26.1016.51333/scripts/browser-service.mjs","sky":"@oai/sky/service"}'
+BROWSER_USE_CODEX_APP_VERSION = "26.1023.51421"
+NODE_REPL_TRUSTED_SERVICES = '{"browser":"/Users/nicktrombley/.codex/plugins/cache/openai-bundled/browser/26.1023.51421/scripts/browser-service.mjs","sky":"@oai/sky/service"}'
 SKY_CUA_SERVICE_PATH = "/Users/nicktrombley/.codex/computer-use/Codex Computer Use.app"
 CODEX_CLI_PATH = "/Applications/ChatGPT.app/Contents/Resources/codex-cli/CodexCLI.app/Contents/MacOS/codex"
 
@@ -227,9 +230,6 @@ enabled = true
 [plugins."computer-use@openai-bundled"]
 enabled = true
 
-[plugins."code-review@openai-bundled"]
-enabled = true
-
 [shell_environment_policy.set]
 NODE_REPL_TRUSTED_BROWSER_CLIENT_SHA256S = "0b03c76c1d0f3d4c81f89f58ff210ae6709fd1204d2c5a4fdffa0a7bdb961b96,6d25aa7656feac858f3a3bdaea5bcbab0dbfd426c9de8e6931ce90c399ee8e4f"
 
@@ -246,6 +246,7 @@ git-branch-prefix = "aias/"
 usePointerCursors = true
 appearanceTheme = "system"
 toys-audio-visualizer-enabled = true
+agent-usage-reset-enabled = true
 
 [desktop.appearanceDarkChromeTheme]
 accent = "#3a83f7"

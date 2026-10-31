@@ -1,5 +1,7 @@
 {
   "cleanupPeriodDays": 180,
+  "syncClaudeAiSkills": false,
+  "syncClaudeAiPlugins": false,
   "skillListingBudgetFraction": 0.02,
   "attribution": {
     "commit": "",
@@ -13,6 +15,11 @@
     ]
   },
   "model": "opus[1m]",
+  "skillOverrides": {
+    "pangram": "user-invocable-only",
+    "system-report": "user-invocable-only",
+    "transcript-pr-review": "user-invocable-only"
+  },
   "hooks": {
     "PreToolUse": [
       {
@@ -102,27 +109,20 @@
     ]
   },
   "effortLevel": "high",
+  "modelSettings": {
+    "claude-opus-5-5": {
+      "effortLevel": "xhigh"
+    }
+  },
   "tui": "fullscreen",
   "skipDangerousModePermissionPrompt": true,
   "skipWorkflowUsageWarning": true,
+  "claudeMdExcludes": [
+    "/Users/nicktrombley/AGENTS.md"
+  ],
   "agentPushNotifEnabled": true,
   "skipAutoPermissionPrompt": true,
   "feedbackSurveyState": {
     "lastShownTime": 1753980901020
-  },
-  "modelSettings": {
-    "claude-opus-5-5": {
-      "effortLevel": "high"
-    }
-  },
-  "claudeMdExcludes": [
-    "/Users/nicktrombley/AGENTS.md"
-  ],
-  "skillOverrides": {
-    "pangram": "user-invocable-only",
-    "system-report": "user-invocable-only",
-    "transcript-pr-review": "user-invocable-only"
-  },
-  "syncClaudeAiPlugins": false,
-  "syncClaudeAiSkills": false
+  }
 }
