@@ -77,7 +77,7 @@ Read `/change-review` for detailed review and cleanup criteria.
 
 Prefer reading source code (in `node_modules` or on GitHub) over documentation, since it matches the installed version. Use every tool available: source, official docs, web search, non-destructive local commands, and temporary logging.
 
-Prefer the harness's structured search tool (e.g. Grep) over shell `rg`. In the shell, **use modern CLI tools** (`rg`, `fd`, `jq`, `bat`, `sd`, `eza`, `yq`, `delta`, `fzf`, `gh`) and compose flags from each tool's own help, since they reuse classic flag letters with different meanings (`rg -r` means `--replace`).
+Prefer the harness's structured search tool (e.g. Grep) over shell `rg`. In the shell, **use modern CLI tools** (`rg`, `fd`, `jq`, `sd`, `yq`, `gh`) and compose flags from each tool's own help, since they reuse classic flag letters with different meanings (`rg -r` means `--replace`).
 
 **Run an uninstalled npm CLI with `bunx`**, not a global install, so the working directory's lockfile and tree stay untouched. Fall back to `npx` only where bun isn't available.
 

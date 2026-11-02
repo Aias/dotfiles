@@ -9,6 +9,31 @@ if [[ -o interactive && ! -o login ]]; then
 fi
 
 # ─────────────────────────────────────────────────────────────
+# mise (dev tool version manager)
+# ─────────────────────────────────────────────────────────────
+# Shim PATH lives in .zshenv so all zsh shells resolve tool versions.
+eval "$(mise activate zsh)"
+
+# Conductor.app prepends its bundled bin dir to PATH when spawning terminals,
+# which shadows mise-managed Node. Re-prepending here, after every other PATH
+# change in this rc, guarantees mise resolves first in interactive shells.
+if [[ -d "$HOME/.local/share/mise/shims" ]]; then
+  export PATH="$HOME/.local/share/mise/shims:$PATH"
+fi
+# Added by Devin
+export PATH="/Users/nicktrombley/.codeium/windsurf/bin:$PATH"
+
+alias timeout="gtimeout"
+
+# ─────────────────────────────────────────────────────────────
+# Agent shells stop here
+# ─────────────────────────────────────────────────────────────
+# Claude Code snapshots this file into every agent command. Agents keep the
+# PATH and tools above and skip the interactive behavior below, where eza's
+# ls, zoxide's cd and GLOB_DOTS change how standard commands behave.
+[[ -n $CLAUDECODE ]] && return
+
+# ─────────────────────────────────────────────────────────────
 # History configuration
 # ─────────────────────────────────────────────────────────────
 HISTFILE=~/.zsh_history
@@ -61,12 +86,6 @@ fi
 
 # bun completions
 [[ -s "$HOME/.bun/_bun" ]] && source "$HOME/.bun/_bun"
-
-# ─────────────────────────────────────────────────────────────
-# mise (dev tool version manager)
-# ─────────────────────────────────────────────────────────────
-# Shim PATH lives in .zshenv so all zsh shells resolve tool versions.
-eval "$(mise activate zsh)"
 
 # ─────────────────────────────────────────────────────────────
 # Aliases - Navigation & Files
@@ -134,7 +153,6 @@ function up() {
   unfunction _up_step
 }
 alias mini="ssh nicktrombley@mac-mini"
-alias timeout="gtimeout"
 
 # Git repo root (monorepos / worktrees)
 gr() {
@@ -188,15 +206,3 @@ fi
 # Starship prompt (keep at the end)
 # ─────────────────────────────────────────────────────────────
 eval "$(starship init zsh)"
-
-# ─────────────────────────────────────────────────────────────
-# Force mise shims to the front of PATH (last-word override)
-# ─────────────────────────────────────────────────────────────
-# Conductor.app prepends its bundled bin dir to PATH when spawning terminals,
-# which shadows mise-managed Node. Re-prepending here (after every other PATH
-# mutation in this rc) guarantees mise resolves first in interactive shells.
-if [[ -d "$HOME/.local/share/mise/shims" ]]; then
-  export PATH="$HOME/.local/share/mise/shims:$PATH"
-fi
-# Added by Devin
-export PATH="/Users/nicktrombley/.codeium/windsurf/bin:$PATH"
