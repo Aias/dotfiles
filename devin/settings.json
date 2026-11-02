@@ -83,7 +83,7 @@
   "devin.acp.preferredAgent": "devin-cli",
   "devin.acp.enabledAgents": {
     "devin-cli": true,
-    "claude-acp": true,
+    "claude-acp": false,
     "codex-acp": false,
     "cursor": false
   },
