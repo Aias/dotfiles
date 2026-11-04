@@ -53,28 +53,7 @@ trust_level = "trusted"
 [projects."/Users/nicktrombley/Code/guidance-studio"]
 trust_level = "trusted"
 
-[projects."/Users/nicktrombley/conductor/repos/trail-mix"]
-trust_level = "trusted"
-
-[projects."/Users/nicktrombley/Library/Application Support/com.conductor.app/bin"]
-trust_level = "trusted"
-
-[projects."/Users/nicktrombley/conductor/repos/wedding-planning"]
-trust_level = "trusted"
-
-[projects."/Users/nicktrombley/conductor/repos/donut"]
-trust_level = "trusted"
-
-[projects."/Users/nicktrombley/conductor/repos/nut-butter"]
-trust_level = "trusted"
-
-[projects."/Users/nicktrombley/conductor/repos/tp-7"]
-trust_level = "trusted"
-
 [projects."/Users/nicktrombley/Code/barnsworthburning"]
-trust_level = "trusted"
-
-[projects."/Users/nicktrombley/conductor/repos/nicktrombley.design"]
 trust_level = "trusted"
 
 [projects."/Users/nicktrombley/Documents/Codex/2026-09-06/hi-x20"]
@@ -96,9 +75,6 @@ trust_level = "trusted"
 trust_level = "trusted"
 
 [projects."/Users/nicktrombley/Code/crossfilter-ts"]
-trust_level = "trusted"
-
-[projects."/Users/nicktrombley/conductor/repos/moby-dick-map"]
 trust_level = "trusted"
 
 [projects."/Users/nicktrombley/Documents/Codex/2026-09-10/create-an-image-of"]
@@ -126,9 +102,6 @@ trust_level = "trusted"
 trust_level = "trusted"
 
 [projects."/Users/nicktrombley/Documents/ChatGPT/jev-pi"]
-trust_level = "trusted"
-
-[projects."/Users/nicktrombley/conductor/repos/websters-api"]
 trust_level = "trusted"
 
 [mcp_servers.linear]

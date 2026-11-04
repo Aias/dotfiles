@@ -25,11 +25,10 @@ Read-only fan-out across a change-set. Output: numbered findings in chat.
 
 Pick the diff source in this order, and **state which you used** as the first line of the report:
 
-1. **Conductor workspace** — `mcp__conductor__GetWorkspaceDiff` with `stat: true` first, then specific files, when the harness exposes it; otherwise git and `gh` against the Conductor target branch. Read attached `Review request.md` if present.
-2. **Open PR** — `gh pr view --json files,baseRefName`, then `gh pr diff`.
-3. **Branch vs base** — resolve base via Conductor target → existing PR → repo convention → ask. Then `git fetch origin <base>` (local refs go stale), then `git diff origin/<base>...HEAD` (merge base to branch head).
-4. **Staged / uncommitted** — `git diff --staged` and `git diff HEAD`.
-5. **Recently modified files** — only files the user named, or that you edited earlier in this conversation.
+1. **Open PR** — `gh pr view --json files,baseRefName`, then `gh pr diff`.
+2. **Branch vs base** — resolve base via existing PR → repo convention → ask. Then `git fetch origin <base>` (local refs go stale), then `git diff origin/<base>...HEAD` (merge base to branch head).
+3. **Staged / uncommitted** — `git diff --staged` and `git diff HEAD`.
+4. **Recently modified files** — only files the user named, or that you edited earlier in this conversation.
 
 Read the PR title and description (not the changes) for author intent. Read any AGENTS.md / CLAUDE.md files in directories the diff touches — these define what counts as a finding.
 
@@ -169,7 +168,7 @@ Before reporting, check each finding for clarity: open with what breaks and for 
 Use this structure when both groups contain findings. Omit empty sections.
 
 ```
-Scope: <one line: "this branch vs origin/dev", "PR #1234", "workspace diff (Conductor)", "staged changes">
+Scope: <one line: "this branch vs origin/dev", "PR #1234", "staged changes">
 
 ## Clear fixes (apply all — quickest calls first)
 
@@ -279,22 +278,11 @@ When the user asks for re-review after they applied feedback (*"re-review, I con
 - Read the diff since the prior review (use commit ranges or `gh pr view --comments` for prior threads).
 - The report structure changes: enumerate prior findings, then state for each whether it was fixed, addressed differently, or remains. Add new findings only after the status pass.
 
-## Conductor specifics
-
-When inside a Conductor workspace (paths under `~/conductor/workspaces/...`, `CONDUCTOR_*` env vars):
-
-- Use `mcp__conductor__GetWorkspaceDiff` instead of `git diff` when the harness exposes it. Start with `stat: true` to scope the read; request specific files in follow-up calls. Without it, `git diff origin/<target>...HEAD` after a fetch.
-- The target branch from the system instruction is the diff base — not the checked-out branch name.
-- Other workspaces may push to the same base; `git fetch` before any cross-workspace comparison.
-- If the user attached `.context/attachments/.../Review request.md`, read it for any workspace-specific overrides (it usually reiterates: read-only, chat output, no GitHub comments).
-- `mcp__conductor__DiffComment` is **hard-gated**. Never post inline comments without an explicit "post these as comments" from the user in the session.
-
 ## Tools the user reaches for
 
 - **Parallel subagents** — independent axes and wide reads, per the delegation rules above.
 - **`gh pr diff`, `gh pr view --json files,baseRefName`** — PR-context REVIEW.
 - **`git diff origin/<base>...HEAD`** (three-dot, after fetch) — branch-vs-base REVIEW.
-- **`mcp__conductor__GetWorkspaceDiff`** — Conductor REVIEW.
 
 **Static-analysis seeds — leads, never findings.** These surface candidates fast; none is authoritative. Every hit passes [validation](#phase-3-validation) against the actual code and call sites before it becomes a finding. Newer tools (deslop, react-doctor) over-flag; lean on the verification step.
 

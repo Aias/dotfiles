@@ -30,9 +30,6 @@ Codex | agents/codex.config.toml | .codex/config.toml | .codex/config.toml
 Devin | devin/mcp_config.json | .config/devin/mcp_config.json | .config/devin/mcp_config.json
 Devin | devin/settings.json | Library/Application Support/Devin/User/settings.json | Devin/User/settings.json
 
-# Conductor
-Conductor | agents/conductor.settings.toml | .conductor/settings.toml | .conductor/settings.toml
-
 # Cursor (symlinks only - global.mdc uses copy with frontmatter, handled separately)
 # cli-config.json: Cursor CLI writes auth/model into the live file, so it is not
 # symlinked. install.sh merges tracked durable keys (attribution) into ~/.cursor/cli-config.json.

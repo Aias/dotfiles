@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Starship-aligned statusLine for Claude Code (see starship/starship.toml).
-# Mirrors: directory → Conductor → git_branch → git_state → git_status.
+# Mirrors: directory → git_branch → git_state → git_status.
 # Claude additions: Linear ticket + gh PR# after state; model name + context% at end.
 # Not mirrored: username/hostname (SSH), cmd_duration, jobs, sudo, prompt character.
 
@@ -36,14 +36,6 @@ fi
 read_only=""
 [ ! -w "$current_dir" ] && read_only=" "
 dir_out="${BOLD_CYAN}${dir_display}${read_only}${NC}"
-
-# [custom.conductor]
-conductor_info=""
-if [ -n "${CONDUCTOR_WORKSPACE_NAME:-}" ]; then
-    conductor_info=" ${BRIGHT_BLACK}${CONDUCTOR_WORKSPACE_NAME}"
-    [ -n "${CONDUCTOR_PORT:-}" ] && conductor_info="${conductor_info} ·${CONDUCTOR_PORT}"
-    conductor_info="${conductor_info}${NC}"
-fi
 
 git_info=""
 if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
@@ -109,6 +101,6 @@ if [ -n "$used" ] && [ "$used" != "empty" ]; then
     context_info=" ${context_color}${used}%${NC}"
 fi
 
-output="${dir_out}${conductor_info}${git_info} ${BRIGHT_BLACK}${model_name}${NC}${context_info}"
+output="${dir_out}${git_info} ${BRIGHT_BLACK}${model_name}${NC}${context_info}"
 
 printf "%b" "$output"

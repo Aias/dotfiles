@@ -4,7 +4,7 @@ Personal dotfiles repo — shell config, git, editor settings, and AI agent conf
 
 ## Structure
 
-- `agents/GLOBAL.md` — Source global instructions + compiled `@>` skill index. Harness-specific generated versions are symlinked to `~/.claude/CLAUDE.md` and `~/.codex/AGENTS.md`, packaged as the `aias` Devin plugin by `make devin-plugin`, with shared-only output at `~/AGENTS.md` and Cursor output copied to `global.mdc`. Conductor-specific detail lives in the `/conductor` skill; GLOBAL keeps a short pointer and compiled reminders.
+- `agents/GLOBAL.md` — Source global instructions + compiled `@>` skill index. Harness-specific generated versions are symlinked to `~/.claude/CLAUDE.md` and `~/.codex/AGENTS.md`, packaged as the `aias` Devin plugin by `make devin-plugin`, with shared-only output at `~/AGENTS.md` and Cursor output copied to `global.mdc`.
 - `agents/skills/` — Personal agent skills (tracked)
 - `agents/skills.local/` — Private skills (optional submodule)
 - `agents/compile-global.ts` — Compiles `@>` annotations from skills into GLOBAL.md's dense index
@@ -12,7 +12,6 @@ Personal dotfiles repo — shell config, git, editor settings, and AI agent conf
 - `agents/claude.settings.json` — Claude Code settings
 - `agents/codex.config.toml` — Codex settings
 - `devin/` — Devin editor settings, MCP servers, the plugin manifest, and a `read_config_from` template merged into the live `~/.config/devin/config.json`; the template turns off Claude, Cursor, and Windsurf imports so Devin loads only its own build
-- `agents/conductor.settings.toml` — Conductor user settings (schema: `https://conductor.build/schemas/settings.schema.json`)
 - `agents/hooks/` — Shell-command hooks shared by Claude Code and Codex (PR guideline reminder); the `.sh` entry points call `shell_commands.py`, which parses the command rather than matching its text
 - `.agents/skills/` — External skills (from skills.sh)
 - `skills-lock.json` — External skill version tracking

@@ -24,11 +24,10 @@ A user who says *"review this"* and then replies *"fix 2, 3, 5"* has moved from 
 
 A change-review is **change-scoped**, never repo-wide. Pick scope in this order:
 
-1. **Conductor workspace** — `mcp__conductor__GetWorkspaceDiff` with `stat: true` first, then specific files, when the harness exposes it; otherwise git and `gh` against the Conductor target branch (see [`/conductor`](../conductor/SKILL.md)).
-2. **Open PR** — `gh pr diff` or `gh pr view --json files,baseRefName`.
-3. **Branch vs base** — `git merge-base origin/<base> HEAD`, then `git diff <merge-base> HEAD` (or three-dot `git diff origin/<base>...HEAD`). Always `git fetch origin <base>` first; local refs go stale silently.
-4. **Staged / uncommitted** — `git diff --staged` and/or `git diff HEAD`.
-5. **Recently modified files** — only as a last resort, and only files the user explicitly named or you edited earlier in this conversation.
+1. **Open PR** — `gh pr diff` or `gh pr view --json files,baseRefName`.
+2. **Branch vs base** — `git merge-base origin/<base> HEAD`, then `git diff <merge-base> HEAD` (or three-dot `git diff origin/<base>...HEAD`). Always `git fetch origin <base>` first; local refs go stale silently.
+3. **Staged / uncommitted** — `git diff --staged` and/or `git diff HEAD`.
+4. **Recently modified files** — only as a last resort, and only files the user explicitly named or you edited earlier in this conversation.
 
 Never diff the full range between two long-lived branches (`dev...main`) — that pulls in unrelated merged work and pollutes the review.
 

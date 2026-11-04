@@ -1,6 +1,6 @@
 # Dataroom
 
-Keep one dataroom per project at `~/Code/datarooms/<project>/`, as its own git repository. A workspace directory such as Conductor's `.context/` is gitignored and goes away with the workspace, so a dataroom placed there loses its history and its commits silently do nothing. Create the repository on the first round and commit after every step.
+Keep one dataroom per project at `~/Code/datarooms/<project>/`, as its own git repository. A gitignored directory inside a temporary worktree goes away with the worktree, so a dataroom placed there loses its history and its commits silently do nothing. Create the repository on the first round and commit after every step.
 
 | Path | Contents |
 | --- | --- |

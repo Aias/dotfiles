@@ -27,13 +27,12 @@ After pushing to an existing PR, compare its title and description with the full
 
 **Base branch:** Determine the correct base before doing anything else — a wrong base makes the entire diff meaningless.
 
-1. **Conductor workspace:** If a target branch is specified in the system instruction, use that (see `/conductor` for how Conductor sets workspace context).
-2. **Existing PR:** Run `gh pr view --json baseRefName -q .baseRefName` — the PR already knows its base.
-3. **Convention:** Check the repo's default branch and branching model:
+1. **Existing PR:** Run `gh pr view --json baseRefName -q .baseRefName` — the PR already knows its base.
+2. **Convention:** Check the repo's default branch and branching model:
    - `dev` — most feature work in repos that use a dev branch
    - `main` or `master` — hotfixes or repos without a dev branch
    - A feature branch — for sub-features of a larger effort
-4. **Ask** if still ambiguous.
+3. **Ask** if still ambiguous.
 
 Always `git fetch origin <base>` before diffing. Diff against `origin/<base>`, never a local branch.
 

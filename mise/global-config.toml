@@ -3,7 +3,7 @@ pin = true
 # Installed to ~/.config/mise/config.toml by install.sh (copied, not symlinked).
 # Source name avoids mise/config.toml — that path is auto-discovered as a local config.
 # Copy (not symlink) lets GUI git clients honor trusted_config_paths without shell env.
-trusted_config_paths = ["~/Code", "~/conductor"]
+trusted_config_paths = ["~/Code"]
 
 [tools]
 node = "26"

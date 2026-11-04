@@ -22,7 +22,7 @@ This rewrites the current branch. When the branch is already published, the appr
 
 1. **Determine the base branch**
    - If `$ARGUMENTS` is provided, use it as the base branch.
-   - Otherwise, use the Conductor target, existing PR base, or documented repository convention. Ask when these leave the base ambiguous.
+   - Otherwise, use the existing PR base or documented repository convention. Ask when these leave the base ambiguous.
    - Fetch the verified base before analyzing the commit range.
 
 2. **Validate preconditions**

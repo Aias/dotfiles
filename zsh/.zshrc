@@ -14,12 +14,6 @@ fi
 # Shim PATH lives in .zshenv so all zsh shells resolve tool versions.
 eval "$(mise activate zsh)"
 
-# Conductor.app prepends its bundled bin dir to PATH when spawning terminals,
-# which shadows mise-managed Node. Re-prepending here, after every other PATH
-# change in this rc, guarantees mise resolves first in interactive shells.
-if [[ -d "$HOME/.local/share/mise/shims" ]]; then
-  export PATH="$HOME/.local/share/mise/shims:$PATH"
-fi
 # Added by Devin
 export PATH="/Users/nicktrombley/.codeium/windsurf/bin:$PATH"
 
