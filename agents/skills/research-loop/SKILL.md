@@ -27,7 +27,7 @@ Each step takes a few minutes and is done by the main thread, which steers betwe
 1. Read the scratchpad, pick one lead, and scope the step in a line.
 2. Do one search or one close read of one specific example.
 3. Verify the load-bearing quotes and every image against the source.
-4. Write `notes/round<N>/step-NN.md`: what led here, the source and its read depth, the finding with its claim labels, and any images.
+4. Write `notes/round<N>/step-NN.md`: what led here and by which route (seed link, recall, first-page search, citation chain, non-English query, adjacent field), the source and its read depth, the finding with its claim labels, and any images.
 5. Rewrite the scratchpad: re-rank, prune, and add leads. New directions enter the round here.
 6. Commit the dataroom.
 
@@ -45,6 +45,8 @@ When the user asks for breadth across source kinds in one pass, split the extens
 
 Follow citations backward to references and forward to citing works through Semantic Scholar, OpenAlex, or Google Scholar. Dissertations, archived lab pages, standards, patents with figures, vendor and theme source code, conference talks, and mailing-list archives hold what the first page of results omits. Query a tradition in its own language. Look for counter-evidence: abandoned features, negative results, critiques, postmortems.
 
+Seed links, recall, and first-page web search are the easy routes, and they return consensus sources that agree with each other. Before writing the synthesis, count the round's sources by route. If none came from a citation chain, a non-English query, or an adjacent field, spend the next steps on those routes before stopping.
+
 Record what led to each source and how deeply you read it (full, excerpts, abstract, snippet). Keep the key quotes in the notes with where they appear in the source. Save a full copy only when a source is hard to fetch again or needs long quotation.
 
 When a finding describes an interface, capture it: a screenshot or a crop of a figure, saved in the dataroom with its source and a caption, embedded in the note, and included in the round's closing message.
@@ -55,7 +57,7 @@ The dataroom is private working space on the local machine. Nothing from it goes
 
 ## Ending a round
 
-Commit the dataroom, then message the user with: what the seed changed, the strongest leads with evidence and read depth, the rarest or most surprising find, the key images, anything about the process that should change, the round's cost if known, and two or three candidate seeds for the next round with one recommended. Attach the synthesis. Stop for review, unless the user has said to continue on your own, in which case the recommended seed opens the next round.
+Commit the dataroom, then message the user with: what the seed changed, the strongest leads with evidence and read depth, the rarest or most surprising find, the round's sources counted by route, the key images, anything about the process that should change, the round's cost if known, and two or three candidate seeds for the next round with one recommended. Attach the synthesis. Stop for review, unless the user has said to continue on your own, in which case the recommended seed opens the next round.
 
 When the user corrects the process itself, apply the correction in the current round and add it to this skill's `skill.feedback.md` in the dotfiles source.
 
