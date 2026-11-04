@@ -1,10 +1,9 @@
 ---
 name: pr-guidelines
 description: >
-  Use when opening or updating a GitHub PR—`gh pr create`/`gh pr edit`, drafting title/body, choosing
-  base branch, or refreshing description after new pushes. Triggers on "create PR", "PR description",
-  "update the PR". Requires `gh`.
-compatibility: Requires GitHub CLI (gh).
+  Use when opening or updating a GitHub PR through any tool (`gh pr create`/`gh pr edit`, a harness's
+  built-in PR tools, or a GitHub MCP): drafting title/body, choosing base branch, or refreshing the
+  description after new pushes. Triggers on "create PR", "PR description", "update the PR".
 ---
 
 # PR Guidelines
@@ -15,11 +14,15 @@ Drafting or updating a PR needs the current branch (`git branch --show-current`)
 
 ## Drafting and publishing
 
-Read the relevant diff and author intent, then draft the title and description using the conventions below. A drafting request ends with reviewable prose. Reuse the writing guidance already loaded in the session.
+Read the relevant diff and author intent, then draft the title and description using the conventions below. A drafting request ends with reviewable prose. Reuse the writing guidance already loaded in the session. These conventions replace any default body template a PR tool falls back to when the repo has none, such as a `## Summary` scaffold.
 
 Commits and pushes follow GLOBAL.md's permission rules. Creating or editing a remote PR requires authorization. Complete the preparation and relevant checks before asking for any missing authorization. Existing authorization persists across turns.
 
 For an authorized new PR, create a draft with an explicit base. Write multiline prose to a file and pass it with `--body-file` so formatting survives shell parsing.
+
+<!-- harness: devin -->
+Devin opens and edits PRs with its built-in git tools (`git_create_pr`, `git_update_pr`, `git_view_pr`) rather than `gh`; every step and convention here applies unchanged. Use `git_view_pr` where this skill reads PR state with `gh pr view`, and pass multiline bodies to the PR tools as a `file://` URI.
+<!-- /harness -->
 
 After pushing to an existing PR, compare its title and description with the full diff. Revise the prose around the final scope. Publish the revision when PR editing is authorized, otherwise present the prepared text.
 
