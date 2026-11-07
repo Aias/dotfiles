@@ -8,7 +8,6 @@ tap "planetscale/tap"
 cask "1password-cli"
 cask "araxis-merge"
 cask "codex"
-cask "devin-cli"
 cask "font-inter"
 
 # CLI Tools
