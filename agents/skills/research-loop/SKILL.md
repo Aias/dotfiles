@@ -53,7 +53,7 @@ When a finding describes an interface, capture it: a screenshot or a crop of a f
 
 ## Dataroom
 
-The dataroom is private working space on the local machine. Nothing from it goes into tickets or shared documents until the user asks for a write-up. Its location and layout are in [references/dataroom.md](references/dataroom.md).
+The dataroom is private working space on the machine running the research. Nothing from it goes into tickets or shared documents until the user asks for a write-up. Its location and layout are in [references/dataroom.md](references/dataroom.md).
 
 ## Ending a round
 

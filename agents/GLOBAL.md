@@ -83,13 +83,19 @@ Prefer the harness's structured search tool (e.g. Grep) over shell `rg`. In the 
 **Bound tool discovery.** When searching `ALL_TOOLS`, filter by provider or tool name first and print at most 20 names plus the match count. Narrow further before reading selected descriptions. Search descriptions only when names are insufficient, with the same output bound.
 <!-- /harness -->
 
+<!-- harness: claude,codex,cursor -->
 **Use an isolated browser, ask before touching Dia, and read each 1Password value once per session.** Read `/browser-and-1password` before browser automation or any `op` call.
+<!-- /harness -->
 
 ## Context-Specific Guidelines
 
 Put project agent instructions in `AGENTS.md` at the project root, without a `CLAUDE.md` symlink (Claude Code loads `AGENTS.md` when no `CLAUDE.md` exists). If a project has both, edit `AGENTS.md`.
 
 Agent skills and config live in `~/Code/dotfiles`, which deploys them to each harness. Edit the dotfiles source, never the installed copies under `~/.claude`, `~/.codex`, `~/.cursor`, or `~/.config/devin`, and follow that repo's `AGENTS.md` when changing it. Standing rules and corrections belong in tracked files (GLOBAL.md, a skill, or a project's `AGENTS.md`), never in harness-private memory. See `/remember-that` for routing.
+
+<!-- harness: devin -->
+Dotfiles paths under `~/Code/dotfiles` refer to the user's machine. For source edits or local deployment, request local access and use local tools. The cloud VM and uploaded plugin are separate copies. Rebuild the plugin from the source and obtain approval before replacing the uploaded package.
+<!-- /harness -->
 
 ### Skill cross-links
 

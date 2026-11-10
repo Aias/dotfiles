@@ -14,6 +14,10 @@ Capture guidance that should change behavior on future tasks. Apply the user's i
 
 Read the relevant existing guidance before adding anything. Quote an existing rule when it already covers the preference. Otherwise consolidate overlapping instructions and describe the applicable condition.
 
+<!-- harness: devin -->
+The dotfiles paths below belong to the user's machine. Request local access before editing those sources or running their deployment commands. If access is unavailable, provide proposed wording for approval without changing the uploaded plugin independently of its source.
+<!-- /harness -->
+
 ## Choose a home
 
 | Guidance | Source |

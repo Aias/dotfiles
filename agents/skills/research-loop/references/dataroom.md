@@ -1,6 +1,14 @@
 # Dataroom
 
-Keep one dataroom per project at `~/Code/datarooms/<project>/`, as its own git repository. A gitignored directory inside a temporary worktree goes away with the worktree, so a dataroom placed there loses its history and its commits silently do nothing. Create the repository on the first round and commit after every step.
+Keep one dataroom per project as its own git repository outside temporary worktrees. Create the repository on the first round and commit after every step.
+
+<!-- harness: claude,codex,cursor -->
+Use `~/Code/datarooms/<project>/` so research survives worktree removal.
+<!-- /harness -->
+
+<!-- harness: devin -->
+For a new cloud research round, use a persistent session directory and attach the resulting dataroom when delivering it. To continue a dataroom on the user's machine, request local access and use local tools. A matching path on the cloud VM does not contain the user's research history.
+<!-- /harness -->
 
 | Path | Contents |
 | --- | --- |

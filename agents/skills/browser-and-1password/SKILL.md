@@ -3,6 +3,8 @@ name: browser-and-1password
 description: >
   Choose a browser for web tasks and read credentials from 1Password with `op`.
   Use before browser automation, a login in an isolated browser session, or any `op` call.
+metadata:
+  targets: claude,codex,cursor
 ---
 
 # Browsers and 1Password

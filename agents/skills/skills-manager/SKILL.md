@@ -15,6 +15,10 @@ Manages external skills within the dotfiles setup. External skills live in the d
 
 **When invoked with no additional user context**, run `make check` and the orphan listing, then recommend the action the current state calls for.
 
+<!-- harness: devin -->
+The inventory and deployment commands below target the user's dotfiles checkout and home directory. Request local access and run them with local tools. Do not run the installer against the cloud VM's home directory or treat its uploaded plugin cache as source.
+<!-- /harness -->
+
 ## Current State
 
 Inventory and cleanup decisions need the three source directories (`agents/skills/`, `.agents/skills/`, `agents/skills.local/`) and the three deploy targets (`~/.claude/skills/`, `~/.codex/skills/`, `~/.cursor/skills/`). Devin gets skills from the uploaded `aias` plugin, so run `make devin-plugin` and upload the bundle after skill changes. `make check` prints all of them with sync status; list a directory directly only when acting on it. Orphans (deployed but no source) are the deploy-target names absent from every source directory; list them with the command in [Cleanup Orphaned Skills](#cleanup-orphaned-skills).
