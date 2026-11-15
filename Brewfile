@@ -41,6 +41,6 @@ brew "yt-dlp"
 brew "zoxide"
 brew "zsh-autosuggestions"
 brew "zsh-syntax-highlighting"
-brew "gbevin/tools/receivemidi"
-brew "gbevin/tools/sendmidi"
-brew "planetscale/tap/pscale"
+brew "gbevin/tools/receivemidi", trusted: true
+brew "gbevin/tools/sendmidi", trusted: true
+brew "planetscale/tap/pscale", trusted: true

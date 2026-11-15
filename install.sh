@@ -83,11 +83,16 @@ install_bun_globals() {
 install_dependencies() {
     section "Dependencies"
     ensure_homebrew
-    brew bundle install --file="$DOTFILES_DIR/Brewfile" 2>&1 | grep -E "^(Using|Installing|Upgrading)" | sed 's/^/  /'
+    brew bundle install --file="$DOTFILES_DIR/Brewfile" 2>&1 | grep -E "^(Using|Installing|Upgrading|Error)" | sed 's/^/  /'
+    local brew_status=${PIPESTATUS[0]}
     install_bun
     install_bun_globals
     install_cursor
-    success "Dependencies installed"
+    if [[ $brew_status -eq 0 ]]; then
+        success "Dependencies installed"
+    else
+        error "brew bundle failed"
+    fi
 }
 
 if [[ "${SKIP_DEPENDENCY_INSTALL:-0}" != "1" ]]; then
