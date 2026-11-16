@@ -14,7 +14,7 @@
       "/Users/nicktrombley/Code/dotfiles"
     ]
   },
-  "model": "opus",
+  "model": "fable",
   "skillOverrides": {
     "pangram": "user-invocable-only",
     "system-report": "user-invocable-only",
@@ -114,6 +114,9 @@
       "effortLevel": "xhigh"
     },
     "claude-fable-5-1": {
+      "effortLevel": "xhigh"
+    },
+    "claude-fable-5-2": {
       "effortLevel": "xhigh"
     }
   },

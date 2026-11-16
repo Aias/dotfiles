@@ -85,6 +85,8 @@ Prefer the harness's structured search tool (e.g. Grep) over shell `rg`. In the 
 
 <!-- harness: claude,codex,cursor -->
 **Use an isolated browser, ask before touching Dia, and read each 1Password value once per session.** Read `/browser-and-1password` before browser automation or any `op` call.
+
+**Keep investigation artifacts out of `/private`.** Screenshots and other temporary artifacts go in the workspace's own artifacts folder when it has one (Conductor's `.context`), else a task-named folder in `~/Downloads`.
 <!-- /harness -->
 
 ## Context-Specific Guidelines

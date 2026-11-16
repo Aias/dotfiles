@@ -395,6 +395,9 @@ install_claude_mcp_servers() {
         success "$name"
     done
 
+    claude mcp add --scope user --transport http devin https://mcp.devin.ai/mcp --header "Authorization: Bearer \${DEVIN_API_KEY}" &>/dev/null || true
+    success "devin"
+
     # stdio-based MCP servers
     claude mcp add --scope user chrome-devtools -- npx -y chrome-devtools-mcp@latest --autoConnect &>/dev/null || true
     success "chrome-devtools"
