@@ -395,7 +395,7 @@ install_claude_mcp_servers() {
         success "$name"
     done
 
-    claude mcp add --scope user --transport http devin https://mcp.devin.ai/mcp --header "Authorization: Bearer \${DEVIN_API_KEY}" &>/dev/null || true
+    claude mcp add --scope user --transport http devin https://mcp.devin.ai/mcp --header "Authorization: Bearer \${DEVIN_API_KEY}" --header "X-Org-Id: \${DEVIN_ORG_ID}" &>/dev/null || true
     success "devin"
 
     # stdio-based MCP servers
