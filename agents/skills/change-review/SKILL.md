@@ -216,6 +216,7 @@ Take the look from the mockup and the implementation from the codebase. Map each
 
 ### Layout
 
+- Derive sizes, offsets, and spacing in CSS from tokens and custom properties. Measure in JavaScript only for values that depend on content or state CSS cannot read.
 - Flexbox/grid with `gap` for spacing between children.
 - `margin` is a code smell — prefer container `padding` or `gap`; margins break encapsulation.
 - Logical properties: `block`/`inline`, `start`/`end` over physical `left`/`right`/`top`/`bottom` where appropriate.
