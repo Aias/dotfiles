@@ -107,6 +107,9 @@ trust_level = "trusted"
 [mcp_servers.linear]
 url = "https://mcp.linear.app/mcp"
 
+[mcp_servers.pangram]
+url = "https://www.pangram.com/mcp"
+
 [mcp_servers.sentry]
 url = "https://mcp.sentry.dev/mcp"
 
